@@ -1,0 +1,120 @@
+#macro(chartstyle)
+<style>
+    .ninjaChart svg {
+        background-color:#fff;
+        font-family: Arial;
+        font-size:10px;
+    }
+    .ninjaChart .candles rect {
+        stroke-width:1px;
+    }
+    .ninjaChart .candles .up {
+        stroke: #038003;
+        fill:#03CA03;
+    }
+    .ninjaChart .candles .down {
+        stroke: #650900;
+        fill:#D20E00;
+    }
+    .ninjaChart .wicks .up {
+        stroke-width: 1px;
+        stroke: #038003;
+    }
+    .ninjaChart .wicks .down {
+        stroke-width: 1px;
+        stroke: #a30d00;
+    }
+    .ninjaChart .prices text {
+        font-family: Arial;
+        cursor:default;
+    }
+    .ninjaChart .priceLines line,
+    .ninjaChart .dateLines line {
+        stroke-width: 1px;
+        stroke: #eee;
+    }
+    .ninjaChart .lastPrice line {
+        stroke-width: 0.5px;
+        stroke: #009688;
+    }
+    .ninjaChart .lastPrice rect {
+        fill: #009688;
+    }
+    .ninjaChart .lastPrice text {
+        fill:#fff;
+        cursor:default;
+    }
+    .ninjaChart .priceLines line.border,
+    .ninjaChart .dateLines line.border {
+        stroke-width: 1px;
+        stroke: #aaa;
+    }
+    .ninjaChart .dateLabels text {
+        color:#aaa;
+        cursor:default;
+    }
+    .ninjaChart .cols rect {
+        opacity: 0;
+    }
+    .ninjaChart .xCursorLine {
+        stroke-width: 1px;
+        stroke: #ee7d02;
+    }
+    .ninjaChart .xCursor rect {
+        fill:#777;
+    }
+    .ninjaChart .xCursor .dateInd {
+        fill:#fff;
+    }
+    .ninjaChart .priceMeta {
+        font-size:12px;
+        fill:#000;
+    }
+    .ninjaChart .priceMeta.up .metaValue  {
+        fill:#038003;
+    }
+    .ninjaChart .priceMeta.down .metaValue {
+        fill:#a30d00;
+    }
+    .ninjaChart .tenkan {
+        fill:none;
+        stroke:red;
+        stroke-width:0.8px;
+    }
+    .ninjaChart .kijun {
+        fill:none;
+        stroke:green;
+        stroke-width:1px;
+    }
+    .ninjaChart .chikou {
+        fill:none;
+        stroke:#2196F3;
+        stroke-width:0.8px;
+    }
+    .ninjaChart .senkouA {
+        fill:none;
+        stroke-width: 0.8px;
+        stroke-dasharray: 1,1;
+        stroke: #0C70C5;
+    }
+    .ninjaChart .senkouB {
+        fill:none;
+        stroke: #FF7380;
+        stroke-width: 0.8px;
+        stroke-dasharray: 1,1;
+    }
+    .ninjaChart .kumo line {
+        stroke-dasharray: 1,1;
+        stroke-width: 0.5px;
+    }
+    .ninjaChart .kumo line.u {
+        stroke: #0C70C5;
+    }
+    .ninjaChart .kumo line.d {
+        stroke: #FF7380;
+    }
+    .ninjaChart .stockMeta .symbol {
+        font-size: 14px;
+    }
+</style>
+#end
