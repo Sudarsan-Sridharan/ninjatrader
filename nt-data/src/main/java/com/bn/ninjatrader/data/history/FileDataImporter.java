@@ -50,7 +50,7 @@ public class FileDataImporter {
   }
 
   /**
-   * Convert List of prices to document and save.
+   * Convert List of prices to document and execute.
    * @param quotes
    */
   public void save(List<DailyQuote> quotes) {
@@ -65,12 +65,13 @@ public class FileDataImporter {
       }
 
       prices.add(new Price(
+          quote.getDate(),
           quote.getOpen(),
           quote.getHigh(),
           quote.getLow(),
           quote.getClose(),
-          quote.getVolume(),
-          quote.getDate()));
+          quote.getVolume()
+          ));
     }
 
     // Save price list for each symbol

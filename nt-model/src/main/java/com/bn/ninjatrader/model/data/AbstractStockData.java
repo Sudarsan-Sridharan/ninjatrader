@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.model.data;
 
+import com.bn.ninjatrader.model.util.QueryParamName;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
@@ -24,13 +25,13 @@ public abstract class AbstractStockData<T> implements Comparable<AbstractStockDa
   @MongoObjectId
   public String id;
 
-  @JsonProperty(SYMBOL)
+  @JsonProperty(QueryParamName.SYMBOL)
   private String symbol;
 
-  @JsonProperty(YEAR)
+  @JsonProperty(QueryParamName.YEAR)
   private int year;
 
-  @JsonProperty(DATA)
+  @JsonProperty(QueryParamName.DATA)
   private List<T> data = Lists.newArrayList();
 
   public AbstractStockData() {}
@@ -69,6 +70,10 @@ public abstract class AbstractStockData<T> implements Comparable<AbstractStockDa
 
   public void setData(List<T> data) {
     this.data = data;
+  }
+
+  public boolean isEmpty() {
+    return data == null || data.isEmpty();
   }
 
   @Override

@@ -30,7 +30,7 @@ public class MeanCalculatorTest {
     LocalDate date = LocalDate.of(2016, 1, 1);
     List<Price> priceList = Lists.newArrayList();
 
-    Price price = TestUtil.randomPrice(lowest, highest);
+    Price price = TestUtil.randomPriceWithFloorCeil(lowest, highest);
     price.setDate(date);
     price.setLow(lowest);
     price.setHigh(highest);
@@ -52,21 +52,21 @@ public class MeanCalculatorTest {
 
     // Add dummy data
     for (int i = 0; i < 24; i++) {
-      Price price = TestUtil.randomPrice(lowest, highest);
+      Price price = TestUtil.randomPriceWithFloorCeil(lowest, highest);
       price.setDate(date);
       priceList.add(price);
       date = date.plusDays(1);
     }
 
     // Add lowest price
-    Price price = TestUtil.randomPrice(lowest, highest);
+    Price price = TestUtil.randomPriceWithFloorCeil(lowest, highest);
     price.setDate(date);
     price.setLow(lowest);
     priceList.add(price);
     date = date.plusDays(1);
 
     // Add highest price
-    price = TestUtil.randomPrice(lowest, highest);
+    price = TestUtil.randomPriceWithFloorCeil(lowest, highest);
     price.setDate(date);
     price.setHigh(highest);
     priceList.add(price);
@@ -87,7 +87,7 @@ public class MeanCalculatorTest {
     List<Price> priceList = Lists.newArrayList();
 
     // Add price 1. Mean should be (5 + 10) / 2
-    Price price1 = TestUtil.randomPrice(lowest, highest);
+    Price price1 = TestUtil.randomPriceWithFloorCeil(lowest, highest);
     price1.setDate(date1);
     price1.setLow(lowest);
     price1.setHigh(highest);
@@ -95,7 +95,7 @@ public class MeanCalculatorTest {
 
     // Add price 2. Mean should be (5 + 12) / 2
     highest = 12;
-    Price price2 = TestUtil.randomPrice(lowest, highest);
+    Price price2 = TestUtil.randomPriceWithFloorCeil(lowest, highest);
     price2.setDate(date2);
     price2.setLow(lowest);
     price2.setHigh(highest);
@@ -127,23 +127,23 @@ public class MeanCalculatorTest {
   @Test
   public void testMeanPrecision() {
     // Test 1
-    Price price = new Price(1.0, 10.0052, 0.00101, 2.0, 10000, LocalDate.now());
+    Price price = new Price(LocalDate.now(), 1.0, 10.0052, 0.00101, 2.0, 10000);
     List<Value> result = calculator.calc(Lists.newArrayList(price), 1);
     assertEquals(result.size(), 1);
     assertEquals(result.get(0).getValue(), 5.003105);
 
     // Test 2
-    price = new Price(1.0, 9.5, 9.5, 1.0, 10000, LocalDate.now());
+    price = new Price(LocalDate.now(), 1.0, 9.5, 9.5, 1.0, 10000);
     result = calculator.calc(Lists.newArrayList(price), 1);
     assertEquals(result.get(0).getValue(), 9.5);
 
     // Test 3
-    price = new Price(1.0, 9.5, 9.4, 1.0, 10000, LocalDate.now());
+    price = new Price(LocalDate.now(), 1.0, 9.5, 9.4, 1.0, 10000);
     result = calculator.calc(Lists.newArrayList(price), 1);
     assertEquals(result.get(0).getValue(), 9.45);
 
     // Test 3
-    price = new Price(1.0, 0.000051, 0.000053, 1.0, 10000, LocalDate.now());
+    price = new Price(LocalDate.now(), 1.0, 0.000051, 0.000053, 1.0, 10000);
     result = calculator.calc(Lists.newArrayList(price), 1);
     assertEquals(result.get(0).getValue(), 0.000052);
   }

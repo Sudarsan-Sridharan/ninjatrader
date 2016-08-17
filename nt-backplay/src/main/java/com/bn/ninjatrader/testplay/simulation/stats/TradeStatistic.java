@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.testplay.simulation.stats;
 
+import com.bn.ninjatrader.testplay.simulation.transaction.SellTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,5 +45,18 @@ public class TradeStatistic {
 
   public double getProfitPerTrade(double profit) {
     return profit / numOfTrades;
+  }
+
+  public void collect(SellTransaction transaction) {
+    if (transaction == null) {
+      return;
+    }
+
+    trade();
+    if (transaction.getProfit() > 0) {
+      win();
+    } else {
+      lose();
+    }
   }
 }

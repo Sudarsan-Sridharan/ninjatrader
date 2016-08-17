@@ -40,7 +40,7 @@ public abstract class AbstractDailyPriceImporter {
     for (DailyQuote quote : provideDailyQuotes()) {
       if (symbols.contains(quote.getSymbol())) {
         log.debug("Saving: {}", quote);
-        priceDao.save(quote.getSymbol(), Lists.newArrayList(quote.toPrice()));
+        priceDao.save(quote.getSymbol(), Lists.newArrayList(quote.getPrice()));
       } else {
         log.debug("Skipping: {}", quote);
       }

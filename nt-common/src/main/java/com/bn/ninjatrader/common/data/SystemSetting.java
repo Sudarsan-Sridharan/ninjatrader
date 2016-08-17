@@ -2,6 +2,7 @@ package com.bn.ninjatrader.common.data;
 
 import com.bn.ninjatrader.common.util.NtLocalDateTimeDeserializer;
 import com.bn.ninjatrader.common.util.NtLocalDateTimeSerializer;
+import com.bn.ninjatrader.common.util.NumUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -34,8 +35,6 @@ public class SystemSetting {
     return new SystemSetting(name, value);
   }
 
-  public SystemSetting() {}
-
   public SystemSetting(String name, String value) {
     this.name = name;
     this.value = value;
@@ -51,6 +50,14 @@ public class SystemSetting {
 
   public String getValue() {
     return value;
+  }
+
+  public long getValueAsLong() {
+    return NumUtil.toLongOrDefault(value, 0);
+  }
+
+  public double getValueAsDouble() {
+    return NumUtil.toDoubleOrDefault(value, 0);
   }
 
   public void setValue(String value) {

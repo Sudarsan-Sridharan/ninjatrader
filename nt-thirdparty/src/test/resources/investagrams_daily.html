@@ -1,0 +1,107 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<body>
+<div id="StockQuoteTable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+    <div class="row">
+        <div class="col-sm-6"></div>
+        <div class="col-sm-6">
+            <div id="StockQuoteTable_filter" class="dataTables_filter">
+                <label>Search:<input type="search" class="form-control input-sm" aria-controls="StockQuoteTable"></label>
+            </div>
+        </div>
+    </div>
+    <div class="row"><div class="col-sm-12">
+        <div class="dataTables_scroll">
+            <div class="dataTables_scrollHead" style="overflow: hidden; position: relative; border: 0px; width: 100%;">
+                <div class="dataTables_scrollHeadInner" style="box-sizing: content-box; width: 1168px; padding-right: 0px;">
+                    <table class="table dataTable no-footer" role="grid" style="margin-left: 0px; width: 1168px;">
+                        <thead>
+                            <tr role="row">
+                                <td class="sorting_asc" tabindex="0" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 99px;" aria-sort="ascending" aria-label="Action: activate to sort column ascending">Action</td>
+                                <td class="sorting" tabindex="0" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 67px;" aria-label="Stock: activate to sort column ascending">Stock</td>
+                                <td class="sorting" tabindex="0" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 81px;" aria-label="Last: activate to sort column ascending">Last</td>
+                                <td class="sorting" tabindex="0" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 73px;" aria-label="Change: activate to sort column ascending">Change</td>
+                                <td class="sorting" tabindex="0" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 85px;" aria-label="%Change: activate to sort column ascending">%Change</td><td class="sorting" tabindex="0" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 81px;" aria-label="Open: activate to sort column ascending">Open</td>
+                                <td class="sorting" tabindex="0" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 82px;" aria-label="Low: activate to sort column ascending">Low</td><td class="sorting" tabindex="0" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 82px;" aria-label="High: activate to sort column ascending">High</td>
+                                <td class="sorting" tabindex="0" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 82px;" aria-label="Close: activate to sort column ascending">Close</td><td class="sorting" tabindex="0" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 116px;" aria-label="Volume: activate to sort column ascending">Volume</td>
+                                <td class="sorting" tabindex="0" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 144px;" aria-label="Value: activate to sort column ascending">Value</td>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div class="dataTables_scrollBody" style="overflow: auto; height: 300px; width: 100%;">
+                <table id="StockQuoteTable" class="table dataTable no-footer" role="grid" aria-describedby="StockQuoteTable_info" style="width: 1168px;">
+                    <thead>
+                        <tr role="row" style="height: 0px;">
+                            <td class="sorting" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 99px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;">
+                                <div class="dataTables_sizing" style="height:0;overflow:hidden;">Action</div>
+                            </td>
+                            <td class="sorting" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 67px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;">
+                                <div class="dataTables_sizing" style="height:0;overflow:hidden;">Stock</div>
+                            </td>
+                            <td class="sorting" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 81px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;">
+                                <div class="dataTables_sizing" style="height:0;overflow:hidden;">Last</div>
+                            </td>
+                            <td class="sorting" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 73px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;">
+                                <div class="dataTables_sizing" style="height:0;overflow:hidden;">Change</div>
+                            </td>
+                            <td class="sorting" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 85px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;">
+                                <div class="dataTables_sizing" style="height:0;overflow:hidden;">%Change</div>
+                            </td>
+                            <td class="sorting" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 81px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;">
+                                <div class="dataTables_sizing" style="height:0;overflow:hidden;">Open</div>
+                            </td>
+                            <td class="sorting" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 82px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;">
+                                <div class="dataTables_sizing" style="height:0;overflow:hidden;">Low</div>
+                            </td>
+                            <td class="sorting" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 82px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;">
+                                <div class="dataTables_sizing" style="height:0;overflow:hidden;">High</div>
+                            </td>
+                            <td class="sorting" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 82px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;">
+                                <div class="dataTables_sizing" style="height:0;overflow:hidden;">Close</div>
+                            </td>
+                            <td class="sorting" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 116px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;">
+                                <div class="dataTables_sizing" style="height:0;overflow:hidden;">Volume</div>
+                            </td>
+                            <td class="sorting" aria-controls="StockQuoteTable" rowspan="1" colspan="1" style="width: 144px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;">
+                                <div class="dataTables_sizing" style="height:0;overflow:hidden;">Value</div>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="2GO" role="row" class="odd">
+                            <td class="bg-color-white sorting_1"><a class="stockprice-up" href="../Trade/TradeNewOrder?Type=1&amp;Transaction=1&amp;Stock=2GO">BUY</a><span> | </span><a class="stockprice-down" href="../Trade/TradeNewOrder?Type=1&amp;Transaction=2&amp;Stock=2GO">SELL</a></td><td class="bg-color-white"><a href="2GO">2GO</a></td><td class="stockprice-down">7.38</td><td class="stockprice-down">-0.02</td><td class="stockprice-down">-0.27%</td><td class="stockprice-normal">7.40</td><td class="stockprice-down">7.33</td><td class="stockprice-normal">7.40</td><td class="stockprice-normal">7.40</td><td class="stockprice-normal">72,500</td><td class="stockprice-normal">533,962.50</td>
+                        </tr>
+                        <tr id="ABA" role="row" class="even">
+                            <td class="bg-color-white sorting_1"><a class="stockprice-up" href="../Trade/TradeNewOrder?Type=1&amp;Transaction=1&amp;Stock=ABA">BUY</a><span> | </span><a class="stockprice-down" href="../Trade/TradeNewOrder?Type=1&amp;Transaction=2&amp;Stock=ABA">SELL</a></td><td class="bg-color-white"><a href="ABA">ABA</a></td><td class="stockprice-down">0.39</td><td class="stockprice-down">-0.01</td><td class="stockprice-down">-2.50%</td><td class="stockprice-down">0.39</td><td class="stockprice-down">0.39</td><td class="stockprice-normal">0.40</td><td class="stockprice-normal">0.40</td><td class="stockprice-normal">190,000</td><td class="stockprice-normal">75,050.00</td>
+                        </tr>
+                        <tr id="ABG" role="row" class="odd">
+                            <td class="bg-color-white sorting_1"><a class="stockprice-up" href="../Trade/TradeNewOrder?Type=1&amp;Transaction=1&amp;Stock=ABG">BUY</a><span> | </span><a class="stockprice-down" href="../Trade/TradeNewOrder?Type=1&amp;Transaction=2&amp;Stock=ABG">SELL</a></td><td class="bg-color-white"><a href="ABG">ABG</a></td><td class="stockprice-down">13.42</td><td class="stockprice-down">-0.08</td><td class="stockprice-down">-0.59%</td><td class="stockprice-normal">13.50</td><td class="stockprice-down">12.90</td><td class="stockprice-normal">13.50</td><td class="stockprice-normal">13.50</td><td class="stockprice-normal">19,000</td><td class="stockprice-normal">250,800.00</td>
+                        </tr>
+                        <tr id="ABS" role="row" class="even">
+                            <td class="bg-color-white sorting_1"><a class="stockprice-up" href="../Trade/TradeNewOrder?Type=1&amp;Transaction=1&amp;Stock=ABS">BUY</a><span> | </span><a class="stockprice-down" href="../Trade/TradeNewOrder?Type=1&amp;Transaction=2&amp;Stock=ABS">SELL</a></td><td class="bg-color-white"><a href="ABS">ABS</a></td><td class="stockprice-down">50.65</td><td class="stockprice-down">-0.55</td><td class="stockprice-down">-1.07%</td><td class="stockprice-normal">51.20</td><td class="stockprice-down">50.50</td><td class="stockprice-up">51.30</td><td class="stockprice-normal">51.20</td><td class="stockprice-normal">82,350</td><td class="stockprice-normal">4,191,615.00</td>
+                        </tr>
+                        <tr id="ABSP" role="row" class="odd">
+                            <td class="bg-color-white sorting_1"><a class="stockprice-up" href="../Trade/TradeNewOrder?Type=1&amp;Transaction=1&amp;Stock=ABSP">BUY</a><span> | </span><a class="stockprice-down" href="../Trade/TradeNewOrder?Type=1&amp;Transaction=2&amp;Stock=ABSP">SELL</a></td><td class="bg-color-white"><a href="ABSP">ABSP</a></td><td class="stockprice-down">50.45</td><td class="stockprice-down">-0.55</td><td class="stockprice-down">-1.08%</td><td class="stockprice-down">50.80</td><td class="stockprice-down">50.45</td><td class="stockprice-normal">51.00</td><td class="stockprice-normal">51.00</td><td class="stockprice-normal">42,460</td><td class="stockprice-normal">2,153,783.50</td>
+                        </tr>
+                        <tr id="AC" role="row" class="even">
+                            <td class="bg-color-white sorting_1"><a class="stockprice-up" href="../Trade/TradeNewOrder?Type=1&amp;Transaction=1&amp;Stock=AC">BUY</a><span> | </span><a class="stockprice-down" href="../Trade/TradeNewOrder?Type=1&amp;Transaction=2&amp;Stock=AC">SELL</a></td><td class="bg-color-white"><a href="AC">AC</a></td><td class="stockprice-up">900.00</td><td class="stockprice-up">10.00</td><td class="stockprice-up">1.12%</td><td class="stockprice-normal">890.00</td><td class="stockprice-down">887.00</td><td class="stockprice-up">901.00</td><td class="stockprice-normal">890.00</td><td class="stockprice-normal">100,710</td><td class="stockprice-normal">90,034,740.00</td>
+                        </tr>
+                        <tr id="ACE" role="row" class="odd">
+                            <td class="bg-color-white sorting_1"><a class="stockprice-up" href="../Trade/TradeNewOrder?Type=1&amp;Transaction=1&amp;Stock=ACE">BUY</a><span> | </span><a class="stockprice-down" href="../Trade/TradeNewOrder?Type=1&amp;Transaction=2&amp;Stock=ACE">SELL</a></td><td class="bg-color-white"><a href="ACE">ACE</a></td><td class="stockprice-normal">1.23</td><td class="stockprice-normal">0.00</td><td class="stockprice-normal">0.00%</td><td class="stockprice-down">1.22</td><td class="stockprice-down">1.22</td><td class="stockprice-normal">1.23</td><td class="stockprice-normal">1.23</td><td class="stockprice-normal">2,000</td><td class="stockprice-normal">2,450.00</td>
+                        </tr>
+                        <tr id="ACPB1" role="row" class="even">
+                            <td class="bg-color-white sorting_1"><a class="stockprice-up" href="../Trade/TradeNewOrder?Type=1&amp;Transaction=1&amp;Stock=ACPB1">BUY</a><span> | </span><a class="stockprice-down" href="../Trade/TradeNewOrder?Type=1&amp;Transaction=2&amp;Stock=ACPB1">SELL</a></td><td class="bg-color-white"><a href="ACPB1">ACPB1</a></td><td class="stockprice-normal">520.00</td><td class="stockprice-normal">0.00</td><td class="stockprice-normal">0.00%</td><td class="stockprice-normal">520.00</td><td class="stockprice-normal">520.00</td><td class="stockprice-normal">520.00</td><td class="stockprice-normal">520.00</td><td class="stockprice-normal">1,500</td><td class="stockprice-normal">780,000.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div></div></div></div><div class="row"><div class="col-sm-5"><div class="dataTables_info" id="StockQuoteTable_info" role="status" aria-live="polite">Showing 1 to 239 of 239 entries</div></div><div class="col-sm-7"></div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

@@ -8,6 +8,8 @@ import com.google.inject.Inject;
 
 import java.time.LocalDate;
 
+import static com.bn.ninjatrader.process.request.CalcRequest.forStock;
+
 /**
  * Created by Brad on 6/8/16.
  */
@@ -22,7 +24,7 @@ public class CalcProcessService {
 
   public void processForAllSymbols(CalcProcess calcProcess, LocalDate fromDate, LocalDate toDate) {
     for (Stock stock : stockDao.find()) {
-      calcProcess.process(stock.getSymbol(), fromDate, toDate);
+      calcProcess.processMissingBars(forStock(stock).from(fromDate).to(toDate));
     }
   }
 

@@ -126,8 +126,9 @@ public class LottoService {
 
   public static void main(String args[]) throws IOException {
     LottoService app = new LottoService();
-    LottoService.highlightWins.addAll(Ints.asList(parseLottoNumbers("05-27-21-45-02-47")));
+    LottoService.highlightWins.addAll(Ints.asList(parseLottoNumbers("16-33-21-39-40-20")));
 //    LottoService.highlightWins.clear();
-    app.readData(LottoType.LOTTO55, Period.ALLTIME);
+
+    app.readData(LottoType.LOTTO42, Period.YEARLY);
   }
 }

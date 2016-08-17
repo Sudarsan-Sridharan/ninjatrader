@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.testplay.simulation.order;
 
+import com.bn.ninjatrader.testplay.simulation.transaction.TransactionType;
 import com.bn.ninjatrader.testplay.simulation.type.MarketTime;
 
 import java.time.LocalDate;
@@ -13,12 +14,18 @@ public class SellOrder extends Order {
                     MarketTime marketTime,
                     int daysFromNow,
                     long numOfShares) {
-    super(orderDate, OrderType.SELL, marketTime, daysFromNow, numOfShares);
+    super(orderDate, TransactionType.SELL, marketTime, daysFromNow, numOfShares);
   }
 
-  public static class SellOrderBuilder extends OrderBuilder {
+  public static class SellOrderBuilder extends OrderBuilder<SellOrderBuilder> {
+    @Override
+    SellOrderBuilder getThis() {
+      return this;
+    }
+
+    @Override
     public SellOrder build() {
-      SellOrder order = new SellOrder(orderDate, marketTime, daysFromNow, numOfShares);
+      SellOrder order = new SellOrder(getOrderDate(), getMarketTime(), getDaysFromNow(), getNumOfShares());
       return order;
     }
   }

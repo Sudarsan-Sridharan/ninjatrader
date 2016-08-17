@@ -17,7 +17,7 @@ public class BasicOperationTest extends AbstractOperationTest {
 
   @Test
   public void testArithmeticOnConstants() {
-    assertOperationEquals(operation(3.1, PLUS, 4.2), 7.3);
+    assertOperationEquals(operation(5.6, PLUS, 5.8), 11.4);
     assertOperationEquals(operation(-1.1, PLUS, 1.1), 0);
     assertOperationEquals(operation(0, PLUS, -0), 0);
 
@@ -33,7 +33,7 @@ public class BasicOperationTest extends AbstractOperationTest {
   }
 
   private void assertOperationEquals(Operation operation, double expected) {
-    assertEquals(operation.getValue(parameters), expected);
+    assertEquals(operation.getValue(barParameters), expected);
   }
 
   private Operation operation(double lhs, Operator operator, double rhs) {

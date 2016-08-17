@@ -8,18 +8,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by Brad on 6/3/16.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MeanData extends AbstractStockData<Value> {
+public class PeriodData extends AbstractStockData<Value> {
 
   public static final String PERIOD = "pr";
 
   @JsonProperty(PERIOD)
   private int period;
 
-  public MeanData() {
+  public PeriodData() {
     super();
   }
 
-  public MeanData(String symbol, int year, int period) {
+  public PeriodData(String symbol, int year, int period) {
     super(symbol, year);
     this.period = period;
   }

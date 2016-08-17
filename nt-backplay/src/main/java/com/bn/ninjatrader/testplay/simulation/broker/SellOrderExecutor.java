@@ -3,35 +3,34 @@ package com.bn.ninjatrader.testplay.simulation.broker;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.testplay.simulation.account.Account;
-import com.bn.ninjatrader.testplay.simulation.order.BuyOrder;
+import com.bn.ninjatrader.testplay.simulation.account.Portfolio;
+import com.bn.ninjatrader.testplay.simulation.transaction.SellTransaction;
+import com.bn.ninjatrader.testplay.simulation.transaction.Transaction;
 import com.bn.ninjatrader.testplay.simulation.order.Order;
-import com.google.common.base.Preconditions;
 
 /**
  * Created by Brad on 8/13/16.
  */
-public class SellOrderExecutor {
+public class SellOrderExecutor extends OrderExecutor {
 
   public void execute(Account account, Order order, Price currentPrice) {
     checkConditions(account, order, currentPrice);
 
-    BuyOrder buyOrder = (BuyOrder) order;
-    buyOrder.fulfill(currentPrice);
-    double buyPrice = order.getFulfilledPrice();
-    long numOfShares = (long)(buyOrder.getBuyAmount() / buyPrice / 1000) * 1000;
-    double totalValue = NumUtil.multiply(numOfShares, buyPrice);
+    Portfolio portfolio = account.getPortfolio();
 
-    account.getPortfolio().add(buyOrder);
-    account.addCash(-totalValue);
-    account.getTradeLogger().logBuy(order.getOrderDate(), buyPrice, numOfShares);
-  }
+    order.fulfill(currentPrice);
+    double sellPrice = order.getFulfilledPrice();
+    double avgBoughtPrice = portfolio.getAvgPrice();
+    long totalShares = portfolio.getTotalShares();
+    double totalValue = NumUtil.multiply(sellPrice, totalShares);
+    double priceDiff = sellPrice - avgBoughtPrice;
+    double profit = NumUtil.multiply(priceDiff, totalShares);
 
-  private void checkConditions(Account account, Order order, Price currentPrice) {
-    Preconditions.checkNotNull(account);
-    Preconditions.checkNotNull(account.getPortfolio());
-    Preconditions.checkNotNull(account.getTradeLogger());
-    Preconditions.checkNotNull(order);
-    Preconditions.checkNotNull(currentPrice);
-    Preconditions.checkArgument(order instanceof BuyOrder);
+    account.addCash(totalValue);
+    portfolio.clear();
+
+    SellTransaction sellTransaction = Transaction.sell().price(sellPrice).shares(totalShares).profit(profit).build();
+
+    account.onSellSuccess(sellTransaction);
   }
 }

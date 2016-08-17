@@ -3,8 +3,11 @@ package com.bn.ninjatrader.testplay.simulation;
 import com.bn.ninjatrader.common.data.Ichimoku;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.testplay.condition.Condition;
-import com.bn.ninjatrader.testplay.parameter.Parameters;
+import com.bn.ninjatrader.testplay.parameter.BarParameters;
 import com.bn.ninjatrader.testplay.parameter.TestPlayParameters;
+import com.bn.ninjatrader.testplay.simulation.account.Account;
+import com.bn.ninjatrader.testplay.simulation.order.Order;
+import com.bn.ninjatrader.testplay.simulation.broker.Broker;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,17 +25,18 @@ public class Simulation {
   private List<Price> priceList;
   private List<Ichimoku> ichimokuList;
   private final TestPlayParameters testPlayParameters;
-  private final VirtualAccount account;
+  private final Broker broker;
+  private final Account account;
   private final Condition buyCondition;
   private final Condition sellCondition;
 
   public Simulation(TestPlayParameters testPlayParameters, List<Price> priceList) {
     this.testPlayParameters = testPlayParameters;
     this.priceList = priceList;
-    this.account = VirtualAccount.startWithEquity(testPlayParameters.getStartingEquity());
+    this.account = Account.startWithCash(testPlayParameters.getStartingEquity());
     this.buyCondition = testPlayParameters.getBuyCondition();
     this.sellCondition = testPlayParameters.getSellCondition();
-
+    this.broker = new Broker(account);
     checkValidConstructorParams();
   }
 
@@ -47,8 +51,7 @@ public class Simulation {
   }
 
   public void play() {
-    Parameters parameters = new Parameters();
-
+    BarParameters barParameters = new BarParameters();
     Iterator<Price> priceIter = priceList.iterator();
     Iterator<Ichimoku> ichimokuIter = ichimokuList.iterator();
 
@@ -57,53 +60,42 @@ public class Simulation {
       Price price = priceIter.next();
       Ichimoku ichimoku = ichimokuIter.next();
 
-      parameters.clearValues().put(price).put(ichimoku);
-      processBar(parameters);
+      barParameters.clearValues().put(price).put(ichimoku);
+      processBar(barParameters);
       lastPrice = price;
     }
 
-    account.sell(lastPrice);
+    broker.submitOrder(Order.sell().date(lastPrice.getDate()).build());
     account.printStats();
   }
 
-  private void processBar(Parameters parameters) {
-    if (account.hasBought()) {
-      processSell(parameters);
+  private void processBar(BarParameters barParameters) {
+    if (account.getPortfolio().isEmpty()) {
+      processBuy(barParameters);
     } else {
-      processBuy(parameters);
+      processSell(barParameters);
+    }
+    broker.processPendingOrders(barParameters.getPrice());
+  }
+
+  private void processBuy(BarParameters barParameters) {
+    if (buyCondition.isMatch(barParameters)) {
+      Price price = barParameters.getPrice();
+      Order order = Order.buy().cashAmount(account.getCash())
+          .date(price.getDate())
+          .build();
+      broker.submitOrder(order);
     }
   }
 
-  private void processBuy(Parameters parameters) {
-    if (buyCondition.isMatch(parameters)) {
-      account.buy(parameters.getPrice());
+  private void processSell(BarParameters barParameters) {
+    if (sellCondition.isMatch(barParameters)) {
+      Price price = barParameters.getPrice();
+      Order order = Order.sell()
+          .date(price.getDate())
+          .build();
+      broker.submitOrder(order);
     }
-  }
-
-  private void processSell(Parameters parameters) {
-    if (sellCondition.isMatch(parameters)) {
-      account.sell(parameters.getPrice());
-    }
-  }
-
-  public double getStartingEquity() {
-    return testPlayParameters.getStartingEquity();
-  }
-
-  public Condition getBuyCondition() {
-    return testPlayParameters.getBuyCondition();
-  }
-
-  public Condition getSellCondition() {
-    return testPlayParameters.getSellCondition();
-  }
-
-  public List<Price> getPriceList() {
-    return priceList;
-  }
-
-  public List<Ichimoku> getIchimokuList() {
-    return ichimokuList;
   }
 
   public void setIchimokuList(List<Ichimoku> ichimokuList) {

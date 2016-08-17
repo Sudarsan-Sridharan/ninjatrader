@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.server.page;
 
 import com.bn.ninjatrader.data.history.FileDataImporter;
-import com.bn.ninjatrader.server.service.ProcessService;
+import com.bn.ninjatrader.service.calc.CalcProcessService;
 import com.google.inject.Inject;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -27,12 +27,11 @@ public class ChartPage extends HttpServlet {
   private FileDataImporter dataImporter;
 
   @Inject
-  private ProcessService processService;
+  private CalcProcessService processService;
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     VelocityContext context = new VelocityContext();
-
     context.put("contextPath", req.getContextPath());
 
     Velocity.mergeTemplate("velocity/pages/chart.vm", "UTF-8", context, resp.getWriter());

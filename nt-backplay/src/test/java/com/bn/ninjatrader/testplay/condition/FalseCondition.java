@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.testplay.condition;
 
-import com.bn.ninjatrader.testplay.parameter.Parameters;
+import com.bn.ninjatrader.testplay.parameter.BarParameters;
 
 /**
  * Created by Brad on 8/5/16.
@@ -8,7 +8,7 @@ import com.bn.ninjatrader.testplay.parameter.Parameters;
 public class FalseCondition implements Condition {
   
   @Override
-  public boolean isMatch(Parameters parameters) {
-    return true;
+  public boolean isMatch(BarParameters barParameters) {
+    return false;
   }
 }

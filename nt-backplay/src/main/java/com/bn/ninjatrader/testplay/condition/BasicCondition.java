@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.testplay.condition;
 
 import com.bn.ninjatrader.testplay.operation.Operation;
-import com.bn.ninjatrader.testplay.parameter.Parameters;
+import com.bn.ninjatrader.testplay.parameter.BarParameters;
 import com.bn.ninjatrader.testplay.type.InequalityOperator;
 
 /**
@@ -13,16 +13,16 @@ public class BasicCondition implements Condition {
   private final Operation rhsOperation;
   private final InequalityOperator operator;
 
-  public BasicCondition(Operation lhsOperation, Operation rhsOperation, InequalityOperator operator) {
+  public BasicCondition(Operation lhsOperation, InequalityOperator operator, Operation rhsOperation) {
     this.lhsOperation = lhsOperation;
     this.rhsOperation = rhsOperation;
     this.operator = operator;
   }
 
   @Override
-  public boolean isMatch(Parameters parameters) {
-    double lhsValue = lhsOperation.getValue(parameters);
-    double rhsValue = rhsOperation.getValue(parameters);
+  public boolean isMatch(BarParameters barParameters) {
+    double lhsValue = lhsOperation.getValue(barParameters);
+    double rhsValue = rhsOperation.getValue(barParameters);
     return operator.isMatch(lhsValue, rhsValue);
   }
 }

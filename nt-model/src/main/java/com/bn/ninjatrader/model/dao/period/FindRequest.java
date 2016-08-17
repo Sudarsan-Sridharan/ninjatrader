@@ -1,8 +1,5 @@
 package com.bn.ninjatrader.model.dao.period;
 
-import com.google.common.base.Preconditions;
-import org.apache.commons.lang3.StringUtils;
-
 import java.time.LocalDate;
 
 /**
@@ -13,10 +10,13 @@ public class FindRequest {
   private int period;
   private LocalDate fromDate;
   private LocalDate toDate;
-  private AbstractPeriodDao dao;
 
-  public FindRequest(AbstractPeriodDao dao) {
-    this.dao = dao;
+  public static FindRequest forSymbol(String symbol) {
+    return new FindRequest(symbol);
+  }
+
+  private FindRequest(String symbol) {
+    this.symbol = symbol;
   }
 
   public FindRequest symbol(String symbol) {
@@ -39,11 +39,19 @@ public class FindRequest {
     return this;
   }
 
-  public void execute() {
-    Preconditions.checkArgument(StringUtils.isNotEmpty(symbol));
-    Preconditions.checkArgument(period > 0);
-    Preconditions.checkArgument(fromDate != null);
-    Preconditions.checkArgument(toDate != null);
-    dao.findByDateRange(symbol, period, fromDate, toDate);
+  public String getSymbol() {
+    return symbol;
+  }
+
+  public int getPeriod() {
+    return period;
+  }
+
+  public LocalDate getFromDate() {
+    return fromDate;
+  }
+
+  public LocalDate getToDate() {
+    return toDate;
   }
 }

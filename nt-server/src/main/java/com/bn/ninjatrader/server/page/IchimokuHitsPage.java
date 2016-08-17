@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.server.page;
 
-import com.bn.ninjatrader.server.service.IchimokuService;
-import com.bn.ninjatrader.server.service.ProcessService;
+import com.bn.ninjatrader.service.calc.CalcProcessService;
+import com.bn.ninjatrader.service.indicator.IchimokuService;
 import com.google.inject.Inject;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -26,7 +26,7 @@ public class IchimokuHitsPage extends HttpServlet {
   private IchimokuService ichimokuService;
 
   @Inject
-  private ProcessService processService;
+  private CalcProcessService processService;
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

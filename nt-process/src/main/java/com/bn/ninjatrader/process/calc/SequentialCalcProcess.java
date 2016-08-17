@@ -1,10 +1,10 @@
 package com.bn.ninjatrader.process.calc;
 
+import com.bn.ninjatrader.process.request.CalcRequest;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -24,9 +24,17 @@ public class SequentialCalcProcess implements CalcProcess {
     processList = Lists.asList(calcProcess1, calcProcesses);
   }
 
-  public void process(String symbol, LocalDate fromDate, LocalDate toDate) {
+  @Override
+  public void processPrices(CalcRequest calcRequest) {
     for (CalcProcess process : processList) {
-      process.process(symbol, fromDate, toDate);
+      process.processPrices(calcRequest);
+    }
+  }
+
+  @Override
+  public void processMissingBars(CalcRequest calcRequest) {
+    for (CalcProcess process : processList) {
+      process.processMissingBars(calcRequest);
     }
   }
 }

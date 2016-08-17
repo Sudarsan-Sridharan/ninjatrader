@@ -10,6 +10,7 @@ import com.bn.ninjatrader.common.util.DateObjUtil;
 import com.bn.ninjatrader.model.dao.MeanDao;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.StockDao;
+import com.bn.ninjatrader.model.dao.period.FindRequest;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
@@ -45,10 +46,12 @@ public class IchimokuService {
 
   public List<Ichimoku> getIchimoku(String symbol, LocalDate fromDate, LocalDate toDate) {
     int numOfPastMonths = getNumOfPastMonths();
+    LocalDate findMeanFromDate = fromDate.minusMonths(numOfPastMonths);
+
     List<Price> prices = priceDao.findByDateRange(symbol, fromDate.minusMonths(numOfPastMonths), toDate);
-    List<Value> tenkanList = meanDao.findByDateRange(symbol, 9, fromDate.minusMonths(numOfPastMonths), toDate);
-    List<Value> kijunList = meanDao.findByDateRange(symbol, 26, fromDate.minusMonths(numOfPastMonths), toDate);
-    List<Value> senKouBList = meanDao.findByDateRange(symbol, 52, fromDate.minusMonths(numOfPastMonths), toDate);
+    List<Value> tenkanList = meanDao.find(FindRequest.forSymbol(symbol).period(9).from(findMeanFromDate).to(toDate));
+    List<Value> kijunList = meanDao.find(FindRequest.forSymbol(symbol).period(26).from(findMeanFromDate).to(toDate));
+    List<Value> senKouBList = meanDao.find(FindRequest.forSymbol(symbol).period(52).from(findMeanFromDate).to(toDate));
 
     List<Ichimoku> ichimokuList = ichimokuCalculator.calc(
         IchimokuParameters.builder()
@@ -73,9 +76,10 @@ public class IchimokuService {
 
     for (Stock stock : stockDao.find()) {
 
-      List<Value> tenkanList = meanDao.findByDateRange(stock.getSymbol(), 9, fromDate, toDate);
-      List<Value> kijunList = meanDao.findByDateRange(stock.getSymbol(), 26, fromDate, toDate);
-      List<Price> priceList = priceDao.findByDateRange(stock.getSymbol(), fromDate, toDate);
+      String symbol = stock.getSymbol();
+      List<Value> tenkanList = meanDao.find(FindRequest.forSymbol(symbol).period(9).from(fromDate).to(toDate));
+      List<Value> kijunList = meanDao.find(FindRequest.forSymbol(symbol).period(26).from(fromDate).to(toDate));
+      List<Price> priceList = priceDao.findByDateRange(symbol, fromDate, toDate);
 
       // Skip does w/ not enough data
       if (tenkanList.isEmpty() || priceList.isEmpty() || kijunList.isEmpty()) {

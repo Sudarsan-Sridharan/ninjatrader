@@ -2,7 +2,8 @@ package com.bn.ninjatrader.model.dao;
 
 import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.common.data.Value;
-import com.bn.ninjatrader.model.data.MeanData;
+import com.bn.ninjatrader.model.dao.period.FindRequest;
+import com.bn.ninjatrader.model.dao.period.SaveRequest;
 import org.jongo.MongoCollection;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -11,14 +12,22 @@ import org.testng.annotations.Test;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Created by Brad on 5/4/16.
  */
 public class MeanDaoTest extends AbstractDaoTest {
+
+  private LocalDate date1 = LocalDate.of(2016, 1, 1);
+  private LocalDate date2 = LocalDate.of(2016, 1, 2);
+  private LocalDate date3 = LocalDate.of(2016, 1, 3);
+
+  private Value value1 = new Value(date1, 1d);
+  private Value value2 = new Value(date2, 2d);
+  private Value value3 = new Value(date3, 3d);
 
   private MeanDao meanDao;
 
@@ -35,177 +44,84 @@ public class MeanDaoTest extends AbstractDaoTest {
   }
 
   @Test
-  public void testSaveAndFind() {
-    MeanData data = new MeanData("MEG", 2016, 1);
-    Value value = new Value(LocalDate.now(), 1d);
-    data.getData().add(value);
-
-    meanDao.save(data);
-
-    Optional<MeanData> foundData = meanDao.findByPeriod("MEG", 2016, 1);
-    assertTrue(foundData.isPresent());
-
-    MeanData result = foundData.get();
-    assertEquals(result.getSymbol(), "MEG");
-    assertEquals(result.getYear(), 2016);
-    assertEquals(result.getPeriod(), 1);
-    assertEquals(result.getData().size(), 1);
-
-    Value valueResult = result.getData().get(0);
-    assertEquals(valueResult.getDate(), value.getDate());
-    assertEquals(valueResult.getValue(), value.getValue());
-
-    // Wrong Period
-    foundData = meanDao.findByPeriod("MEG", 2016, 2);
-    assertFalse(foundData.isPresent());
-
-    // Wrong Year
-    foundData = meanDao.findByPeriod("MEG", 2015, 1);
-    assertFalse(foundData.isPresent());
-
-    // Wrong Symbol
-    foundData = meanDao.findByPeriod("BDO", 2016, 1);
-    assertFalse(foundData.isPresent());
-  }
-
-  @Test
-  public void testSaveMeanData() {
-    LocalDate date1 = LocalDate.of(2016, 1, 1);
-    LocalDate date2 = LocalDate.of(2016, 1, 2);
-    LocalDate date3 = LocalDate.of(2016, 1, 3);
-
-    MeanData data = new MeanData("X", 2016, 1);
-    Value value1 = new Value(date1, 1d);
-    Value value2 = new Value(date2, 2d);
-    data.getData().add(value1);
-    data.getData().add(value2);
-
-    meanDao.save(data);
-
-    Value value3 = new Value(date2, 3d);
-    Value value4 = new Value(date3, 4d);
-    meanDao.save("X", 1, Lists.newArrayList(value3, value4));
-
-    Optional<MeanData> foundData = meanDao.findByPeriod("X", 2016, 1);
-
-    MeanData result = foundData.get();
-    assertEquals(result.getData().size(), 3);
-
-    Value valueResult = result.getData().get(0);
-    assertEquals(valueResult.getDate(), date1);
-    assertEquals(valueResult.getValue(), value1.getValue());
-
-    valueResult = result.getData().get(1);
-    assertEquals(valueResult.getDate(), date2);
-    assertEquals(valueResult.getValue(), value3.getValue());
-
-    valueResult = result.getData().get(2);
-    assertEquals(valueResult.getDate(), date3);
-    assertEquals(valueResult.getValue(), value4.getValue());
-  }
-
-  @Test
   public void testSaveSorting() {
-    LocalDate date1 = LocalDate.of(2016, 1, 1);
-    LocalDate date2 = LocalDate.of(2016, 1, 2);
-    LocalDate date3 = LocalDate.of(2016, 1, 3);
+    meanDao.save(SaveRequest.forSymbol("X").period(1).values(value3, value1, value2));
 
-    MeanData data = new MeanData("X", 2016, 1);
-    Value value1 = new Value(date1, 1d);
-    Value value2 = new Value(date2, 2d);
-    Value value3 = new Value(date3, 3d);
+    List<Value> result = meanDao.find(FindRequest.forSymbol("X").period(1).from(date1).to(date3));
 
-    data.getData().add(value3);
-    data.getData().add(value1);
-    data.getData().add(value2);
-
-    // Save data
-    meanDao.save(data);
-
-    // Retrieve data
-    Optional<MeanData> foundData = meanDao.findByPeriod("X", 2016, 1);
-
-    // Verify size
-    MeanData result = foundData.get();
-    assertEquals(result.getData().size(), 3);
-
-    // Verify order of data
-    Value valueResult = result.getData().get(0);
-    assertEquals(valueResult.getDate(), date1);
-
-    valueResult = result.getData().get(1);
-    assertEquals(valueResult.getDate(), date2);
-
-    valueResult = result.getData().get(2);
-    assertEquals(valueResult.getDate(), date3);
+    assertEqualValues(result, value1, value2, value3);
   }
 
   @Test
-  public void testSaveValueWithMixedYear() {
-    LocalDate date1 = LocalDate.of(2015, 1, 1);
-    LocalDate date2 = LocalDate.of(2016, 1, 1);
-    LocalDate date3 = LocalDate.of(2016, 1, 2);
+  public void testSaveForMultipleSymbols() {
+    meanDao.save(SaveRequest.forSymbol("MEG").period(1).values(value1, value2));
+    meanDao.save(SaveRequest.forSymbol("BDO").period(1).values(value2, value3));
 
-    Value value1 = new Value(date1, 1d);
-    Value value2 = new Value(date2, 2d);
-    Value value3 = new Value(date3, 3d);
+    List<Value> result = meanDao.find(FindRequest.forSymbol("MEG").period(1).from(date1).to(date3));
+    assertEqualValues(result, value1, value2);
 
-    List<Value> values = Lists.newArrayList();
-
-    meanDao.save("MEG", 1, Lists.newArrayList(value3, value1, value2));
-
-    // 2015
-    Optional<MeanData> foundData = meanDao.findByPeriod("MEG", 2015, 1);
-    assertTrue(foundData.isPresent());
-
-    // Verify 2015 data
-    MeanData meanData = foundData.get();
-    assertEquals(meanData.getData().size(), 1);
-    assertEquals(meanData.getData().get(0).getDate(), date1);
-    assertEquals(meanData.getData().get(0).getValue(), value1.getValue());
-
-    // 2016
-    foundData = meanDao.findByPeriod("MEG", 2016, 1);
-    assertTrue(foundData.isPresent());
-
-    // Verify 2016 data
-    meanData = foundData.get();
-    assertEquals(meanData.getData().size(), 2);
-    assertEquals(meanData.getData().get(0).getDate(), date2);
-    assertEquals(meanData.getData().get(0).getValue(), value2.getValue());
-
-    assertEquals(meanData.getData().get(1).getDate(), date3);
-    assertEquals(meanData.getData().get(1).getValue(), value3.getValue());
+    result = meanDao.find(FindRequest.forSymbol("BDO").period(1).from(date1).to(date3));
+    assertEqualValues(result, value2, value3);
   }
 
   @Test
-  public void testUpsertSorting() {
-    LocalDate date1 = LocalDate.of(2016, 1, 1);
-    LocalDate date2 = LocalDate.of(2016, 1, 2);
-    LocalDate date3 = LocalDate.of(2016, 1, 3);
+  public void testSaveForMultiplePeriods() {
+    meanDao.save(SaveRequest.forSymbol("MEG").period(1).values(value1, value2));
+    meanDao.save(SaveRequest.forSymbol("MEG").period(2).values(value2, value3));
 
-    Value value1 = new Value(date1, 1d);
-    Value value2 = new Value(date2, 2d);
-    Value value3 = new Value(date3, 3d);
+    List<Value> result = meanDao.find(FindRequest.forSymbol("MEG").period(1).from(date1).to(date2));
+    assertEqualValues(result, value1, value2);
 
-    // Save data
-    meanDao.save("X", 1, Lists.newArrayList(value3, value1, value2));
+    result = meanDao.find(FindRequest.forSymbol("MEG").period(2).from(date1).to(date3));
+    assertEqualValues(result, value2, value3);
+  }
 
-    // Retrieve data
-    Optional<MeanData> foundData = meanDao.findByPeriod("X", 2016, 1);
+  @Test
+  public void testSaveForMultipleYears() {
+    LocalDate diffYearDate = LocalDate.of(2015, 1, 1);
+    Value diffYearValue = new Value(diffYearDate, 0.5d);
 
-    // Verify size
-    MeanData result = foundData.get();
-    assertEquals(result.getData().size(), 3);
+    meanDao.save(SaveRequest.forSymbol("MEG").period(1).values(value3, value1, value2, diffYearValue));
 
-    // Verify order of data
-    Value valueResult = result.getData().get(0);
-    assertEquals(valueResult.getDate(), date1);
+    List<Value> result = meanDao.find(FindRequest.forSymbol("MEG").period(1).from(diffYearDate).to(date3));
+    assertEqualValues(result, diffYearValue, value1, value2, value3);
+  }
 
-    valueResult = result.getData().get(1);
-    assertEquals(valueResult.getDate(), date2);
+  @Test
+  public void testSaveOverwrite() {
+    meanDao.save(SaveRequest.forSymbol("MEG").period(1).values(value3, value1, value2));
 
-    valueResult = result.getData().get(2);
-    assertEquals(valueResult.getDate(), date3);
+    Value overwriteValue = new Value(date1, 10d);
+    meanDao.save(SaveRequest.forSymbol("MEG").period(1).values(overwriteValue));
+
+    List<Value> result = meanDao.find(FindRequest.forSymbol("MEG").period(1).from(date1).to(date3));
+    assertEqualValues(result, overwriteValue, value2, value3);
+  }
+
+  @Test
+  public void testFindByDateRange() {
+    meanDao.save(SaveRequest.forSymbol("MEG").period(26).values(value1, value2, value3));
+
+    List<Value> results = meanDao.find(FindRequest.forSymbol("MEG").period(26).from(date1).to(date3));
+    assertEqualValues(results, value1, value2, value3);
+
+    results = meanDao.find(FindRequest.forSymbol("MEG").period(26).from(date2).to(date3));
+    assertEqualValues(results, value2, value3);
+
+    // Same from and to date
+    results = meanDao.find(FindRequest.forSymbol("MEG").period(26).from(date2).to(date2));
+    assertEqualValues(results, value2);
+
+    // Wrong symbol
+    results = meanDao.find(FindRequest.forSymbol("WRONG_SYMBOL").period(26).from(date1).to(date3));
+    assertTrue(results.isEmpty());
+
+    // Wrong period
+    results = meanDao.find(FindRequest.forSymbol("MEG").period(20).from(date1).to(date3));
+    assertTrue(results.isEmpty());
+  }
+
+  private void assertEqualValues(List<Value> actual, Value ... expected) {
+    assertEquals(actual, Lists.newArrayList(expected));
   }
 }

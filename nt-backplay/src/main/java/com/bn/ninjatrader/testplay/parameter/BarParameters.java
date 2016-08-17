@@ -8,6 +8,8 @@ import com.google.common.collect.Maps;
 import java.util.Map;
 
 /**
+ * Parameters for one bar (e.g. daily, weekly, monthly)
+ *
  * Created by Brad on 8/2/16.
  */
 public class BarParameters {

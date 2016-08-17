@@ -18,7 +18,7 @@ public class NtLocalDateDeserializer extends JsonDeserializer<LocalDate> {
     if (string.length() == 0) {
       return null;
     }
-    return LocalDate.parse(string, NtConst.DB_DATE_FORMAT);
+    return LocalDate.parse(string, DateFormats.DB_DATE_FORMAT);
   }
 
 }

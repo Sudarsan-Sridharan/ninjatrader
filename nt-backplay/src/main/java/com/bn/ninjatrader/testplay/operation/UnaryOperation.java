@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.testplay.operation;
 
-import com.bn.ninjatrader.testplay.parameter.Parameters;
+import com.bn.ninjatrader.testplay.parameter.BarParameters;
 import com.bn.ninjatrader.testplay.type.DataType;
 
 /**
@@ -11,7 +11,7 @@ public class UnaryOperation implements Operation {
   private DataType dataType;
   private double constant;
 
-  public static UnaryOperation constant(double constantValue) {
+  public static UnaryOperation of(double constantValue) {
     return new UnaryOperation(constantValue);
   }
 
@@ -29,10 +29,10 @@ public class UnaryOperation implements Operation {
   }
 
   @Override
-  public double getValue(Parameters parameters) {
+  public double getValue(BarParameters barParameters) {
     if (dataType == DataType.CONSTANT){
       return constant;
     }
-    return parameters.get(dataType);
+    return barParameters.get(dataType);
   }
 }

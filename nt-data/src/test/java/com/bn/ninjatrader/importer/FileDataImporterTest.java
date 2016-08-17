@@ -1,9 +1,10 @@
 package com.bn.ninjatrader.importer;
 
 import com.beust.jcommander.internal.Lists;
-import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.data.history.FileDataImporter;
 import com.bn.ninjatrader.common.data.DailyQuote;
+import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.data.history.FileDataImporter;
 import com.bn.ninjatrader.data.history.parser.CsvDataParser;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import mockit.Injectable;
@@ -89,29 +90,20 @@ public class FileDataImporterTest {
   private int verifySavePriceParameters(String symbol, List<Price> data) {
     if ("MEG".equals(symbol)) {
       assertEquals(data.size(), 3);
-      assertPriceEqualsQuote(data.get(0), quote1);
-      assertPriceEqualsQuote(data.get(1), quote2);
-      assertPriceEqualsQuote(data.get(2), quote5);
+      TestUtil.assertPriceEqualsQuote(data.get(0), quote1);
+      TestUtil.assertPriceEqualsQuote(data.get(1), quote2);
+      TestUtil.assertPriceEqualsQuote(data.get(2), quote5);
       return 1;
 
     } else if ("BDO".equals(symbol)) {
       assertEquals(data.size(), 2);
-      assertPriceEqualsQuote(data.get(0), quote3);
-      assertPriceEqualsQuote(data.get(1), quote4);
+      TestUtil.assertPriceEqualsQuote(data.get(0), quote3);
+      TestUtil.assertPriceEqualsQuote(data.get(1), quote4);
       return 10;
 
     } else {
       fail("Unknown Symbol");
       return 2;
     }
-  }
-
-  private void assertPriceEqualsQuote(Price price, DailyQuote quote) {
-    assertEquals(price.getDate(), quote.getDate());
-    assertEquals(price.getOpen(), quote.getOpen());
-    assertEquals(price.getHigh(), quote.getHigh());
-    assertEquals(price.getLow(), quote.getLow());
-    assertEquals(price.getClose(), quote.getClose());
-    assertEquals(price.getVolume(), quote.getVolume());
   }
 }

@@ -1,5 +1,8 @@
 package com.bn.ninjatrader.testplay.simulation.order;
 
+import com.bn.ninjatrader.testplay.simulation.transaction.TransactionType;
+import com.bn.ninjatrader.testplay.simulation.type.MarketTime;
+
 import java.time.LocalDate;
 
 /**
@@ -7,30 +10,37 @@ import java.time.LocalDate;
  */
 public class BuyOrder extends Order {
 
-  private double buyAmount;
+  private double cashAmount;
 
   private BuyOrder(LocalDate orderDate,
                    MarketTime marketTime,
                    int daysFromNow,
                    long numOfShares,
-                   double buyAmount) {
-    super(orderDate, OrderType.BUY, marketTime, daysFromNow, numOfShares);
-    this.buyAmount = buyAmount;
+                   double cashAmount) {
+    super(orderDate, TransactionType.BUY, marketTime, daysFromNow, numOfShares);
+    this.cashAmount = cashAmount;
   }
 
-  public double getBuyAmount() {
-    return buyAmount;
+  public double getCashAmount() {
+    return cashAmount;
   }
 
-  public static class BuyOrderBuilder extends OrderBuilder {
+  public static class BuyOrderBuilder extends OrderBuilder<BuyOrderBuilder> {
     private double cashAmount;
 
     public BuyOrderBuilder cashAmount(double cashAmount) {
       this.cashAmount = cashAmount;
       return this;
     }
+
+    @Override
+    BuyOrderBuilder getThis() {
+      return this;
+    }
+
+    @Override
     public BuyOrder build() {
-      BuyOrder order = new BuyOrder(orderDate, marketTime, daysFromNow, numOfShares, cashAmount);
+      BuyOrder order = new BuyOrder(getOrderDate(), getMarketTime(), getDaysFromNow(), getNumOfShares(), cashAmount);
       return order;
     }
   }

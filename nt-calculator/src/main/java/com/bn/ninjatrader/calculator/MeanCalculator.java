@@ -25,10 +25,11 @@ public class MeanCalculator extends AbstractCalculatorForPeriod {
 
     for (Price price : priceList) {
       meanCalculatingStack.add(price);
+
       double mean = meanCalculatingStack.getMean();
 
       if (mean > 0d) {
-        Value value = new Value(price.getDate(), meanCalculatingStack.getMean());
+        Value value = new Value(price.getDate(), mean);
         resultList.add(value);
       }
     }

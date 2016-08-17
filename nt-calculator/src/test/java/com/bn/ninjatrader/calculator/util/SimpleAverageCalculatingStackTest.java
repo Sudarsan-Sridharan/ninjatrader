@@ -18,16 +18,16 @@ public class SimpleAverageCalculatingStackTest {
 
   @Test
   public void testEmptyStack() {
-    MovingAverageCalculatingStack stack = MovingAverageCalculatingStack.withFixedSize(1);
+    SimpleAverageCalculatingStack stack = SimpleAverageCalculatingStack.withFixedSize(1);
     assertEquals(stack.getValue(), 0d);
 
-    stack = MovingAverageCalculatingStack.withFixedSize(10);
+    stack = SimpleAverageCalculatingStack.withFixedSize(10);
     assertEquals(stack.getValue(), 0d);
   }
 
   @Test
   public void testAverageOfSinglePrice() {
-    MovingAverageCalculatingStack stack = MovingAverageCalculatingStack.withFixedSize(1);
+    SimpleAverageCalculatingStack stack = SimpleAverageCalculatingStack.withFixedSize(1);
     stack.add(price1);
 
     assertEquals(stack.getValue(), 4.0);
@@ -35,12 +35,12 @@ public class SimpleAverageCalculatingStackTest {
 
   @Test
   public void testWithHighPrecision() {
-    MovingAverageCalculatingStack stack = MovingAverageCalculatingStack.withFixedSize(1);
+    SimpleAverageCalculatingStack stack = SimpleAverageCalculatingStack.withFixedSize(1);
     stack.add(highPrecisionPrice);
 
     assertEquals(stack.getValue(), 0.00004);
 
-    stack = MovingAverageCalculatingStack.withFixedSize(2);
+    stack = SimpleAverageCalculatingStack.withFixedSize(2);
     stack.add(highPrecisionPrice);
     stack.add(highPrecisionPrice);
 
@@ -49,7 +49,7 @@ public class SimpleAverageCalculatingStackTest {
 
   @Test
   public void testWithMultipleInsertInSizeOne() {
-    MovingAverageCalculatingStack stack = MovingAverageCalculatingStack.withFixedSize(1);
+    SimpleAverageCalculatingStack stack = SimpleAverageCalculatingStack.withFixedSize(1);
     stack.add(price1);
     stack.add(price2);
 
@@ -58,7 +58,7 @@ public class SimpleAverageCalculatingStackTest {
 
   @Test
   public void testWithMultiplePrices() {
-    MovingAverageCalculatingStack stack = MovingAverageCalculatingStack.withFixedSize(3);
+    SimpleAverageCalculatingStack stack = SimpleAverageCalculatingStack.withFixedSize(3);
 
     stack.add(price1);
     assertEquals(stack.getValue(), 0d);
@@ -75,7 +75,7 @@ public class SimpleAverageCalculatingStackTest {
 
   @Test
   public void testMultiplePricesPrecision() {
-    MovingAverageCalculatingStack stack = MovingAverageCalculatingStack.withFixedSize(7);
+    SimpleAverageCalculatingStack stack = SimpleAverageCalculatingStack.withFixedSize(7);
     stack.add(price1);
     stack.add(price1);
     stack.add(price1);
@@ -84,10 +84,10 @@ public class SimpleAverageCalculatingStackTest {
     stack.add(price1);
     stack.add(price2); // total is 64.
 
-    assertEquals(stack.getValue(), 9.142857142857142d);
+    assertEquals(stack.getValue(), 9.142857);
 
     stack.add(price2); // total is 100.
 
-    assertEquals(stack.getValue(), 14.285714285714286d);
+    assertEquals(stack.getValue(), 14.285714);
   }
 }

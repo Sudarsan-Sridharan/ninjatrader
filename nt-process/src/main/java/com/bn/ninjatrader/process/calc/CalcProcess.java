@@ -1,11 +1,13 @@
 package com.bn.ninjatrader.process.calc;
 
-import java.time.LocalDate;
+import com.bn.ninjatrader.process.request.CalcRequest;
 
 /**
  * Created by Brad on 6/12/16.
  */
 public interface CalcProcess {
 
-  void process(String symbol, LocalDate fromDate, LocalDate toDate);
+  void processPrices(CalcRequest calcRequest);
+
+  void processMissingBars(CalcRequest calcRequest);
 }

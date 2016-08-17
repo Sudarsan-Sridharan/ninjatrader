@@ -20,10 +20,13 @@ import static org.testng.Assert.assertTrue;
 public class MovingAverageCalculatorTest {
 
   @Tested
-  private MovingAverageCalculator calculator;
+  private SimpleAverageCalculator calculator;
+
+  private LocalDate now = LocalDate.of(2016, 2, 1);
+  private LocalDate tomorrow = LocalDate.of(2016, 2, 2);
 
   @Test
-  public void testCalcAverageOfPeriod() {
+  public void testCalcWithSimplePeriod() {
     LocalDate date = LocalDate.of(2016, 1, 1);
     List<Price> priceList = Lists.newArrayList();
 
@@ -39,62 +42,41 @@ public class MovingAverageCalculatorTest {
   }
 
   @Test
-  public void testMeanOfBigPeriod() {
-    int highest = 10;
-    int lowest = 5;
-
+  public void testCalcWithBigPeriod() {
     LocalDate date = LocalDate.of(2016, 1, 1);
     List<Price> priceList = Lists.newArrayList();
 
     // Add dummy data
-    for (int i = 0; i < 24; i++) {
-      Price price = TestUtil.randomPrice(lowest, highest);
-      price.setDate(date);
-      priceList.add(price);
+    for (int i = 0; i < 26; i++) {
       date = date.plusDays(1);
+      Price price = TestUtil.randomPrice();
+      price.setDate(date);
+      price.setClose(2d);
+      priceList.add(price);
     }
-
-    // Add lowest price
-    Price price = TestUtil.randomPrice(lowest, highest);
-    price.setDate(date);
-    price.setLow(lowest);
-    priceList.add(price);
-    date = date.plusDays(1);
-
-    // Add highest price
-    price = TestUtil.randomPrice(lowest, highest);
-    price.setDate(date);
-    price.setHigh(highest);
-    priceList.add(price);
 
     List<Value> values = calculator.calc(priceList, 26);
     assertEquals(values.size(), 1);
     assertEquals(values.get(0).getDate(), date);
-    assertEquals(values.get(0).getValue(), 7.5d);
+    assertEquals(values.get(0).getValue(), 2d);
   }
 
   @Test
-  public void testCalcOfMultiplePeriods() {
-    int highest = 10;
-    int lowest = 5;
-
+  public void testCalcWithMultiplePeriods() {
     LocalDate date1 = LocalDate.of(2016, 1, 1);
     LocalDate date2 = LocalDate.of(2016, 1, 2);
     List<Price> priceList = Lists.newArrayList();
 
     // Add price 1. Mean should be (5 + 10) / 2
-    Price price1 = TestUtil.randomPrice(lowest, highest);
+    Price price1 = TestUtil.randomPrice();
     price1.setDate(date1);
-    price1.setLow(lowest);
-    price1.setHigh(highest);
+    price1.setClose(9d);
     priceList.add(price1);
 
     // Add price 2. Mean should be (5 + 12) / 2
-    highest = 12;
-    Price price2 = TestUtil.randomPrice(lowest, highest);
+    Price price2 = TestUtil.randomPrice();
     price2.setDate(date2);
-    price2.setLow(lowest);
-    price2.setHigh(highest);
+    price2.setClose(11.5d);
     priceList.add(price2);
 
     // Calculate for multiple periods
@@ -109,38 +91,43 @@ public class MovingAverageCalculatorTest {
     List<Value> valuesForPeriod1 = valueMap.get(1);
     assertEquals(valuesForPeriod1.size(), 2);
     assertEquals(valuesForPeriod1.get(0).getDate(), date1);
-    assertEquals(valuesForPeriod1.get(0).getValue(), 7.5d);
+    assertEquals(valuesForPeriod1.get(0).getValue(), 9d);
     assertEquals(valuesForPeriod1.get(1).getDate(), date2);
-    assertEquals(valuesForPeriod1.get(1).getValue(), 8.5d);
+    assertEquals(valuesForPeriod1.get(1).getValue(), 11.5d);
 
     // Verify values for period 2
     List<Value> valuesForPeriod2 = valueMap.get(2);
     assertEquals(valuesForPeriod2.size(), 1);
     assertEquals(valuesForPeriod2.get(0).getDate(), date2);
-    assertEquals(valuesForPeriod2.get(0).getValue(), 8.5d);
+    assertEquals(valuesForPeriod2.get(0).getValue(), 10.25d);
   }
 
   @Test
-  public void testMeanPrecision() {
+  public void testCalcWithHighPrecision() {
     // Test 1
-    Price price = new Price(1.0, 10.0052, 0.00101, 2.0, 10000, LocalDate.now());
+    Price price = new Price(now, 1.0, 3, 2, 2.92847583, 10000);
     List<Value> result = calculator.calc(Lists.newArrayList(price), 1);
     assertEquals(result.size(), 1);
-    assertEquals(result.get(0).getValue(), 5.003105);
+    assertEquals(result.get(0).getValue(), 2.92847583);
 
     // Test 2
-    price = new Price(1.0, 9.5, 9.5, 1.0, 10000, LocalDate.now());
+    price = new Price(now, 1.0, 9.5, 9.5, 1.0000000001, 10000);
     result = calculator.calc(Lists.newArrayList(price), 1);
-    assertEquals(result.get(0).getValue(), 9.5);
+    assertEquals(result.get(0).getValue(), 1.0000000001);
 
     // Test 3
-    price = new Price(1.0, 9.5, 9.4, 1.0, 10000, LocalDate.now());
-    result = calculator.calc(Lists.newArrayList(price), 1);
-    assertEquals(result.get(0).getValue(), 9.45);
+    List<Price> priceList = Lists.newArrayList();
+    priceList.add(new Price(now, 1.0, 9, 9, 1.0000000001, 10000));
+    priceList.add(new Price(tomorrow, 1.0, 9, 9, 1.000000002, 10000));
+    result = calculator.calc(priceList, 2);
+    assertEquals(result.get(0).getValue(), 1.00000000105);
 
     // Test 3
-    price = new Price(1.0, 0.000051, 0.000053, 1.0, 10000, LocalDate.now());
-    result = calculator.calc(Lists.newArrayList(price), 1);
-    assertEquals(result.get(0).getValue(), 0.000052);
+    priceList.clear();
+    priceList.add(new Price(now, 1.0, 3, 2, 1.057839201, 10000));
+    priceList.add(new Price(tomorrow, 1.0, 3, 2, 1.057839202, 10000));
+    priceList.add(new Price(tomorrow.plusDays(1), 1.0, 3, 2, 1.057839203, 10000));
+    result = calculator.calc(priceList, 3);
+    assertEquals(result.get(0).getValue(), 1.057839202);
   }
 }

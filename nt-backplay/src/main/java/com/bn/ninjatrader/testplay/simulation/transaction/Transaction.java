@@ -8,15 +8,11 @@ import java.time.LocalDate;
 /**
  * Created by Brad on 8/3/16.
  */
-public class Transaction {
-
-  public enum Type {
-    BUY, SELL
-  }
+public abstract class Transaction {
 
   private final String symbol;
   private final LocalDate date;
-  private final Type type;
+  private final TransactionType transactionType;
   private final double price;
   private final long numOfShares;
 
@@ -28,10 +24,10 @@ public class Transaction {
     return SellTransaction.create();
   }
 
-  public Transaction(String symbol, LocalDate date, Type type, double price, long numOfShares) {
+  public Transaction(String symbol, LocalDate date, TransactionType transactionType, double price, long numOfShares) {
     this.symbol = symbol;
     this.date = date;
-    this.type = type;
+    this.transactionType = transactionType;
     this.price = price;
     this.numOfShares = numOfShares;
   }
@@ -52,15 +48,15 @@ public class Transaction {
     return date;
   }
 
-  public Type getType() {
-    return type;
+  public TransactionType getTransactionType() {
+    return transactionType;
   }
 
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
         .append("date", date)
-        .append("action", type)
+        .append("action", transactionType)
         .append("shares", numOfShares)
         .append("price", price)
         .build();

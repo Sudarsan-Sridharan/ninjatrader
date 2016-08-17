@@ -7,13 +7,25 @@ import com.bn.ninjatrader.testplay.type.DataType;
  */
 public class Operations {
 
-  private DataType lhsDataType;
+  private Operations() {}
 
-  public static Operations prepare(DataType lhsDataType) {
-    return new Operations(lhsDataType);
+  public static Operation of(DataType dataType) {
+    return UnaryOperation.of(dataType);
   }
 
-  public Operations(DataType lhsDataType) {
-    this.lhsDataType = lhsDataType;
+  public static Operation of(double constant) {
+    return UnaryOperation.of(constant);
+  }
+
+  public static ArithmeticOperation create(DataType dataType) {
+    return new ArithmeticOperation(dataType);
+  }
+
+  public static ArithmeticOperation create(double constant) {
+    return new ArithmeticOperation(constant);
+  }
+
+  public static ArithmeticOperation create(Operation operation) {
+    return new ArithmeticOperation(operation);
   }
 }

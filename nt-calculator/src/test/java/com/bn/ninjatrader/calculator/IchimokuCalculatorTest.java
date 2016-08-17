@@ -177,7 +177,7 @@ public class IchimokuCalculatorTest {
     LocalDate date = startingDate;
 
     for (int i = 1; i <= numOfData; i++) {
-      priceList.add(new Price(i, i, i, i, 1000, date));
+      priceList.add(new Price(date, i, i, i, i, 1000));
       tenkanList.add(new Value(date, i));
       kijunList.add(new Value(date, i * 2));
       senkouBList.add(new Value(date, i * 3));

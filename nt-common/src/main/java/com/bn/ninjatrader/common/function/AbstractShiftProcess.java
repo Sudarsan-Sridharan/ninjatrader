@@ -34,7 +34,7 @@ public abstract class AbstractShiftProcess<T> {
       return;
     }
 
-    List<T> queue = FixedList.newInstanceWithSize(period);
+    List<T> queue = FixedList.withMaxSize(period);
 
     int count = 0;
     for (T t : values) {

@@ -55,6 +55,7 @@
     <orderEntry type="library" name="Maven: org.jongo:jongo:1.3.0" level="project" />
     <orderEntry type="library" name="Maven: de.undercouch:bson4jackson:2.7.0" level="project" />
     <orderEntry type="module" module-name="nt-process" />
+    <orderEntry type="module" module-name="nt-service" />
     <orderEntry type="library" name="Maven: com.google.inject.extensions:guice-multibindings:4.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.inject.extensions:guice-servlet:4.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.sitebricks:sitebricks:0.8.11" level="project" />

@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.calculator;
 
-import com.bn.ninjatrader.calculator.util.MovingAverageCalculatingStack;
+import com.bn.ninjatrader.calculator.util.SimpleAverageCalculatingStack;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.data.Value;
 import com.google.common.collect.Lists;
@@ -14,13 +14,13 @@ import java.util.List;
  * Created by Brad on 5/28/16.
  */
 @Singleton
-public class MovingAverageCalculator extends AbstractCalculatorForPeriod {
+public class SimpleAverageCalculator extends AbstractCalculatorForPeriod {
 
-  private static final Logger log = LoggerFactory.getLogger(MovingAverageCalculator.class);
+  private static final Logger log = LoggerFactory.getLogger(SimpleAverageCalculator.class);
 
   @Override
   public List<Value> calc(List<Price> priceList, int period) {
-    MovingAverageCalculatingStack stack = MovingAverageCalculatingStack.withFixedSize(period);
+    SimpleAverageCalculatingStack stack = SimpleAverageCalculatingStack.withFixedSize(period);
     List<Value> resultList = Lists.newArrayList();
 
     for (Price price : priceList) {

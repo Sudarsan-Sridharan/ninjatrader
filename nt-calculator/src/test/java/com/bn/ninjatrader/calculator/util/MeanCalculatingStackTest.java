@@ -66,4 +66,15 @@ public class MeanCalculatingStackTest {
     stack.add(price4);
     assertEquals(stack.getMean(), 1015d);
   }
+
+  @Test
+  public void testInsertSameValues() {
+    MeanCalculatingStack stack = MeanCalculatingStack.withFixedSize(3);
+
+    stack.add(price1);
+    stack.add(price1);
+    stack.add(price1);
+
+    assertEquals(stack.getMean(), 2.5);
+  }
 }

@@ -1,7 +1,14 @@
 package com.bn.ninjatrader.testplay.condition;
 
+import com.bn.ninjatrader.testplay.parameter.BarParameters;
+
 /**
- * Created by a- on 8/5/16.
+ * Created by Brad on 8/5/16.
  */
-public class TrueCondition {
+public class TrueCondition implements Condition {
+
+  @Override
+  public boolean isMatch(BarParameters barParameters) {
+    return true;
+  }
 }

@@ -26,6 +26,10 @@ public class Value implements DateObj<Value> {
   @JsonProperty("v")
   private double value;
 
+  public static Value of(LocalDate date, double value) {
+    return new Value(date, value);
+  }
+
   public Value() {}
 
   public Value(LocalDate date, double value) {
@@ -63,6 +67,22 @@ public class Value implements DateObj<Value> {
         .append(date)
         .append(value)
         .toHashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) { return false; }
+    if (!(obj instanceof Value)) {
+      return false;
+    }
+    if (obj == this) { return true; }
+    if (obj.getClass() != getClass()) {
+      return false;
+    }
+
+    Value rhs = (Value) obj;
+    return date.equals(rhs.getDate()) &&
+        value == rhs.getValue();
   }
 
   public int compareTo(Value v2) {

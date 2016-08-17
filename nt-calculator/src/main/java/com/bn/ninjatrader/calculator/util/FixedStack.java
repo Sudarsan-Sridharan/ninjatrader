@@ -31,10 +31,10 @@ public class FixedStack<T> {
 
   public void add(T t) {
     list.add(t);
-    handleAfterAdd(t);
     if (list.size() > fixedSize) {
       removeFirstIndex();
     }
+    handleAfterAdd(t);
   }
 
   protected void handleAfterAdd(T added) {

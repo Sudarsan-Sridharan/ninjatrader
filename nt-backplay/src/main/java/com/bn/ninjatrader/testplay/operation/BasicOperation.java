@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.testplay.operation;
 
-import com.bn.ninjatrader.testplay.parameter.Parameters;
+import com.bn.ninjatrader.testplay.parameter.BarParameters;
 import com.bn.ninjatrader.testplay.type.Operator;
 
 /**
@@ -8,31 +8,18 @@ import com.bn.ninjatrader.testplay.type.Operator;
  */
 public class BasicOperation implements Operation {
 
-  private static final long DECIMAL_PRECISION = 100000000;
-
-  private Operation lhsOperand;
-  private Operation rhsOperand;
+  private Operation lhsOperation;
+  private Operation rhsOperation;
   private Operator operator;
 
-  public BasicOperation(Operation lhsOperand, Operator operator, Operation rhsOperand) {
-    this.lhsOperand = lhsOperand;
-    this.rhsOperand = rhsOperand;
+  public BasicOperation(Operation lhsOperation, Operator operator, Operation rhsOperation) {
+    this.lhsOperation = lhsOperation;
+    this.rhsOperation = rhsOperation;
     this.operator = operator;
   }
 
   @Override
-  public double getValue(Parameters parameters) {
-    switch (operator) {
-      case PLUS: return add(parameters);
-      case MINUS: return lhsOperand.getValue(parameters) - rhsOperand.getValue(parameters);
-    }
-    return 0;
-  }
-
-  private double add(Parameters parameters) {
-    long lhsValue = (long) (lhsOperand.getValue(parameters) * DECIMAL_PRECISION);
-    long rhsValue = (long) (rhsOperand.getValue(parameters) * DECIMAL_PRECISION);
-
-    return ((double) (lhsValue + rhsValue)) / DECIMAL_PRECISION;
+  public double getValue(BarParameters barParameters) {
+    return operator.exec(lhsOperation, rhsOperation, barParameters);
   }
 }

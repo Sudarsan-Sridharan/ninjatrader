@@ -12,12 +12,12 @@ public class SellTransaction extends Transaction {
 
   private final double profit;
 
-  public static SellTransactionBuilder create() {
+  static SellTransactionBuilder create() {
     return new SellTransactionBuilder();
   }
 
   private SellTransaction(String symbol, LocalDate date, double price, long numOfShares, double profit) {
-    super(symbol, date, Type.SELL, price, numOfShares);
+    super(symbol, date, TransactionType.SELL, price, numOfShares);
     this.profit = profit;
   }
 

@@ -16,13 +16,15 @@ public class NtProcessModule extends AbstractModule {
 
   @Provides
   @CalcAllProcess
-  private CalcProcess provideCalcIndicatorsProcess(
+  private CalcProcess provideDailyCalcAllProcess(
       CalcMeanProcess calcMeanProcess,
+      CalcSimpleAverageProcess calcSimpleAverageProcess,
       CalcWeeklyPriceProcess calcWeeklyPriceProcess,
       CalcWeeklyMeanProcess calcWeeklyMeanProcess) {
 
     return new SequentialCalcProcess(
         calcMeanProcess,
+        calcSimpleAverageProcess,
         calcWeeklyPriceProcess,
         calcWeeklyMeanProcess
     );

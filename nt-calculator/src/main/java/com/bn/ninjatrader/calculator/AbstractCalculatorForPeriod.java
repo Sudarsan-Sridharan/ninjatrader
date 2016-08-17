@@ -12,12 +12,13 @@ import java.util.Map;
 /**
  * Created by Brad on 5/28/16.
  */
-public abstract class AbstractCalculatorForPeriod {
+public abstract class AbstractCalculatorForPeriod implements CalculatorForPeriod {
 
   private static final Logger log = LoggerFactory.getLogger(AbstractCalculatorForPeriod.class);
 
   public abstract List<Value> calc(List<Price> priceList, int period);
 
+  @Override
   public Map<Integer, List<Value>> calc(List<Price> priceList, int ... periods) {
     Map<Integer, List<Value>> periodToValuesMap = Maps.newHashMap();
     for (int period : periods) {

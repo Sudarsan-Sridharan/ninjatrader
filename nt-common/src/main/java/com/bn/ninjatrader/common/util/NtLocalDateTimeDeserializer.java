@@ -5,20 +5,20 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * Created by Brad on 6/3/16.
  */
-public class NtLocalDateTimeDeserializer extends JsonDeserializer<LocalDate> {
+public class NtLocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
 
   @Override
-  public LocalDate deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+  public LocalDateTime deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
     String string = p.getText().trim();
     if (string.length() == 0) {
       return null;
     }
-    return LocalDate.parse(string, DateFormats.DB_DATE_FORMAT);
+    return LocalDateTime.parse(string, DateFormats.DB_DATE_TIME_FORMAT);
   }
 
 }

@@ -36,7 +36,7 @@ public class InvestagramsHistoricalPriceImporter extends AbstractDailyPriceImpor
   @Override
   public void importData() throws IOException {
     for (Map.Entry<String, List<Price>> symbolPriceList : toPriceMap(provideDailyQuotes()).entrySet()) {
-      log.info("Saved prices for {}", symbolPriceList.getKey());
+      log.debug("Saved prices for {}", symbolPriceList.getKey());
       priceDao.save(symbolPriceList.getKey(), symbolPriceList.getValue());
     }
   }
@@ -48,7 +48,7 @@ public class InvestagramsHistoricalPriceImporter extends AbstractDailyPriceImpor
       if (symbolMap.get(symbol) == null) {
         symbolMap.put(symbol, Lists.newArrayList());
       }
-      symbolMap.get(symbol).add(dailyQuote.toPrice());
+      symbolMap.get(symbol).add(dailyQuote.getPrice());
     }
     return symbolMap;
   }

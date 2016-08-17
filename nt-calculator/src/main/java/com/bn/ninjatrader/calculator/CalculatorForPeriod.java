@@ -1,7 +1,15 @@
 package com.bn.ninjatrader.calculator;
 
+import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.common.data.Value;
+
+import java.util.List;
+import java.util.Map;
+
 /**
- * Created by a- on 7/28/16.
+ * Created by Brad on 7/28/16.
  */
-public class CalculatorForPeriod {
+public interface CalculatorForPeriod {
+
+  public Map<Integer, List<Value>> calc(List<Price> priceList, int ... periods);
 }

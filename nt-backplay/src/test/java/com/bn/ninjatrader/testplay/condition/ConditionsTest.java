@@ -2,7 +2,7 @@ package com.bn.ninjatrader.testplay.condition;
 
 import com.bn.ninjatrader.common.data.Ichimoku;
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.testplay.parameter.Parameters;
+import com.bn.ninjatrader.testplay.parameter.BarParameters;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -17,7 +17,7 @@ import static org.testng.Assert.assertTrue;
  */
 public class ConditionsTest {
 
-  private Parameters parameters;
+  private BarParameters barParameters;
   private Price price;
   private Ichimoku ichimoku;
 
@@ -37,9 +37,9 @@ public class ConditionsTest {
     ichimoku.setSenkouA(1.4);
     ichimoku.setSenkouB(1.5);
 
-    parameters = new Parameters();
-    parameters.put(price);
-    parameters.put(ichimoku);
+    barParameters = new BarParameters();
+    barParameters.put(price);
+    barParameters.put(ichimoku);
   }
 
   @Test
@@ -72,10 +72,10 @@ public class ConditionsTest {
   }
 
   private void assertTrueCondition(Condition condition) {
-    assertTrue(condition.isMatch(parameters));
+    assertTrue(condition.isMatch(barParameters));
   }
 
   private void assertFalseCondition(Condition condition) {
-    assertFalse(condition.isMatch(parameters));
+    assertFalse(condition.isMatch(barParameters));
   }
 }

@@ -15,6 +15,6 @@ public class NtLocalDateSerializer extends JsonSerializer<LocalDate> {
 
   @Override
   public void serialize(LocalDate localDate, JsonGenerator generator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
-    generator.writeString(localDate.format(NtConst.DB_DATE_FORMAT));
+    generator.writeString(localDate.format(DateFormats.DB_DATE_FORMAT));
   }
 }

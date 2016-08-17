@@ -31,6 +31,13 @@
 
         <!-- Test dependencies -->
         <dependency>
+            <groupId>com.beachninja</groupId>
+            <artifactId>nt-common</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.jmockit</groupId>
             <artifactId>jmockit</artifactId>
             <scope>test</scope>

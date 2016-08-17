@@ -2,8 +2,8 @@ package com.bn.ninjatrader.server.http;
 
 import com.bn.ninjatrader.common.data.Ichimoku;
 import com.bn.ninjatrader.common.data.Stock;
-import com.bn.ninjatrader.server.service.IchimokuService;
-import com.bn.ninjatrader.server.service.IchimokuWeeklyService;
+import com.bn.ninjatrader.service.indicator.IchimokuService;
+import com.bn.ninjatrader.service.indicator.IchimokuWeeklyService;
 import com.google.inject.Inject;
 import com.google.sitebricks.At;
 import com.google.sitebricks.client.transport.Json;

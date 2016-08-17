@@ -23,7 +23,7 @@ public class InitializeListener implements ServletContextListener {
     try {
       prop.load(is);
 
-      String logFile = event.getServletContext().getRealPath("/WEB-INF") + "/velocity.log";
+      String logFile = event.getServletContext().getRealPath("/WEB-INF") + "/velocity.transaction";
       log.info("logFile=" + logFile);
       prop.setProperty("runtime.log", logFile);
 

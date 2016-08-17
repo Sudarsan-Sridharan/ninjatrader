@@ -1,13 +1,16 @@
 package com.bn.ninjatrader.model.dao.period;
 
 import com.bn.ninjatrader.common.data.Value;
-import com.bn.ninjatrader.common.util.DateObjUtil;
-import com.bn.ninjatrader.model.data.PeriodData;
+import com.bn.ninjatrader.common.util.DateFormats;
 import com.bn.ninjatrader.model.util.Queries;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import org.jongo.MongoCollection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,28 +18,106 @@ import java.util.List;
  */
 public class PeriodDataSaver {
 
+  private static final Logger log = LoggerFactory.getLogger(PeriodDataSaver.class);
+
   private MongoCollection mongoCollection;
 
-  public PeriodDataSaver(MongoCollection mongoCollection) {
+  protected PeriodDataSaver(MongoCollection mongoCollection) {
     this.mongoCollection = mongoCollection;
   }
 
-  protected List<Value> findByDateRange(String symbol, int period, LocalDate fromDate, LocalDate toDate) {
-    List<PeriodData> periodDataList = Lists.newArrayList(mongoCollection
-        .find(Queries.FIND_BY_PERIOD_YEAR_RANGE, symbol, fromDate.getYear(), toDate.getYear(), period)
-        .as(PeriodData.class).iterator());
+  public void save(SaveRequest saveRequest) {
+    assertPreconditions(saveRequest);
 
-    List<Value> values = mergeValues(periodDataList);
+    if (!saveRequest.hasValues()) {
+      return;
+    }
 
-    DateObjUtil.trimToDateRange(values, fromDate, toDate);
-    return values;
+    List<ValuesPerYear> valuesPerYearList = splitToValuesPerYear(saveRequest.getValues());
+
+    saveValuesPerYear(saveRequest.getSymbol(), saveRequest.getPeriod(), valuesPerYearList);
   }
 
-  private List<Value> mergeValues(List<PeriodData> periodDataList) {
-    List<Value> values = Lists.newArrayList();
-    for (PeriodData periodData : periodDataList) {
-      values.addAll(periodData.getData());
+  private void assertPreconditions(SaveRequest saveRequest) {
+    Preconditions.checkArgument(StringUtils.isNotEmpty(saveRequest.getSymbol()));
+    Preconditions.checkArgument(saveRequest.getPeriod() > 0);
+  }
+
+  private List<ValuesPerYear> splitToValuesPerYear(List<Value> values) {
+    Collections.sort(values);
+    List<ValuesPerYear> valuesPerYearList = Lists.newArrayList();
+
+    ValuesPerYear valuesPerYear = null;
+    int currYear = 0;
+    for (Value value : values) {
+      // Collect all values of same year til year has changed
+      if (currYear != value.getDate().getYear()) {
+        currYear = value.getDate().getYear();
+        valuesPerYear = new ValuesPerYear();
+        valuesPerYear.setYear(currYear);
+        valuesPerYearList.add(valuesPerYear);
+      }
+      valuesPerYear.addValue(value);
     }
-    return values;
+    return valuesPerYearList;
+  }
+
+  private void saveValuesPerYear(String symbol, int period, List<ValuesPerYear> valuesPerYearList) {
+    for (ValuesPerYear valuesPerYear : valuesPerYearList) {
+      int year = valuesPerYear.getYear();
+      removeByDates(symbol, year, period, valuesPerYear.getDatesToRemove());
+      saveByYearAndPeriod(symbol, year, period, valuesPerYear.getValues());
+    }
+  }
+
+  /**
+   * Remove all existing Values w/ same dates
+   */
+  private void removeByDates(String symbol, int year, int period, List<String> dates) {
+    if (!dates.isEmpty()) {
+      mongoCollection.update(Queries.FIND_BY_PERIOD, symbol, year, period)
+          .with("{$pull: {data :{d: {$in: #}}}}", dates);
+    }
+  }
+
+  private void saveByYearAndPeriod(String symbol, int year, int period, List<Value> values) {
+    if (!values.isEmpty()) {
+      // Insert new values
+      mongoCollection.update(Queries.FIND_BY_PERIOD, symbol, year, period)
+          .upsert()
+          .with("{$push: { data: { $each: #, $sort: { d: 1}}}}", values);
+    }
+  }
+
+  private static class ValuesPerYear {
+    private int year;
+    private List<Value> values;
+    private List<String> datesToRemove;
+
+    public ValuesPerYear() {
+      this.values = Lists.newArrayList();
+      this.datesToRemove = Lists.newArrayList();
+    }
+
+    public int getYear() {
+      return year;
+    }
+
+    public void setYear(int year) {
+      this.year = year;
+    }
+
+    public List<Value> getValues() {
+      return values;
+    }
+
+    public void addValue(Value value) {
+      values.add(value);
+      datesToRemove.add(value.getDate().format(DateFormats.DB_DATE_FORMAT));
+    }
+
+    public List<String> getDatesToRemove() {
+      return datesToRemove;
+    }
   }
 }

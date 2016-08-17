@@ -39,9 +39,9 @@ public class PriceHttpServiceTest {
   @Test
   public void testGetStockPrice() {
     // Prepare data
-    Price price1 = new Price(1.1, 1.2, 1.0, 1.1, 10000, LocalDate.now());
-    Price price2 = new Price(2.1, 2.2, 2.0, 2.1, 20000, LocalDate.now().plusDays(1));
-    Price priceSummary = new Price(3.1, 3.2, 3.0, 3.1, 30000, LocalDate.now());
+    Price price1 = new Price(LocalDate.now(), 1.1, 1.2, 1.0, 1.1, 10000);
+    Price price2 = new Price(LocalDate.now().plusDays(1), 2.1, 2.2, 2.0, 2.1, 20000);
+    Price priceSummary = new Price(LocalDate.now(), 3.1, 3.2, 3.0, 3.1, 30000);
     List<Price> priceList = Lists.newArrayList(price1, price2);
 
     new Expectations() {{

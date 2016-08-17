@@ -17,6 +17,8 @@ import java.time.LocalDate;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Ichimoku implements DateObj<Ichimoku> {
 
+  private static final Ichimoku EMPTY_INSTANCE = new Ichimoku();
+
   @JsonProperty("t")
   private double tenkan;
 
@@ -36,6 +38,10 @@ public class Ichimoku implements DateObj<Ichimoku> {
   @JsonSerialize(using = LocalDateSerializer.class)
   @JsonDeserialize(using = LocalDateDeserializer.class)
   private LocalDate date;
+
+  public static final Ichimoku empty() {
+    return EMPTY_INSTANCE;
+  }
 
   public Ichimoku() {}
 

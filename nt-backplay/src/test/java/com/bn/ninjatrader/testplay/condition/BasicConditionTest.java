@@ -2,15 +2,11 @@ package com.bn.ninjatrader.testplay.condition;
 
 import com.bn.ninjatrader.testplay.operation.Operation;
 import com.bn.ninjatrader.testplay.operation.UnaryOperation;
-import com.bn.ninjatrader.testplay.parameter.Parameters;
-import com.bn.ninjatrader.testplay.rule.BasicCondition;
-import com.bn.ninjatrader.testplay.rule.Condition;
+import com.bn.ninjatrader.testplay.parameter.BarParameters;
 import com.bn.ninjatrader.testplay.type.InequalityOperator;
 import org.testng.annotations.Test;
 
-import static com.bn.ninjatrader.testplay.type.InequalityOperator.EQUALS;
-import static com.bn.ninjatrader.testplay.type.InequalityOperator.GREATER_THAN;
-import static com.bn.ninjatrader.testplay.type.InequalityOperator.LESS_THAN;
+import static com.bn.ninjatrader.testplay.type.InequalityOperator.*;
 import static org.testng.Assert.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -19,48 +15,48 @@ import static org.testng.AssertJUnit.assertTrue;
  */
 public class BasicConditionTest {
 
-  private Parameters parameters = new Parameters();
+  private BarParameters barParameters = new BarParameters();
 
   @Test
   public void testUnaryEquals() {
-    assertRuleMatch(0, EQUALS, -0);
-    assertRuleMatch(4.2345, EQUALS, 4.2345);
-    assertRuleMatch(4.2345, EQUALS, 4.23450);
+    assertConditionMatch(0, EQUALS, -0);
+    assertConditionMatch(4.2345, EQUALS, 4.2345);
+    assertConditionMatch(4.2345, EQUALS, 4.23450);
 
-    assertRuleNotMatch(4.2345, EQUALS, 4.23456);
+    assertConditionNotMatch(4.2345, EQUALS, 4.23456);
   }
 
   @Test
   public void testUnaryGreaterThan() {
-    assertRuleMatch(4.2345, GREATER_THAN, 4.2344);
+    assertConditionMatch(4.2345, GREATER_THAN, 4.2344);
 
-    assertRuleNotMatch(4.2345, GREATER_THAN, 4.2345);
-    assertRuleNotMatch(4.2345, GREATER_THAN, 5.0);
+    assertConditionNotMatch(4.2345, GREATER_THAN, 4.2345);
+    assertConditionNotMatch(4.2345, GREATER_THAN, 5.0);
   }
 
   @Test
   public void testUnaryLessThan() {
-    assertRuleMatch(4.2345, LESS_THAN, 4.2346);
+    assertConditionMatch(4.2345, LESS_THAN, 4.2346);
 
-    assertRuleNotMatch(4.2345, LESS_THAN, 4.2345);
-    assertRuleNotMatch(4.2345, LESS_THAN, 3.0);
+    assertConditionNotMatch(4.2345, LESS_THAN, 4.2345);
+    assertConditionNotMatch(4.2345, LESS_THAN, 3.0);
   }
 
-  private void assertRuleMatch(double lhsValue, InequalityOperator operator, double rhsValue) {
-    assertRuleMatch(UnaryOperation.of(lhsValue), operator, UnaryOperation.of(rhsValue));
+  private void assertConditionMatch(double lhsValue, InequalityOperator operator, double rhsValue) {
+    assertConditionMatch(UnaryOperation.of(lhsValue), operator, UnaryOperation.of(rhsValue));
   }
 
-  private void assertRuleMatch(Operation lhsOperation, InequalityOperator operator, Operation rhsOperation) {
-    Condition rule = new BasicCondition(lhsOperation, rhsOperation, operator);
-    assertTrue(rule.isMatch(parameters));
+  private void assertConditionMatch(Operation lhsOperation, InequalityOperator operator, Operation rhsOperation) {
+    Condition condition = new BasicCondition(lhsOperation, operator, rhsOperation);
+    assertTrue(condition.isMatch(barParameters));
   }
 
-  private void assertRuleNotMatch(double lhsValue, InequalityOperator operator, double rhsValue) {
-    assertRuleNotMatch(UnaryOperation.of(lhsValue), operator, UnaryOperation.of(rhsValue));
+  private void assertConditionNotMatch(double lhsValue, InequalityOperator operator, double rhsValue) {
+    assertConditionNotMatch(UnaryOperation.of(lhsValue), operator, UnaryOperation.of(rhsValue));
   }
 
-  private void assertRuleNotMatch(Operation lhsOperation, InequalityOperator operator, Operation rhsOperation) {
-    Condition rule = new BasicCondition(lhsOperation, rhsOperation, operator);
-    assertFalse(rule.isMatch(parameters));
+  private void assertConditionNotMatch(Operation lhsOperation, InequalityOperator operator, Operation rhsOperation) {
+    Condition condition = new BasicCondition(lhsOperation, operator, rhsOperation);
+    assertFalse(condition.isMatch(barParameters));
   }
 }

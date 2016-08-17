@@ -1,38 +1,83 @@
 package com.bn.ninjatrader.testplay.operation;
 
-import com.bn.ninjatrader.testplay.parameter.Parameters;
+import com.bn.ninjatrader.testplay.parameter.BarParameters;
+import com.bn.ninjatrader.testplay.type.DataType;
 import com.bn.ninjatrader.testplay.type.Operator;
+
+import static com.bn.ninjatrader.testplay.type.Operator.*;
 
 /**
  * Created by Brad on 8/2/16.
  */
 public class ArithmeticOperation implements Operation {
 
-  private static final long DECIMAL_PRECISION = 100000000;
+  private Operation operation;
 
-  private Operation lhsOperand;
-  private Operation rhsOperand;
-  private Operator operator;
+  public ArithmeticOperation(Operation lhsOperand) {
+    operation = operation;
+  }
 
-  public ArithmeticOperation(Operation lhsOperand, Operator operator, Operation rhsOperand) {
-    this.lhsOperand = lhsOperand;
-    this.rhsOperand = rhsOperand;
-    this.operator = operator;
+  public ArithmeticOperation(DataType dataType) {
+    operation = UnaryOperation.of(dataType);
+  }
+
+  public ArithmeticOperation(double constant) {
+    operation = UnaryOperation.of(constant);
   }
 
   @Override
-  public double getValue(Parameters parameters) {
-    switch (operator) {
-      case PLUS: return add(parameters);
-      case MINUS: return lhsOperand.getValue(parameters) - rhsOperand.getValue(parameters);
-    }
-    return 0;
+  public double getValue(BarParameters barParameters) {
+    return operation.getValue(barParameters);
   }
 
-  private double add(Parameters parameters) {
-    long lhsValue = (long) (lhsOperand.getValue(parameters) * DECIMAL_PRECISION);
-    long rhsValue = (long) (rhsOperand.getValue(parameters) * DECIMAL_PRECISION);
+  public ArithmeticOperation plus(Operation rhs) {
+    return basicOperation(PLUS, rhs);
+  }
 
-    return ((double) (lhsValue + rhsValue)) / DECIMAL_PRECISION;
+  public ArithmeticOperation plus(DataType rhs) { return basicOperation(PLUS, UnaryOperation.of(rhs)); }
+
+  public ArithmeticOperation plus(double rhs) {
+    return basicOperation(PLUS, UnaryOperation.of(rhs));
+  }
+
+  public ArithmeticOperation minus(Operation rhs) {
+    return basicOperation(MINUS, rhs);
+  }
+
+  public ArithmeticOperation minus(DataType rhs) {
+    return basicOperation(MINUS, UnaryOperation.of(rhs));
+  }
+
+  public ArithmeticOperation minus(double rhs) {
+    return basicOperation(MINUS, UnaryOperation.of(rhs));
+  }
+
+  public ArithmeticOperation mult(Operation rhs) {
+    return basicOperation(MULTIPLY, rhs);
+  }
+
+  public ArithmeticOperation mult(DataType rhs) {
+    return basicOperation(MULTIPLY, UnaryOperation.of(rhs));
+  }
+
+  public ArithmeticOperation mult(double rhs) {
+    return basicOperation(MULTIPLY, UnaryOperation.of(rhs));
+  }
+
+  public ArithmeticOperation div(Operation rhs) {
+    return basicOperation(DIVIDE, rhs);
+  }
+
+  public ArithmeticOperation div(DataType rhs) {
+    return basicOperation(DIVIDE, UnaryOperation.of(rhs));
+  }
+
+  public ArithmeticOperation div(double rhs) {
+    return basicOperation(DIVIDE, UnaryOperation.of(rhs));
+  }
+
+  private ArithmeticOperation basicOperation(Operator operator, Operation rhs) {
+    operation = new BasicOperation(operation, operator, rhs);
+    return this;
   }
 }

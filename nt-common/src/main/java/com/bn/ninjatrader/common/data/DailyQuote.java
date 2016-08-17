@@ -11,23 +11,13 @@ import java.time.LocalDate;
 public class DailyQuote {
 
   private String symbol;
-  private LocalDate date;
-  private double open;
-  private double high;
-  private double low;
-  private double close;
-  private long volume;
+  private Price price;
 
-  public DailyQuote() {}
+  public DailyQuote() { price = new Price(); }
 
   public DailyQuote(String symbol, LocalDate date, double open, double high, double low, double close, long volume) {
     this.symbol = symbol;
-    this.date = date;
-    this.open = open;
-    this.high = high;
-    this.low = low;
-    this.close = close;
-    this.volume = volume;
+    price = new Price(date, open, high, low, close, volume);
   }
 
   public String getSymbol() {
@@ -39,66 +29,66 @@ public class DailyQuote {
   }
 
   public LocalDate getDate() {
-    return date;
+    return price.getDate();
   }
 
   public void setDate(LocalDate date) {
-    this.date = date;
+    price.setDate(date);
   }
 
   public double getOpen() {
-    return open;
+    return price.getOpen();
   }
 
   public void setOpen(double open) {
-    this.open = open;
+    price.setOpen(open);
   }
 
   public double getHigh() {
-    return high;
+    return price.getHigh();
   }
 
   public void setHigh(double high) {
-    this.high = high;
+    price.setHigh(high);
   }
 
   public double getLow() {
-    return low;
+    return price.getLow();
   }
 
   public void setLow(double low) {
-    this.low = low;
+    price.setLow(low);
   }
 
   public double getClose() {
-    return close;
+    return price.getClose();
   }
 
   public void setClose(double close) {
-    this.close = close;
+    price.setClose(close);
   }
 
   public long getVolume() {
-    return volume;
+    return price.getVolume();
   }
 
   public void setVolume(long volume) {
-    this.volume = volume;
+    price.setVolume(volume);
   }
 
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
             .append("symbol", symbol)
-            .append("D", date)
-            .append("O", open)
-            .append("H", high)
-            .append("L", low)
-            .append("C", close)
+            .append("D", price.getDate())
+            .append("O", price.getOpen())
+            .append("H", price.getHigh())
+            .append("L", price.getLow())
+            .append("C", price.getClose())
             .toString();
   }
 
-  public Price toPrice() {
-    return new Price(open, high, low, close, volume, date);
+  public Price getPrice() {
+    return price;
   }
 }

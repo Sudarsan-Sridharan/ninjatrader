@@ -10,12 +10,12 @@ import java.time.LocalDate;
  */
 public class BuyTransaction extends Transaction {
 
-  public static BuyTransactionLogBuilder create() {
+  static BuyTransactionLogBuilder create() {
     return new BuyTransactionLogBuilder();
   }
 
   private BuyTransaction(String symbol, LocalDate date, double price, long numOfShares) {
-    super(symbol, date, Type.BUY, price, numOfShares);
+    super(symbol, date, TransactionType.BUY, price, numOfShares);
   }
 
   @Override
@@ -29,7 +29,6 @@ public class BuyTransaction extends Transaction {
   }
 
   public static class BuyTransactionLogBuilder extends AbstractTransactionLogBuilder<BuyTransactionLogBuilder> {
-
     @Override
     public BuyTransaction build() {
       return new BuyTransaction(getSymbol(), getDate(), getPrice(), getNumOfShares());

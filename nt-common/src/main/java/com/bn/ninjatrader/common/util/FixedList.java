@@ -8,7 +8,7 @@ import java.util.Collection;
  */
 public class FixedList<T> extends ArrayList<T> {
 
-  public static final FixedList newInstanceWithSize(int fixedSize) {
+  public static final FixedList withMaxSize(int fixedSize) {
     return new FixedList(fixedSize);
   }
 
@@ -21,19 +21,34 @@ public class FixedList<T> extends ArrayList<T> {
   @Override
   public boolean add(T t) {
     boolean result = super.add(t);
-    if (size() > maxSize) {
-      remove(get(0));
-    }
+    trimToFixedSize();
     return result;
+  }
+
+  @Override
+  public void add(int index, T element) {
+    super.add(index, element);
+    trimToFixedSize();
   }
 
   @Override
   public boolean addAll(Collection<? extends T> c) {
     boolean result = super.addAll(c);
+    trimToFixedSize();
+    return result;
+  }
+
+  @Override
+  public boolean addAll(int index, Collection<? extends T> c) {
+    boolean result = super.addAll(index, c);
+    trimToFixedSize();
+    return result;
+  }
+
+  private void trimToFixedSize() {
     if (size() > maxSize) {
       removeRange(0, size() - maxSize);
     }
-    return result;
   }
 
   public boolean isFull() {

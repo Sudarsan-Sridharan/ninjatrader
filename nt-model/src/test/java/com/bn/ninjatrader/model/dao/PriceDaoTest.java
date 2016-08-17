@@ -13,7 +13,6 @@ import org.testng.annotations.Test;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import static org.testng.Assert.*;
 
@@ -26,6 +25,7 @@ public class PriceDaoTest extends AbstractDaoTest {
   private PriceDao priceDao;
 
   private final LocalDate now = LocalDate.of(2016, 1, 1);
+  private final LocalDate dateWithNoData = LocalDate.of(2000, 1, 1);
 
   @BeforeClass
   public void setup() {
@@ -42,8 +42,8 @@ public class PriceDaoTest extends AbstractDaoTest {
   public void testSaveAndFind() {
     // Prepare data
     PriceData priceData = new PriceData("MEG", 2016);
-    Price price1 = new Price(1.1, 1.2, 1.0, 1.1, 10000, now);
-    Price price2 = new Price(2.1, 2.2, 2.0, 2.1, 20000, now.plusDays(1));
+    Price price1 = new Price(now, 1.1, 1.2, 1.0, 1.1, 10000);
+    Price price2 = new Price(now.plusDays(1), 2.1, 2.2, 2.0, 2.1, 20000);
 
     // Add Price data for January 1 and 2, 2016
     priceData.getData().add(price1);
@@ -77,11 +77,11 @@ public class PriceDaoTest extends AbstractDaoTest {
     LocalDate date2 = LocalDate.of(2016, 2, 2);
 
     PriceData priceData = new PriceData("MEG", 2014);
-    Price price1 = new Price(1.1, 1.2, 1.0, 1.1, 10000, date1);
+    Price price1 = new Price(date1, 1.1, 1.2, 1.0, 1.1, 10000);
     priceData.getData().add(price1);
 
     PriceData priceData2 = new PriceData("MEG", 2016);
-    Price price2 = new Price(2.1, 2.2, 2.0, 2.1, 20000, date2);
+    Price price2 = new Price(date2, 2.1, 2.2, 2.0, 2.1, 20000);
     priceData2.getData().add(price2);
 
     // Save Price data
@@ -98,21 +98,19 @@ public class PriceDaoTest extends AbstractDaoTest {
 
     result = priceDao.findByDateRange("MEG", date1.plusDays(1), date2.minusDays(1));
     assertEquals(result.size(), 0);
+
+    result = priceDao.findByDateRange("MEG", dateWithNoData, dateWithNoData.plusDays(1));
+    assertEquals(result.size(), 0);
   }
 
   @Test
   public void testFindAllSymbols() {
     // Prepare data
-    PriceData priceData = new PriceData("MEG", 2016);
-    Price price1 = new Price(1.1, 1.2, 1.0, 1.1, 10000, LocalDate.of(2014, 1, 1));
-    priceData.getData().add(price1);
+    Price price1 = new Price(LocalDate.now(), 1.1, 1.2, 1.0, 1.1, 10000);
+    Price price2 = new Price(LocalDate.now(), 2.1, 2.2, 2.0, 2.1, 20000);
 
-    PriceData priceData2 = new PriceData("BDO", 2016);
-    Price price2 = new Price(2.1, 2.2, 2.0, 2.1, 20000, LocalDate.of(2016, 1, 1));
-    priceData2.getData().add(price2);
-
-    priceDao.save(priceData);
-    priceDao.save(priceData2);
+    priceDao.save("MEG", Lists.newArrayList(price1));
+    priceDao.save("BDO", Lists.newArrayList(price2));
 
     List<String> symbols = priceDao.findAllSymbols();
     assertEquals(symbols.size(), 2);
@@ -122,76 +120,65 @@ public class PriceDaoTest extends AbstractDaoTest {
 
   @Test
   public void testSort() {
-    // Prepare data
-    Price price1 = new Price(1.1, 1.2, 1.0, 1.1, 10000, now);
-    Price price2 = new Price(2.1, 2.2, 2.0, 2.1, 20000, now.plusDays(1));
+    Price price1 = new Price(now, 1.1, 1.2, 1.0, 1.1, 10000);
+    Price price2 = new Price(now.plusDays(1), 2.1, 2.2, 2.0, 2.1, 20000);
 
-    List<Price> prices = Lists.newArrayList(price2, price1);
+    priceDao.save("MEG", Lists.newArrayList(price2, price1));
 
-    // Save Price data
-    priceDao.save("MEG", prices);
+    List<Price> foundPrices = priceDao.findByYear("MEG", 2016);
 
-    // Find data
-    Optional<PriceData> foundData = priceDao.findByYear("MEG", 2016);
-    PriceData resultData = foundData.get();
-
-    // Verify Price 1
-    TestUtil.assertPriceEquals(resultData.getData().get(0), price1);
-
-    // Verify Price 2
-    TestUtil.assertPriceEquals(resultData.getData().get(1), price2);
+    TestUtil.assertPriceEquals(foundPrices.get(0), price1);
+    TestUtil.assertPriceEquals(foundPrices.get(1), price2);
   }
 
   @Test
   public void testSaveWithOverlap() {
     // Set 1
-    Price price1 = new Price(1.1, 1.2, 1.0, 1.1, 10000, now);
-    Price price2 = new Price(2.1, 2.2, 2.0, 2.1, 20000, now.plusDays(1));
-    Price price3 = new Price(3.1, 3.2, 3.3, 3.4, 30000, now.plusDays(2));
+    Price price1 = new Price(now, 1.1, 1.2, 1.0, 1.1, 10000);
+    Price price2 = new Price(now.plusDays(1), 2.1, 2.2, 2.0, 2.1, 20000);
+    Price price3 = new Price(now.plusDays(2), 3.1, 3.2, 3.3, 3.4, 30000);
 
     // Set 2
-    Price price4 = new Price(4.1, 4.2, 4.3, 4.4, 40000, now.plusDays(2));
-    Price price5 = new Price(5.1, 5.2, 5.3, 5.4, 50000, now.plusDays(3));
+    Price price4 = new Price(now.plusDays(2), 4.1, 4.2, 4.3, 4.4, 40000);
+    Price price5 = new Price(now.plusDays(3), 5.1, 5.2, 5.3, 5.4, 50000);
 
     // Save set 1 prices
     priceDao.save("MEG", Lists.newArrayList(price3, price2, price1));
 
     // Find data
-    Optional<PriceData> foundData = priceDao.findByYear("MEG", 2016);
-    PriceData resultData = foundData.get();
-    assertEquals(resultData.getData().size(), 3);
+    List<Price> foundPrices = priceDao.findByYear("MEG", 2016);
+    assertEquals(foundPrices.size(), 3);
 
     // Verify data is sorted
-    TestUtil.assertPriceEquals(resultData.getData().get(0), price1);
-    TestUtil.assertPriceEquals(resultData.getData().get(1), price2);
-    TestUtil.assertPriceEquals(resultData.getData().get(2), price3);
+    TestUtil.assertPriceEquals(foundPrices.get(0), price1);
+    TestUtil.assertPriceEquals(foundPrices.get(1), price2);
+    TestUtil.assertPriceEquals(foundPrices.get(2), price3);
 
     // Save set 2 prices. price4 overwrites price3
     priceDao.save("MEG", Lists.newArrayList(price1, price4, price5));
 
     // Find data
-    foundData = priceDao.findByYear("MEG", 2016);
-    resultData = foundData.get();
-    assertEquals(resultData.getData().size(), 4);
-    TestUtil.assertPriceEquals(resultData.getData().get(2), price4);
+    foundPrices = priceDao.findByYear("MEG", 2016);
+    assertEquals(foundPrices.size(), 4);
+    TestUtil.assertPriceEquals(foundPrices.get(2), price4);
   }
 
   @Test
   public void testSaveMultipleYears() {
     // Year 1
     LocalDate date1 = LocalDate.of(2014, 1, 1);
-    Price price1 = new Price(1.1, 1.2, 1.0, 1.1, 10000, date1);
+    Price price1 = new Price(date1, 1.1, 1.2, 1.0, 1.1, 10000);
 
     // Year 2
     LocalDate date2 = LocalDate.of(2015, 1, 1);
-    Price price2 = new Price(2.1, 2.2, 2.0, 2.1, 20000, date2);
-    Price price3 = new Price(3.1, 3.2, 3.3, 3.4, 30000, date2.plusDays(1));
+    Price price2 = new Price(date2, 2.1, 2.2, 2.0, 2.1, 20000);
+    Price price3 = new Price(date2.plusDays(1), 3.1, 3.2, 3.3, 3.4, 30000);
 
     // Year 3
     LocalDate date3 = LocalDate.of(2016, 12, 29);
-    Price price4 = new Price(4.1, 4.2, 4.3, 4.4, 40000, date3);
-    Price price5 = new Price(5.1, 5.2, 5.3, 5.4, 50000, date3.plusDays(1));
-    Price price6 = new Price(6.1, 6.2, 6.3, 6.4, 60000, date3.plusDays(2));
+    Price price4 = new Price(date3, 4.1, 4.2, 4.3, 4.4, 40000);
+    Price price5 = new Price(date3.plusDays(1), 5.1, 5.2, 5.3, 5.4, 50000);
+    Price price6 = new Price(date3.plusDays(2), 6.1, 6.2, 6.3, 6.4, 60000);
 
     // Add in any order
     List<Price> prices = Lists.newArrayList(price5, price3, price4, price2, price6, price1);
@@ -199,43 +186,40 @@ public class PriceDaoTest extends AbstractDaoTest {
     priceDao.save("MEG", prices);
 
     // Verify Year 1
-    Optional<PriceData> foundData = priceDao.findByYear("MEG", 2014);
-    assertTrue(foundData.isPresent());
-    assertEquals(foundData.get().getData().size(), 1);
-    TestUtil.assertPriceEquals(foundData.get().getData().get(0), price1);
+    List<Price> foundPrices = priceDao.findByYear("MEG", 2014);
+    assertEquals(foundPrices.size(), 1);
+    TestUtil.assertPriceEquals(foundPrices.get(0), price1);
 
     // Verify Year 2
-    foundData = priceDao.findByYear("MEG", 2015);
-    assertTrue(foundData.isPresent());
-    assertEquals(foundData.get().getData().size(), 2);
-    TestUtil.assertPriceEquals(foundData.get().getData().get(0), price2);
-    TestUtil.assertPriceEquals(foundData.get().getData().get(1), price3);
+    foundPrices = priceDao.findByYear("MEG", 2015);
+    assertEquals(foundPrices.size(), 2);
+    TestUtil.assertPriceEquals(foundPrices.get(0), price2);
+    TestUtil.assertPriceEquals(foundPrices.get(1), price3);
 
     // Verify Year 3
-    foundData = priceDao.findByYear("MEG", 2016);
-    assertTrue(foundData.isPresent());
-    assertEquals(foundData.get().getData().size(), 3);
-    TestUtil.assertPriceEquals(foundData.get().getData().get(0), price4);
-    TestUtil.assertPriceEquals(foundData.get().getData().get(1), price5);
-    TestUtil.assertPriceEquals(foundData.get().getData().get(2), price6);
+    foundPrices = priceDao.findByYear("MEG", 2016);
+    assertEquals(foundPrices.size(), 3);
+    TestUtil.assertPriceEquals(foundPrices.get(0), price4);
+    TestUtil.assertPriceEquals(foundPrices.get(1), price5);
+    TestUtil.assertPriceEquals(foundPrices.get(2), price6);
   }
 
   @Test
   public void testRemoveByDates() {
     // Year 1
     LocalDate date1 = LocalDate.of(2014, 1, 1);
-    Price price1 = new Price(1.1, 1.2, 1.0, 1.1, 10000, date1);
+    Price price1 = new Price(date1, 1.1, 1.2, 1.0, 1.1, 10000);
 
     // Year 2
     LocalDate date2 = LocalDate.of(2015, 1, 1);
-    Price price2 = new Price(2.1, 2.2, 2.0, 2.1, 20000, date2);
-    Price price3 = new Price(3.1, 3.2, 3.3, 3.4, 30000, date2.plusDays(1));
+    Price price2 = new Price(date2, 2.1, 2.2, 2.0, 2.1, 20000);
+    Price price3 = new Price(date2.plusDays(1), 3.1, 3.2, 3.3, 3.4, 30000);
 
     // Year 3
     LocalDate date3 = LocalDate.of(2016, 12, 29);
-    Price price4 = new Price(4.1, 4.2, 4.3, 4.4, 40000, date3);
-    Price price5 = new Price(5.1, 5.2, 5.3, 5.4, 50000, date3.plusDays(1));
-    Price price6 = new Price(6.1, 6.2, 6.3, 6.4, 60000, date3.plusDays(2));
+    Price price4 = new Price(date3, 4.1, 4.2, 4.3, 4.4, 40000);
+    Price price5 = new Price(date3.plusDays(1), 5.1, 5.2, 5.3, 5.4, 50000);
+    Price price6 = new Price(date3.plusDays(2), 6.1, 6.2, 6.3, 6.4, 60000);
 
     // Save prices
     List<Price> prices = Lists.newArrayList(price1, price2, price3, price4, price5, price6);
@@ -256,10 +240,10 @@ public class PriceDaoTest extends AbstractDaoTest {
   @Test
   public void testRemoveByDatesForAllSymbols() {
     LocalDate date1 = LocalDate.of(2014, 1, 1);
-    Price price1 = new Price(1.1, 1.2, 1.0, 1.1, 10000, date1);
-    Price price2 = new Price(2.1, 2.2, 2.0, 2.1, 20000, date1);
-    Price price3 = new Price(3.1, 3.2, 3.3, 3.4, 30000, date1);
-    Price price4 = new Price(4.1, 4.2, 4.3, 4.4, 40000, date1.plusDays(1));
+    Price price1 = new Price(date1, 1.1, 1.2, 1.0, 1.1, 10000);
+    Price price2 = new Price(date1, 2.1, 2.2, 2.0, 2.1, 20000);
+    Price price3 = new Price(date1, 3.1, 3.2, 3.3, 3.4, 30000);
+    Price price4 = new Price(date1.plusDays(1), 4.1, 4.2, 4.3, 4.4, 40000);
 
     priceDao.save("MEG", Lists.newArrayList(price1));
     priceDao.save("BDO", Lists.newArrayList(price2));
@@ -288,5 +272,54 @@ public class PriceDaoTest extends AbstractDaoTest {
       }
     }
     assertEquals(successCode, 111, "PriceData must contain BDO, MBT, and MEG");
+  }
+
+  @Test
+  public void testFindNBarsBeforeDate() {
+    List<Price> prices = TestUtil.randomPricesForDateRange(now.minusYears(1), now);
+
+    priceDao.save("MEG", prices);
+
+    // Test with 1 bar
+    List<Price> result = priceDao.findNBarsBeforeDate("MEG", 1, now);
+    assertEquals(result.size(), 1);
+    assertEquals(result.get(0), getLastPrice(prices));
+
+    // Test with 30 bars
+    result = priceDao.findNBarsBeforeDate("MEG", 30, now);
+    assertEquals(result.size(), 30);
+    assertEquals(getLastPrice(result), getLastPrice(prices));
+    assertAllPriceDatesIsBeforeDate(result, now);
+
+    // Test with past date
+    LocalDate pastDate = LocalDate.of(2015, 12, 29);
+    result = priceDao.findNBarsBeforeDate("MEG", 30, pastDate);
+    assertEquals(result.size(), 30);
+    assertEquals(getLastPrice(result).getDate(), pastDate);
+    assertAllPriceDatesIsBeforeDate(result, pastDate);
+  }
+
+  @Test
+  public void testFindNBarsBeforeDateWithMultipleYears() {
+    List<Price> prices = TestUtil.randomPricesForDateRange(now.minusYears(2), now);
+
+    priceDao.save("MEG", prices);
+
+    // Test with 400 bars
+    List<Price> result = priceDao.findNBarsBeforeDate("MEG", 400, now);
+    assertEquals(result.size(), 400);
+    assertEquals(getLastPrice(result), getLastPrice(prices));
+    assertEquals(result.get(0).getDate(), LocalDate.of(2014, 6, 20));
+  }
+
+  private Price getLastPrice(List<Price> prices) {
+    return prices.get(prices.size() - 1);
+  }
+
+  private void assertAllPriceDatesIsBeforeDate(List<Price> prices, LocalDate date) {
+    for (Price price : prices) {
+      LocalDate priceDate = price.getDate();
+      assertTrue(priceDate.isBefore(date) || priceDate.isEqual(date), price + " should be <= " + date);
+    }
   }
 }

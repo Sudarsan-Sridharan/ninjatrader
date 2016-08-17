@@ -2,7 +2,8 @@ package com.bn.ninjatrader.model.dao;
 
 import com.bn.ninjatrader.common.data.Stock;
 import com.bn.ninjatrader.model.annotation.StockCollection;
-import com.bn.ninjatrader.model.data.AbstractStockData;
+import com.bn.ninjatrader.model.util.Queries;
+import com.bn.ninjatrader.model.util.QueryParamName;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -24,20 +25,20 @@ public class StockDao extends AbstractDao<Stock> {
   public StockDao(@StockCollection MongoCollection mongoCollection) {
     super(mongoCollection);
     mongoCollection.ensureIndex(
-            String.format("{%s : 1}", AbstractStockData.SYMBOL), "{unique: true}");
+            String.format("{%s : 1}", QueryParamName.SYMBOL), "{unique: true}");
   }
 
   public Optional<Stock> findBySymbol(String symbol) {
-    Stock data = getMongoCollection().findOne(AbstractDao.QUERY_FIND_BY_SYMBOL, symbol).as(Stock.class);
+    Stock data = getMongoCollection().findOne(Queries.FIND_BY_SYMBOL, symbol).as(Stock.class);
     return Optional.ofNullable(data);
   }
 
   public void save(Stock stock) {
-    getMongoCollection().update(QUERY_FIND_BY_SYMBOL, stock.getSymbol()).upsert().with(stock);
+    getMongoCollection().update(Queries.FIND_BY_SYMBOL, stock.getSymbol()).upsert().with(stock);
   }
 
   public void saveSymbolAndName(Stock stock) {
-    getMongoCollection().update(QUERY_FIND_BY_SYMBOL, stock.getSymbol())
+    getMongoCollection().update(Queries.FIND_BY_SYMBOL, stock.getSymbol())
         .upsert().with("{$set: {sym: #, nm: #}}", stock.getSymbol(), stock.getName());
   }
 

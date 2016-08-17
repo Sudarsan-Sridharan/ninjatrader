@@ -1,9 +1,12 @@
 package com.bn.ninjatrader.model.dao.period;
 
 import com.bn.ninjatrader.common.data.Value;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 
 import java.util.List;
 
@@ -14,10 +17,13 @@ public class SaveRequest {
   private String symbol;
   private int period;
   private List<Value> values;
-  private AbstractPeriodDao dao;
 
-  public SaveRequest(AbstractPeriodDao dao) {
-    this.dao = dao;
+  public static SaveRequest forSymbol(String symbol) {
+    return new SaveRequest(symbol);
+  }
+
+  private SaveRequest(String symbol) {
+    this.symbol = symbol;
   }
 
   public SaveRequest symbol(String symbol) {
@@ -40,10 +46,56 @@ public class SaveRequest {
     return this;
   }
 
-  public void execute() {
-    Preconditions.checkArgument(StringUtils.isNotEmpty(symbol));
-    Preconditions.checkArgument(period > 0);
-    Preconditions.checkArgument(values != null);
-    dao.save(symbol, period, values);
+  public String getSymbol() {
+    return symbol;
+  }
+
+  public int getPeriod() {
+    return period;
+  }
+
+  public List<Value> getValues() {
+    return values;
+  }
+
+  public boolean hasValues() {
+    return values != null && !values.isEmpty();
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+        .append("symbol", symbol)
+        .append("period", period)
+        .append("values", values)
+        .build();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder()
+        .append(symbol)
+        .append(period)
+        .append(values)
+        .toHashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) { return false; }
+    if (!(obj instanceof SaveRequest)) {
+      return false;
+    }
+    if (obj == this) { return true; }
+    if (obj.getClass() != getClass()) {
+      return false;
+    }
+
+    SaveRequest rhs = (SaveRequest) obj;
+    return new EqualsBuilder()
+        .append(symbol, rhs.getSymbol())
+        .append(period, rhs.getPeriod())
+        .append(values, rhs.getValues())
+        .isEquals();
   }
 }

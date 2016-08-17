@@ -62,12 +62,12 @@ public class WeeklyPriceCalculator {
 
     private Price createNewWeekWithStartingPrice(Price price) {
       Price weeklyPrice = new Price(
+          price.getDate().with(dayOfWeekField, MONDAY),
           price.getOpen(),
           price.getHigh(),
           price.getLow(),
           price.getClose(),
-          price.getVolume(),
-          price.getDate().with(dayOfWeekField, MONDAY)
+          price.getVolume()
       );
       return weeklyPrice;
     }

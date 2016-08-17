@@ -16,21 +16,23 @@ public class SellTransactionTest {
 
   @Test
   public void testCreateEmpty() {
-    BuyTransaction transaction = Transaction.buy().build();
+    SellTransaction transaction = Transaction.sell().build();
 
     assertNull(transaction.getDate());
     assertEquals(transaction.getPrice(), 0.0);
     assertEquals(transaction.getNumOfShares(), 0);
-    assertEquals(transaction.getTransactionType(), TransactionType.BUY);
+    assertEquals(transaction.getProfit(), 0.0);
+    assertEquals(transaction.getTransactionType(), TransactionType.SELL);
   }
 
   @Test
   public void testCreateWithData() {
-    BuyTransaction transaction = Transaction.buy().date(now).price(100).shares(1000).build();
+    SellTransaction transaction = Transaction.sell().date(now).price(100).shares(1000).profit(5000).build();
 
     assertEquals(transaction.getDate(), now);
     assertEquals(transaction.getPrice(), 100.0);
     assertEquals(transaction.getNumOfShares(), 1000);
-    assertEquals(transaction.getTransactionType(), TransactionType.BUY);
+    assertEquals(transaction.getProfit(), 5000.0);
+    assertEquals(transaction.getTransactionType(), TransactionType.SELL);
   }
 }
