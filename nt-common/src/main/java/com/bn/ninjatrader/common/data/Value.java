@@ -18,6 +18,12 @@ import java.time.LocalDate;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Value implements DateObj<Value> {
 
+  private static Value EMPTY_INSTANCE = new Value();
+
+  public static final Value empty() {
+    return EMPTY_INSTANCE;
+  }
+
   @JsonProperty("d")
   @JsonSerialize(using = NtLocalDateSerializer.class)
   @JsonDeserialize(using = NtLocalDateDeserializer.class)

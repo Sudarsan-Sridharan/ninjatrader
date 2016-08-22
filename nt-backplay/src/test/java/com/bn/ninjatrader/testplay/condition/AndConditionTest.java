@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.testplay.condition;
 
-import com.bn.ninjatrader.testplay.parameter.BarParameters;
+import com.bn.ninjatrader.testplay.simulation.data.BarData;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertFalse;
@@ -9,11 +9,11 @@ import static org.testng.Assert.assertTrue;
 /**
  * Created by Brad on 8/5/16.
  */
-public class AndConditionTest {
+public class AndConditionTest extends MultiConditionTest {
 
   private Condition trueCondition = new TrueCondition();
   private Condition falseCondition = new FalseCondition();
-  private BarParameters barParameters = new BarParameters();
+  private BarData barParameters = new BarData();
 
   @Test
   public void testNullCondition() {
@@ -51,5 +51,11 @@ public class AndConditionTest {
 
     condition.add(falseCondition);
     assertFalse(condition.isMatch(barParameters));
+  }
+
+  @Test
+  public void testGetDataTypes() {
+    AndCondition condition = new AndCondition();
+    testGetDataTypes(condition);
   }
 }

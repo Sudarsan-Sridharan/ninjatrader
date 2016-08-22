@@ -1,35 +1,36 @@
 package com.bn.ninjatrader.testplay.condition;
 
-import com.bn.ninjatrader.testplay.parameter.BarParameters;
-import com.google.common.collect.Lists;
-
-import java.util.Arrays;
-import java.util.List;
+import com.bn.ninjatrader.testplay.simulation.data.BarData;
 
 /**
  * Created by Brad on 8/5/16.
  */
-public class OrCondition implements Condition {
+public class OrCondition extends MultiCondition<OrCondition> {
 
-  private Condition[] conditions;
-
-  public OrCondition(Condition condition1, Condition condition2) {
-    conditions = new Condition[] { condition1, condition2 };
+  public OrCondition() {
+    super();
   }
 
-  public OrCondition(Condition condition1, Condition condition2, Condition ... conditionArray) {
-    List<Condition> conditionList = Lists.newArrayList(condition1, condition2);
-    conditionList.addAll(Arrays.asList(conditionArray));
-    conditions = conditionList.toArray(new Condition[0]);
+  public OrCondition(Condition condition1, Condition condition2) {
+    super(condition1, condition2);
+  }
+
+  public OrCondition(Condition condition1, Condition condition2, Condition ... moreConditions) {
+    super(condition1, condition2, moreConditions);
   }
 
   @Override
-  public boolean isMatch(BarParameters barParameters) {
-    for (Condition condition : conditions) {
+  public boolean isMatch(BarData barParameters) {
+    for (Condition condition : getConditions()) {
       if (condition.isMatch(barParameters)) {
         return true;
       }
     }
     return false;
+  }
+
+  @Override
+  OrCondition getThis() {
+    return this;
   }
 }

@@ -17,10 +17,6 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AbstractStockData<T> implements Comparable<AbstractStockData> {
 
-  public static final String SYMBOL = "sym";
-  public static final String YEAR = "yr";
-  public static final String DATA = "data";
-
   @MongoId
   @MongoObjectId
   public String id;
@@ -48,6 +44,7 @@ public abstract class AbstractStockData<T> implements Comparable<AbstractStockDa
   public void setId(String id) {
     this.id = id;
   }
+
   public String getSymbol() {
     return symbol;
   }

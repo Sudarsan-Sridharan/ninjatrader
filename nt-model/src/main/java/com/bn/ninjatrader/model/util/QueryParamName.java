@@ -10,6 +10,7 @@ public class QueryParamName {
   public static final String PERIOD = "pr";
   public static final String DATA = "data";
 
-  public static final String SETTING_NAME = "name";
-  public static final String SETTING_VALUE = "value";
+  public static final String OWNER = "owner";
+  public static final String SETTING_NAME = "n";
+  public static final String SETTING_VALUE = "v";
 }

@@ -1,8 +1,10 @@
 package com.bn.ninjatrader.testplay.parameter;
 
 import com.bn.ninjatrader.testplay.condition.Condition;
+import com.bn.ninjatrader.common.data.DataType;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 /**
  * Created by Brad on 8/3/16.
@@ -62,5 +64,11 @@ public class TestPlayParameters {
 
   public void setSellCondition(Condition sellCondition) {
     this.sellCondition = sellCondition;
+  }
+
+  public Set<DataType> getDataTypes() {
+    Set<DataType> dataTypes = buyCondition.getDataTypes();
+    dataTypes.addAll(sellCondition.getDataTypes());
+    return dataTypes;
   }
 }

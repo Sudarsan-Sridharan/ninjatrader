@@ -32,7 +32,7 @@ public class StockSymFromPseImporter {
     List<PseStock> pseStocks = pseService.getAllStockIndices();
     for (PseStock pseStock : pseStocks) {
       Stock stock = pseStock.toStock();
-      log.debug("Saving stock from PSE: {}", stock);
+      log.debug("Saving boardlot from PSE: {}", stock);
       stockDao.saveSymbolAndName(stock);
     }
     importSecurityId();
@@ -46,7 +46,7 @@ public class StockSymFromPseImporter {
         stock.setSecurityId(securityId);
         stockDao.save(stock);
       } catch (Exception e) {
-        log.error("Error processing stock: " + stock.getSymbol(), e);
+        log.error("Error processing boardlot: " + stock.getSymbol(), e);
       }
     }
   }

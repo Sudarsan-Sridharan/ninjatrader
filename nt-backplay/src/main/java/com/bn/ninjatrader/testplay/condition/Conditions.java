@@ -2,7 +2,7 @@ package com.bn.ninjatrader.testplay.condition;
 
 import com.bn.ninjatrader.testplay.operation.Operation;
 import com.bn.ninjatrader.testplay.operation.Operations;
-import com.bn.ninjatrader.testplay.type.DataType;
+import com.bn.ninjatrader.common.data.DataType;
 import com.bn.ninjatrader.testplay.type.InequalityOperator;
 
 /**

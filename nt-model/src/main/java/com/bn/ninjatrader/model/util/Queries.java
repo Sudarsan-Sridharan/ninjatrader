@@ -22,5 +22,5 @@ public class Queries {
 
   public static final String FIND_ALL_FOR_YEAR = String.format("{%s : #}", YEAR);
 
-  public static final String FIND_SETTING_BY_NAME = String.format("{%s : #}", SETTING_NAME);
+  public static final String FIND_BY_OWNER = String.format("{%s : #}", OWNER);
 }

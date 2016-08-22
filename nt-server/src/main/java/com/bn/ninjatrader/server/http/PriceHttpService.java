@@ -6,6 +6,7 @@ import com.bn.ninjatrader.common.type.Period;
 import com.bn.ninjatrader.common.util.PriceUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.WeeklyPriceDao;
+import com.bn.ninjatrader.model.dao.period.FindRequest;
 import com.google.inject.Inject;
 import com.google.sitebricks.At;
 import com.google.sitebricks.client.transport.Json;
@@ -74,7 +75,7 @@ public class PriceHttpService {
   }
 
   /**
-   * Get PriceData of stock
+   * Get PriceData of boardlot
    * @param symbol
    * @return
    */
@@ -88,7 +89,7 @@ public class PriceHttpService {
 
     PriceDao dao = period == Period.WEEKLY ? weeklyPriceDao : priceDao;
 
-    List<Price> prices = dao.findByDateRange(symbol, fromDate, toDate);
+    List<Price> prices = dao.find(FindRequest.forSymbol(symbol).from(fromDate).to(toDate));
     log.debug("Found {} prices for {}", prices.size(), symbol);
 
     // If no data, return empty

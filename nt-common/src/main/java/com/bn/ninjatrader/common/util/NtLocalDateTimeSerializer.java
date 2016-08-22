@@ -1,20 +1,13 @@
 package com.bn.ninjatrader.common.util;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 /**
  * Created by Brad on 6/3/16.
  */
-public class NtLocalDateTimeSerializer extends JsonSerializer<LocalDateTime> {
+public class NtLocalDateTimeSerializer extends LocalDateTimeSerializer {
 
-  @Override
-  public void serialize(LocalDateTime localDatetime, JsonGenerator generator, SerializerProvider serializerProvider)
-      throws IOException {
-    generator.writeString(localDatetime.format(DateFormats.DB_DATE_TIME_FORMAT));
+  public NtLocalDateTimeSerializer() {
+    super(DateFormats.DB_DATE_TIME_FORMAT);
   }
 }

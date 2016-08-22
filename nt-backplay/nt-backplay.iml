@@ -34,6 +34,7 @@
     <orderEntry type="module" module-name="nt-service" />
     <orderEntry type="module" module-name="nt-calculator" />
     <orderEntry type="module" module-name="nt-process" />
+    <orderEntry type="library" name="Maven: com.google.inject.extensions:guice-assistedinject:4.0" level="project" />
     <orderEntry type="module" module-name="nt-common" scope="TEST" production-on-test="" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jmockit:jmockit:1.23" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.testng:testng:6.9.9" level="project" />

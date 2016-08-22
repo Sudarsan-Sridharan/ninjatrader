@@ -21,7 +21,6 @@ public class BuyTransaction extends Transaction {
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .append("symbol", getSymbol())
         .append("date", getDate())
         .append("shares", getNumOfShares())
         .append("price", getPrice())

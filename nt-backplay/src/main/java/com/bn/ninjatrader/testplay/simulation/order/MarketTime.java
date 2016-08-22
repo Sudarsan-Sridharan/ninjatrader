@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.testplay.simulation.type;
+package com.bn.ninjatrader.testplay.simulation.order;
 
 /**
  * Created by Brad on 8/13/16.

@@ -2,7 +2,7 @@ package com.bn.ninjatrader.testplay.condition;
 
 import com.bn.ninjatrader.testplay.operation.Operation;
 import com.bn.ninjatrader.testplay.operation.UnaryOperation;
-import com.bn.ninjatrader.testplay.parameter.BarParameters;
+import com.bn.ninjatrader.testplay.simulation.data.BarData;
 import com.bn.ninjatrader.testplay.type.InequalityOperator;
 import org.testng.annotations.Test;
 
@@ -15,7 +15,7 @@ import static org.testng.AssertJUnit.assertTrue;
  */
 public class BasicConditionTest {
 
-  private BarParameters barParameters = new BarParameters();
+  private BarData barParameters = new BarData();
 
   @Test
   public void testUnaryEquals() {

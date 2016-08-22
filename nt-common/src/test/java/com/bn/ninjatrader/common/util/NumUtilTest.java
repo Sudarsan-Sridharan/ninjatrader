@@ -101,4 +101,31 @@ public class NumUtilTest {
     assertEquals(50, NumUtil.max(new int[] {50}));
     assertEquals(50, NumUtil.max(new int[] {0, 10, 20, 30, 50, 40, -1}));
   }
+
+  @Test
+  public void testTrimPrice() {
+    assertEquals(NumUtil.trimPrice(0.00019999), 0.0001);
+    assertEquals(NumUtil.trimPrice(0.04999), 0.0499);
+    assertEquals(NumUtil.trimPrice(Double.NaN), Double.NaN);
+    assertEquals(NumUtil.trimPrice(Double.POSITIVE_INFINITY), Double.POSITIVE_INFINITY);
+  }
+
+  @Test
+  public void testTrim() {
+    assertEquals(NumUtil.trim(1.234567, 0), 1.0);
+    assertEquals(NumUtil.trim(1.234567, 2), 1.23);
+    assertEquals(NumUtil.trim(1.234567, 4), 1.2345);
+    assertEquals(NumUtil.trim(1.234567, 10), 1.234567);
+    assertEquals(NumUtil.trim(Double.NaN, 5), Double.NaN);
+    assertEquals(NumUtil.trim(Double.POSITIVE_INFINITY, 5), Double.POSITIVE_INFINITY);
+  }
+
+  @Test
+  public void testToPercent() {
+    assertEquals(NumUtil.toPercent(0.50), 50d);
+    assertEquals(NumUtil.toPercent(0.53999), 53.99d);
+    assertEquals(NumUtil.toPercent(100), 10000d);
+    assertEquals(NumUtil.toPercent(Double.NaN), Double.NaN);
+    assertEquals(NumUtil.toPercent(Double.POSITIVE_INFINITY), Double.POSITIVE_INFINITY);
+  }
 }

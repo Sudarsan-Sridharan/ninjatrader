@@ -1,13 +1,14 @@
 package com.bn.ninjatrader.model.dao;
 
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.common.util.DateFormats;
 import com.bn.ninjatrader.common.util.DateObjUtil;
+import com.bn.ninjatrader.common.util.DateUtil;
 import com.bn.ninjatrader.common.util.FixedList;
 import com.bn.ninjatrader.model.annotation.DailyPriceCollection;
-import com.bn.ninjatrader.model.data.AbstractStockData;
+import com.bn.ninjatrader.model.dao.period.FindRequest;
 import com.bn.ninjatrader.model.data.PriceData;
 import com.bn.ninjatrader.model.util.Queries;
+import com.bn.ninjatrader.model.util.QueryParamName;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -27,26 +28,22 @@ import java.util.function.Consumer;
  */
 @Singleton
 public class PriceDao extends AbstractDao<PriceData> {
+
   private static final Logger log = LoggerFactory.getLogger(PriceDao.class);
+  private static final LocalDate MINIMUM_FROM_DATE = LocalDate.of(1999, 1, 1);
 
   @Inject
   public PriceDao(@DailyPriceCollection MongoCollection mongoCollection) {
     super(mongoCollection);
     mongoCollection.ensureIndex(
-            String.format("{%s : 1 ,%s : 1}", AbstractStockData.SYMBOL, AbstractStockData.YEAR), "{unique: true}");
+            String.format("{%s : 1 ,%s : 1}", QueryParamName.SYMBOL, QueryParamName.YEAR), "{unique: true}");
   }
 
-  public List<Price> findByYear(String symbol, int year) {
-    PriceData priceData = getMongoCollection().findOne(Queries.FIND_BY_YEAR, symbol, year).as(PriceData.class);
+  public List<Price> find(FindRequest findRequest) {
+    String symbol = findRequest.getSymbol();
+    LocalDate fromDate = findRequest.getFromDate();
+    LocalDate toDate = findRequest.getToDate();
 
-    if (priceData == null || priceData.isEmpty()) {
-      return Collections.emptyList();
-    }
-
-    return priceData.getData();
-  }
-
-  public List<Price> findByDateRange(String symbol, LocalDate fromDate, LocalDate toDate) {
     List<PriceData> priceDataList = Lists.newArrayList(getMongoCollection()
         .find(Queries.FIND_BY_YEAR_RANGE, symbol, fromDate.getYear(), toDate.getYear())
         .as(PriceData.class).iterator());
@@ -63,14 +60,14 @@ public class PriceDao extends AbstractDao<PriceData> {
 
   public List<Price> findNBarsBeforeDate(String symbol, int numOfBars, LocalDate beforeDate) {
     List<Price> prices = FixedList.withMaxSize(numOfBars);
-    int year = beforeDate.getYear();
+    LocalDate fromDate = beforeDate.minusYears(1);
 
     do {
-      List<Price> pricesForYear = findByYear(symbol, year);
-      DateObjUtil.trimToDateRange(pricesForYear, LocalDate.MIN, beforeDate);
-      prices.addAll(0, pricesForYear);
-      year--;
-    } while (prices.size() < numOfBars && year > 1999);
+      List<Price> pricesForYear = find(FindRequest.forSymbol(symbol).from(fromDate).to(beforeDate));
+      prices.clear();
+      prices.addAll(pricesForYear);
+      fromDate = fromDate.minusYears(1);
+    } while (prices.size() < numOfBars && fromDate.isAfter(MINIMUM_FROM_DATE));
 
     return prices;
   }
@@ -117,26 +114,18 @@ public class PriceDao extends AbstractDao<PriceData> {
   }
 
   public void removeByDates(String symbol, List<LocalDate> removeDates) {
-    List<String> dates = Lists.newArrayList();
-
-    for (LocalDate date : removeDates) {
-      dates.add(date.format(DateFormats.DB_DATE_FORMAT));
-    }
-
     if (!removeDates.isEmpty()) {
+      List<String> dates = DateUtil.toListOfString(removeDates);
+
       getMongoCollection().update(Queries.FIND_BY_SYMBOL, symbol).multi()
           .with("{$pull: {data :{d: {$in: #}}}}", dates);
     }
   }
 
   public void removeByDates(List<LocalDate> removeDates) {
-    List<String> dates = Lists.newArrayList();
-
-    for (LocalDate date : removeDates) {
-      dates.add(date.format(DateFormats.DB_DATE_FORMAT));
-    }
-
     if (!removeDates.isEmpty()) {
+      List<String> dates = DateUtil.toListOfString(removeDates);
+
       getMongoCollection().update("{}").multi()
           .with("{$pull: {data :{d: {$in: #}}}}", dates);
     }

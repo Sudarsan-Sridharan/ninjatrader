@@ -5,6 +5,7 @@ import com.bn.ninjatrader.testplay.simulation.account.Account;
 import com.bn.ninjatrader.testplay.simulation.order.Order;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,10 +19,18 @@ public class Broker {
   private static final Logger log = LoggerFactory.getLogger(Broker.class);
 
   private List<Order> pendingOrders = Lists.newArrayList();
-  private final Account account;
+
+  @Inject
+  private Account account;
+
   private final BuyOrderExecutor buyOrderExecutor = new BuyOrderExecutor();
   private final SellOrderExecutor sellOrderExecutor = new SellOrderExecutor();
 
+  public Broker() {
+
+  }
+
+  @Inject
   public Broker(Account account) {
     Preconditions.checkNotNull(account);
     this.account = account;

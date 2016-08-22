@@ -18,6 +18,8 @@ import javax.inject.Singleton;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.bn.ninjatrader.model.dao.period.FindRequest.forSymbol;
+
 /**
  * Created by Brad on 5/3/16.
  */
@@ -42,7 +44,7 @@ public class IchimokuHttpService {
       LocalDate fromDate = LocalDate.now().minusMonths(6);
       LocalDate toDate = LocalDate.now();
 
-      List<Ichimoku> ichimokuList = ichimokuService.getIchimoku(symbol, fromDate, toDate);
+      List<Ichimoku> ichimokuList = ichimokuService.find(forSymbol(symbol).from(fromDate).to(toDate));
 
       return toReply(ichimokuList);
     } catch (Exception e) {
@@ -59,7 +61,7 @@ public class IchimokuHttpService {
       LocalDate fromDate = LocalDate.now().minusYears(2);
       LocalDate toDate = LocalDate.now();
 
-      List<Ichimoku> ichimokuList = ichimokuWeeklyService.getIchimoku(symbol, fromDate, toDate);
+      List<Ichimoku> ichimokuList = ichimokuWeeklyService.find(forSymbol(symbol).from(fromDate).to(toDate));
 
       return toReply(ichimokuList);
     } catch (Exception e) {

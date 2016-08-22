@@ -1,12 +1,8 @@
 package com.bn.ninjatrader.common.data;
 
-import com.bn.ninjatrader.common.util.NtLocalDateTimeDeserializer;
-import com.bn.ninjatrader.common.util.NtLocalDateTimeSerializer;
 import com.bn.ninjatrader.common.util.NumUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -18,26 +14,32 @@ import java.time.LocalDateTime;
  * Created by Brad on 7/28/16.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SystemSetting {
+public class Setting {
 
-  @JsonProperty("name")
+  @JsonProperty("n")
   private String name;
 
-  @JsonProperty("value")
+  @JsonProperty("v")
   private String value;
 
   @JsonProperty("lud")
-  @JsonSerialize(using = NtLocalDateTimeSerializer.class)
-  @JsonDeserialize(using = NtLocalDateTimeDeserializer.class)
   private LocalDateTime lastUpdateDate;
 
-  public static SystemSetting of(String name, String value) {
-    return new SystemSetting(name, value);
+  public static Setting of(String name, String value) {
+    return new Setting(name, value);
   }
 
-  public SystemSetting(String name, String value) {
+  public Setting(String name, String value) {
     this.name = name;
     this.value = value;
+  }
+
+  public Setting(@JsonProperty("n") String name,
+                 @JsonProperty("v") String value,
+                 @JsonProperty("lud") LocalDateTime lastUpdateDate) {
+    this.name = name;
+    this.value = value;
+    this.lastUpdateDate = lastUpdateDate;
   }
 
   public String getName() {
@@ -93,7 +95,7 @@ public class SystemSetting {
   @Override
   public boolean equals(Object obj) {
     if (obj == null) { return false; }
-    if (!(obj instanceof SystemSetting)) {
+    if (!(obj instanceof Setting)) {
       return false;
     }
     if (obj == this) { return true; }
@@ -101,7 +103,7 @@ public class SystemSetting {
       return false;
     }
 
-    SystemSetting rhs = (SystemSetting) obj;
+    Setting rhs = (Setting) obj;
     return new EqualsBuilder()
         .append(name, rhs.getName())
         .append(value, rhs.getValue())

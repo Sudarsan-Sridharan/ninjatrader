@@ -1,14 +1,17 @@
 package com.bn.ninjatrader.testplay.operation;
 
-import com.bn.ninjatrader.testplay.parameter.BarParameters;
-import com.bn.ninjatrader.testplay.type.DataType;
+import com.bn.ninjatrader.testplay.simulation.data.BarData;
+import com.bn.ninjatrader.common.data.DataType;
+import com.google.common.collect.Sets;
+
+import java.util.Set;
 
 /**
  * Created by Brad on 8/2/16.
  */
 public class UnaryOperation implements Operation {
 
-  private DataType dataType;
+  private final DataType dataType;
   private double constant;
 
   public static UnaryOperation of(double constantValue) {
@@ -29,10 +32,15 @@ public class UnaryOperation implements Operation {
   }
 
   @Override
-  public double getValue(BarParameters barParameters) {
+  public double getValue(BarData barParameters) {
     if (dataType == DataType.CONSTANT){
       return constant;
     }
     return barParameters.get(dataType);
+  }
+
+  @Override
+  public Set<DataType> getDataTypes() {
+    return Sets.newHashSet(dataType);
   }
 }

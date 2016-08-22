@@ -20,6 +20,8 @@ import javax.inject.Singleton;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.bn.ninjatrader.model.dao.period.FindRequest.forSymbol;
+
 /**
  * Created by Brad on 5/3/16.
  */
@@ -48,10 +50,38 @@ public class IchimokuService {
     int numOfPastMonths = getNumOfPastMonths();
     LocalDate findMeanFromDate = fromDate.minusMonths(numOfPastMonths);
 
-    List<Price> prices = priceDao.findByDateRange(symbol, fromDate.minusMonths(numOfPastMonths), toDate);
-    List<Value> tenkanList = meanDao.find(FindRequest.forSymbol(symbol).period(9).from(findMeanFromDate).to(toDate));
-    List<Value> kijunList = meanDao.find(FindRequest.forSymbol(symbol).period(26).from(findMeanFromDate).to(toDate));
-    List<Value> senKouBList = meanDao.find(FindRequest.forSymbol(symbol).period(52).from(findMeanFromDate).to(toDate));
+    List<Price> prices = priceDao.find(forSymbol(symbol).from(findMeanFromDate).to(toDate));
+    List<Value> tenkanList = meanDao.find(forSymbol(symbol).period(9).from(findMeanFromDate).to(toDate));
+    List<Value> kijunList = meanDao.find(forSymbol(symbol).period(26).from(findMeanFromDate).to(toDate));
+    List<Value> senKouBList = meanDao.find(forSymbol(symbol).period(52).from(findMeanFromDate).to(toDate));
+
+    List<Ichimoku> ichimokuList = ichimokuCalculator.calc(
+        IchimokuParameters.builder()
+            .priceList(prices)
+            .tenkanList(tenkanList)
+            .kijunList(kijunList)
+            .senkouBList(senKouBList)
+            .chickouShiftBackPeriods(26)
+            .senkouShiftForwardPeriods(26)
+            .build());
+
+    DateObjUtil.trimToDateRange(ichimokuList, fromDate, toDate);
+
+    return ichimokuList;
+  }
+
+  public List<Ichimoku> find(FindRequest findRequest) {
+    String symbol = findRequest.getSymbol();
+    LocalDate fromDate = findRequest.getFromDate();
+    LocalDate toDate = findRequest.getToDate();
+
+    int numOfPastMonths = getNumOfPastMonths();
+    LocalDate findMeanFromDate = fromDate.minusMonths(numOfPastMonths);
+
+    List<Price> prices = priceDao.find(forSymbol(symbol).from(findMeanFromDate).to(toDate));
+    List<Value> tenkanList = meanDao.find(forSymbol(symbol).period(9).from(findMeanFromDate).to(toDate));
+    List<Value> kijunList = meanDao.find(forSymbol(symbol).period(26).from(findMeanFromDate).to(toDate));
+    List<Value> senKouBList = meanDao.find(forSymbol(symbol).period(52).from(findMeanFromDate).to(toDate));
 
     List<Ichimoku> ichimokuList = ichimokuCalculator.calc(
         IchimokuParameters.builder()
@@ -77,9 +107,9 @@ public class IchimokuService {
     for (Stock stock : stockDao.find()) {
 
       String symbol = stock.getSymbol();
-      List<Value> tenkanList = meanDao.find(FindRequest.forSymbol(symbol).period(9).from(fromDate).to(toDate));
-      List<Value> kijunList = meanDao.find(FindRequest.forSymbol(symbol).period(26).from(fromDate).to(toDate));
-      List<Price> priceList = priceDao.findByDateRange(symbol, fromDate, toDate);
+      List<Value> tenkanList = meanDao.find(forSymbol(symbol).period(9).from(fromDate).to(toDate));
+      List<Value> kijunList = meanDao.find(forSymbol(symbol).period(26).from(fromDate).to(toDate));
+      List<Price> priceList = priceDao.find(forSymbol(symbol).from(fromDate).to(toDate));
 
       // Skip does w/ not enough data
       if (tenkanList.isEmpty() || priceList.isEmpty() || kijunList.isEmpty()) {

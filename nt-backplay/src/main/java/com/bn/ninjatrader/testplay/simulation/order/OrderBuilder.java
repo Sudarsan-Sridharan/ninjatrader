@@ -1,7 +1,5 @@
 package com.bn.ninjatrader.testplay.simulation.order;
 
-import com.bn.ninjatrader.testplay.simulation.type.MarketTime;
-
 import java.time.LocalDate;
 
 /**

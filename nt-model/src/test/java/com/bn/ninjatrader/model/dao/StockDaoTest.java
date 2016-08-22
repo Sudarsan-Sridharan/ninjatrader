@@ -36,7 +36,7 @@ public class StockDaoTest extends AbstractDaoTest {
     // Prepare data
     Stock stock = new Stock("MEG", "Megaworld");
 
-    // Save stock data
+    // Save boardlot data
     stockDao.save(stock);
 
     // Find data
@@ -46,7 +46,7 @@ public class StockDaoTest extends AbstractDaoTest {
     assertEquals(result.get(0).getSymbol(), stock.getSymbol());
     assertEquals(result.get(0).getName(), stock.getName());
 
-    // Add another stock
+    // Add another boardlot
     stock = new Stock("BDO", "Banco De Oro");
     stockDao.save(stock);
 
@@ -61,7 +61,7 @@ public class StockDaoTest extends AbstractDaoTest {
     // Prepare data
     Stock stock = new Stock("MEG", "Megaworld");
 
-    // Save stock data
+    // Save boardlot data
     stockDao.save(stock);
 
     // Update w/ Security ID
@@ -83,13 +83,13 @@ public class StockDaoTest extends AbstractDaoTest {
     stockDao.save(stock1);
     stockDao.save(stock2);
 
-    // Verify stock 1
+    // Verify boardlot 1
     Optional<Stock> foundStock = stockDao.findBySymbol(stock1.getSymbol());
     assertTrue(foundStock.isPresent());
     assertEquals(foundStock.get().getSymbol(), stock1.getSymbol());
     assertEquals(foundStock.get().getName(), stock1.getName());
 
-    // Verify stock 2
+    // Verify boardlot 2
     foundStock = stockDao.findBySymbol(stock2.getSymbol());
     assertTrue(foundStock.isPresent());
     assertEquals(foundStock.get().getSymbol(), stock2.getSymbol());

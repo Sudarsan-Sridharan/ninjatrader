@@ -1,15 +1,15 @@
 package com.bn.ninjatrader.testplay.operation;
 
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.testplay.parameter.BarParameters;
+import com.bn.ninjatrader.testplay.simulation.data.BarData;
 import org.testng.annotations.BeforeClass;
 
 /**
- * Created by a- on 8/6/16.
+ * Created by Brad on 8/6/16.
  */
 public class AbstractOperationTest {
 
-  protected BarParameters barParameters;
+  protected BarData barData;
 
   @BeforeClass
   public void setup() {
@@ -20,7 +20,7 @@ public class AbstractOperationTest {
     price.setClose(4.0);
     price.setVolume(10000);
 
-    barParameters = new BarParameters();
-    barParameters.put(price);
+    barData = new BarData();
+    barData.put(price);
   }
 }

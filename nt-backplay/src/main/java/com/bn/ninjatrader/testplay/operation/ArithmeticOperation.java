@@ -1,8 +1,10 @@
 package com.bn.ninjatrader.testplay.operation;
 
-import com.bn.ninjatrader.testplay.parameter.BarParameters;
-import com.bn.ninjatrader.testplay.type.DataType;
+import com.bn.ninjatrader.testplay.simulation.data.BarData;
+import com.bn.ninjatrader.common.data.DataType;
 import com.bn.ninjatrader.testplay.type.Operator;
+
+import java.util.Set;
 
 import static com.bn.ninjatrader.testplay.type.Operator.*;
 
@@ -26,8 +28,13 @@ public class ArithmeticOperation implements Operation {
   }
 
   @Override
-  public double getValue(BarParameters barParameters) {
+  public double getValue(BarData barParameters) {
     return operation.getValue(barParameters);
+  }
+
+  @Override
+  public Set<DataType> getDataTypes() {
+    return operation.getDataTypes();
   }
 
   public ArithmeticOperation plus(Operation rhs) {

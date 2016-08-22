@@ -1,6 +1,10 @@
 package com.bn.ninjatrader.testplay.condition;
 
-import com.bn.ninjatrader.testplay.parameter.BarParameters;
+import com.bn.ninjatrader.testplay.simulation.data.BarData;
+import com.bn.ninjatrader.common.data.DataType;
+
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Created by Brad on 8/5/16.
@@ -8,7 +12,12 @@ import com.bn.ninjatrader.testplay.parameter.BarParameters;
 public class TrueCondition implements Condition {
 
   @Override
-  public boolean isMatch(BarParameters barParameters) {
+  public boolean isMatch(BarData barParameters) {
     return true;
+  }
+
+  @Override
+  public Set<DataType> getDataTypes() {
+    return Collections.emptySet();
   }
 }

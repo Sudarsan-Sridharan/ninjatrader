@@ -6,8 +6,10 @@ import com.bn.ninjatrader.common.rest.PriceResponse;
 import com.bn.ninjatrader.common.type.Period;
 import com.bn.ninjatrader.common.util.PriceUtil;
 import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.model.dao.DataFinder;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.WeeklyPriceDao;
+import com.bn.ninjatrader.model.dao.period.FindRequest;
 import mockit.*;
 import org.testng.annotations.Test;
 
@@ -45,7 +47,7 @@ public class PriceHttpServiceTest {
     List<Price> priceList = Lists.newArrayList(price1, price2);
 
     new Expectations() {{
-      priceDao.findByDateRange("MEG", withInstanceOf(LocalDate.class), withInstanceOf(LocalDate.class));
+      priceDao.find(withInstanceOf(FindRequest.class));
       result = priceList;
 
       PriceUtil.createSummary(withInstanceOf(List.class)); result = priceSummary;
@@ -72,15 +74,18 @@ public class PriceHttpServiceTest {
   @Test
   public void testGetPriceForDiffPeriods() {
     priceService.getPriceResponse("MEG", Period.DAILY);
-
-    new Verifications() {{
-      priceDao.findByDateRange("MEG", withInstanceOf(LocalDate.class), withInstanceOf(LocalDate.class));
-    }};
+    assertFindForSymbolCalled(priceDao, "MEG");
 
     priceService.getPriceResponse("BDO", Period.WEEKLY);
+    assertFindForSymbolCalled(weeklyPriceDao, "BDO");
+  }
 
+  public void assertFindForSymbolCalled(DataFinder dataDao, String symbol) {
     new Verifications() {{
-      weeklyPriceDao.findByDateRange("BDO", withInstanceOf(LocalDate.class), withInstanceOf(LocalDate.class));
+      FindRequest findRequest;
+      dataDao.find(findRequest = withCapture());
+      assertEquals(findRequest.getSymbol(), symbol);
     }};
   }
+
 }

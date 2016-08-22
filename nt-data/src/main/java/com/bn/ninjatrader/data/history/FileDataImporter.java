@@ -28,7 +28,7 @@ public class FileDataImporter {
 
   private static final Logger log = LoggerFactory.getLogger(FileDataImporter.class);
   private static final String[] SUPPORTED_FORMATS = new String[] {"csv"};
-  private static final String DIR = "/Users/a-/Downloads/stock";
+  private static final String DIR = "/Users/a-/Downloads/boardlot";
 
   @Inject
   private CsvDataParser parser;

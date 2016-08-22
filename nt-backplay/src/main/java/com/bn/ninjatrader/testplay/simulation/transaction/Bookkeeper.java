@@ -1,6 +1,8 @@
 package com.bn.ninjatrader.testplay.simulation.transaction;
 
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -9,17 +11,25 @@ import java.util.List;
  */
 public class Bookkeeper {
 
-  private List<Transaction> tradeLogs = Lists.newArrayList();
+  private static final Logger log = LoggerFactory.getLogger(Bookkeeper.class);
+
+  private List<Transaction> transactions = Lists.newArrayList();
 
   public void keep(Transaction log) {
-    tradeLogs.add(log);
+    transactions.add(log);
   }
 
   public int getNumOfTrades() {
-    return tradeLogs.size();
+    return transactions.size();
   }
 
   public List<Transaction> getTransactions() {
-    return tradeLogs;
+    return transactions;
+  }
+
+  public void print() {
+    for (Transaction transaction : transactions) {
+      log.info("{}", transaction.toString());
+    }
   }
 }

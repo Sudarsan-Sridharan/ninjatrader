@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class NumUtil {
 
-  private static final int DECIMAL_PRECISION = 1000000;
+  private static final int DEFAULT_DECIMAL_PRECISION = 1000000;
 
   private NumUtil() {
   }
@@ -66,11 +66,32 @@ public class NumUtil {
   }
 
   private static long toBaseUnit(double value) {
-    return Math.round(value * DECIMAL_PRECISION);
+    return Math.round(value * DEFAULT_DECIMAL_PRECISION);
   }
 
   private static double toActualUnit(long baseUnitValue) {
-    return (double) baseUnitValue / DECIMAL_PRECISION;
+    return (double) baseUnitValue / DEFAULT_DECIMAL_PRECISION;
+  }
+
+  public static double trimPrice(double price) {
+    return trim(price, 4);
+  }
+
+  public static double trim(double value, int decimalPlaces) {
+    if (Double.isNaN(value) || Double.isInfinite(value)) {
+      return value;
+    }
+    double precision = Math.pow(10, decimalPlaces);
+    long rounded = (long) (value * precision);
+    return (double) rounded / precision;
+  }
+
+  public static double toPercent(double value) {
+    if (Double.isNaN(value) || Double.isInfinite(value)) {
+      return value;
+    }
+    value = value * 100;
+    return trim(value, 2);
   }
 
   public static int max(int[] values) {

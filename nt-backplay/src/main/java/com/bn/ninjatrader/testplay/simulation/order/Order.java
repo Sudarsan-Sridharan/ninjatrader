@@ -3,7 +3,6 @@ package com.bn.ninjatrader.testplay.simulation.order;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.testplay.simulation.transaction.TransactionType;
-import com.bn.ninjatrader.testplay.simulation.type.MarketTime;
 
 import java.time.LocalDate;
 
@@ -73,7 +72,7 @@ public abstract class Order {
 
   public void fulfill(Price price) {
     switch (marketTime) {
-      case OPEN: fulfilledPrice = price.getOpen();
+      case OPEN: fulfilledPrice = price.getOpen(); break;
       default: fulfilledPrice = price.getClose();
     }
   }

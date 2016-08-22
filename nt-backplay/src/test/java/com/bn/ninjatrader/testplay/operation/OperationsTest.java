@@ -2,8 +2,9 @@ package com.bn.ninjatrader.testplay.operation;
 
 import org.testng.annotations.Test;
 
-import static com.bn.ninjatrader.testplay.type.DataType.*;
+import static com.bn.ninjatrader.common.data.DataType.*;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Created by Brad on 8/2/16.
@@ -50,9 +51,21 @@ public class OperationsTest extends AbstractOperationTest {
 
     operation = Operations.create(PRICE_HIGH).minus(3);
     assertOperationEquals(operation, -1.0);
+    assertEquals(operation.getDataTypes().size(), 2);
+    assertTrue(operation.getDataTypes().contains(PRICE_HIGH));
+    assertTrue(operation.getDataTypes().contains(CONSTANT));
+  }
+
+  @Test
+  public void testGetDataTypes() {
+    Operation operation = Operations.create(PRICE_HIGH).minus(3);
+    assertOperationEquals(operation, -1.0);
+    assertEquals(operation.getDataTypes().size(), 2);
+    assertTrue(operation.getDataTypes().contains(PRICE_HIGH));
+    assertTrue(operation.getDataTypes().contains(CONSTANT));
   }
 
   private void assertOperationEquals(Operation operation, double expected) {
-    assertEquals(operation.getValue(barParameters), expected);
+    assertEquals(operation.getValue(barData), expected);
   }
 }

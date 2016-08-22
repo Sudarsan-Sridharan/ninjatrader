@@ -5,6 +5,7 @@ import com.bn.ninjatrader.calculator.WeeklyPriceCalculator;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.WeeklyPriceDao;
+import com.bn.ninjatrader.model.dao.period.FindRequest;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
@@ -49,7 +50,7 @@ public class CalcWeeklyPriceProcessTest {
   @BeforeMethod
   public void setupExpectations() {
     new Expectations() {{
-      priceDao.findByDateRange(SYMBOL, withInstanceOf(LocalDate.class), withInstanceOf(LocalDate.class));
+      priceDao.find(withInstanceOf(FindRequest.class));
       result = Collections.emptyList();
 
       calculator.calc(withInstanceOf(List.class));
@@ -69,13 +70,13 @@ public class CalcWeeklyPriceProcessTest {
 
   private void assertDateAdjustedToStartOfWeek() {
     new Verifications() {{
-      LocalDate fromDate, toDate;
-
-      priceDao.findByDateRange(SYMBOL, fromDate = withCapture() , toDate = withCapture());
+      FindRequest findRequest;
+      priceDao.find(findRequest = withCapture());
       times = 1;
 
-      assertEquals(fromDate, LocalDate.of(2016, 2, 1));
-      assertEquals(toDate, LocalDate.of(2016, 2, 10));
+      assertEquals(findRequest.getSymbol(), "MEG");
+      assertEquals(findRequest.getFromDate(), LocalDate.of(2016, 2, 1));
+      assertEquals(findRequest.getToDate(), LocalDate.of(2016, 2, 10));
     }};
   }
 

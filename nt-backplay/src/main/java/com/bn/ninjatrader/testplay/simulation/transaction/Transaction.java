@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.testplay.simulation.transaction;
 
+import com.bn.ninjatrader.common.util.NumUtil;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -42,6 +43,10 @@ public abstract class Transaction {
 
   public long getNumOfShares() {
     return numOfShares;
+  }
+
+  public double getValue() {
+    return NumUtil.multiply(price, numOfShares);
   }
 
   public LocalDate getDate() {

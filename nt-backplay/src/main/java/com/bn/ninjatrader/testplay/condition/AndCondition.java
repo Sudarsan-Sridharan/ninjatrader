@@ -1,40 +1,31 @@
 package com.bn.ninjatrader.testplay.condition;
 
-import com.bn.ninjatrader.testplay.parameter.BarParameters;
-import com.google.common.collect.Lists;
-
-import java.util.Arrays;
-import java.util.List;
+import com.bn.ninjatrader.testplay.simulation.data.BarData;
 
 /**
  * Created by Brad on 8/5/16.
  */
-public class AndCondition implements Condition {
-
-  private List<Condition> conditions;
+public class AndCondition extends MultiCondition<AndCondition> {
 
   public AndCondition() {
-    conditions = Lists.newArrayList();
+    super();
   }
 
   public AndCondition(Condition condition1, Condition condition2) {
-    this();
-    conditions.add(condition1);
-    conditions.add(condition2);
+    super(condition1, condition2);
   }
 
   public AndCondition(Condition condition1, Condition condition2, Condition ... moreConditions) {
-    this(condition1, condition2);
-    conditions.addAll(Arrays.asList(moreConditions));
+    super(condition1, condition2, moreConditions);
   }
 
   @Override
-  public boolean isMatch(BarParameters barParameters) {
-    if (conditions.isEmpty()) {
+  public boolean isMatch(BarData barParameters) {
+    if (getConditions().isEmpty()) {
       return true;
     }
 
-    for (Condition condition : conditions) {
+    for (Condition condition : getConditions()) {
       if (!condition.isMatch(barParameters)) {
         return false;
       }
@@ -42,10 +33,8 @@ public class AndCondition implements Condition {
     return true;
   }
 
-  public AndCondition add(Condition condition) {
-    if (condition != null) {
-      conditions.add(condition);
-    }
+  @Override
+  AndCondition getThis() {
     return this;
   }
 }

@@ -24,6 +24,11 @@
             <groupId>com.beachninja</groupId>
             <artifactId>nt-service</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-assistedinject</artifactId>
+        </dependency>
+
 
         <!-- Test dependencies -->
         <dependency>

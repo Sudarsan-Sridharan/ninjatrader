@@ -14,9 +14,6 @@ public abstract class OrderExecutor {
 
   protected void checkConditions(Account account, Order order, Price currentPrice) {
     Preconditions.checkNotNull(account);
-    Preconditions.checkNotNull(account.getPortfolio());
-    Preconditions.checkNotNull(account.getBookkeeper());
-    Preconditions.checkNotNull(account.getTradeStatistic());
     Preconditions.checkNotNull(order);
     Preconditions.checkNotNull(currentPrice);
   }

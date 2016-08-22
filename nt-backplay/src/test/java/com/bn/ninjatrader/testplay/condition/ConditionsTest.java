@@ -2,13 +2,15 @@ package com.bn.ninjatrader.testplay.condition;
 
 import com.bn.ninjatrader.common.data.Ichimoku;
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.testplay.parameter.BarParameters;
+import com.bn.ninjatrader.testplay.simulation.data.BarData;
+import com.bn.ninjatrader.testplay.simulation.data.adaptor.IchimokuDataMapAdaptor;
+import com.bn.ninjatrader.testplay.simulation.data.adaptor.PriceDataMapAdaptor;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static com.bn.ninjatrader.testplay.condition.Conditions.create;
 import static com.bn.ninjatrader.testplay.condition.Conditions.eq;
-import static com.bn.ninjatrader.testplay.type.DataType.*;
+import static com.bn.ninjatrader.common.data.DataType.*;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
@@ -17,7 +19,7 @@ import static org.testng.Assert.assertTrue;
  */
 public class ConditionsTest {
 
-  private BarParameters barParameters;
+  private BarData barParameters;
   private Price price;
   private Ichimoku ichimoku;
 
@@ -37,9 +39,9 @@ public class ConditionsTest {
     ichimoku.setSenkouA(1.4);
     ichimoku.setSenkouB(1.5);
 
-    barParameters = new BarParameters();
-    barParameters.put(price);
-    barParameters.put(ichimoku);
+    barParameters = new BarData();
+    barParameters.put(new PriceDataMapAdaptor().toDataMap(price));
+    barParameters.put(new IchimokuDataMapAdaptor().toDataMap(ichimoku));
   }
 
   @Test

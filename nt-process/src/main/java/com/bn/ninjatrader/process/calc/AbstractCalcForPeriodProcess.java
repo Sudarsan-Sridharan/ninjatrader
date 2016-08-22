@@ -17,6 +17,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+import static com.bn.ninjatrader.model.dao.period.FindRequest.forSymbol;
+
 /**
  * Created by Brad on 7/28/16.
  */
@@ -45,8 +47,7 @@ public abstract class AbstractCalcForPeriodProcess implements CalcProcess {
     LocalDate toDate = calcRequest.getToDate();
     int[] periods = getDefaultPeriodsIfNull(calcRequest);
 
-
-    List<Price> prices = priceDao.findByDateRange(symbol, fromDate, toDate);
+    List<Price> prices = priceDao.find(forSymbol(symbol).from(fromDate).to(toDate));
 
     Map<Integer, List<Value>> periodToValuesMap = calculator.calc(prices, periods);
 
@@ -63,7 +64,7 @@ public abstract class AbstractCalcForPeriodProcess implements CalcProcess {
     LocalDate priceToDate = calcRequest.getToDate();
     int[] periods = getDefaultPeriodsIfNull(calcRequest);
 
-    List<Price> prices = priceDao.findByDateRange(symbol, priceFromDate, priceToDate);
+    List<Price> prices = priceDao.find(forSymbol(symbol).from(priceFromDate).to(priceToDate));
 
     Map<Integer, List<Value>> periodToValuesMap = calculator.calc(prices, periods);
 
