@@ -33,4 +33,13 @@ public class BuyTransactionTest {
     assertEquals(transaction.getNumOfShares(), 1000);
     assertEquals(transaction.getTransactionType(), TransactionType.BUY);
   }
+
+  @Test
+  public void testCalculateValue() {
+    BuyTransaction transaction = Transaction.buy().date(now).price(100).shares(1000).build();
+    assertEquals(transaction.getValue(), 100000d);
+
+    transaction = Transaction.buy().date(now).price(0.0001).shares(1000).build();
+    assertEquals(transaction.getValue(), 0.1);
+  }
 }

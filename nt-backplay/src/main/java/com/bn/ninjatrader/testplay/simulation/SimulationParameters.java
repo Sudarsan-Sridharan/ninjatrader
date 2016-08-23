@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.testplay.parameter;
+package com.bn.ninjatrader.testplay.simulation;
 
 import com.bn.ninjatrader.testplay.condition.Condition;
 import com.bn.ninjatrader.common.data.DataType;
@@ -9,12 +9,12 @@ import java.util.Set;
 /**
  * Created by Brad on 8/3/16.
  */
-public class TestPlayParameters {
+public class SimulationParameters {
 
   private LocalDate fromDate;
   private LocalDate toDate;
   private String symbol;
-  private double startingEquity;
+  private double startingCash;
   private Condition buyCondition;
   private Condition sellCondition;
 
@@ -42,12 +42,12 @@ public class TestPlayParameters {
     this.symbol = symbol;
   }
 
-  public double getStartingEquity() {
-    return startingEquity;
+  public double getStartingCash() {
+    return startingCash;
   }
 
-  public void setStartingEquity(double startingEquity) {
-    this.startingEquity = startingEquity;
+  public void setStartingCash(double startingCash) {
+    this.startingCash = startingCash;
   }
 
   public Condition getBuyCondition() {

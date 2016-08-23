@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.testplay.simulation.guice;
 
-import com.bn.ninjatrader.model.dao.DataFinder;
+import com.bn.ninjatrader.testplay.simulation.datafinder.DataFinder;
+import com.bn.ninjatrader.testplay.simulation.broker.BrokerFactory;
 import com.bn.ninjatrader.testplay.simulation.datafinder.IchimokuDataFinder;
 import com.bn.ninjatrader.testplay.simulation.datafinder.PriceDataFinder;
 import com.bn.ninjatrader.testplay.simulation.datafinder.SimpleAverageDataFinder;
@@ -8,6 +9,7 @@ import com.bn.ninjatrader.testplay.simulation.guice.annotation.AllDataFinders;
 import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 import java.util.List;
 
@@ -17,6 +19,7 @@ import java.util.List;
 public class NtSimulationModule extends AbstractModule {
   @Override
   protected void configure() {
+    install(new FactoryModuleBuilder().build(BrokerFactory.class));
   }
 
   @Provides

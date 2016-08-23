@@ -1,16 +1,12 @@
 package com.bn.ninjatrader.testplay.simulation.order;
 
-import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.testplay.simulation.transaction.TransactionType;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
 
 import static com.bn.ninjatrader.testplay.simulation.order.MarketTime.CLOSE;
-import static com.bn.ninjatrader.testplay.simulation.order.MarketTime.OPEN;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
+import static org.testng.Assert.*;
 import static org.testng.AssertJUnit.assertTrue;
 
 /**
@@ -24,8 +20,6 @@ public class SellOrderTest {
   public void testCreateEmpty() {
     SellOrder order = Order.sell().build();
     assertNull(order.getOrderDate());
-    assertEquals(order.getValue(), 0.0);
-    assertEquals(order.getFulfilledPrice(), 0.0);
     assertEquals(order.getNumOfShares(), 0);
     assertEquals(order.getTransactionType(), TransactionType.SELL);
   }
@@ -47,23 +41,5 @@ public class SellOrderTest {
 
     order.decrementDaysFromNow();
     assertTrue(order.isReadyForProcessing());
-  }
-
-  @Test
-  public void testFulfillAtMarketClose() {
-    SellOrder order = Order.sell().date(now).at(CLOSE).shares(1000).daysFromNow(5).build();
-    Price price = new Price(now, 1, 2, 3, 4, 1000);
-
-    order.fulfill(price);
-    assertEquals(order.getFulfilledPrice(), 4.0);
-  }
-
-  @Test
-  public void testFulfillAtMarketOpen() {
-    SellOrder order = Order.sell().date(now).at(OPEN).shares(1000).daysFromNow(5).build();
-    Price price = new Price(now, 1, 2, 3, 4, 1000);
-
-    order.fulfill(price);
-    assertEquals(order.getFulfilledPrice(), 1.0);
   }
 }

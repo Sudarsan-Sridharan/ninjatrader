@@ -2,6 +2,8 @@ package com.bn.ninjatrader.testplay.simulation.data;
 
 import com.bn.ninjatrader.common.data.DataType;
 import com.google.common.collect.Maps;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Map;
 
@@ -44,5 +46,12 @@ public class DataMap {
 
   public void clear() {
     dataMap.clear();
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+        .append("dataMap", dataMap)
+        .build();
   }
 }

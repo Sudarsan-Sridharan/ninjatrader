@@ -11,6 +11,7 @@ import java.time.LocalDate;
  */
 public abstract class Transaction {
 
+  private final int barIndex; // Bar number. Used to calculate how many bars since last buy / sell.
   private final String symbol;
   private final LocalDate date;
   private final TransactionType transactionType;
@@ -25,12 +26,14 @@ public abstract class Transaction {
     return SellTransaction.create();
   }
 
-  public Transaction(String symbol, LocalDate date, TransactionType transactionType, double price, long numOfShares) {
+  public Transaction(String symbol, LocalDate date, TransactionType transactionType,
+                     double price, long numOfShares, int barIndex) {
     this.symbol = symbol;
     this.date = date;
     this.transactionType = transactionType;
     this.price = price;
     this.numOfShares = numOfShares;
+    this.barIndex = barIndex;
   }
 
   public String getSymbol() {
@@ -57,6 +60,10 @@ public abstract class Transaction {
     return transactionType;
   }
 
+  public int getBarIndex() {
+    return barIndex;
+  }
+
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
@@ -64,6 +71,7 @@ public abstract class Transaction {
         .append("action", transactionType)
         .append("shares", numOfShares)
         .append("price", price)
+        .append("barIndex", barIndex)
         .build();
   }
 
@@ -72,6 +80,7 @@ public abstract class Transaction {
     private double price;
     private long numOfShares;
     private String symbol;
+    private int barIndex;
 
     public T symbol(String symbol) {
       this.symbol = symbol;
@@ -93,6 +102,11 @@ public abstract class Transaction {
       return getThis();
     }
 
+    public T barIndex(int barIndex) {
+      this.barIndex = barIndex;
+      return getThis();
+    }
+
     public String getSymbol() {
       return symbol;
     }
@@ -107,6 +121,10 @@ public abstract class Transaction {
 
     public long getNumOfShares() {
       return numOfShares;
+    }
+
+    public int getBarIndex() {
+      return barIndex;
     }
 
     public abstract Transaction build();

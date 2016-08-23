@@ -22,6 +22,7 @@ public class Setting {
   @JsonProperty("v")
   private String value;
 
+  //TODO change to proper format
   @JsonProperty("lud")
   private LocalDateTime lastUpdateDate;
 

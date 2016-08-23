@@ -14,13 +14,14 @@ public class BuyTransaction extends Transaction {
     return new BuyTransactionLogBuilder();
   }
 
-  private BuyTransaction(String symbol, LocalDate date, double price, long numOfShares) {
-    super(symbol, date, TransactionType.BUY, price, numOfShares);
+  private BuyTransaction(String symbol, LocalDate date, double price, long numOfShares, int barIndex) {
+    super(symbol, date, TransactionType.BUY, price, numOfShares, barIndex);
   }
 
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+        .append("index", getBarIndex())
         .append("date", getDate())
         .append("shares", getNumOfShares())
         .append("price", getPrice())
@@ -30,7 +31,7 @@ public class BuyTransaction extends Transaction {
   public static class BuyTransactionLogBuilder extends AbstractTransactionLogBuilder<BuyTransactionLogBuilder> {
     @Override
     public BuyTransaction build() {
-      return new BuyTransaction(getSymbol(), getDate(), getPrice(), getNumOfShares());
+      return new BuyTransaction(getSymbol(), getDate(), getPrice(), getNumOfShares(), getBarIndex());
     }
 
     @Override

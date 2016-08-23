@@ -1,11 +1,11 @@
 package com.bn.ninjatrader.testplay;
 
-import com.bn.ninjatrader.testplay.parameter.TestPlayParameters;
+import com.bn.ninjatrader.testplay.simulation.SimulationParameters;
 
 /**
  * Created by Brad on 7/27/16.
  */
 public interface TestPlay {
 
-  void test(TestPlayParameters parameters);
+  void test(SimulationParameters parameters);
 }

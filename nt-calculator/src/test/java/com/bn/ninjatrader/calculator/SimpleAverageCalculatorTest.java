@@ -17,7 +17,7 @@ import static org.testng.Assert.assertTrue;
 /**
  * Created by Brad on 5/27/16.
  */
-public class MovingAverageCalculatorTest {
+public class SimpleAverageCalculatorTest {
 
   @Tested
   private SimpleAverageCalculator calculator;
@@ -108,19 +108,19 @@ public class MovingAverageCalculatorTest {
     Price price = new Price(now, 1.0, 3, 2, 2.92847583, 10000);
     List<Value> result = calculator.calc(Lists.newArrayList(price), 1);
     assertEquals(result.size(), 1);
-    assertEquals(result.get(0).getValue(), 2.92847583);
+    assertEquals(result.get(0).getValue(), 2.928476);
 
     // Test 2
     price = new Price(now, 1.0, 9.5, 9.5, 1.0000000001, 10000);
     result = calculator.calc(Lists.newArrayList(price), 1);
-    assertEquals(result.get(0).getValue(), 1.0000000001);
+    assertEquals(result.get(0).getValue(), 1.0);
 
     // Test 3
     List<Price> priceList = Lists.newArrayList();
-    priceList.add(new Price(now, 1.0, 9, 9, 1.0000000001, 10000));
-    priceList.add(new Price(tomorrow, 1.0, 9, 9, 1.000000002, 10000));
+    priceList.add(new Price(now, 1.0, 9, 9, 1.00001, 10000));
+    priceList.add(new Price(tomorrow, 1.0, 9, 9, 1.00002, 10000));
     result = calculator.calc(priceList, 2);
-    assertEquals(result.get(0).getValue(), 1.00000000105);
+    assertEquals(result.get(0).getValue(), 1.000015);
 
     // Test 3
     priceList.clear();
@@ -128,6 +128,6 @@ public class MovingAverageCalculatorTest {
     priceList.add(new Price(tomorrow, 1.0, 3, 2, 1.057839202, 10000));
     priceList.add(new Price(tomorrow.plusDays(1), 1.0, 3, 2, 1.057839203, 10000));
     result = calculator.calc(priceList, 3);
-    assertEquals(result.get(0).getValue(), 1.057839202);
+    assertEquals(result.get(0).getValue(), 1.057839);
   }
 }

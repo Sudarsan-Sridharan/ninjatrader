@@ -1,9 +1,7 @@
 package com.bn.ninjatrader.testplay.simulation.broker;
 
-import com.bn.ninjatrader.common.boardlot.BoardLot;
-import com.bn.ninjatrader.common.boardlot.BoardLotTable;
-import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.testplay.simulation.account.Account;
+import com.bn.ninjatrader.testplay.simulation.data.BarData;
 import com.bn.ninjatrader.testplay.simulation.order.BuyOrder;
 import com.bn.ninjatrader.testplay.simulation.order.Order;
 import com.bn.ninjatrader.testplay.simulation.transaction.BuyTransaction;
@@ -20,32 +18,29 @@ public class BuyOrderExecutor extends OrderExecutor {
 
   private static final Logger log = LoggerFactory.getLogger(BuyOrderExecutor.class);
 
-  private BoardLotTable boardLotTable = new BoardLotTable();
+  @Override
+  public BuyTransaction execute(Account account, Order order, BarData barData) {
+    checkConditions(account, order, barData);
 
-  public void execute(Account account, Order order, Price currentPrice) {
-    checkConditions(account, order, currentPrice);
-
-    BuyOrder buyOrder = (BuyOrder) order;
-    buyOrder.fulfill(currentPrice);
-    account.removePendingOrder(buyOrder);
-
-    double buyPrice = order.getFulfilledPrice();
-    long numOfShares = getNumOfSharesCanBuyWithAmount(buyOrder.getCashAmount(), buyPrice);
-
-    BuyTransaction buyTransaction = Transaction.buy()
-        .date(currentPrice.getDate())
-        .price(buyPrice)
-        .shares(numOfShares)
-        .build();
+    BuyTransaction buyTransaction = fulfillBuyOrder(order, barData);
 
     updateAccount(account, buyTransaction);
+
+    return buyTransaction;
   }
 
-  private long getNumOfSharesCanBuyWithAmount(double cashAmount, double price) {
-    BoardLot boardLot = boardLotTable.getBoardLot(price);
-    int lotSize = boardLot.getLotSize();
-    long numOfShares = (long)(cashAmount / price / lotSize) * lotSize;
-    return numOfShares;
+  private BuyTransaction fulfillBuyOrder(Order order, BarData barData) {
+    BuyOrder buyOrder = (BuyOrder) order;
+
+    double boughtPrice = getFulfilledPrice(order, barData);
+    long numOfShares = getNumOfSharesCanBuyWithAmount(buyOrder.getCashAmount(), boughtPrice);
+
+    return Transaction.buy()
+        .date(barData.getPrice().getDate())
+        .price(boughtPrice)
+        .shares(numOfShares)
+        .barIndex(barData.getBarIndex())
+        .build();
   }
 
   private void updateAccount(Account account, BuyTransaction transaction) {

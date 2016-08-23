@@ -1,32 +1,22 @@
 package com.bn.ninjatrader.testplay;
 
 import com.bn.ninjatrader.calculator.guice.NtCalculatorModule;
-import com.bn.ninjatrader.common.data.Ichimoku;
-import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.common.data.Value;
-import com.bn.ninjatrader.common.util.ListUtil;
-import com.bn.ninjatrader.model.dao.DataFinder;
-import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.dao.SimpleAverageDao;
 import com.bn.ninjatrader.model.guice.NtModelModule;
-import com.bn.ninjatrader.service.indicator.IchimokuService;
-import com.bn.ninjatrader.testplay.condition.Conditions;
-import com.bn.ninjatrader.testplay.parameter.TestPlayParameters;
 import com.bn.ninjatrader.testplay.simulation.Simulation;
-import com.bn.ninjatrader.testplay.simulation.data.SimulationData;
-import com.bn.ninjatrader.testplay.simulation.data.adaptor.IchimokuDataMapAdaptor;
-import com.bn.ninjatrader.testplay.simulation.data.adaptor.SimpleAverageDataMapAdaptor;
+import com.bn.ninjatrader.testplay.simulation.SimulationFactory;
+import com.bn.ninjatrader.testplay.simulation.SimulationParameters;
 import com.bn.ninjatrader.testplay.simulation.guice.NtSimulationModule;
-import com.bn.ninjatrader.testplay.simulation.guice.annotation.AllDataFinders;
-import com.google.inject.*;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static com.bn.ninjatrader.common.data.DataType.*;
-import static com.bn.ninjatrader.model.dao.period.FindRequest.forSymbol;
+import static com.bn.ninjatrader.testplay.condition.Conditions.*;
 
 /**
  * Created by Brad on 8/3/16.
@@ -36,42 +26,11 @@ public class HistoricalTestPlay implements TestPlay {
   private static final Logger log = LoggerFactory.getLogger(HistoricalTestPlay.class);
 
   @Inject
-  private PriceDao priceDao;
-
-  @Inject
-  private SimpleAverageDao simpleAverageDao;
-
-  @Inject
-  private IchimokuService ichimokuService;
-
-  @Inject
-  @AllDataFinders
-  private List<DataFinder> dataFinders;
-
-  @Inject
-  private Provider<Simulation> simulationProvider;
+  private SimulationFactory simulationFactory;
 
   @Override
-  public void test(TestPlayParameters params) {
-
-    String symbol = params.getSymbol();
-    LocalDate fromDate = params.getFromDate();
-    LocalDate toDate = params.getToDate();
-
-    List<Price> priceList = priceDao.find(forSymbol(symbol).from(fromDate).to(toDate));
-    List<Ichimoku> ichimokuList = ichimokuService.find(forSymbol(symbol).from(fromDate).to(toDate));
-    List<Value> sma21List = simpleAverageDao.find(forSymbol(symbol).from(fromDate).to(toDate).period(21));
-
-    ListUtil.fillToSize(ichimokuList, Ichimoku.empty(), priceList.size());
-    ListUtil.fillToSize(sma21List, Value.empty(), priceList.size());
-
-    SimulationData<Ichimoku> ichimokuData = new SimulationData<>(ichimokuList, new IchimokuDataMapAdaptor());
-    SimulationData<Value> sma21Data = new SimulationData<>(sma21List, SimpleAverageDataMapAdaptor.forPeriod(21));
-
-    Simulation simulation = simulationProvider.get();
-    simulation.setup(params, priceList);
-    simulation.addSimulationData(ichimokuData);
-    simulation.addSimulationData(sma21Data);
+  public void test(SimulationParameters params) {
+    Simulation simulation = simulationFactory.create(params);
     simulation.play();
   }
 
@@ -83,21 +42,20 @@ public class HistoricalTestPlay implements TestPlay {
     );
     HistoricalTestPlay historicalTestPlay = injector.getInstance(HistoricalTestPlay.class);
 
-    TestPlayParameters params = new TestPlayParameters();
-    params.setSymbol("DD");
+    SimulationParameters params = new SimulationParameters();
+    params.setSymbol("MEG");
     params.setFromDate(LocalDate.now().minusYears(10));
     params.setToDate(LocalDate.now());
-    params.setStartingEquity(100000);
+    params.setStartingCash(100000);
 
-    params.setBuyCondition(Conditions.create()
-        .add(Conditions.gt(PRICE_CLOSE, SMA_21))
-        .add(Conditions.gt(PRICE_CLOSE, TENKAN))
-        .add(Conditions.gt(TENKAN, KIJUN))
-        .add(Conditions.gte(TENKAN, 0d))
-        .add(Conditions.gt(KIJUN, 0d)));
+    params.setBuyCondition(create()
+        .add(gt(PRICE_CLOSE, SMA_10))
+        .add(gt(PRICE_CLOSE, TENKAN))
+        .add(gt(TENKAN, KIJUN))
+    );
 
-    params.setSellCondition(Conditions.create()
-        .add(Conditions.lt(PRICE_CLOSE, SMA_21)));
+    params.setSellCondition(create()
+        .add(lt(PRICE_CLOSE, KIJUN)));
 
     historicalTestPlay.test(params);
   }

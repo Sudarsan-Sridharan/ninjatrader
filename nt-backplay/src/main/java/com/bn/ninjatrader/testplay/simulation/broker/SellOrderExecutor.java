@@ -1,8 +1,7 @@
 package com.bn.ninjatrader.testplay.simulation.broker;
 
-import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.testplay.simulation.account.Account;
+import com.bn.ninjatrader.testplay.simulation.data.BarData;
 import com.bn.ninjatrader.testplay.simulation.order.Order;
 import com.bn.ninjatrader.testplay.simulation.transaction.SellTransaction;
 import com.bn.ninjatrader.testplay.simulation.transaction.Transaction;
@@ -14,32 +13,24 @@ import com.google.inject.Singleton;
 @Singleton
 public class SellOrderExecutor extends OrderExecutor {
 
-  public void execute(Account account, Order order, Price currentPrice) {
-    checkConditions(account, order, currentPrice);
+  public SellTransaction execute(Account account, Order order, BarData barData) {
+    checkConditions(account, order, barData);
 
-    order.fulfill(currentPrice);
-
-    double sellPrice = order.getFulfilledPrice();
+    double soldPrice = getFulfilledPrice(order, barData);
     long numOfShares = account.getNumOfShares();
-    double profit = calculateProfit(account, sellPrice);
+    double profit = calculateProfit(account, soldPrice);
 
     SellTransaction sellTransaction = Transaction.sell()
-        .date(currentPrice.getDate())
-        .price(sellPrice)
+        .date(barData.getPrice().getDate())
+        .price(soldPrice)
         .shares(numOfShares)
         .profit(profit)
+        .barIndex(barData.getBarIndex())
         .build();
 
     updateAccount(account, sellTransaction);
-  }
 
-  private double calculateProfit(Account account, double sellPrice) {
-    double avgBoughtPrice = account.getAvgPrice();
-    long totalShares = account.getNumOfShares();
-    double priceDiff = sellPrice - avgBoughtPrice;
-    double profit = NumUtil.multiply(priceDiff, totalShares);
-
-    return profit;
+    return sellTransaction;
   }
 
   private void updateAccount(Account account, SellTransaction transaction) {
@@ -47,5 +38,4 @@ public class SellOrderExecutor extends OrderExecutor {
     account.clearPortfolio();
     account.onSellSuccess(transaction);
   }
-
 }

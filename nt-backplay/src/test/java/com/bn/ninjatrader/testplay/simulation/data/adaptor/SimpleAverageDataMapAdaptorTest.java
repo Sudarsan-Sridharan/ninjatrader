@@ -26,11 +26,18 @@ public class SimpleAverageDataMapAdaptorTest {
   @Test
   public void testToDataMap() {
     SimpleAverageDataMapAdaptor adaptor = SimpleAverageDataMapAdaptor.forPeriod(10);
-
     Value value = Value.of(now, 10);
     DataMap dataMap = adaptor.toDataMap(value);
 
     assertEquals(dataMap.get(DataType.SMA_10), value.getValue());
+  }
+
+  @Test(expectedExceptions = IllegalArgumentException.class)
+  public void testNonExistingDataType() {
+    SimpleAverageDataMapAdaptor adaptor = SimpleAverageDataMapAdaptor.forPeriod(20);
+    Value value = Value.of(now, 10);
+    DataMap dataMap = adaptor.toDataMap(value);
+
     assertNull(dataMap.get(DataType.SMA_21));
   }
 }

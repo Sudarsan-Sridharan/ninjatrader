@@ -1,16 +1,12 @@
 package com.bn.ninjatrader.testplay.simulation.account;
 
 import com.bn.ninjatrader.common.util.NumUtil;
-import com.bn.ninjatrader.testplay.simulation.order.Order;
 import com.bn.ninjatrader.testplay.simulation.stats.TradeStatistic;
 import com.bn.ninjatrader.testplay.simulation.transaction.Bookkeeper;
 import com.bn.ninjatrader.testplay.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.testplay.simulation.transaction.SellTransaction;
-import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 /**
  * Created by Brad on 8/3/16.
@@ -25,17 +21,12 @@ public class Account {
 
   private double cash = 100000;
   private double startingCash = 100000;
-  private List<Order> pendingOrders = Lists.newArrayList();
 
-  public static Account startWithCash(double cash) {
+  public static Account withStartingCash(double cash) {
     Account account = new Account();
     account.cash = cash;
     account.startingCash = cash;
     return account;
-  }
-
-  public Account() {
-
   }
 
   public void onBuySuccess(BuyTransaction transaction) {
@@ -78,18 +69,6 @@ public class Account {
 
   public void addToPortfolio(BuyTransaction transaction) {
     portfolio.add(transaction);
-  }
-
-  public void addPendingOrder(Order pendingOrder) {
-    pendingOrders.add(pendingOrder);
-  }
-
-  public void removePendingOrder(Order pendingOrder) {
-    pendingOrders.remove(pendingOrder);
-  }
-
-  public boolean hasPendingOrder() {
-    return !pendingOrders.isEmpty();
   }
 
   public void setStartingCash(double startingCash) {

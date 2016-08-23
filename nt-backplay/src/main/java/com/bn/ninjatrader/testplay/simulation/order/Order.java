@@ -1,7 +1,5 @@
 package com.bn.ninjatrader.testplay.simulation.order;
 
-import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.testplay.simulation.transaction.TransactionType;
 
 import java.time.LocalDate;
@@ -12,7 +10,6 @@ import java.time.LocalDate;
 public abstract class Order {
 
   private LocalDate orderDate;
-  private double fulfilledPrice;
   private long numOfShares;
   private TransactionType transactionType;
   private MarketTime marketTime = MarketTime.CLOSE;
@@ -42,10 +39,6 @@ public abstract class Order {
     return orderDate;
   }
 
-  public double getFulfilledPrice() {
-    return fulfilledPrice;
-  }
-
   public long getNumOfShares() {
     return numOfShares;
   }
@@ -64,16 +57,5 @@ public abstract class Order {
 
   public boolean isReadyForProcessing() {
     return daysFromNow <= 0;
-  }
-
-  public double getValue() {
-    return NumUtil.multiply(fulfilledPrice, numOfShares);
-  }
-
-  public void fulfill(Price price) {
-    switch (marketTime) {
-      case OPEN: fulfilledPrice = price.getOpen(); break;
-      default: fulfilledPrice = price.getClose();
-    }
   }
 }

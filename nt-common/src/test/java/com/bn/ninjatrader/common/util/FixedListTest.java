@@ -4,6 +4,7 @@ import org.testng.annotations.Test;
 
 import java.util.Arrays;
 
+import static com.bn.ninjatrader.common.util.FixedList.TrimDirection.RIGHT_TO_LEFT;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -84,5 +85,19 @@ public class FixedListTest {
     assertEquals(fixedList.size(), 2);
     assertEquals(fixedList.get(0).intValue(), 99);
     assertEquals(fixedList.get(1).intValue(), 100);
+  }
+
+  @Test
+  public void testTrimRightToLeft() {
+    FixedList<Integer> fixedList = FixedList.withMaxSizeAndTrimDirection(2, RIGHT_TO_LEFT);
+    fixedList.addAll(Arrays.asList(5, 6, 7, 8));
+
+    assertEquals(fixedList.size(), 2);
+    assertEquals(fixedList.get(0).intValue(), 5);
+    assertEquals(fixedList.get(1).intValue(), 6);
+
+    fixedList.add(0, 4);
+    assertEquals(fixedList.get(0).intValue(), 4);
+    assertEquals(fixedList.get(1).intValue(), 5);
   }
 }

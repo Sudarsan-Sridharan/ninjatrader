@@ -6,7 +6,6 @@ import com.bn.ninjatrader.common.rest.PriceResponse;
 import com.bn.ninjatrader.common.type.Period;
 import com.bn.ninjatrader.common.util.PriceUtil;
 import com.bn.ninjatrader.common.util.TestUtil;
-import com.bn.ninjatrader.model.dao.DataFinder;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.WeeklyPriceDao;
 import com.bn.ninjatrader.model.dao.period.FindRequest;
@@ -80,12 +79,11 @@ public class PriceHttpServiceTest {
     assertFindForSymbolCalled(weeklyPriceDao, "BDO");
   }
 
-  public void assertFindForSymbolCalled(DataFinder dataDao, String symbol) {
+  public void assertFindForSymbolCalled(PriceDao priceDao, String symbol) {
     new Verifications() {{
       FindRequest findRequest;
-      dataDao.find(findRequest = withCapture());
+      priceDao.find(findRequest = withCapture());
       assertEquals(findRequest.getSymbol(), symbol);
     }};
   }
-
 }

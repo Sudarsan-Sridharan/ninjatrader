@@ -16,8 +16,8 @@ public class SellTransaction extends Transaction {
     return new SellTransactionBuilder();
   }
 
-  private SellTransaction(String symbol, LocalDate date, double price, long numOfShares, double profit) {
-    super(symbol, date, TransactionType.SELL, price, numOfShares);
+  private SellTransaction(String symbol, LocalDate date, double price, long numOfShares, int barIndex, double profit) {
+    super(symbol, date, TransactionType.SELL, price, numOfShares, barIndex);
     this.profit = profit;
   }
 
@@ -28,6 +28,7 @@ public class SellTransaction extends Transaction {
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+        .append("index", getBarIndex())
         .append("date", getDate())
         .append("shares", getNumOfShares())
         .append("price", getPrice())
@@ -45,7 +46,7 @@ public class SellTransaction extends Transaction {
 
     @Override
     public SellTransaction build() {
-      return new SellTransaction(getSymbol(), getDate(), getPrice(), getNumOfShares(), profit);
+      return new SellTransaction(getSymbol(), getDate(), getPrice(), getNumOfShares(), getBarIndex(), profit);
     }
 
     @Override

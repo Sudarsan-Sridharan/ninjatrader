@@ -35,4 +35,13 @@ public class SellTransactionTest {
     assertEquals(transaction.getProfit(), 5000.0);
     assertEquals(transaction.getTransactionType(), TransactionType.SELL);
   }
+
+  @Test
+  public void testCalculateValue() {
+    SellTransaction transaction = Transaction.sell().date(now).price(100).shares(1000).build();
+    assertEquals(transaction.getValue(), 100000d);
+
+    transaction = Transaction.sell().date(now).price(0.0001).shares(1000).build();
+    assertEquals(transaction.getValue(), 0.1);
+  }
 }

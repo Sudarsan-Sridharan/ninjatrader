@@ -5,6 +5,10 @@ package com.bn.ninjatrader.common.data;
  */
 public enum DataType {
 
+  BAR_INDEX,
+  BAR_LAST_BUY_INDEX,
+  BAR_LAST_SELL_INDEX,
+
   CONSTANT,
 
   PRICE_OPEN,
@@ -19,6 +23,20 @@ public enum DataType {
   SENKOU_B,
   CHIKOU,
 
-  SMA_10,
-  SMA_21
+  SMA_10(10),
+  SMA_21(21);
+
+  private final int period;
+
+  DataType() {
+    this.period = 0;
+  }
+
+  DataType(int period) {
+    this.period = period;
+  }
+
+  public int getPeriod() {
+    return period;
+  }
 }

@@ -11,11 +11,11 @@ public class ListUtil {
 
   private ListUtil() {}
 
-  public static <T> void fillToSize(List<T> dataList, T filler, long size) {
-    Preconditions.checkNotNull(dataList);
+  public static <T> void fillToSize(List<T> list, T filler, long size) {
+    Preconditions.checkNotNull(list);
 
-    for (int i = dataList.size(); i < size; i++) {
-      dataList.add(0, filler);
+    for (int i = list.size(); i < size; i++) {
+      list.add(0, filler);
     }
   }
 }
