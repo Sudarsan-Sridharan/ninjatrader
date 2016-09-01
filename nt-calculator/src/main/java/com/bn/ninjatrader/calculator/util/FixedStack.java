@@ -2,6 +2,7 @@ package com.bn.ninjatrader.calculator.util;
 
 import com.google.common.collect.Lists;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ import java.util.List;
  */
 public class FixedStack<T> {
 
-  protected List<T> list;
+  private final List<T> list;
   private final int fixedSize;
 
   public static <T> FixedStack<T> withFixedSize(int fixedSize) {
@@ -35,6 +36,15 @@ public class FixedStack<T> {
       removeFirstIndex();
     }
     handleAfterAdd(t);
+  }
+
+  public void addAll(Collection<T> collection) {
+    if (collection == null) {
+      return;
+    }
+    for (T t : collection) {
+      add(t);
+    }
   }
 
   protected void handleAfterAdd(T added) {

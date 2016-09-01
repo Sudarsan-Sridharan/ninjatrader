@@ -13,10 +13,10 @@ public class BuyOrder extends Order {
 
   private BuyOrder(LocalDate orderDate,
                    MarketTime marketTime,
-                   int daysFromNow,
+                   int barsFromNow,
                    long numOfShares,
                    double cashAmount) {
-    super(orderDate, TransactionType.BUY, marketTime, daysFromNow, numOfShares);
+    super(orderDate, TransactionType.BUY, marketTime, barsFromNow, numOfShares);
     this.cashAmount = cashAmount;
   }
 
@@ -30,6 +30,12 @@ public class BuyOrder extends Order {
     public BuyOrderBuilder cashAmount(double cashAmount) {
       this.cashAmount = cashAmount;
       return this;
+    }
+
+    public BuyOrderBuilder params(OrderParameters orderParams) {
+      return getThis()
+          .at(orderParams.getMarketTime())
+          .barsFromNow(orderParams.getBarsFromNow());
     }
 
     @Override

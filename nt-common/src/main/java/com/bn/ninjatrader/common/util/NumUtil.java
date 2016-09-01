@@ -82,7 +82,16 @@ public class NumUtil {
       return value;
     }
     double precision = Math.pow(10, decimalPlaces);
-    long rounded = (long) (value * precision);
+    long trimmedValue = (long) (value * precision);
+    return (double) trimmedValue / precision;
+  }
+
+  public static double round(double value, int decimalPlaces) {
+    if (Double.isNaN(value) || Double.isInfinite(value)) {
+      return value;
+    }
+    double precision = Math.pow(10, decimalPlaces);
+    long rounded = Math.round(value * precision);
     return (double) rounded / precision;
   }
 

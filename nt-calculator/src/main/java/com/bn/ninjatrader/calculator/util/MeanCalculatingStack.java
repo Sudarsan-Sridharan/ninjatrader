@@ -2,11 +2,15 @@ package com.bn.ninjatrader.calculator.util;
 
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.util.NumUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by Brad on 7/11/16.
  */
-public class MeanCalculatingStack extends FixedStack<Price> {
+public class MeanCalculatingStack extends FixedStack<Price> implements CalculatingStack<Price> {
+
+  private static final Logger log = LoggerFactory.getLogger(MeanCalculatingStack.class);
 
   private double highest;
   private double lowest;
@@ -47,14 +51,14 @@ public class MeanCalculatingStack extends FixedStack<Price> {
 
   private void findHighestFromPriceList() {
     highest = 0;
-    for (Price price : list) {
+    for (Price price : getList()) {
       highest = Math.max(price.getHigh(), highest);
     }
   }
 
   private void findLowestFromPriceList() {
     lowest = 0;
-    for (Price price : list) {
+    for (Price price : getList()) {
       if (lowest == 0) {
         lowest = price.getLow();
       } else {
@@ -64,15 +68,19 @@ public class MeanCalculatingStack extends FixedStack<Price> {
   }
 
   private void calculateMean() {
-    if (list.size() != getFixedSize()) {
-      mean = 0;
+    if (size() != getFixedSize()) {
+      mean = Double.NaN;
     } else {
       double sum = NumUtil.plus(highest, lowest);
       mean = NumUtil.divide(sum, 2);
     }
   }
 
-  public double getMean() {
+  @Override
+  public double getValue() {
+    if (size() != getFixedSize()) {
+      return Double.NaN;
+    }
     return mean;
   }
 }

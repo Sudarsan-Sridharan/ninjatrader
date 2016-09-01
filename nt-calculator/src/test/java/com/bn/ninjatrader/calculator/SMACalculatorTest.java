@@ -17,10 +17,10 @@ import static org.testng.Assert.assertTrue;
 /**
  * Created by Brad on 5/27/16.
  */
-public class SimpleAverageCalculatorTest {
+public class SMACalculatorTest {
 
   @Tested
-  private SimpleAverageCalculator calculator;
+  private SMACalculator calculator;
 
   private LocalDate now = LocalDate.of(2016, 2, 1);
   private LocalDate tomorrow = LocalDate.of(2016, 2, 2);

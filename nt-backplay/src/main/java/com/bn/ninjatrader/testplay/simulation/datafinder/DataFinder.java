@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.testplay.simulation.datafinder;
 
-import com.bn.ninjatrader.common.data.DataType;
+import com.bn.ninjatrader.testplay.simulation.data.DataType;
 import com.bn.ninjatrader.testplay.simulation.SimulationParameters;
 import com.bn.ninjatrader.testplay.simulation.data.SimulationData;
 

@@ -34,6 +34,9 @@ public class Price implements DateObj<Price> {
   @JsonProperty("v")
   private long volume;
 
+  @JsonProperty("ch")
+  private double change;
+
   @JsonProperty("d")
   @JsonSerialize(using = NtLocalDateSerializer.class)
   @JsonDeserialize(using = NtLocalDateDeserializer.class)
@@ -106,6 +109,14 @@ public class Price implements DateObj<Price> {
     this.volume += additionalVolume;
   }
 
+  public double getChange() {
+    return change;
+  }
+
+  public void setChange(double change) {
+    this.change = change;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (obj == null) { return false; }
@@ -120,18 +131,25 @@ public class Price implements DateObj<Price> {
     Price rhs = (Price) obj;
 
     return new EqualsBuilder()
-        .append(date, rhs.getDate())
-        .append(open, rhs.getOpen())
-        .append(high, rhs.getHigh())
-        .append(low, rhs.getLow())
-        .append(close, rhs.getClose())
-        .append(volume, rhs.getVolume())
+        .append(date, rhs.date)
+        .append(open, rhs.open)
+        .append(high, rhs.high)
+        .append(low, rhs.low)
+        .append(close, rhs.close)
+        .append(volume, rhs.volume)
         .build();
   }
 
   @Override
   public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this);
+    return new HashCodeBuilder()
+        .append(date)
+        .append(open)
+        .append(high)
+        .append(low)
+        .append(close)
+        .append(volume)
+        .toHashCode();
   }
 
   @Override
@@ -142,6 +160,7 @@ public class Price implements DateObj<Price> {
         .append("H", high)
         .append("L", low)
         .append("C", close)
+        .append("CH", change)
         .append("V", volume)
         .toString();
   }

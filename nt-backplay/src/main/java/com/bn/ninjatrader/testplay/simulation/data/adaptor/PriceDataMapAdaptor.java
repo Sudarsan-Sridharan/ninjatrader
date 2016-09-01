@@ -2,7 +2,7 @@ package com.bn.ninjatrader.testplay.simulation.data.adaptor;
 
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.testplay.simulation.data.DataMap;
-import com.bn.ninjatrader.common.data.DataType;
+import com.bn.ninjatrader.testplay.simulation.data.DataType;
 import com.google.common.base.Preconditions;
 import com.google.inject.Singleton;
 

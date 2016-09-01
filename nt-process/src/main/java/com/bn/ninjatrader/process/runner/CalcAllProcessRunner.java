@@ -4,14 +4,14 @@ import com.bn.ninjatrader.common.data.Stock;
 import com.bn.ninjatrader.model.dao.StockDao;
 import com.bn.ninjatrader.model.guice.NtModelModule;
 import com.bn.ninjatrader.process.annotation.CalcAllProcess;
-import com.bn.ninjatrader.process.calc.CalcProcess;
-import com.bn.ninjatrader.process.calc.CalcSimpleAverageProcess;
-import com.bn.ninjatrader.process.calc.CalcWeeklyPriceProcess;
+import com.bn.ninjatrader.process.calc.*;
 import com.bn.ninjatrader.process.guice.NtProcessModule;
 import com.bn.ninjatrader.process.request.CalcRequest;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 
@@ -19,6 +19,7 @@ import java.time.LocalDate;
  * Created by Brad on 8/15/16.
  */
 public class CalcAllProcessRunner {
+  private static final Logger log = LoggerFactory.getLogger(CalcAllProcessRunner.class);
 
   @Inject
   @CalcAllProcess
@@ -28,10 +29,22 @@ public class CalcAllProcessRunner {
   private CalcWeeklyPriceProcess calcMeanProcess;
 
   @Inject
-  private CalcSimpleAverageProcess calcSimpleAverageProcess;
+  private CalcSMAProcess calcSimpleAverageProcess;
+
+  @Inject
+  private CalcPriceChangeProcess calcPriceChangeProcess;
+
+  @Inject
+  private CalcWeeklyPriceChangeProcess calcWeeklyPriceChangeProcess;
 
   @Inject
   private CalcWeeklyPriceProcess calcWeeklyPriceProcess;
+
+  @Inject
+  private CalcWeeklyMeanProcess calcWeeklyMeanProcess;
+
+  @Inject
+  private CalcRSIProcess calcRSIProcess;
 
   @Inject
   private StockDao stockDao;
@@ -39,10 +52,12 @@ public class CalcAllProcessRunner {
   public void run() {
     LocalDate fromDate = LocalDate.of(1900, 1, 1);
     LocalDate toDate = LocalDate.now();
-    runProcess(calcAllProcess, fromDate, toDate);
+    runProcess(calcRSIProcess, fromDate, toDate);
   }
 
   private void runProcess(CalcProcess calcProcess, LocalDate fromDate, LocalDate toDate) {
+    log.info("Running: {}", calcProcess.getClass().getSimpleName());
+
     for (Stock stock : stockDao.find()) {
       calcProcess.processMissingBars(
           CalcRequest.forStock(stock)

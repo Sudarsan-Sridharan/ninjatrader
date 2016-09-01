@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.testplay.operation;
 
-import com.bn.ninjatrader.common.data.DataType;
+import com.bn.ninjatrader.testplay.simulation.data.DataType;
 import org.testng.annotations.Test;
 
 import java.util.Set;

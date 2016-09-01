@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.testplay.operation;
 
-import com.bn.ninjatrader.common.data.DataType;
+import com.bn.ninjatrader.testplay.simulation.data.DataType;
 import com.bn.ninjatrader.testplay.type.Operator;
 
 /**

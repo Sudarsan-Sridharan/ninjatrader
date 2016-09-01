@@ -26,10 +26,9 @@ public class BarDataHistory {
     barDataList.add(0, barData);
   }
 
-  public Optional<BarData> getBarDataDaysAgo(int daysAgo) {
+  public Optional<BarData> getNBarsAgo(int numOfBarsAgo) {
     try {
-      int index = daysAgo - 1;
-      return Optional.of(barDataList.get(index));
+      return Optional.of(barDataList.get(numOfBarsAgo));
     } catch (IndexOutOfBoundsException e) {
       return Optional.absent();
     }

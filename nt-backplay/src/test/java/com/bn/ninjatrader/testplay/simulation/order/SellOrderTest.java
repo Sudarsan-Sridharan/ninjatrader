@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 import java.time.LocalDate;
 
 import static com.bn.ninjatrader.testplay.simulation.order.MarketTime.CLOSE;
+import static com.bn.ninjatrader.testplay.simulation.order.MarketTime.OPEN;
 import static org.testng.Assert.*;
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -26,7 +27,7 @@ public class SellOrderTest {
 
   @Test
   public void testCreateWithData() {
-    SellOrder order = Order.sell().date(now).at(CLOSE).shares(1000).daysFromNow(5).build();
+    SellOrder order = Order.sell().date(now).at(CLOSE).shares(1000).barsFromNow(5).build();
     assertEquals(order.getOrderDate(), now);
     assertEquals(order.getMarketTime(), CLOSE);
     assertEquals(order.getNumOfShares(), 1000);
@@ -36,10 +37,19 @@ public class SellOrderTest {
 
   @Test
   public void testReadyForProcessing() {
-    SellOrder order = Order.sell().date(now).at(CLOSE).shares(1000).daysFromNow(1).build();
+    SellOrder order = Order.sell().date(now).at(CLOSE).shares(1000).barsFromNow(1).build();
     assertFalse(order.isReadyForProcessing());
 
     order.decrementDaysFromNow();
     assertTrue(order.isReadyForProcessing());
+  }
+
+  @Test
+  public void testWithParams() {
+    SellOrderParameters params = OrderParameters.sell().at(OPEN).barsFromNow(100).build();
+    SellOrder order = Order.sell().params(params).build();
+
+    assertEquals(order.getMarketTime(), OPEN);
+    assertEquals(order.getBarsFromNow(), 100);
   }
 }

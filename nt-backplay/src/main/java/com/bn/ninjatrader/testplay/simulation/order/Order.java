@@ -13,7 +13,7 @@ public abstract class Order {
   private long numOfShares;
   private TransactionType transactionType;
   private MarketTime marketTime = MarketTime.CLOSE;
-  private int daysFromNow;
+  private int barsFromNow;
 
   public static BuyOrder.BuyOrderBuilder buy() {
     return new BuyOrder.BuyOrderBuilder();
@@ -26,12 +26,12 @@ public abstract class Order {
   protected Order(LocalDate orderDate,
                   TransactionType transactionType,
                   MarketTime marketTime,
-                  int daysFromNow,
+                  int barsFromNow,
                   long numOfShares) {
     this.orderDate = orderDate;
     this.transactionType = transactionType;
     this.marketTime = marketTime;
-    this.daysFromNow = daysFromNow;
+    this.barsFromNow = barsFromNow;
     this.numOfShares = numOfShares;
   }
 
@@ -52,10 +52,14 @@ public abstract class Order {
   }
 
   public void decrementDaysFromNow() {
-    daysFromNow--;
+    barsFromNow--;
   }
 
   public boolean isReadyForProcessing() {
-    return daysFromNow <= 0;
+    return barsFromNow <= 0;
+  }
+
+  public int getBarsFromNow() {
+    return barsFromNow;
   }
 }

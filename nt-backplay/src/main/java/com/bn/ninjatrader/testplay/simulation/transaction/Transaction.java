@@ -1,6 +1,8 @@
 package com.bn.ninjatrader.testplay.simulation.transaction;
 
 import com.bn.ninjatrader.common.util.NumUtil;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -67,12 +69,47 @@ public abstract class Transaction {
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+        .append("symbol", symbol)
         .append("date", date)
         .append("action", transactionType)
         .append("shares", numOfShares)
         .append("price", price)
         .append("barIndex", barIndex)
         .build();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder()
+        .append(symbol)
+        .append(barIndex)
+        .append(date)
+        .append(transactionType)
+        .append(price)
+        .append(numOfShares)
+        .toHashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) { return false; }
+    if (!(obj instanceof Transaction)) {
+      return false;
+    }
+    if (obj == this) { return true; }
+    if (obj.getClass() != getClass()) {
+      return false;
+    }
+
+    Transaction rhs = (Transaction) obj;
+    return new EqualsBuilder()
+        .append(symbol, rhs.symbol)
+        .append(barIndex, rhs.barIndex)
+        .append(date, rhs.date)
+        .append(transactionType, rhs.transactionType)
+        .append(price, rhs.price)
+        .append(numOfShares, rhs.numOfShares)
+        .isEquals();
   }
 
   public static abstract class AbstractTransactionLogBuilder<T extends AbstractTransactionLogBuilder> {

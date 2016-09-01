@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.testplay.simulation;
 
-import com.bn.ninjatrader.common.data.DataType;
+import com.bn.ninjatrader.testplay.simulation.data.DataType;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.period.FindRequest;

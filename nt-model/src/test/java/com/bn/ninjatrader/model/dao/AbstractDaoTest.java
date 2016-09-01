@@ -9,11 +9,15 @@ import com.google.inject.Injector;
  */
 public abstract class AbstractDaoTest {
 
-  protected Injector injector;
+  private Injector injector;
 
   public AbstractDaoTest() {
     injector = Guice.createInjector(
         new NtModelTestModule()
     );
+  }
+
+  public Injector getInjector() {
+    return injector;
   }
 }

@@ -2,7 +2,7 @@ package com.bn.ninjatrader.testplay.operation;
 
 import org.testng.annotations.Test;
 
-import static com.bn.ninjatrader.common.data.DataType.*;
+import static com.bn.ninjatrader.testplay.simulation.data.DataType.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 

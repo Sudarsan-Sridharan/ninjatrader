@@ -1,7 +1,9 @@
 package com.bn.ninjatrader.calculator;
 
+import com.bn.ninjatrader.calculator.util.CalculatingStack;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.data.Value;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,5 +27,20 @@ public abstract class AbstractCalculatorForPeriod implements CalculatorForPeriod
       periodToValuesMap.put(period, calc(priceList, period));
     }
     return periodToValuesMap;
+  }
+
+  protected List<Value> calcWithStack(List<Price> priceList, CalculatingStack<Price> stack) {
+    List<Value> resultList = Lists.newArrayList();
+    for (Price price : priceList) {
+      stack.add(price);
+
+      double calcValue = stack.getValue();
+
+      if (!Double.isNaN(calcValue)) {
+        Value value = new Value(price.getDate(), calcValue);
+        resultList.add(value);
+      }
+    }
+    return resultList;
   }
 }

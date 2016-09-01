@@ -30,7 +30,7 @@ public class PriceDaoTest extends AbstractDaoTest {
 
   @BeforeClass
   public void setup() {
-    priceDao = injector.getInstance(PriceDao.class);
+    priceDao = getInjector().getInstance(PriceDao.class);
   }
 
   @BeforeMethod

@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 public class Account {
   private static final Logger log = LoggerFactory.getLogger(Account.class);
 
-
   private final Portfolio portfolio = new Portfolio();
   private final Bookkeeper bookkeeper = new Bookkeeper();
   private final TradeStatistic tradeStatistic = new TradeStatistic();

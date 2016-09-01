@@ -8,7 +8,7 @@ import static org.testng.Assert.assertEquals;
 /**
  * Created by Brad on 7/11/16.
  */
-public class SimpleAverageCalculatingStackTest {
+public class SMACalculatingStackTest {
 
   private final Price highPrecisionPrice = new Price(0.00001, 0.00002, 0.00003, 0.00004, 1000);
   private final Price price1 = new Price(1.0, 2.0, 3.0, 4.0, 10000);
@@ -18,16 +18,16 @@ public class SimpleAverageCalculatingStackTest {
 
   @Test
   public void testEmptyStack() {
-    SimpleAverageCalculatingStack stack = SimpleAverageCalculatingStack.withFixedSize(1);
-    assertEquals(stack.getValue(), 0d);
+    SMACalculatingStack stack = SMACalculatingStack.withFixedSize(1);
+    assertEquals(stack.getValue(), Double.NaN);
 
-    stack = SimpleAverageCalculatingStack.withFixedSize(10);
-    assertEquals(stack.getValue(), 0d);
+    stack = SMACalculatingStack.withFixedSize(10);
+    assertEquals(stack.getValue(), Double.NaN);
   }
 
   @Test
   public void testAverageOfSinglePrice() {
-    SimpleAverageCalculatingStack stack = SimpleAverageCalculatingStack.withFixedSize(1);
+    SMACalculatingStack stack = SMACalculatingStack.withFixedSize(1);
     stack.add(price1);
 
     assertEquals(stack.getValue(), 4.0);
@@ -35,12 +35,12 @@ public class SimpleAverageCalculatingStackTest {
 
   @Test
   public void testWithHighPrecision() {
-    SimpleAverageCalculatingStack stack = SimpleAverageCalculatingStack.withFixedSize(1);
+    SMACalculatingStack stack = SMACalculatingStack.withFixedSize(1);
     stack.add(highPrecisionPrice);
 
     assertEquals(stack.getValue(), 0.00004);
 
-    stack = SimpleAverageCalculatingStack.withFixedSize(2);
+    stack = SMACalculatingStack.withFixedSize(2);
     stack.add(highPrecisionPrice);
     stack.add(highPrecisionPrice);
 
@@ -49,7 +49,7 @@ public class SimpleAverageCalculatingStackTest {
 
   @Test
   public void testWithMultipleInsertInSizeOne() {
-    SimpleAverageCalculatingStack stack = SimpleAverageCalculatingStack.withFixedSize(1);
+    SMACalculatingStack stack = SMACalculatingStack.withFixedSize(1);
     stack.add(price1);
     stack.add(price2);
 
@@ -58,13 +58,13 @@ public class SimpleAverageCalculatingStackTest {
 
   @Test
   public void testWithMultiplePrices() {
-    SimpleAverageCalculatingStack stack = SimpleAverageCalculatingStack.withFixedSize(3);
+    SMACalculatingStack stack = SMACalculatingStack.withFixedSize(3);
 
     stack.add(price1);
-    assertEquals(stack.getValue(), 0d);
+    assertEquals(stack.getValue(), Double.NaN);
 
     stack.add(price2);
-    assertEquals(stack.getValue(), 0d);
+    assertEquals(stack.getValue(), Double.NaN);
 
     stack.add(price3);
     assertEquals(stack.getValue(), 148d);
@@ -75,7 +75,7 @@ public class SimpleAverageCalculatingStackTest {
 
   @Test
   public void testMultiplePricesPrecision() {
-    SimpleAverageCalculatingStack stack = SimpleAverageCalculatingStack.withFixedSize(7);
+    SMACalculatingStack stack = SMACalculatingStack.withFixedSize(7);
     stack.add(price1);
     stack.add(price1);
     stack.add(price1);

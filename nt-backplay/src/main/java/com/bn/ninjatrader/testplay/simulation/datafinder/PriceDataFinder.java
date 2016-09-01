@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.testplay.simulation.datafinder;
 
-import com.bn.ninjatrader.common.data.DataType;
+import com.bn.ninjatrader.testplay.simulation.data.DataType;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.period.FindRequest;
@@ -14,7 +14,7 @@ import com.google.inject.Singleton;
 import java.util.Collections;
 import java.util.List;
 
-import static com.bn.ninjatrader.common.data.DataType.*;
+import static com.bn.ninjatrader.testplay.simulation.data.DataType.*;
 import static com.bn.ninjatrader.model.dao.period.FindRequest.forSymbol;
 
 /**

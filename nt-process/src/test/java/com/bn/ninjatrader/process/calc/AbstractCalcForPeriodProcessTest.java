@@ -9,7 +9,11 @@ import com.bn.ninjatrader.process.request.CalcRequest;
 import com.google.common.collect.Lists;
 import mockit.Expectations;
 import mockit.Verifications;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,6 +26,8 @@ import static org.testng.Assert.assertEquals;
  * Created by Brad on 8/16/16.
  */
 public abstract class AbstractCalcForPeriodProcessTest {
+
+  private static final Logger log = LoggerFactory.getLogger(AbstractCalcForPeriodProcessTest.class);
 
   static final String SYMBOL = "MEG";
   static final int PERIOD_WITH_NO_VALUES = 5;
@@ -41,6 +47,9 @@ public abstract class AbstractCalcForPeriodProcessTest {
 
   final Map<Integer, List<Value>> calcResult = Maps.newHashMap();
 
+  private ValueDao dao;
+  private CalculatorForPeriod calculator;
+
   @BeforeClass
   public void setupData() {
     calcResult.put(PERIOD_WITH_NO_VALUES, Lists.newArrayList());
@@ -49,29 +58,44 @@ public abstract class AbstractCalcForPeriodProcessTest {
     calcResult.put(PERIOD_3, Lists.newArrayList(value3, value4));
   }
 
-  void testProcessWithNoData(CalcProcess process, ValueDao dao) {
-    LocalDate date = LocalDate.MIN;
-    process.processMissingBars(forSymbol(SYMBOL).from(date).to(date).periods(PERIODS));
-    assertSaveNotCalled(dao);
+  @BeforeMethod
+  public void setupTest() {
+    provideTestedProcess();
+    calculator = provideCalculator();
+    dao = provideDao();
   }
 
-  void assertSaveNotCalled(ValueDao dao) {
+  @Test
+  public void testProcessWithNoData() {
+    LocalDate date = LocalDate.MIN;
+    provideTestedProcess().processMissingBars(forSymbol(SYMBOL).from(date).to(date).periods(PERIODS));
+    assertSaveNotCalled();
+  }
+
+  void assertSaveNotCalled() {
     new Verifications() {{
       dao.save(withInstanceOf(SaveRequest.class));
       times = 0;
     }};
   }
 
-  void testProcessWithData(CalculatorForPeriod calculatorForPeriod, CalcProcess process, ValueDao dao) {
+  @Test
+  void testProcessWithData() {
     new Expectations() {{
-      calculatorForPeriod.calc(withInstanceOf(List.class), PERIODS);
+      calculator.calc(withInstanceOf(List.class), PERIODS);
       result = calcResult;
     }};
-    process.processMissingBars(CalcRequest.forSymbol(SYMBOL).from(date2).to(date3).periods(PERIODS));
-    assertSaveCalledForEachPeriodOnDao(dao);
+    provideTestedProcess().processMissingBars(CalcRequest.forSymbol(SYMBOL).from(date2).to(date3).periods(PERIODS));
+    assertSaveCalledForEachPeriodOnDao();
   }
 
-  void assertSaveCalledForEachPeriodOnDao(ValueDao dao) {
+  public abstract ValueDao provideDao();
+
+  public abstract CalcProcess provideTestedProcess();
+
+  public abstract CalculatorForPeriod provideCalculator();
+
+  void assertSaveCalledForEachPeriodOnDao() {
     new Verifications() {{
       List<SaveRequest> saveRequestList = Lists.newArrayList();
 
@@ -81,13 +105,13 @@ public abstract class AbstractCalcForPeriodProcessTest {
       assertEquals(periodToSaveRequestMap.size(), 3);
 
       SaveRequest saveRequest = periodToSaveRequestMap.get(PERIOD_1);
-      assertEquals(saveRequest, SaveRequest.forSymbol(SYMBOL).period(PERIOD_1).values(value2, value3, value4));
+      assertEquals(saveRequest, SaveRequest.save(SYMBOL).period(PERIOD_1).values(value2, value3, value4));
 
       saveRequest = periodToSaveRequestMap.get(PERIOD_2);
-      assertEquals(saveRequest, SaveRequest.forSymbol(SYMBOL).period(PERIOD_2).values(value2, value3, value4));
+      assertEquals(saveRequest, SaveRequest.save(SYMBOL).period(PERIOD_2).values(value2, value3, value4));
 
       saveRequest = periodToSaveRequestMap.get(PERIOD_3);
-      assertEquals(saveRequest, SaveRequest.forSymbol(SYMBOL).period(PERIOD_3).values(value3, value4));
+      assertEquals(saveRequest, SaveRequest.save(SYMBOL).period(PERIOD_3).values(value3, value4));
     }};
   }
 

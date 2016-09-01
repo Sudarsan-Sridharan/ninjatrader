@@ -15,8 +15,13 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 
-import static com.bn.ninjatrader.common.data.DataType.*;
 import static com.bn.ninjatrader.testplay.condition.Conditions.*;
+import static com.bn.ninjatrader.testplay.operation.function.Functions.highestInLastNBars;
+import static com.bn.ninjatrader.testplay.operation.function.Functions.history;
+import static com.bn.ninjatrader.testplay.simulation.data.DataType.*;
+import static com.bn.ninjatrader.testplay.simulation.order.MarketTime.CLOSE;
+import static com.bn.ninjatrader.testplay.simulation.order.OrderParameters.buy;
+import static com.bn.ninjatrader.testplay.simulation.order.OrderParameters.sell;
 
 /**
  * Created by Brad on 8/3/16.
@@ -49,14 +54,31 @@ public class HistoricalTestPlay implements TestPlay {
     params.setStartingCash(100000);
 
     params.setBuyCondition(create()
-        .add(gt(PRICE_CLOSE, SMA_10))
-        .add(gt(PRICE_CLOSE, TENKAN))
+        .add(gt(PRICE_CLOSE, SMA_21))
+        .add(gt(SMA_21, SMA_50))
+        .add(gt(PRICE_CLOSE, highestInLastNBars(PRICE_CLOSE, 4)))
         .add(gt(TENKAN, KIJUN))
+        .add(gt(PRICE_CLOSE, history(PRICE_CLOSE, 100)))
+        .add(lte(RSI_14, 80))
     );
 
+    params.setBuyOrderParams(buy()
+        .at(CLOSE)
+        .barsFromNow(0)
+        .build());
+
     params.setSellCondition(create()
-        .add(lt(PRICE_CLOSE, KIJUN)));
+        .add(lt(PRICE_CLOSE, SMA_50))
+//        .add(lt(Operations.create(PRICE_CLOSE).mult(1.05), SMA_50))
+    );
+
+    params.setSellOrderParams(sell()
+        .at(CLOSE)
+        .barsFromNow(0)
+        .build());
 
     historicalTestPlay.test(params);
   }
+
+
 }

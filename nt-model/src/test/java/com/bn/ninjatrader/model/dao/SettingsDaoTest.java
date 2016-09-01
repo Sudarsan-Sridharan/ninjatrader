@@ -28,7 +28,7 @@ public class SettingsDaoTest extends AbstractDaoTest {
 
   @BeforeClass
   public void setup() {
-    settingsDao = injector.getInstance(SettingsDao.class);
+    settingsDao = getInjector().getInstance(SettingsDao.class);
   }
 
   @BeforeMethod

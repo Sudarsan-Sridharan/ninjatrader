@@ -1,12 +1,12 @@
 package com.bn.ninjatrader.testplay.operation;
 
-import com.bn.ninjatrader.common.data.DataType;
+import com.bn.ninjatrader.testplay.simulation.data.DataType;
 import com.bn.ninjatrader.testplay.type.Operator;
 import org.testng.annotations.Test;
 
 import java.util.Set;
 
-import static com.bn.ninjatrader.common.data.DataType.*;
+import static com.bn.ninjatrader.testplay.simulation.data.DataType.*;
 import static com.bn.ninjatrader.testplay.type.Operator.MINUS;
 import static com.bn.ninjatrader.testplay.type.Operator.MULTIPLY;
 import static com.bn.ninjatrader.testplay.type.Operator.PLUS;

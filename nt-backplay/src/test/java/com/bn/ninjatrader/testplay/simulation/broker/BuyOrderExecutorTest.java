@@ -32,10 +32,9 @@ public class BuyOrderExecutorTest {
   private BuyOrderExecutor executor;
 
   private Account account;
-
   private final LocalDate now = LocalDate.of(2016, 1, 1);
   private final Price price = new Price(now, 1, 2, 3, 4, 1000);
-  private final BarData barData = new BarData().put(price).index(1);
+  private final BarData barData = BarData.forPrice(price);
   private final BoardLot boardLot = BoardLot.newLot().lot(1000).tick(0.1).build();
   private final Order order = Order.buy().cashAmount(100000).at(MarketTime.OPEN).build();
 
@@ -61,7 +60,6 @@ public class BuyOrderExecutorTest {
     assertNotNull(transaction);
     assertEquals(transaction.getDate(), now);
     assertEquals(transaction.getNumOfShares(), 100000);
-    assertEquals(transaction.getBarIndex(), 1);
     assertEquals(transaction.getTransactionType(), TransactionType.BUY);
     assertEquals(transaction.getValue(), 100000.0);
   }

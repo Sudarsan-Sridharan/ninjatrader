@@ -33,7 +33,7 @@ public class OrderExecutorTest {
 
   private final LocalDate now = LocalDate.of(2016, 1, 1);
   private final Price price = new Price(now, 1, 2, 3, 4, 1000);
-  private final BarData barData = new BarData().put(price).index(1);
+  private final BarData barData = BarData.forPrice(price);
 
   private final BoardLot boardLot1 = BoardLot.newLot().lot(1000).tick(0.1).build();
   private final BoardLot boardLot2 = BoardLot.newLot().lot(100).tick(0.1).build();
@@ -95,5 +95,11 @@ public class OrderExecutorTest {
 
     profit = executor.calculateProfit(account, 3.0);
     assertEquals(profit, 200000.0);
+  }
+
+  @Test
+  public void testCalculateProfitAtLowerPrice() {
+    double profit = executor.calculateProfit(account, 0.5);
+    assertEquals(profit, -50000.0);
   }
 }

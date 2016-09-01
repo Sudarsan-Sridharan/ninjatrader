@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-import static com.bn.ninjatrader.common.data.DataType.PRICE_CLOSE;
+import static com.bn.ninjatrader.testplay.simulation.data.DataType.PRICE_CLOSE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 

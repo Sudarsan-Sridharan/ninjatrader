@@ -8,9 +8,8 @@ import com.bn.ninjatrader.testplay.simulation.data.adaptor.PriceDataMapAdaptor;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static com.bn.ninjatrader.testplay.condition.Conditions.create;
-import static com.bn.ninjatrader.testplay.condition.Conditions.eq;
-import static com.bn.ninjatrader.common.data.DataType.*;
+import static com.bn.ninjatrader.testplay.simulation.data.DataType.*;
+import static com.bn.ninjatrader.testplay.condition.Conditions.*;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
@@ -70,6 +69,48 @@ public class ConditionsTest {
     assertTrueCondition(condition);
 
     condition.add(eq(PRICE_OPEN, 0));
+    assertFalseCondition(condition);
+  }
+
+  @Test
+  public void testGreaterThanCondition() {
+    Condition condition = create().add(gt(PRICE_OPEN, 1.1));
+    assertFalseCondition(condition);
+
+    condition = create().add(gt(PRICE_OPEN, 1.099));
+    assertTrueCondition(condition);
+
+    condition = create()
+        .add(gt(PRICE_CLOSE, PRICE_LOW))
+        .add(gt(PRICE_HIGH, PRICE_OPEN))
+        .add(gt(SENKOU_B, 1.4));
+    assertTrueCondition(condition);
+
+    condition = create()
+        .add(gt(PRICE_CLOSE, PRICE_LOW))
+        .add(gt(PRICE_HIGH, PRICE_OPEN))
+        .add(gt(SENKOU_B, 1.5));
+    assertFalseCondition(condition);
+  }
+
+  @Test
+  public void testGreaterThanOrEqualsCondition() {
+    Condition condition = create().add(gte(PRICE_OPEN, 1.1));
+    assertTrueCondition(condition);
+
+    condition = create().add(gte(PRICE_OPEN, 1.11));
+    assertFalseCondition(condition);
+
+    condition = create()
+        .add(gte(CHIKOU, 1.1))
+        .add(gte(TENKAN, CHIKOU))
+        .add(gte(PRICE_OPEN, CHIKOU));
+    assertTrueCondition(condition);
+
+    condition = create()
+        .add(gte(CHIKOU, 1.11))
+        .add(gte(TENKAN, CHIKOU))
+        .add(gte(PRICE_OPEN, CHIKOU));
     assertFalseCondition(condition);
   }
 

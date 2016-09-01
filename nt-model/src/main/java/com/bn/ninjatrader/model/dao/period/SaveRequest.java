@@ -18,7 +18,7 @@ public class SaveRequest {
   private int period;
   private List<Value> values;
 
-  public static SaveRequest forSymbol(String symbol) {
+  public static SaveRequest save(String symbol) {
     return new SaveRequest(symbol);
   }
 

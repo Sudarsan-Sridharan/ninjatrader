@@ -24,11 +24,12 @@ public class NtModelModule extends AbstractModule {
   public static final String DAILY_MEAN_COLLECTION = "daily_mean";
   public static final String DAILY_PRICE_COLLECTION = "daily_price";
   public static final String DAILY_SIMPLE_AVERAGE_COLLECTION = "daily_simple_average";
+  public static final String DAILY_RSI_COLLECTION = "daily_rsi";
 
   public static final String WEEKLY_PRICE_COLLECTION = "weekly_price";
   public static final String WEEKLY_MEAN_COLLECTION = "weekly_mean";
 
-  public static final String STOCK_COLLECTION = "boardlot";
+  public static final String STOCK_COLLECTION = "stock";
 
   public static final String MONGODB_NAME = "ninja_trader";
 
@@ -53,7 +54,8 @@ public class NtModelModule extends AbstractModule {
     bindAnnotatedToCollection(DailyPriceCollection.class, DAILY_PRICE_COLLECTION);
     bindAnnotatedToCollection(DailyIchimokuCollection.class, DAILY_ICHIMOKU_COLLECTION);
     bindAnnotatedToCollection(DailyMeanCollection.class, DAILY_MEAN_COLLECTION);
-    bindAnnotatedToCollection(DailySimpleAverageCollection.class, DAILY_SIMPLE_AVERAGE_COLLECTION);
+    bindAnnotatedToCollection(DailySMACollection.class, DAILY_SIMPLE_AVERAGE_COLLECTION);
+    bindAnnotatedToCollection(DailyRSICollection.class, DAILY_RSI_COLLECTION);
 
     // Weekly Collection
     bindAnnotatedToCollection(WeeklyPriceCollection.class, WEEKLY_PRICE_COLLECTION);

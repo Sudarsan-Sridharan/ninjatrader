@@ -60,7 +60,7 @@ public class PriceDao extends AbstractDao<PriceData> {
 
   public List<Price> findNBarsBeforeDate(String symbol, int numOfBars, LocalDate beforeDate) {
     List<Price> prices = FixedList.withMaxSize(numOfBars);
-    LocalDate fromDate = beforeDate.minusYears(1);
+    LocalDate fromDate = beforeDate.withDayOfYear(1);
 
     do {
       List<Price> pricesForYear = find(FindRequest.forSymbol(symbol).from(fromDate).to(beforeDate));

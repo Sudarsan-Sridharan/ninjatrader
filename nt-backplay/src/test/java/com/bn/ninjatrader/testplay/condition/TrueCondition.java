@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.testplay.condition;
 
 import com.bn.ninjatrader.testplay.simulation.data.BarData;
-import com.bn.ninjatrader.common.data.DataType;
+import com.bn.ninjatrader.testplay.simulation.data.DataType;
 
 import java.util.Collections;
 import java.util.Set;

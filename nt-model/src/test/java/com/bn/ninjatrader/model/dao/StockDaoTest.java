@@ -22,7 +22,7 @@ public class StockDaoTest extends AbstractDaoTest {
 
   @BeforeClass
   public void setup() {
-    stockDao = injector.getInstance(StockDao.class);
+    stockDao = getInjector().getInstance(StockDao.class);
   }
 
   @BeforeMethod

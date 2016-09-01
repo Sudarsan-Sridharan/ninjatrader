@@ -1,7 +1,9 @@
 package com.bn.ninjatrader.testplay.operation;
 
+import com.bn.ninjatrader.testplay.simulation.data.DataType;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.testplay.simulation.data.BarData;
+import com.bn.ninjatrader.testplay.simulation.data.DataMap;
 import org.testng.annotations.BeforeClass;
 
 /**
@@ -20,7 +22,14 @@ public class AbstractOperationTest {
     price.setClose(4.0);
     price.setVolume(10000);
 
-    barData = new BarData();
-    barData.put(price);
+    DataMap dataMap = new DataMap();
+    dataMap.put(DataType.PRICE_OPEN, 1.0);
+    dataMap.put(DataType.PRICE_HIGH, 2.0);
+    dataMap.put(DataType.PRICE_LOW, 3.0);
+    dataMap.put(DataType.PRICE_CLOSE, 4.0);
+    dataMap.put(DataType.VOLUME, 10000);
+
+    barData = BarData.forPrice(price);
+    barData.put(dataMap);
   }
 }

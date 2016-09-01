@@ -1,7 +1,9 @@
 package com.bn.ninjatrader.testplay.simulation;
 
+import com.bn.ninjatrader.testplay.simulation.data.DataType;
 import com.bn.ninjatrader.testplay.condition.Condition;
-import com.bn.ninjatrader.common.data.DataType;
+import com.bn.ninjatrader.testplay.simulation.order.BuyOrderParameters;
+import com.bn.ninjatrader.testplay.simulation.order.SellOrderParameters;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -17,6 +19,8 @@ public class SimulationParameters {
   private double startingCash;
   private Condition buyCondition;
   private Condition sellCondition;
+  private BuyOrderParameters buyOrderParams;
+  private SellOrderParameters sellOrderParams;
 
   public LocalDate getFromDate() {
     return fromDate;
@@ -64,6 +68,22 @@ public class SimulationParameters {
 
   public void setSellCondition(Condition sellCondition) {
     this.sellCondition = sellCondition;
+  }
+
+  public BuyOrderParameters getBuyOrderParams() {
+    return buyOrderParams;
+  }
+
+  public void setBuyOrderParams(BuyOrderParameters buyOrderParams) {
+    this.buyOrderParams = buyOrderParams;
+  }
+
+  public SellOrderParameters getSellOrderParams() {
+    return sellOrderParams;
+  }
+
+  public void setSellOrderParams(SellOrderParameters sellOrderParams) {
+    this.sellOrderParams = sellOrderParams;
   }
 
   public Set<DataType> getDataTypes() {

@@ -1,7 +1,6 @@
 package com.bn.ninjatrader.testplay.simulation.data;
 
 import com.beust.jcommander.internal.Maps;
-import com.bn.ninjatrader.common.data.DataType;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

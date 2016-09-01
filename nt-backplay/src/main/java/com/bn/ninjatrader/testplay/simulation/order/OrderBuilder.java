@@ -13,6 +13,7 @@ abstract class OrderBuilder<T extends OrderBuilder> {
   private int daysFromNow = 0;
   private LocalDate orderDate;
   private MarketTime marketTime = MarketTime.CLOSE;
+  private OrderParameters orderParams;
 
   public T account(Account account) {
     this.account = account;
@@ -29,7 +30,7 @@ abstract class OrderBuilder<T extends OrderBuilder> {
     return getThis();
   }
 
-  public T daysFromNow(int daysFromNow) {
+  public T barsFromNow(int daysFromNow) {
     this.daysFromNow = daysFromNow;
     return getThis();
   }

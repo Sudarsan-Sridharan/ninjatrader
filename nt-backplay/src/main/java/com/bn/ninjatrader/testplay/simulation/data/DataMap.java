@@ -1,6 +1,5 @@
 package com.bn.ninjatrader.testplay.simulation.data;
 
-import com.bn.ninjatrader.common.data.DataType;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;

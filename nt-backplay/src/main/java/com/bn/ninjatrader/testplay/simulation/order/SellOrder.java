@@ -17,6 +17,13 @@ public class SellOrder extends Order {
   }
 
   public static class SellOrderBuilder extends OrderBuilder<SellOrderBuilder> {
+
+    public SellOrderBuilder params(OrderParameters orderParams) {
+      return getThis()
+          .at(orderParams.getMarketTime())
+          .barsFromNow(orderParams.getBarsFromNow());
+    }
+
     @Override
     SellOrderBuilder getThis() {
       return this;

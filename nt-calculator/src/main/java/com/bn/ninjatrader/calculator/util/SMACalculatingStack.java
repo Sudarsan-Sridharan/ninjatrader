@@ -6,19 +6,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Stack that calculates for Simple Moving Average on each insert.
+ *
  * Created by Brad on 7/11/16.
  */
-public class SimpleAverageCalculatingStack extends FixedStack<Price> {
+public class SMACalculatingStack extends FixedStack<Price> implements CalculatingStack<Price> {
 
-  private static final Logger log = LoggerFactory.getLogger(SimpleAverageCalculatingStack.class);
+  private static final Logger log = LoggerFactory.getLogger(SMACalculatingStack.class);
 
   private double totalSum;
 
-  public static SimpleAverageCalculatingStack withFixedSize(int fixedSize) {
-    return new SimpleAverageCalculatingStack(fixedSize);
+  public static SMACalculatingStack withFixedSize(int fixedSize) {
+    return new SMACalculatingStack(fixedSize);
   }
 
-  private SimpleAverageCalculatingStack(int fixedSize) {
+  private SMACalculatingStack(int fixedSize) {
     super(fixedSize);
   }
 
@@ -32,10 +34,11 @@ public class SimpleAverageCalculatingStack extends FixedStack<Price> {
     totalSum -= removedPrice.getClose();
   }
 
+  @Override
   public double getValue() {
     if (size() == getFixedSize()) {
       return NumUtil.divide(totalSum, getFixedSize());
     }
-    return 0;
+    return Double.NaN;
   }
 }

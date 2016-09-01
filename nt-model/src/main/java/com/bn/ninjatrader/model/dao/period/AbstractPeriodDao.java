@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by Brad on 4/30/16.
  */
-public abstract class AbstractPeriodDao extends AbstractDao<Value>  implements ValueDao {
+public abstract class AbstractPeriodDao extends AbstractDao<Value> implements ValueDao {
 
   private static final Logger log = LoggerFactory.getLogger(AbstractPeriodDao.class);
   private static final String ENSURE_INDEX_QUERY = String.format(" { %s : 1, %s : 1, %s : 1} ",
@@ -33,10 +33,12 @@ public abstract class AbstractPeriodDao extends AbstractDao<Value>  implements V
     getMongoCollection().ensureIndex(ENSURE_INDEX_QUERY, "{ unique: true }");
   }
 
+  @Override
   public void save(SaveRequest saveRequest) {
     periodDataSaver.save(saveRequest);
   }
 
+  @Override
   public List<Value> find(FindRequest findRequest) {
     return periodDataFinder.find(findRequest);
   }

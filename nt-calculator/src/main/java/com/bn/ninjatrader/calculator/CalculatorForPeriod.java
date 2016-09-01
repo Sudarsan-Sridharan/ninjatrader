@@ -11,5 +11,5 @@ import java.util.Map;
  */
 public interface CalculatorForPeriod {
 
-  public Map<Integer, List<Value>> calc(List<Price> priceList, int ... periods);
+  Map<Integer, List<Value>> calc(List<Price> priceList, int ... periods);
 }

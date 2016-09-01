@@ -29,7 +29,7 @@ public class SellOrderExecutorTest {
 
   private final LocalDate now = LocalDate.of(2016, 1, 1);
   private final Price price = new Price(now, 1, 2, 3, 4, 1000);
-  private final BarData barData = new BarData().put(price).index(1);
+  private final BarData barData = BarData.forPrice(price);
   private final Order order = Order.buy().cashAmount(100000).at(MarketTime.OPEN).build();
 
   @BeforeMethod
@@ -50,7 +50,6 @@ public class SellOrderExecutorTest {
     assertNotNull(transaction);
     assertEquals(transaction.getDate(), now);
     assertEquals(transaction.getNumOfShares(), 100000);
-    assertEquals(transaction.getBarIndex(), 1);
     assertEquals(transaction.getTransactionType(), TransactionType.SELL);
     assertEquals(transaction.getValue(), 100000.0);
   }

@@ -6,9 +6,7 @@ import org.testng.annotations.Test;
 
 import java.time.LocalDate;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /**
  * Created by Brad on 8/22/16.
@@ -27,47 +25,47 @@ public class BarDataHistoryTest {
 
   @Test
   public void testCreateEmpty() {
-    BarDataHistory barDataHistory = BarDataHistory.withMaxSize(52);
+    BarDataHistory history = BarDataHistory.withMaxSize(52);
 
-    Optional<BarData> foundBarData = barDataHistory.getBarDataDaysAgo(0);
+    Optional<BarData> foundBarData = history.getNBarsAgo(0);
     assertFalse(foundBarData.isPresent());
 
-    foundBarData = barDataHistory.getBarDataDaysAgo(1);
+    foundBarData = history.getNBarsAgo(1);
     assertFalse(foundBarData.isPresent());
 
-    foundBarData = barDataHistory.getBarDataDaysAgo(-100);
+    foundBarData = history.getNBarsAgo(-100);
     assertFalse(foundBarData.isPresent());
 
-    foundBarData = barDataHistory.getBarDataDaysAgo(100);
+    foundBarData = history.getNBarsAgo(100);
     assertFalse(foundBarData.isPresent());
   }
 
   @Test
   public void testWithData() {
-    BarDataHistory barDataHistory = BarDataHistory.withMaxSize(3);
+    BarDataHistory history = BarDataHistory.withMaxSize(3);
 
-    barDataHistory.add(new BarData().put(price1));
-    assertBarDataPriceEqualsPrice(barDataHistory.getBarDataDaysAgo(1), price1);
-    assertBarDataNotExist(barDataHistory.getBarDataDaysAgo(2));
+    history.add(BarData.forPrice(price1));
+    assertBarDataPriceEqualsPrice(history.getNBarsAgo(0), price1);
+    assertBarDataNotExist(history.getNBarsAgo(2));
 
-    barDataHistory.add(new BarData().put(price2));
-    assertBarDataPriceEqualsPrice(barDataHistory.getBarDataDaysAgo(1), price2);
-    assertBarDataPriceEqualsPrice(barDataHistory.getBarDataDaysAgo(2), price1);
+    history.add(BarData.forPrice(price2));
+    assertBarDataPriceEqualsPrice(history.getNBarsAgo(0), price2);
+    assertBarDataPriceEqualsPrice(history.getNBarsAgo(1), price1);
   }
 
   @Test
   public void testWithDataExceedingMaxSize() {
-    BarDataHistory barDataHistory = BarDataHistory.withMaxSize(3);
-    barDataHistory.add(new BarData().put(price1));
-    barDataHistory.add(new BarData().put(price2));
-    barDataHistory.add(new BarData().put(price3));
-    barDataHistory.add(new BarData().put(price4));
+    BarDataHistory history = BarDataHistory.withMaxSize(3);
+    history.add(BarData.forPrice(price1));
+    history.add(BarData.forPrice(price2));
+    history.add(BarData.forPrice(price3));
+    history.add(BarData.forPrice(price4));
 
-    assertBarDataPriceEqualsPrice(barDataHistory.getBarDataDaysAgo(1), price4);
-    assertBarDataPriceEqualsPrice(barDataHistory.getBarDataDaysAgo(2), price3);
-    assertBarDataPriceEqualsPrice(barDataHistory.getBarDataDaysAgo(3), price2);
+    assertBarDataPriceEqualsPrice(history.getNBarsAgo(0), price4);
+    assertBarDataPriceEqualsPrice(history.getNBarsAgo(1), price3);
+    assertBarDataPriceEqualsPrice(history.getNBarsAgo(2), price2);
 
-    assertBarDataNotExist(barDataHistory.getBarDataDaysAgo(4));
+    assertBarDataNotExist(history.getNBarsAgo(3));
   }
 
   private void assertBarDataPriceEqualsPrice(Optional<BarData> foundBarData, Price price) {

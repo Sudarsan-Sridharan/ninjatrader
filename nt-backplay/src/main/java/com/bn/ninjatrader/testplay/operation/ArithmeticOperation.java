@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.testplay.operation;
 
 import com.bn.ninjatrader.testplay.simulation.data.BarData;
-import com.bn.ninjatrader.common.data.DataType;
+import com.bn.ninjatrader.testplay.simulation.data.DataType;
 import com.bn.ninjatrader.testplay.type.Operator;
 
 import java.util.Set;
@@ -41,18 +41,12 @@ public class ArithmeticOperation implements Operation {
     return basicOperation(PLUS, rhs);
   }
 
-  public ArithmeticOperation plus(DataType rhs) { return basicOperation(PLUS, UnaryOperation.of(rhs)); }
-
   public ArithmeticOperation plus(double rhs) {
     return basicOperation(PLUS, UnaryOperation.of(rhs));
   }
 
   public ArithmeticOperation minus(Operation rhs) {
     return basicOperation(MINUS, rhs);
-  }
-
-  public ArithmeticOperation minus(DataType rhs) {
-    return basicOperation(MINUS, UnaryOperation.of(rhs));
   }
 
   public ArithmeticOperation minus(double rhs) {
@@ -63,20 +57,12 @@ public class ArithmeticOperation implements Operation {
     return basicOperation(MULTIPLY, rhs);
   }
 
-  public ArithmeticOperation mult(DataType rhs) {
-    return basicOperation(MULTIPLY, UnaryOperation.of(rhs));
-  }
-
   public ArithmeticOperation mult(double rhs) {
     return basicOperation(MULTIPLY, UnaryOperation.of(rhs));
   }
 
   public ArithmeticOperation div(Operation rhs) {
     return basicOperation(DIVIDE, rhs);
-  }
-
-  public ArithmeticOperation div(DataType rhs) {
-    return basicOperation(DIVIDE, UnaryOperation.of(rhs));
   }
 
   public ArithmeticOperation div(double rhs) {

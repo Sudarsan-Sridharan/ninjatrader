@@ -19,14 +19,14 @@ public class SaveRequestTest {
   private Value value1 = Value.of(date, 1d);
   private Value value2 = Value.of(date, 2d);
 
-  private SaveRequest orig = SaveRequest.forSymbol("MEG").period(1).values(value1);
-  private SaveRequest same = SaveRequest.forSymbol("MEG").period(1).values(value1);
+  private SaveRequest orig = SaveRequest.save("MEG").period(1).values(value1);
+  private SaveRequest same = SaveRequest.save("MEG").period(1).values(value1);
 
-  private SaveRequest differentSymbol = SaveRequest.forSymbol("BDO").period(1).values(value1);
-  private SaveRequest differentPeriod = SaveRequest.forSymbol("MEG").period(2).values(value1);
+  private SaveRequest differentSymbol = SaveRequest.save("BDO").period(1).values(value1);
+  private SaveRequest differentPeriod = SaveRequest.save("MEG").period(2).values(value1);
 
-  private SaveRequest differentValue = SaveRequest.forSymbol("MEG").period(1).values(value2);
-  private SaveRequest differentValueSize = SaveRequest.forSymbol("MEG").period(1).values(value1, value1);
+  private SaveRequest differentValue = SaveRequest.save("MEG").period(1).values(value2);
+  private SaveRequest differentValueSize = SaveRequest.save("MEG").period(1).values(value1, value1);
 
   @Test
   public void testEqualsWithSameObject() {

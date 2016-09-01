@@ -1,5 +1,7 @@
 package com.bn.ninjatrader.testplay.simulation.transaction;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -23,6 +25,32 @@ public class SellTransaction extends Transaction {
 
   public double getProfit() {
     return profit;
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder()
+        .appendSuper(super.hashCode())
+        .append(profit)
+        .hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) { return false; }
+    if (!(obj instanceof SellTransaction)) {
+      return false;
+    }
+    if (obj == this) { return true; }
+    if (obj.getClass() != getClass()) {
+      return false;
+    }
+
+    SellTransaction rhs = (SellTransaction) obj;
+    return new EqualsBuilder()
+        .appendSuper(super.equals(obj))
+        .append(profit, rhs.profit)
+        .isEquals();
   }
 
   @Override

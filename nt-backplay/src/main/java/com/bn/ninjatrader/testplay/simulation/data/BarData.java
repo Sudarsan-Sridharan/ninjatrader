@@ -1,11 +1,10 @@
 package com.bn.ninjatrader.testplay.simulation.data;
 
-import com.bn.ninjatrader.common.data.DataType;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.testplay.simulation.broker.Broker;
-import com.bn.ninjatrader.testplay.simulation.data.adaptor.PriceDataMapAdaptor;
 import com.bn.ninjatrader.testplay.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.testplay.simulation.transaction.SellTransaction;
+import com.google.common.base.Optional;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -19,24 +18,32 @@ public class BarData {
   private int barIndex;
   private DataMap dataMap;
   private Price price;
-  private PriceDataMapAdaptor priceDataMapAdaptor = new PriceDataMapAdaptor();
+  private BarDataHistory history;
+
+  public static final BarData forPrice(Price price) {
+    return new BarData(price);
+  }
 
   public BarData() {
     dataMap = new DataMap();
+  }
+
+  private BarData(Price price) {
+    this();
+    this.price = price;
   }
 
   public Double get(DataType dataType) {
     return dataMap.get(dataType);
   }
 
-  public BarData put(Price price) {
-    this.price = price;
-    put(priceDataMapAdaptor.toDataMap(price));
+  public BarData put(DataMap dataMap) {
+    this.dataMap.put(dataMap.toMap());
     return this;
   }
 
-  public BarData put(DataMap dataMap) {
-    this.dataMap.put(dataMap.toMap());
+  public BarData put(DataType dataType, double value) {
+    this.dataMap.put(dataType, value);
     return this;
   }
 
@@ -51,23 +58,35 @@ public class BarData {
     }
   }
 
-  public BarData index(int barIndex) {
-    this.barIndex = barIndex;
-    this.dataMap.put(DataType.BAR_INDEX, barIndex);
-    return this;
-  }
-
   public int getBarIndex() {
     return barIndex;
+  }
+
+  public void setBarIndex(int barIndex) {
+    this.barIndex = barIndex;
   }
 
   public Price getPrice() {
     return price;
   }
 
+  public void setPrice(Price price) {
+    this.price = price;
+  }
+
+  public void setHistory(BarDataHistory history) {
+    this.history = history;
+  }
+
+  public Optional<BarData> getNBarsAgo(int numOfBarsAgo) {
+    return history.getNBarsAgo(numOfBarsAgo);
+  }
+
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+        .append("barIndex", barIndex)
+        .append("price", price)
         .append("dataMap", dataMap)
         .build();
   }

@@ -11,12 +11,15 @@ import java.util.List;
 import java.util.Random;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
 
 /**
  * Created by Brad on 5/27/16.
  */
 public class TestUtil {
 
+  private static final String HASHCODE_ERROR_MSG = "Expecting hashcode of %s != %s";
+  private static final String EQUALS_ERROR_MSG = "Expecting %s != %s";
   private static final Random random = new Random();
 
   public static void assertPriceEquals(Price price1, Price price2) {
@@ -97,5 +100,17 @@ public class TestUtil {
 
   public static void assertPriceEqualsQuote(Price price, DailyQuote quote) {
     assertPriceEquals(price, quote.getPrice());
+  }
+
+  public static <T> void assertHashCodeNotEquals(T lhs, T ... rhsList) {
+    for (T rhs : rhsList) {
+      assertNotEquals(lhs.hashCode(), rhs.hashCode(), String.format(HASHCODE_ERROR_MSG, lhs, rhs));
+    }
+  }
+
+  public static <T> void assertNotEqualsList(T lhs, T ... rhsList) {
+    for (T rhs : rhsList) {
+      assertNotEquals(lhs, rhs, String.format(EQUALS_ERROR_MSG, lhs, rhs));
+    }
   }
 }

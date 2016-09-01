@@ -1,13 +1,13 @@
 package com.bn.ninjatrader.testplay.simulation.datafinder;
 
-import com.bn.ninjatrader.common.data.DataType;
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.common.util.ListUtil;
-import com.bn.ninjatrader.model.dao.SimpleAverageDao;
+import com.bn.ninjatrader.model.dao.RSIDao;
 import com.bn.ninjatrader.model.dao.period.FindRequest;
 import com.bn.ninjatrader.testplay.simulation.SimulationParameters;
+import com.bn.ninjatrader.testplay.simulation.data.DataType;
 import com.bn.ninjatrader.testplay.simulation.data.SimulationData;
-import com.bn.ninjatrader.testplay.simulation.data.adaptor.SimpleAverageDataMapAdaptor;
+import com.bn.ninjatrader.testplay.simulation.data.adaptor.SMADataMapAdaptor;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -19,13 +19,15 @@ import java.util.Set;
 import static com.bn.ninjatrader.model.dao.period.FindRequest.forSymbol;
 
 /**
+ * Relative Strength Index DataFinder
+ *
  * Created by Brad on 8/20/16.
  */
 @Singleton
-public class SimpleAverageDataFinder implements DataFinder<Value> {
+public class RSIDataFinder implements DataFinder<Value> {
 
   private static final List<DataType> SUPPORTED_DATA_TYPES;
-  private static final String DATATYPE_PREFIX = "SMA_";
+  private static final String DATATYPE_PREFIX = "RSI_";
 
   static {
     List<DataType> supportedDataTypes = Lists.newArrayList();
@@ -38,7 +40,7 @@ public class SimpleAverageDataFinder implements DataFinder<Value> {
   }
 
   @Inject
-  private SimpleAverageDao simpleAverageDao;
+  private RSIDao rsiDao;
 
   @Override
   public List<SimulationData<Value>> find(SimulationParameters params, int requiredDataSize) {
@@ -50,9 +52,9 @@ public class SimpleAverageDataFinder implements DataFinder<Value> {
       if (dataType.name().startsWith(DATATYPE_PREFIX)) {
         int period = dataType.getPeriod();
         findRequest.period(period);
-        List<Value> valueList = simpleAverageDao.find(findRequest);
+        List<Value> valueList = rsiDao.find(findRequest);
         ListUtil.fillToSize(valueList, Value.empty(), requiredDataSize);
-        simulationDataList.add(new SimulationData(valueList, SimpleAverageDataMapAdaptor.forPeriod(period)));
+        simulationDataList.add(new SimulationData(valueList, SMADataMapAdaptor.forPeriod(period)));
       }
     }
     return simulationDataList;

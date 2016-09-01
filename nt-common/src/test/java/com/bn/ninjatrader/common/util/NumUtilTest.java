@@ -115,9 +115,21 @@ public class NumUtilTest {
     assertEquals(NumUtil.trim(1.234567, 0), 1.0);
     assertEquals(NumUtil.trim(1.234567, 2), 1.23);
     assertEquals(NumUtil.trim(1.234567, 4), 1.2345);
+    assertEquals(NumUtil.trim(-1.234567, 4), -1.2345);
     assertEquals(NumUtil.trim(1.234567, 10), 1.234567);
     assertEquals(NumUtil.trim(Double.NaN, 5), Double.NaN);
     assertEquals(NumUtil.trim(Double.POSITIVE_INFINITY, 5), Double.POSITIVE_INFINITY);
+  }
+
+  @Test
+  public void testRound() {
+    assertEquals(NumUtil.round(1.234567, 0), 1.0);
+    assertEquals(NumUtil.round(1.5001, 0), 2.0);
+    assertEquals(NumUtil.round(1.234567, 5), 1.23457);
+    assertEquals(NumUtil.round(-1.234567, 5), -1.23457);
+    assertEquals(NumUtil.round(1.234567, 10), 1.234567);
+    assertEquals(NumUtil.round(Double.NaN, 5), Double.NaN);
+    assertEquals(NumUtil.round(Double.POSITIVE_INFINITY, 5), Double.POSITIVE_INFINITY);
   }
 
   @Test

@@ -19,10 +19,10 @@ public class MeanCalculatingStackTest {
   @Test
   public void testEmptyStack() {
     MeanCalculatingStack stack = MeanCalculatingStack.withFixedSize(1);
-    assertEquals(stack.getMean(), 0d);
+    assertEquals(stack.getValue(), Double.NaN);
 
     stack = MeanCalculatingStack.withFixedSize(10);
-    assertEquals(stack.getMean(), 0d);
+    assertEquals(stack.getValue(), Double.NaN);
   }
 
   @Test
@@ -30,7 +30,7 @@ public class MeanCalculatingStackTest {
     MeanCalculatingStack stack = MeanCalculatingStack.withFixedSize(1);
     stack.add(price1);
 
-    assertEquals(stack.getMean(), 2.5);
+    assertEquals(stack.getValue(), 2.5);
   }
 
   @Test
@@ -38,7 +38,7 @@ public class MeanCalculatingStackTest {
     MeanCalculatingStack stack = MeanCalculatingStack.withFixedSize(1);
     stack.add(highPrecisionPrice);
 
-    assertEquals(stack.getMean(), 0.000025);
+    assertEquals(stack.getValue(), 0.000025);
   }
 
   @Test
@@ -47,7 +47,7 @@ public class MeanCalculatingStackTest {
     stack.add(price1);
     stack.add(price2);
 
-    assertEquals(stack.getMean(), 25d);
+    assertEquals(stack.getValue(), 25d);
   }
 
   @Test
@@ -55,16 +55,16 @@ public class MeanCalculatingStackTest {
     MeanCalculatingStack stack = MeanCalculatingStack.withFixedSize(3);
 
     stack.add(price1);
-    assertEquals(stack.getMean(), 0d);
+    assertEquals(stack.getValue(), Double.NaN);
 
     stack.add(price2);
-    assertEquals(stack.getMean(), 0d);
+    assertEquals(stack.getValue(), Double.NaN);
 
     stack.add(price3);
-    assertEquals(stack.getMean(), 101.5);
+    assertEquals(stack.getValue(), 101.5);
 
     stack.add(price4);
-    assertEquals(stack.getMean(), 1015d);
+    assertEquals(stack.getValue(), 1015d);
   }
 
   @Test
@@ -75,6 +75,6 @@ public class MeanCalculatingStackTest {
     stack.add(price1);
     stack.add(price1);
 
-    assertEquals(stack.getMean(), 2.5);
+    assertEquals(stack.getValue(), 2.5);
   }
 }

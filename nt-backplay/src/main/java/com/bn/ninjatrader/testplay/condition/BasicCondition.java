@@ -2,7 +2,7 @@ package com.bn.ninjatrader.testplay.condition;
 
 import com.bn.ninjatrader.testplay.operation.Operation;
 import com.bn.ninjatrader.testplay.simulation.data.BarData;
-import com.bn.ninjatrader.common.data.DataType;
+import com.bn.ninjatrader.testplay.simulation.data.DataType;
 import com.bn.ninjatrader.testplay.type.InequalityOperator;
 
 import java.util.Set;
@@ -26,6 +26,7 @@ public class BasicCondition implements Condition {
   public boolean isMatch(BarData barParameters) {
     double lhsValue = lhsOperation.getValue(barParameters);
     double rhsValue = rhsOperation.getValue(barParameters);
+
     return operator.isMatch(lhsValue, rhsValue);
   }
 

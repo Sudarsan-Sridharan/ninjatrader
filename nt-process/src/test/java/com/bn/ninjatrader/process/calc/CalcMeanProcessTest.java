@@ -1,13 +1,14 @@
 package com.bn.ninjatrader.process.calc;
 
+import com.bn.ninjatrader.calculator.CalculatorForPeriod;
 import com.bn.ninjatrader.calculator.MeanCalculator;
 import com.bn.ninjatrader.model.dao.MeanDao;
 import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.model.dao.ValueDao;
 import mockit.Injectable;
 import mockit.Tested;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
 
 /**
  * Created by Brad on 6/11/16.
@@ -17,10 +18,10 @@ public class CalcMeanProcessTest extends AbstractCalcForPeriodProcessTest {
   private static final Logger log = LoggerFactory.getLogger(CalcMeanProcessTest.class);
 
   @Injectable
-  private MeanCalculator meanCalculator;
+  private MeanCalculator calculator;
 
   @Injectable
-  private MeanDao meanDao;
+  private MeanDao dao;
 
   @Injectable
   private PriceDao priceDao;
@@ -28,13 +29,18 @@ public class CalcMeanProcessTest extends AbstractCalcForPeriodProcessTest {
   @Tested
   private CalcMeanProcess process;
 
-  @Test
-  public void testProcessWithNoData() {
-    testProcessWithNoData(process, meanDao);
+  @Override
+  public ValueDao provideDao() {
+    return dao;
   }
 
-  @Test
-  public void testProcessWithData() {
-    testProcessWithData(meanCalculator, process, meanDao);
+  @Override
+  public CalcProcess provideTestedProcess() {
+    return process;
+  }
+
+  @Override
+  public CalculatorForPeriod provideCalculator() {
+    return calculator;
   }
 }
