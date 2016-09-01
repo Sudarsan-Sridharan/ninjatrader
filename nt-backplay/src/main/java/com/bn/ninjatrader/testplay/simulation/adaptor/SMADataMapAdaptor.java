@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.testplay.simulation.data.adaptor;
+package com.bn.ninjatrader.testplay.simulation.adaptor;
 
 /**
  * Created by Brad on 8/17/16.

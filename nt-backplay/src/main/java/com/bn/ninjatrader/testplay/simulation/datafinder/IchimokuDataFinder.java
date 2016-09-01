@@ -7,7 +7,7 @@ import com.bn.ninjatrader.model.dao.period.FindRequest;
 import com.bn.ninjatrader.service.indicator.IchimokuService;
 import com.bn.ninjatrader.testplay.simulation.SimulationParameters;
 import com.bn.ninjatrader.testplay.simulation.data.SimulationData;
-import com.bn.ninjatrader.testplay.simulation.data.adaptor.IchimokuDataMapAdaptor;
+import com.bn.ninjatrader.testplay.simulation.adaptor.IchimokuDataMapAdaptor;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

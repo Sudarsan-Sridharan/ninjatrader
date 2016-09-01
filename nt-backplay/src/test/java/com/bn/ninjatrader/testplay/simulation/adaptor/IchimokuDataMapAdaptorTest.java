@@ -1,6 +1,7 @@
-package com.bn.ninjatrader.testplay.simulation.data.adaptor;
+package com.bn.ninjatrader.testplay.simulation.adaptor;
 
 import com.bn.ninjatrader.common.data.Ichimoku;
+import com.bn.ninjatrader.testplay.simulation.adaptor.IchimokuDataMapAdaptor;
 import com.bn.ninjatrader.testplay.simulation.data.DataMap;
 import com.bn.ninjatrader.testplay.simulation.data.DataType;
 import org.testng.annotations.BeforeClass;

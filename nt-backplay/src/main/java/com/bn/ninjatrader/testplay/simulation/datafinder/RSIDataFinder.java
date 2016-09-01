@@ -5,9 +5,9 @@ import com.bn.ninjatrader.common.util.ListUtil;
 import com.bn.ninjatrader.model.dao.RSIDao;
 import com.bn.ninjatrader.model.dao.period.FindRequest;
 import com.bn.ninjatrader.testplay.simulation.SimulationParameters;
+import com.bn.ninjatrader.testplay.simulation.adaptor.RSIDataMapAdaptor;
 import com.bn.ninjatrader.testplay.simulation.data.DataType;
 import com.bn.ninjatrader.testplay.simulation.data.SimulationData;
-import com.bn.ninjatrader.testplay.simulation.data.adaptor.SMADataMapAdaptor;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -54,7 +54,7 @@ public class RSIDataFinder implements DataFinder<Value> {
         findRequest.period(period);
         List<Value> valueList = rsiDao.find(findRequest);
         ListUtil.fillToSize(valueList, Value.empty(), requiredDataSize);
-        simulationDataList.add(new SimulationData(valueList, SMADataMapAdaptor.forPeriod(period)));
+        simulationDataList.add(new SimulationData(valueList, RSIDataMapAdaptor.forPeriod(period)));
       }
     }
     return simulationDataList;

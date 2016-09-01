@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.testplay.simulation.data;
 
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.testplay.simulation.data.adaptor.PriceDataMapAdaptor;
+import com.bn.ninjatrader.testplay.simulation.adaptor.PriceDataMapAdaptor;
 import com.google.common.collect.Lists;
 
 import java.util.List;

@@ -3,8 +3,8 @@ package com.bn.ninjatrader.testplay.condition;
 import com.bn.ninjatrader.common.data.Ichimoku;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.testplay.simulation.data.BarData;
-import com.bn.ninjatrader.testplay.simulation.data.adaptor.IchimokuDataMapAdaptor;
-import com.bn.ninjatrader.testplay.simulation.data.adaptor.PriceDataMapAdaptor;
+import com.bn.ninjatrader.testplay.simulation.adaptor.IchimokuDataMapAdaptor;
+import com.bn.ninjatrader.testplay.simulation.adaptor.PriceDataMapAdaptor;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 

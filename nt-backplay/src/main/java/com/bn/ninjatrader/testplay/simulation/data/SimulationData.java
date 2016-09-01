@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.testplay.simulation.data;
 
-import com.bn.ninjatrader.testplay.simulation.data.adaptor.DataMapAdaptor;
+import com.bn.ninjatrader.testplay.simulation.adaptor.DataMapAdaptor;
 import com.google.common.base.Preconditions;
 
 import java.util.List;

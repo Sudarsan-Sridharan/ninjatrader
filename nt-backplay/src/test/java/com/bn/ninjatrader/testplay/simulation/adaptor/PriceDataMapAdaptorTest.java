@@ -1,7 +1,8 @@
-package com.bn.ninjatrader.testplay.simulation.data.adaptor;
+package com.bn.ninjatrader.testplay.simulation.adaptor;
 
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.testplay.simulation.adaptor.PriceDataMapAdaptor;
 import com.bn.ninjatrader.testplay.simulation.data.DataMap;
 import com.bn.ninjatrader.testplay.simulation.data.DataType;
 import org.testng.annotations.BeforeClass;

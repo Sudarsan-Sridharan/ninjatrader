@@ -1,10 +1,7 @@
 package com.bn.ninjatrader.testplay.simulation.guice;
 
-import com.bn.ninjatrader.testplay.simulation.datafinder.DataFinder;
+import com.bn.ninjatrader.testplay.simulation.datafinder.*;
 import com.bn.ninjatrader.testplay.simulation.broker.BrokerFactory;
-import com.bn.ninjatrader.testplay.simulation.datafinder.IchimokuDataFinder;
-import com.bn.ninjatrader.testplay.simulation.datafinder.PriceDataFinder;
-import com.bn.ninjatrader.testplay.simulation.datafinder.SMADataFinder;
 import com.bn.ninjatrader.testplay.simulation.guice.annotation.AllDataFinders;
 import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
@@ -27,9 +24,14 @@ public class NtSimulationModule extends AbstractModule {
   private List<DataFinder> provideAllDataFinders(
       PriceDataFinder priceDataFinder,
       IchimokuDataFinder ichimokuDataFinder,
-      SMADataFinder simpleAverageDataFinder) {
+      SMADataFinder smaDataFinder,
+      RSIDataFinder rsiDataFinder) {
 
-    List<DataFinder> dataFinders = Lists.newArrayList(priceDataFinder, ichimokuDataFinder, simpleAverageDataFinder);
+    List<DataFinder> dataFinders = Lists.newArrayList(
+        priceDataFinder,
+        ichimokuDataFinder,
+        smaDataFinder,
+        rsiDataFinder);
     return dataFinders;
   }
 }

@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.testplay.simulation.data;
 
 import com.beust.jcommander.internal.Lists;
-import com.bn.ninjatrader.testplay.simulation.data.adaptor.DataMapAdaptor;
+import com.bn.ninjatrader.testplay.simulation.adaptor.DataMapAdaptor;
 import org.testng.annotations.Test;
 
 import java.util.List;
