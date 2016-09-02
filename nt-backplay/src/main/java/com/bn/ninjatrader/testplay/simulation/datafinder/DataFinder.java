@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.testplay.simulation.datafinder;
 
 import com.bn.ninjatrader.testplay.simulation.data.DataType;
-import com.bn.ninjatrader.testplay.simulation.SimulationParameters;
+import com.bn.ninjatrader.testplay.simulation.SimulationParams;
 import com.bn.ninjatrader.testplay.simulation.data.SimulationData;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface DataFinder<T> {
 
-  List<SimulationData<T>> find(SimulationParameters params, int requiredDataSize);
+  List<SimulationData<T>> find(SimulationParams params, int requiredDataSize);
 
   List<DataType> getSupportedDataTypes();
 }

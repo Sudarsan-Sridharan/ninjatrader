@@ -39,7 +39,7 @@ public class SimulationFactory {
   @Inject
   private BrokerFactory brokerFactory;
 
-  public Simulation create(SimulationParameters params) {
+  public Simulation create(SimulationParams params) {
     FindRequest findRequest = forSymbol(params.getSymbol()).from(params.getFromDate()).to(params.getToDate());
     List<Price> priceList = priceDao.find(findRequest);
 
@@ -50,7 +50,7 @@ public class SimulationFactory {
     return simulation;
   }
 
-  private void addSimulationData(Simulation simulation, SimulationParameters params, int requiredDataSize) {
+  private void addSimulationData(Simulation simulation, SimulationParams params, int requiredDataSize) {
     Set<DataType> dataTypes = params.getDataTypes();
     for (DataFinder dataFinder : dataFinders) {
       dataFinder.getSupportedDataTypes();

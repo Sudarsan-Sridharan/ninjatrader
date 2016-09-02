@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Created by Brad on 8/3/16.
  */
-public class SimulationParameters {
+public class SimulationParams {
 
   private LocalDate fromDate;
   private LocalDate toDate;

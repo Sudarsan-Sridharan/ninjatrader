@@ -4,7 +4,7 @@ import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.common.util.ListUtil;
 import com.bn.ninjatrader.model.dao.RSIDao;
 import com.bn.ninjatrader.model.dao.period.FindRequest;
-import com.bn.ninjatrader.testplay.simulation.SimulationParameters;
+import com.bn.ninjatrader.testplay.simulation.SimulationParams;
 import com.bn.ninjatrader.testplay.simulation.adaptor.RSIDataMapAdaptor;
 import com.bn.ninjatrader.testplay.simulation.data.DataType;
 import com.bn.ninjatrader.testplay.simulation.data.SimulationData;
@@ -43,7 +43,7 @@ public class RSIDataFinder implements DataFinder<Value> {
   private RSIDao rsiDao;
 
   @Override
-  public List<SimulationData<Value>> find(SimulationParameters params, int requiredDataSize) {
+  public List<SimulationData<Value>> find(SimulationParams params, int requiredDataSize) {
     List<SimulationData<Value>> simulationDataList = Lists.newArrayList();
     FindRequest findRequest = forSymbol(params.getSymbol()).from(params.getFromDate()).to(params.getToDate());
     Set<DataType> dataTypes = params.getDataTypes();

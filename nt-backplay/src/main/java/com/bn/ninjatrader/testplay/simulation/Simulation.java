@@ -25,7 +25,7 @@ public class Simulation {
 
   private List<Price> priceList;
   private BarDataFactory barDataFactory = new BarDataFactory();
-  private SimulationParameters simulationParameters;
+  private SimulationParams simulationParams;
 
   private Broker broker;
   private Account account;
@@ -38,12 +38,12 @@ public class Simulation {
 
   public Simulation(Account account,
                     Broker broker,
-                    SimulationParameters simulationParams,
+                    SimulationParams simulationParams,
                     List<Price> priceList) {
 
     this.account = account;
     this.broker = broker;
-    this.simulationParameters = simulationParams;
+    this.simulationParams = simulationParams;
     this.priceList = priceList;
 
     this.buyCondition = simulationParams.getBuyCondition();
@@ -56,13 +56,13 @@ public class Simulation {
   }
 
   private void checkValidConstructorParams() {
-    Preconditions.checkNotNull(simulationParameters);
+    Preconditions.checkNotNull(simulationParams);
     Preconditions.checkNotNull(buyCondition);
     Preconditions.checkNotNull(buyOrderParams);
     Preconditions.checkNotNull(sellCondition);
     Preconditions.checkNotNull(sellOrderParams);
     Preconditions.checkNotNull(account);
-    Preconditions.checkArgument(simulationParameters.getStartingCash() > 0, "Starting equity must be > 0.");
+    Preconditions.checkArgument(simulationParams.getStartingCash() > 0, "Starting equity must be > 0.");
     Preconditions.checkNotNull(priceList);
     Preconditions.checkArgument(priceList.size() > 0, "Price list must not be empty.");
   }

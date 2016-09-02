@@ -5,7 +5,7 @@ import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.common.util.ListUtil;
 import com.bn.ninjatrader.model.dao.SMADao;
 import com.bn.ninjatrader.model.dao.period.FindRequest;
-import com.bn.ninjatrader.testplay.simulation.SimulationParameters;
+import com.bn.ninjatrader.testplay.simulation.SimulationParams;
 import com.bn.ninjatrader.testplay.simulation.data.SimulationData;
 import com.bn.ninjatrader.testplay.simulation.adaptor.SMADataMapAdaptor;
 import com.google.common.collect.Lists;
@@ -43,7 +43,7 @@ public class SMADataFinder implements DataFinder<Value> {
   private SMADao simpleAverageDao;
 
   @Override
-  public List<SimulationData<Value>> find(SimulationParameters params, int requiredDataSize) {
+  public List<SimulationData<Value>> find(SimulationParams params, int requiredDataSize) {
     List<SimulationData<Value>> simulationDataList = Lists.newArrayList();
     FindRequest findRequest = forSymbol(params.getSymbol()).from(params.getFromDate()).to(params.getToDate());
     Set<DataType> dataTypes = params.getDataTypes();

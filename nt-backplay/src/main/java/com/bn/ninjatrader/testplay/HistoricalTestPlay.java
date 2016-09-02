@@ -4,7 +4,7 @@ import com.bn.ninjatrader.calculator.guice.NtCalculatorModule;
 import com.bn.ninjatrader.model.guice.NtModelModule;
 import com.bn.ninjatrader.testplay.simulation.Simulation;
 import com.bn.ninjatrader.testplay.simulation.SimulationFactory;
-import com.bn.ninjatrader.testplay.simulation.SimulationParameters;
+import com.bn.ninjatrader.testplay.simulation.SimulationParams;
 import com.bn.ninjatrader.testplay.simulation.guice.NtSimulationModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -34,7 +34,7 @@ public class HistoricalTestPlay implements TestPlay {
   private SimulationFactory simulationFactory;
 
   @Override
-  public void test(SimulationParameters params) {
+  public void test(SimulationParams params) {
     Simulation simulation = simulationFactory.create(params);
     simulation.play();
   }
@@ -47,7 +47,7 @@ public class HistoricalTestPlay implements TestPlay {
     );
     HistoricalTestPlay historicalTestPlay = injector.getInstance(HistoricalTestPlay.class);
 
-    SimulationParameters params = new SimulationParameters();
+    SimulationParams params = new SimulationParams();
     params.setSymbol("MEG");
     params.setFromDate(LocalDate.now().minusYears(10));
     params.setToDate(LocalDate.now());
