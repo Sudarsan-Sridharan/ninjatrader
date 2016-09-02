@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by Brad on 6/3/16.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PeriodData extends AbstractStockData<Value> {
+public class PeriodData<T> extends AbstractStockData<Value> {
 
   public static final String PERIOD = "pr";
 

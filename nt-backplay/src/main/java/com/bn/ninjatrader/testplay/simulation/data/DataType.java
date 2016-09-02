@@ -29,6 +29,7 @@ public enum DataType implements Operation{
   CHIKOU,
 
   SMA_10(10),
+  SMA_15(15),
   SMA_20(20),
   SMA_21(21),
   SMA_50(50),

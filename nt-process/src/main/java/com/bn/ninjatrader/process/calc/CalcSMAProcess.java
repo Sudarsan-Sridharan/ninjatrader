@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 public class CalcSMAProcess extends AbstractCalcForPeriodProcess {
 
   private static final Logger log = LoggerFactory.getLogger(CalcSMAProcess.class);
-  private static final int[] DEFAULT_PERIODS = {10, 20, 21, 30, 50, 100, 200};
+  private static final int[] DEFAULT_PERIODS = {10, 15, 20, 21, 30, 50, 100, 200};
 
   @Inject
   public CalcSMAProcess(SMACalculator calculator,
