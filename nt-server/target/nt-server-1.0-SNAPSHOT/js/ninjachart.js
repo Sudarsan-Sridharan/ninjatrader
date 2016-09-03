@@ -31,7 +31,7 @@ function NinjaChart(divId, readOnly) {
 }
 
 /**
- * Update the chart w/ new stock data
+ * Update the chart w/ new boardlot document
  * @param json
  */
 NinjaChart.prototype.showChart = function(symbol, period) {
@@ -80,7 +80,7 @@ NinjaChart.prototype.refreshChart = function() {
 }
 
 /**
- * Clear the stock chart
+ * Clear the boardlot chart
  */
 NinjaChart.prototype.clearChart = function() {
     $(this.id + ' .cols').html('');
@@ -173,14 +173,14 @@ NinjaChart.prototype.addGroup = function(container, className) {
 }
 
 /**
- * Print the stock chart
+ * Print the boardlot chart
  */
 NinjaChart.prototype.printChart = function() {
     this.printPriceIndicators();
     this.printXCursor();
     this.printLastPriceInd();
 
-    // Show stock symbol
+    // Show boardlot symbol
     $(this.id + ' .stockMeta .symbol').html(this.symbol);
 
     var x = this.canvasPaddingLeft;
@@ -369,7 +369,7 @@ NinjaChart.prototype.printLastPriceInd = function() {
 }
 
 /**
- * Print columns containing data and has mouse hover
+ * Print columns containing document and has mouse hover
  */
 NinjaChart.prototype.printColumn = function(x, price) {
     if (this.readOnly) {

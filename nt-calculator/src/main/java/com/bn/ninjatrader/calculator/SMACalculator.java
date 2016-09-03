@@ -15,7 +15,7 @@ import java.util.List;
  * Created by Brad on 5/28/16.
  */
 @Singleton
-public class SMACalculator extends AbstractCalculatorForPeriod {
+public class SMACalculator extends AbstractValueCalculator {
 
   private static final Logger log = LoggerFactory.getLogger(SMACalculator.class);
 

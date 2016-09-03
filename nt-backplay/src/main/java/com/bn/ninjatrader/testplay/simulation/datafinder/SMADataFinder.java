@@ -4,7 +4,7 @@ import com.bn.ninjatrader.testplay.simulation.data.DataType;
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.common.util.ListUtil;
 import com.bn.ninjatrader.model.dao.SMADao;
-import com.bn.ninjatrader.model.dao.period.FindRequest;
+import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.testplay.simulation.SimulationParams;
 import com.bn.ninjatrader.testplay.simulation.data.SimulationData;
 import com.bn.ninjatrader.testplay.simulation.adaptor.SMADataMapAdaptor;
@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static com.bn.ninjatrader.model.dao.period.FindRequest.forSymbol;
+import static com.bn.ninjatrader.model.request.FindRequest.forSymbol;
 
 /**
  * Simple Moving Average DataFinder

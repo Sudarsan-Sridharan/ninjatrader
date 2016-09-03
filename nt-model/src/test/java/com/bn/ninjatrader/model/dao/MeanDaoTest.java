@@ -3,10 +3,10 @@ package com.bn.ninjatrader.model.dao;
 /**
  * Created by Brad on 5/4/16.
  */
-public class MeanDaoTest extends AbstractPeriodDaoTest {
+public class MeanDaoTest extends AbstractValueDaoTest {
 
   @Override
-  public ValueDao initDao() {
+  public ValueDao provideTestedDao() {
     return getInjector().getInstance(MeanDao.class);
   }
 }

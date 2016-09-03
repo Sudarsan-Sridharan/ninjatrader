@@ -6,7 +6,7 @@ import com.bn.ninjatrader.common.type.Period;
 import com.bn.ninjatrader.common.util.PriceUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.WeeklyPriceDao;
-import com.bn.ninjatrader.model.dao.period.FindRequest;
+import com.bn.ninjatrader.model.request.FindRequest;
 import com.google.inject.Inject;
 import com.google.sitebricks.At;
 import com.google.sitebricks.client.transport.Json;
@@ -92,7 +92,7 @@ public class PriceHttpService {
     List<Price> prices = dao.find(FindRequest.forSymbol(symbol).from(fromDate).to(toDate));
     log.debug("Found {} prices for {}", prices.size(), symbol);
 
-    // If no data, return empty
+    // If no document, return empty
     if (prices.isEmpty()) {
       return Optional.empty();
     }

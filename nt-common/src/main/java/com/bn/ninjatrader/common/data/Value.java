@@ -20,7 +20,7 @@ public class Value implements DateObj<Value> {
 
   private static Value EMPTY_INSTANCE = new Value();
 
-  public static final Value empty() {
+  public static Value empty() {
     return EMPTY_INSTANCE;
   }
 

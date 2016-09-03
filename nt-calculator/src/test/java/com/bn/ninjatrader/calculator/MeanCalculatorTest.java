@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.calculator;
 
 import com.beust.jcommander.internal.Lists;
+import com.bn.ninjatrader.calculator.parameter.CalcParams;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.common.util.TestUtil;
@@ -102,7 +103,7 @@ public class MeanCalculatorTest {
     priceList.add(price2);
 
     // Calculate for multiple periods
-    Map<Integer, List<Value>> valueMap = calculator.calc(priceList, 1, 2);
+    Map<Integer, List<Value>> valueMap = calculator.calc(CalcParams.withPrice(priceList).periods(1, 2));
 
     // Verify result. Should have periods for 1 and 2
     assertEquals(valueMap.size(), 2);

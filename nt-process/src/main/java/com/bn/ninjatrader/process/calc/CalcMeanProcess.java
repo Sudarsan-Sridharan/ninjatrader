@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by Brad on 6/8/16.
  */
-public class CalcMeanProcess extends AbstractCalcForPeriodProcess {
+public class CalcMeanProcess extends AbstractCalcValuesProcess {
 
   private static final Logger log = LoggerFactory.getLogger(CalcMeanProcess.class);
 

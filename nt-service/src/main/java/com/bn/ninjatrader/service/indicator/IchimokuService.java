@@ -10,7 +10,7 @@ import com.bn.ninjatrader.common.util.DateObjUtil;
 import com.bn.ninjatrader.model.dao.MeanDao;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.StockDao;
-import com.bn.ninjatrader.model.dao.period.FindRequest;
+import com.bn.ninjatrader.model.request.FindRequest;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ import javax.inject.Singleton;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.bn.ninjatrader.model.dao.period.FindRequest.forSymbol;
+import static com.bn.ninjatrader.model.request.FindRequest.forSymbol;
 
 /**
  * Created by Brad on 5/3/16.
@@ -111,12 +111,12 @@ public class IchimokuService {
       List<Value> kijunList = meanDao.find(forSymbol(symbol).period(26).from(fromDate).to(toDate));
       List<Price> priceList = priceDao.find(forSymbol(symbol).from(fromDate).to(toDate));
 
-      // Skip does w/ not enough data
+      // Skip does w/ not enough document
       if (tenkanList.isEmpty() || priceList.isEmpty() || kijunList.isEmpty()) {
         continue;
       }
 
-      // Get most recent data
+      // Get most recent document
       double tenkan = tenkanList.get(tenkanList.size() - 1).getValue();
       double kijun = kijunList.get(kijunList.size() - 1).getValue();
       double close = priceList.get(priceList.size() - 1).getClose();
@@ -129,6 +129,6 @@ public class IchimokuService {
   }
 
   protected int getNumOfPastMonths() {
-    return 3; // need enough months of past data to calculate present ichimoku
+    return 3; // need enough months of past document to calculate present ichimoku
   }
 }

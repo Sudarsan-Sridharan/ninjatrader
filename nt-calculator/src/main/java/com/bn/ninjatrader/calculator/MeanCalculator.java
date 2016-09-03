@@ -13,7 +13,7 @@ import java.util.List;
  * Created by Brad on 5/28/16.
  */
 @Singleton
-public class MeanCalculator extends AbstractCalculatorForPeriod {
+public class MeanCalculator extends AbstractValueCalculator {
 
   private static final Logger log = LoggerFactory.getLogger(MeanCalculator.class);
 

@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.calculator;
 
 import com.beust.jcommander.internal.Lists;
+import com.bn.ninjatrader.calculator.parameter.CalcParams;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.data.Value;
 import mockit.Tested;
@@ -94,7 +95,7 @@ public class RSICalculatorTest {
     List<Price> priceList = createPricesWithChanges(1.11, 0.24, -0.27, -0.15, -0.05, 0.80, 0.86, -0.15,
         1.71, -0.02, -1.03, -0.63, 0.04, 0.47);
 
-    Map<Integer, List<Value>> map = calculator.calc(priceList, 1, 2, 14);
+    Map<Integer, List<Value>> map = calculator.calc(CalcParams.withPrice(priceList).periods(1, 2, 14));
 
     assertEquals(map.size(), 3);
     assertTrue(map.keySet().contains(1));

@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.process.calc;
 
-import com.bn.ninjatrader.calculator.CalculatorForPeriod;
+import com.bn.ninjatrader.calculator.ValueCalculator;
+import com.bn.ninjatrader.calculator.parameter.CalcParams;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.common.util.DateObjUtil;
@@ -18,23 +19,23 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import static com.bn.ninjatrader.model.dao.period.FindRequest.forSymbol;
-import static com.bn.ninjatrader.model.dao.period.SaveRequest.save;
+import static com.bn.ninjatrader.model.request.FindRequest.forSymbol;
+import static com.bn.ninjatrader.model.request.SaveRequest.save;
 
 /**
  * Created by Brad on 7/28/16.
  */
 @Singleton
-public abstract class AbstractCalcForPeriodProcess extends AbstractCalcProcess implements CalcProcess {
+public abstract class AbstractCalcValuesProcess extends AbstractCalcProcess implements CalcProcess {
 
-  private static final Logger log = LoggerFactory.getLogger(AbstractCalcForPeriodProcess.class);
+  private static final Logger log = LoggerFactory.getLogger(AbstractCalcValuesProcess.class);
 
-  private final CalculatorForPeriod calculator;
+  private final ValueCalculator calculator;
   private final PriceDao priceDao;
   private final ValueDao valueDao;
 
   @Inject
-  public AbstractCalcForPeriodProcess(CalculatorForPeriod calculator, PriceDao priceDao, ValueDao valueDao) {
+  public AbstractCalcValuesProcess(ValueCalculator calculator, PriceDao priceDao, ValueDao valueDao) {
     super(priceDao);
     this.priceDao = priceDao;
     this.calculator = calculator;
@@ -42,34 +43,18 @@ public abstract class AbstractCalcForPeriodProcess extends AbstractCalcProcess i
   }
 
   @Override
-  public void processPrices(CalcRequest calcRequest) {
-    Preconditions.checkNotNull(calcRequest);
-
-    String symbol = calcRequest.getSymbol();
-    LocalDate fromDate = calcRequest.getFromDate();
-    LocalDate toDate = calcRequest.getToDate();
-    int[] periods = getDefaultPeriodsIfNull(calcRequest);
-
-    List<Price> prices = priceDao.find(forSymbol(symbol).from(fromDate).to(toDate));
-
-    Map<Integer, List<Value>> periodToValuesMap = calculator.calc(prices, periods);
-
-    saveValuesForEachPeriod(calcRequest, periodToValuesMap);
-  }
-
-  @Override
   public void processMissingBars(CalcRequest calcRequest) {
     Preconditions.checkNotNull(calcRequest);
     log.debug("{}", calcRequest);
 
-    String symbol = calcRequest.getSymbol();
     LocalDate priceFromDate = getFromDateToHaveEnoughPricesForMissingBars(calcRequest);
-    LocalDate priceToDate = calcRequest.getToDate();
     int[] periods = getDefaultPeriodsIfNull(calcRequest);
 
-    List<Price> prices = priceDao.find(forSymbol(symbol).from(priceFromDate).to(priceToDate));
+    List<Price> prices = priceDao.find(forSymbol(calcRequest.getSymbol())
+        .from(priceFromDate)
+        .to(calcRequest.getToDate()));
 
-    Map<Integer, List<Value>> periodToValuesMap = calculator.calc(prices, periods);
+    Map<Integer, List<Value>> periodToValuesMap = calculator.calc(CalcParams.withPrice(prices).periods(periods));
 
     saveValuesForEachPeriod(calcRequest, periodToValuesMap);
   }

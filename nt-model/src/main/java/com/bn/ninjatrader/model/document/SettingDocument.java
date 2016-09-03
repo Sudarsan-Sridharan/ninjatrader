@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.model.data;
+package com.bn.ninjatrader.model.document;
 
 import com.bn.ninjatrader.common.data.Setting;
 import com.bn.ninjatrader.model.util.QueryParamName;
@@ -14,7 +14,7 @@ import java.util.List;
  * Created by Brad on 6/3/16.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SettingData {
+public class SettingDocument {
 
   @MongoId
   @MongoObjectId

@@ -4,7 +4,7 @@ import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.dao.period.FindRequest;
+import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.testplay.simulation.SimulationParams;
 import com.bn.ninjatrader.testplay.simulation.adaptor.PriceDataMapAdaptor;
 import com.bn.ninjatrader.testplay.simulation.data.DataMap;

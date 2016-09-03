@@ -18,7 +18,7 @@ import javax.inject.Singleton;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.bn.ninjatrader.model.dao.period.FindRequest.forSymbol;
+import static com.bn.ninjatrader.model.request.FindRequest.forSymbol;
 
 /**
  * Created by Brad on 5/3/16.

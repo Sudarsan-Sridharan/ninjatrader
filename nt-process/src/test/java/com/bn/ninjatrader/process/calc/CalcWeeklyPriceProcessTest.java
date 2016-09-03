@@ -5,7 +5,7 @@ import com.bn.ninjatrader.calculator.WeeklyPriceCalculator;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.WeeklyPriceDao;
-import com.bn.ninjatrader.model.dao.period.FindRequest;
+import com.bn.ninjatrader.model.request.FindRequest;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;

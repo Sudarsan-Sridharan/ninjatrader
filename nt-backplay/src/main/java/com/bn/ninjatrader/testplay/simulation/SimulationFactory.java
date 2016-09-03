@@ -3,7 +3,7 @@ package com.bn.ninjatrader.testplay.simulation;
 import com.bn.ninjatrader.testplay.simulation.data.DataType;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.dao.period.FindRequest;
+import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.testplay.simulation.account.Account;
 import com.bn.ninjatrader.testplay.simulation.broker.Broker;
 import com.bn.ninjatrader.testplay.simulation.broker.BrokerFactory;
@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static com.bn.ninjatrader.model.dao.period.FindRequest.forSymbol;
+import static com.bn.ninjatrader.model.request.FindRequest.forSymbol;
 
 /**
  * Created by Brad on 8/3/16.

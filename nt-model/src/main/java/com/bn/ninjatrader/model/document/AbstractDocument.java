@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.model.data;
+package com.bn.ninjatrader.model.document;
 
 import com.bn.ninjatrader.model.util.QueryParamName;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -15,7 +15,7 @@ import java.util.List;
  * Created by Brad on 6/3/16.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class AbstractStockData<T> implements Comparable<AbstractStockData> {
+public abstract class AbstractDocument<T> implements Comparable<AbstractDocument> {
 
   @MongoId
   @MongoObjectId
@@ -30,9 +30,9 @@ public abstract class AbstractStockData<T> implements Comparable<AbstractStockDa
   @JsonProperty(QueryParamName.DATA)
   private List<T> data = Lists.newArrayList();
 
-  public AbstractStockData() {}
+  public AbstractDocument() {}
 
-  public AbstractStockData(String symbol, int year) {
+  public AbstractDocument(String symbol, int year) {
     this.symbol = symbol;
     this.year = year;
   }
@@ -82,7 +82,7 @@ public abstract class AbstractStockData<T> implements Comparable<AbstractStockDa
         .build();
   }
 
-  public int compareTo(AbstractStockData data2) {
+  public int compareTo(AbstractDocument data2) {
     if (!symbol.equals(data2.getSymbol())) {
       return symbol.compareTo(data2.getSymbol());
     }

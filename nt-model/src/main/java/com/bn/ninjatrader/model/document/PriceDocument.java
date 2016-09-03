@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.model.data;
+package com.bn.ninjatrader.model.document;
 
 import com.bn.ninjatrader.common.data.Price;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -7,13 +7,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * Created by Brad on 6/3/16.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PriceData extends AbstractStockData<Price> {
+public class PriceDocument extends AbstractDocument<Price> {
 
-  public PriceData() {
+  public PriceDocument() {
     super();
   }
 
-  public PriceData(String symbol, int year) {
+  public PriceDocument(String symbol, int year) {
     super(symbol, year);
   }
 }

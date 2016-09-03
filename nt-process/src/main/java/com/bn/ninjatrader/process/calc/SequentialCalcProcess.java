@@ -25,13 +25,6 @@ public class SequentialCalcProcess implements CalcProcess {
   }
 
   @Override
-  public void processPrices(CalcRequest calcRequest) {
-    for (CalcProcess process : processList) {
-      process.processPrices(calcRequest);
-    }
-  }
-
-  @Override
   public void processMissingBars(CalcRequest calcRequest) {
     for (CalcProcess process : processList) {
       process.processMissingBars(calcRequest);

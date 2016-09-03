@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.bn.ninjatrader.model.dao.period.FindRequest.forSymbol;
+import static com.bn.ninjatrader.model.request.FindRequest.forSymbol;
 
 /**
  * Created by Brad on 6/8/16.
@@ -28,11 +28,6 @@ public class CalcPriceChangeProcess extends AbstractCalcProcess implements CalcP
   public CalcPriceChangeProcess(PriceDao priceDao) {
     super(priceDao);
     this.priceDao = priceDao;
-  }
-
-  @Override
-  public void processPrices(CalcRequest calcRequest) {
-
   }
 
   @Override

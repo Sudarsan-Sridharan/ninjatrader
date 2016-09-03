@@ -8,7 +8,7 @@ import com.bn.ninjatrader.common.util.PriceUtil;
 import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.WeeklyPriceDao;
-import com.bn.ninjatrader.model.dao.period.FindRequest;
+import com.bn.ninjatrader.model.request.FindRequest;
 import mockit.*;
 import org.testng.annotations.Test;
 
@@ -39,7 +39,7 @@ public class PriceHttpServiceTest {
 
   @Test
   public void testGetStockPrice() {
-    // Prepare data
+    // Prepare document
     Price price1 = new Price(LocalDate.now(), 1.1, 1.2, 1.0, 1.1, 10000);
     Price price2 = new Price(LocalDate.now().plusDays(1), 2.1, 2.2, 2.0, 2.1, 20000);
     Price priceSummary = new Price(LocalDate.now(), 3.1, 3.2, 3.0, 3.1, 30000);

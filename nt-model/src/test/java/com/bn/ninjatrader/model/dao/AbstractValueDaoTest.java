@@ -1,8 +1,7 @@
 package com.bn.ninjatrader.model.dao;
 
-import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.common.data.Value;
-import com.bn.ninjatrader.model.dao.period.FindRequest;
+import com.bn.ninjatrader.model.request.FindRequest;
 import org.jongo.MongoCollection;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -12,16 +11,16 @@ import org.testng.annotations.Test;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.bn.ninjatrader.model.dao.period.SaveRequest.save;
+import static com.bn.ninjatrader.model.request.SaveRequest.save;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 /**
  * Created by Brad on 5/4/16.
  */
-public abstract class AbstractPeriodDaoTest extends AbstractDaoTest {
+public abstract class AbstractValueDaoTest extends AbstractDaoTest {
 
-  final LocalDate date1 = LocalDate.of(2016, 1, 1);
+  private final LocalDate date1 = LocalDate.of(2016, 1, 1);
   private final LocalDate date2 = LocalDate.of(2016, 1, 2);
   private final LocalDate date3 = LocalDate.of(2016, 1, 3);
 
@@ -33,7 +32,7 @@ public abstract class AbstractPeriodDaoTest extends AbstractDaoTest {
 
   @BeforeClass
   public void init() {
-    this.dao = initDao();
+    this.dao = provideTestedDao();
   }
 
   @BeforeMethod
@@ -123,8 +122,16 @@ public abstract class AbstractPeriodDaoTest extends AbstractDaoTest {
   }
 
   private void assertEqualValues(List<Value> actual, Value ... expected) {
-    assertEquals(actual, Lists.newArrayList(expected));
+    assertEquals(actual.size(), expected.length);
+    for(int i=0; i<actual.size(); i++) {
+      assertValueEquals(actual.get(i), expected[i]);
+    }
   }
 
-  public abstract ValueDao initDao();
+  private void assertValueEquals(Value actual, Value expected) {
+    assertEquals(actual.getDate(), expected.getDate());
+    assertEquals(actual.getValue(), expected.getValue());
+  }
+
+  public abstract ValueDao provideTestedDao();
 }

@@ -2,7 +2,7 @@ package com.bn.ninjatrader.model.dao;
 
 import com.bn.ninjatrader.common.data.Setting;
 import com.bn.ninjatrader.model.annotation.SettingsCollection;
-import com.bn.ninjatrader.model.data.SettingData;
+import com.bn.ninjatrader.model.document.SettingDocument;
 import com.bn.ninjatrader.model.util.Queries;
 import com.bn.ninjatrader.model.util.QueryParamName;
 import com.google.common.collect.Lists;
@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by Brad on 7/28/16.
  */
-public class SettingsDao extends AbstractDao<SettingData> {
+public class SettingsDao extends AbstractDao<SettingDocument> {
   private static final Logger log = LoggerFactory.getLogger(SettingsDao.class);
 
   @Inject
@@ -30,7 +30,7 @@ public class SettingsDao extends AbstractDao<SettingData> {
   }
 
   public List<Setting> find(String owner) {
-    SettingData settingData = getMongoCollection().findOne(Queries.FIND_BY_OWNER, owner).as(SettingData.class);
+    SettingDocument settingData = getMongoCollection().findOne(Queries.FIND_BY_OWNER, owner).as(SettingDocument.class);
     if (settingData == null) {
       return Collections.emptyList();
     }

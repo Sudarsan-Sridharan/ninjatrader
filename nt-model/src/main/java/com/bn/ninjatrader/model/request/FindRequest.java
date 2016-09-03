@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.model.dao.period;
+package com.bn.ninjatrader.model.request;
 
 import java.time.LocalDate;
 

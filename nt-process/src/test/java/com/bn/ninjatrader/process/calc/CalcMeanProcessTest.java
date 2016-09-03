@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.process.calc;
 
-import com.bn.ninjatrader.calculator.CalculatorForPeriod;
+import com.bn.ninjatrader.calculator.ValueCalculator;
 import com.bn.ninjatrader.calculator.MeanCalculator;
 import com.bn.ninjatrader.model.dao.MeanDao;
 import com.bn.ninjatrader.model.dao.PriceDao;
@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by Brad on 6/11/16.
  */
-public class CalcMeanProcessTest extends AbstractCalcForPeriodProcessTest {
+public class CalcMeanProcessTest extends AbstractCalcValuesProcessTest {
 
   private static final Logger log = LoggerFactory.getLogger(CalcMeanProcessTest.class);
 
@@ -40,7 +40,7 @@ public class CalcMeanProcessTest extends AbstractCalcForPeriodProcessTest {
   }
 
   @Override
-  public CalculatorForPeriod provideCalculator() {
+  public ValueCalculator provideCalculator() {
     return calculator;
   }
 }

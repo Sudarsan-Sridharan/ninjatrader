@@ -1,13 +1,15 @@
-package com.bn.ninjatrader.model.dao.period;
+package com.bn.ninjatrader.model.util;
 
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.common.util.DateObjUtil;
-import com.bn.ninjatrader.model.data.PeriodData;
-import com.bn.ninjatrader.model.util.Queries;
+import com.bn.ninjatrader.model.request.FindRequest;
+import com.bn.ninjatrader.model.document.ValueDocument;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.jongo.MongoCollection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,29 +17,34 @@ import java.util.List;
 /**
  * Created by Brad on 7/28/16.
  */
-public class PeriodDataFinder {
+public class VaueDocumentFinder<T extends Value> {
+
+  private static final Logger log = LoggerFactory.getLogger(VaueDocumentFinder.class);
 
   private MongoCollection mongoCollection;
+  private Class documentClass;
 
-  protected PeriodDataFinder(MongoCollection mongoCollection) {
+  public VaueDocumentFinder(MongoCollection mongoCollection, Class documentClass) {
     this.mongoCollection = mongoCollection;
+    this.documentClass = documentClass;
   }
 
-  protected List<Value> find(FindRequest findRequest) {
+  public List<T> find(FindRequest findRequest) {
     assertPreconditions(findRequest);
     setDefaultValues(findRequest);
 
     LocalDate fromDate = findRequest.getFromDate();
     LocalDate toDate = findRequest.getToDate();
 
-    List<PeriodData> periodDataList = Lists.newArrayList(mongoCollection
+    List<ValueDocument> periodDataList = Lists.newArrayList(mongoCollection
         .find(Queries.FIND_BY_PERIOD_YEAR_RANGE,
             findRequest.getSymbol(), fromDate.getYear(), toDate.getYear(), findRequest.getPeriod())
-        .as(PeriodData.class).iterator());
+        .as(documentClass).iterator());
 
-    List<Value> values = mergeValues(periodDataList);
+    List<T> values = mergeValues(periodDataList);
 
     DateObjUtil.trimToDateRange(values, fromDate, toDate);
+
     return values;
   }
 
@@ -55,9 +62,9 @@ public class PeriodDataFinder {
     }
   }
 
-  private List<Value> mergeValues(List<PeriodData> periodDataList) {
-    List<Value> values = Lists.newArrayList();
-    for (PeriodData periodData : periodDataList) {
+  private List<T> mergeValues(List<ValueDocument> periodDataList) {
+    List<T> values = Lists.newArrayList();
+    for (ValueDocument periodData : periodDataList) {
       values.addAll(periodData.getData());
     }
     return values;

@@ -3,7 +3,7 @@ package com.bn.ninjatrader.model.dao;
 import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.util.TestUtil;
-import com.bn.ninjatrader.model.data.PriceData;
+import com.bn.ninjatrader.model.document.PriceDocument;
 import org.jongo.MongoCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.bn.ninjatrader.model.dao.period.FindRequest.forSymbol;
+import static com.bn.ninjatrader.model.request.FindRequest.forSymbol;
 import static org.testng.Assert.*;
 
 /**
@@ -41,25 +41,25 @@ public class PriceDaoTest extends AbstractDaoTest {
 
   @Test
   public void testSaveAndFind() {
-    // Prepare data
-    PriceData priceData = new PriceData("MEG", 2016);
+    // Prepare document
+    PriceDocument priceData = new PriceDocument("MEG", 2016);
     Price price1 = new Price(now, 1.1, 1.2, 1.0, 1.1, 10000);
     Price price2 = new Price(now.plusDays(1), 2.1, 2.2, 2.0, 2.1, 20000);
 
-    // Add Price data for January 1 and 2, 2016
+    // Add Price document for January 1 and 2, 2016
     priceData.getData().add(price1);
     priceData.getData().add(price2);
 
-    // Save Price data
+    // Save Price document
     priceDao.save(priceData);
 
-    // Find data
-    List<PriceData> result = priceDao.find();
+    // Find document
+    List<PriceDocument> result = priceDao.find();
     assertNotNull(result);
     assertEquals(result.size(), 1);
 
-    // Verify data
-    PriceData resultData = result.get(0);
+    // Verify document
+    PriceDocument resultData = result.get(0);
     assertEquals(resultData.getSymbol(), priceData.getSymbol());
     assertEquals(resultData.getYear(), priceData.getYear());
     assertEquals(resultData.getData().size(), 2);
@@ -137,11 +137,11 @@ public class PriceDaoTest extends AbstractDaoTest {
     // Save set 1 prices
     priceDao.save("MEG", Lists.newArrayList(price3, price2, price1));
 
-    // Find data
+    // Find document
     List<Price> foundPrices = priceDao.find(forSymbol("MEG").from(now).to(now.plusDays(3)));
     assertEquals(foundPrices.size(), 3);
 
-    // Verify data is sorted
+    // Verify document is sorted
     TestUtil.assertPriceEquals(foundPrices.get(0), price1);
     TestUtil.assertPriceEquals(foundPrices.get(1), price2);
     TestUtil.assertPriceEquals(foundPrices.get(2), price3);
@@ -149,7 +149,7 @@ public class PriceDaoTest extends AbstractDaoTest {
     // Save set 2 prices. price4 overwrites price3
     priceDao.save("MEG", Lists.newArrayList(price1, price4, price5));
 
-    // Find data
+    // Find document
     foundPrices = priceDao.find(forSymbol("MEG").from(now).to(now.plusDays(3)));
     assertEquals(foundPrices.size(), 4);
     TestUtil.assertPriceEquals(foundPrices.get(2), price4);
@@ -204,12 +204,12 @@ public class PriceDaoTest extends AbstractDaoTest {
     log.debug("Removing date: {}", date1);
     priceDao.removeByDates(Lists.newArrayList(date1));
 
-    List<PriceData> results = priceDao.find();
+    List<PriceDocument> results = priceDao.find();
     log.debug("Found Result: {}", results);
     assertEquals(results.size(), 3);
 
     int successCode = 0;
-    for (PriceData data : results) {
+    for (PriceDocument data : results) {
       if (data.getSymbol().equals("BDO")) {
         assertEquals(data.getData().size(), 0);
         successCode += 1;

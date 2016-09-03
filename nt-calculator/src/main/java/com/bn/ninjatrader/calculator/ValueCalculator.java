@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.calculator;
 
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.calculator.parameter.CalcParams;
 import com.bn.ninjatrader.common.data.Value;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Created by Brad on 7/28/16.
  */
-public interface CalculatorForPeriod {
+public interface ValueCalculator {
 
-  Map<Integer, List<Value>> calc(List<Price> priceList, int ... periods);
+  Map<Integer,List<Value>> calc(CalcParams params);
 }

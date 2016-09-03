@@ -1,8 +1,8 @@
-package com.bn.ninjatrader.model.dao.period;
+package com.bn.ninjatrader.model.util;
 
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.common.util.DateFormats;
-import com.bn.ninjatrader.model.util.Queries;
+import com.bn.ninjatrader.model.request.SaveRequest;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
@@ -16,25 +16,23 @@ import java.util.List;
 /**
  * Created by Brad on 7/28/16.
  */
-public class PeriodDataSaver {
+public class ValueDocumentSaver {
 
-  private static final Logger log = LoggerFactory.getLogger(PeriodDataSaver.class);
+  private static final Logger log = LoggerFactory.getLogger(ValueDocumentSaver.class);
 
   private MongoCollection mongoCollection;
 
-  protected PeriodDataSaver(MongoCollection mongoCollection) {
+  public ValueDocumentSaver(MongoCollection mongoCollection) {
     this.mongoCollection = mongoCollection;
   }
 
   public void save(SaveRequest saveRequest) {
     assertPreconditions(saveRequest);
-
     if (!saveRequest.hasValues()) {
       return;
     }
 
     List<ValuesPerYear> valuesPerYearList = splitToValuesPerYear(saveRequest.getValues());
-
     saveValuesPerYear(saveRequest.getSymbol(), saveRequest.getPeriod(), valuesPerYearList);
   }
 
@@ -43,7 +41,7 @@ public class PeriodDataSaver {
     Preconditions.checkArgument(saveRequest.getPeriod() > 0);
   }
 
-  private List<ValuesPerYear> splitToValuesPerYear(List<Value> values) {
+  private List<ValuesPerYear> splitToValuesPerYear(List<? extends Value> values) {
     Collections.sort(values);
     List<ValuesPerYear> valuesPerYearList = Lists.newArrayList();
 
@@ -76,11 +74,11 @@ public class PeriodDataSaver {
   private void removeByDates(String symbol, int year, int period, List<String> dates) {
     if (!dates.isEmpty()) {
       mongoCollection.update(Queries.FIND_BY_PERIOD, symbol, year, period)
-          .with("{$pull: {data :{d: {$in: #}}}}", dates);
+          .with("{$pull: { data: {d: {$in: #}}}}", dates);
     }
   }
 
-  private void saveByYearAndPeriod(String symbol, int year, int period, List<Value> values) {
+  private void saveByYearAndPeriod(String symbol, int year, int period, List<? extends Value> values) {
     if (!values.isEmpty()) {
       // Insert new values
       mongoCollection.update(Queries.FIND_BY_PERIOD, symbol, year, period)

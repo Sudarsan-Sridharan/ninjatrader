@@ -1,9 +1,10 @@
 package com.bn.ninjatrader.testplay.simulation.datafinder;
 
+import com.bn.ninjatrader.common.data.RSIValue;
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.common.util.ListUtil;
 import com.bn.ninjatrader.model.dao.RSIDao;
-import com.bn.ninjatrader.model.dao.period.FindRequest;
+import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.testplay.simulation.SimulationParams;
 import com.bn.ninjatrader.testplay.simulation.adaptor.RSIDataMapAdaptor;
 import com.bn.ninjatrader.testplay.simulation.data.DataType;
@@ -16,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static com.bn.ninjatrader.model.dao.period.FindRequest.forSymbol;
+import static com.bn.ninjatrader.model.request.FindRequest.forSymbol;
 
 /**
  * Relative Strength Index DataFinder
@@ -52,8 +53,8 @@ public class RSIDataFinder implements DataFinder<Value> {
       if (dataType.name().startsWith(DATATYPE_PREFIX)) {
         int period = dataType.getPeriod();
         findRequest.period(period);
-        List<Value> valueList = rsiDao.find(findRequest);
-        ListUtil.fillToSize(valueList, Value.empty(), requiredDataSize);
+        List<RSIValue> valueList = rsiDao.find(findRequest);
+        ListUtil.fillToSize(valueList, RSIValue.empty(), requiredDataSize);
         simulationDataList.add(new SimulationData(valueList, RSIDataMapAdaptor.forPeriod(period)));
       }
     }

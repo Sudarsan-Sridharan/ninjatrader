@@ -1,6 +1,5 @@
-package com.bn.ninjatrader.model.data;
+package com.bn.ninjatrader.model.document;
 
-import com.bn.ninjatrader.common.data.Value;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -8,18 +7,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by Brad on 6/3/16.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PeriodData<T> extends AbstractStockData<Value> {
+public class AbstractPerPeriodDocument<T> extends AbstractDocument<T> {
 
   public static final String PERIOD = "pr";
 
   @JsonProperty(PERIOD)
   private int period;
 
-  public PeriodData() {
+  public AbstractPerPeriodDocument() {
     super();
   }
 
-  public PeriodData(String symbol, int year, int period) {
+  public AbstractPerPeriodDocument(String symbol, int year, int period) {
     super(symbol, year);
     this.period = period;
   }

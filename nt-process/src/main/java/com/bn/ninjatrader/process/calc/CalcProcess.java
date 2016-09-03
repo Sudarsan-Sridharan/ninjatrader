@@ -7,7 +7,5 @@ import com.bn.ninjatrader.process.request.CalcRequest;
  */
 public interface CalcProcess {
 
-  void processPrices(CalcRequest calcRequest);
-
   void processMissingBars(CalcRequest calcRequest);
 }

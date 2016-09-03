@@ -33,13 +33,13 @@ public class StockDaoTest extends AbstractDaoTest {
 
   @Test
   public void testSaveAndFind() {
-    // Prepare data
+    // Prepare document
     Stock stock = new Stock("MEG", "Megaworld");
 
-    // Save boardlot data
+    // Save boardlot document
     stockDao.save(stock);
 
-    // Find data
+    // Find document
     List<Stock> result = stockDao.find();
     assertNotNull(result);
     assertEquals(result.size(), 1);
@@ -58,10 +58,10 @@ public class StockDaoTest extends AbstractDaoTest {
 
   @Test
   public void testInsertAndUpdate() {
-    // Prepare data
+    // Prepare document
     Stock stock = new Stock("MEG", "Megaworld");
 
-    // Save boardlot data
+    // Save boardlot document
     stockDao.save(stock);
 
     // Update w/ Security ID

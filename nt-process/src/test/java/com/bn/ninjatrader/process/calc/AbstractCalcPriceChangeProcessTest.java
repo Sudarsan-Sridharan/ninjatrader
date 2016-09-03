@@ -5,7 +5,7 @@ import com.bn.ninjatrader.calculator.PriceChangeCalculator;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.dao.period.FindRequest;
+import com.bn.ninjatrader.model.request.FindRequest;
 import mockit.Expectations;
 
 import java.util.List;

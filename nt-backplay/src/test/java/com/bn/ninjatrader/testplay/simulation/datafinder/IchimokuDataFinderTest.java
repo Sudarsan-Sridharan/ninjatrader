@@ -2,7 +2,7 @@ package com.bn.ninjatrader.testplay.simulation.datafinder;
 
 import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.common.data.Ichimoku;
-import com.bn.ninjatrader.model.dao.period.FindRequest;
+import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.service.indicator.IchimokuService;
 import com.bn.ninjatrader.testplay.simulation.SimulationParams;
 import com.bn.ninjatrader.testplay.simulation.adaptor.IchimokuDataMapAdaptor;

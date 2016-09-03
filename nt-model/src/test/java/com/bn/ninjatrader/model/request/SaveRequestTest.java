@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.model.dao.period;
+package com.bn.ninjatrader.model.request;
 
 import com.beust.jcommander.internal.Sets;
 import com.bn.ninjatrader.common.data.Value;

@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.bn.ninjatrader.model.dao.period.FindRequest.forSymbol;
+import static com.bn.ninjatrader.model.request.FindRequest.forSymbol;
 
 /**
  * Created by Brad on 6/8/16.
@@ -30,18 +30,6 @@ public class CalcWeeklyPriceProcess implements CalcProcess {
 
   @Inject
   private WeeklyPriceDao weeklyPriceDao;
-
-  public void processPrices(CalcRequest calcRequest) {
-    String symbol = calcRequest.getSymbol();
-    LocalDate fromDate = calcRequest.getFromDate();
-    LocalDate toDate = calcRequest.getToDate();
-    log.debug("Calculating weekly price. Sym: {}, from: {}, to: {}", symbol, fromDate, toDate);
-
-    List<Price> prices = priceDao.find(forSymbol(symbol).from(fromDate).to(toDate));
-    List<Price> weeklyPrices = calculator.calc(prices);
-
-    weeklyPriceDao.save(symbol, weeklyPrices);
-  }
 
   @Override
   public void processMissingBars(CalcRequest calcRequest) {

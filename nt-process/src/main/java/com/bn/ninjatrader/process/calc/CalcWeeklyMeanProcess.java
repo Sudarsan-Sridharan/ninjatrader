@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by Brad on 6/8/16.
  */
-public class CalcWeeklyMeanProcess extends AbstractCalcForPeriodProcess {
+public class CalcWeeklyMeanProcess extends AbstractCalcValuesProcess {
 
   private static final Logger log = LoggerFactory.getLogger(CalcWeeklyMeanProcess.class);
   private static final int[] DEFAULT_PERIODS = {9, 26, 52};

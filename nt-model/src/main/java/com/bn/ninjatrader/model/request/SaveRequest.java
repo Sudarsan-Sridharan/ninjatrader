@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.model.dao.period;
+package com.bn.ninjatrader.model.request;
 
 import com.bn.ninjatrader.common.data.Value;
 import com.google.common.collect.Lists;
@@ -16,7 +16,7 @@ import java.util.List;
 public class SaveRequest {
   private String symbol;
   private int period;
-  private List<Value> values;
+  private List<? extends Value> values;
 
   public static SaveRequest save(String symbol) {
     return new SaveRequest(symbol);
@@ -36,7 +36,7 @@ public class SaveRequest {
     return this;
   }
 
-  public SaveRequest values(List<Value> values) {
+  public SaveRequest values(List<? extends Value> values) {
     this.values = values;
     return this;
   }
@@ -54,7 +54,7 @@ public class SaveRequest {
     return period;
   }
 
-  public List<Value> getValues() {
+  public List<? extends Value> getValues() {
     return values;
   }
 

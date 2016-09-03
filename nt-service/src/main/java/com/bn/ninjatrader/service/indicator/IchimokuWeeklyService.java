@@ -23,6 +23,6 @@ public class IchimokuWeeklyService extends IchimokuService {
 
   @Override
   protected int getNumOfPastMonths() {
-    return 6; // need enough months of past data to fully calculate present data
+    return 6; // need enough months of past document to fully calculate present document
   }
 }

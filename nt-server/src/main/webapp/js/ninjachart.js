@@ -31,7 +31,7 @@ function NinjaChart(divId, readOnly) {
 }
 
 /**
- * Update the chart w/ new boardlot data
+ * Update the chart w/ new boardlot document
  * @param json
  */
 NinjaChart.prototype.showChart = function(symbol, period) {
@@ -369,7 +369,7 @@ NinjaChart.prototype.printLastPriceInd = function() {
 }
 
 /**
- * Print columns containing data and has mouse hover
+ * Print columns containing document and has mouse hover
  */
 NinjaChart.prototype.printColumn = function(x, price) {
     if (this.readOnly) {

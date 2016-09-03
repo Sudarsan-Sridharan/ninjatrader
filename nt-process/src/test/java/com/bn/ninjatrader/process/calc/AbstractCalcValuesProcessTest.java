@@ -1,10 +1,11 @@
 package com.bn.ninjatrader.process.calc;
 
 import com.beust.jcommander.internal.Maps;
-import com.bn.ninjatrader.calculator.CalculatorForPeriod;
+import com.bn.ninjatrader.calculator.ValueCalculator;
+import com.bn.ninjatrader.calculator.parameter.CalcParams;
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.model.dao.ValueDao;
-import com.bn.ninjatrader.model.dao.period.SaveRequest;
+import com.bn.ninjatrader.model.request.SaveRequest;
 import com.bn.ninjatrader.process.request.CalcRequest;
 import com.google.common.collect.Lists;
 import mockit.Expectations;
@@ -25,9 +26,9 @@ import static org.testng.Assert.assertEquals;
 /**
  * Created by Brad on 8/16/16.
  */
-public abstract class AbstractCalcForPeriodProcessTest {
+public abstract class AbstractCalcValuesProcessTest {
 
-  private static final Logger log = LoggerFactory.getLogger(AbstractCalcForPeriodProcessTest.class);
+  private static final Logger log = LoggerFactory.getLogger(AbstractCalcValuesProcessTest.class);
 
   static final String SYMBOL = "MEG";
   static final int PERIOD_WITH_NO_VALUES = 5;
@@ -48,7 +49,7 @@ public abstract class AbstractCalcForPeriodProcessTest {
   final Map<Integer, List<Value>> calcResult = Maps.newHashMap();
 
   private ValueDao dao;
-  private CalculatorForPeriod calculator;
+  private ValueCalculator calculator;
 
   @BeforeClass
   public void setupData() {
@@ -82,7 +83,7 @@ public abstract class AbstractCalcForPeriodProcessTest {
   @Test
   void testProcessWithData() {
     new Expectations() {{
-      calculator.calc(withInstanceOf(List.class), PERIODS);
+      calculator.calc(withInstanceOf(CalcParams.class));
       result = calcResult;
     }};
     provideTestedProcess().processMissingBars(CalcRequest.forSymbol(SYMBOL).from(date2).to(date3).periods(PERIODS));
@@ -93,7 +94,7 @@ public abstract class AbstractCalcForPeriodProcessTest {
 
   public abstract CalcProcess provideTestedProcess();
 
-  public abstract CalculatorForPeriod provideCalculator();
+  public abstract ValueCalculator provideCalculator();
 
   void assertSaveCalledForEachPeriodOnDao() {
     new Verifications() {{

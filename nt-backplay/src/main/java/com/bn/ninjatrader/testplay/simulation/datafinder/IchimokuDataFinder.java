@@ -14,7 +14,7 @@ import com.google.inject.Singleton;
 import java.util.Collections;
 import java.util.List;
 
-import static com.bn.ninjatrader.model.dao.period.FindRequest.forSymbol;
+import static com.bn.ninjatrader.model.request.FindRequest.forSymbol;
 import static com.bn.ninjatrader.testplay.simulation.data.DataType.*;
 
 /**
