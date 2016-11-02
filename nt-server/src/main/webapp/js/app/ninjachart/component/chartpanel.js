@@ -10,8 +10,10 @@ define(function() {
             .attr("y2", config.chartHeight);
     }
 
-    DateCursor.prototype.onColumnMouseOver = function(price) {
-        var x = this.config.xByDate(price.d) + this.config.columnWidth / 2;
+    DateCursor.prototype.mousemove = function(coords) {
+        var config = this.config;
+        var index = Math.floor(config.xByIndex.invert(coords[0]));
+        var x = config.xByIndex(index) + config.columnWidth / 2;
         this.main.attr("transform", "translate(" + x + ",0)");
     };
 

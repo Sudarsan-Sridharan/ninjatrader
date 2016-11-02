@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.service.indicator;
+package com.bn.ninjatrader.model.dao;
 
 import com.bn.ninjatrader.calculator.IchimokuCalculator;
 import com.bn.ninjatrader.calculator.parameter.IchimokuParameters;
@@ -8,9 +8,6 @@ import com.bn.ninjatrader.common.data.Stock;
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.common.util.DateObjUtil;
 import com.bn.ninjatrader.common.util.DateUtil;
-import com.bn.ninjatrader.model.dao.MeanDao;
-import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.dao.StockDao;
 import com.bn.ninjatrader.model.request.FindRequest;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -27,9 +24,9 @@ import static com.bn.ninjatrader.model.request.FindRequest.findSymbol;
  * @author bradwee2000@gmail.com
  */
 @Singleton
-public class IchimokuService {
+public class IchimokuDao {
 
-  private static final Logger log = LoggerFactory.getLogger(IchimokuService.class);
+  private static final Logger log = LoggerFactory.getLogger(IchimokuDao.class);
 
   @Inject
   private StockDao stockDao;
@@ -42,7 +39,7 @@ public class IchimokuService {
   private IchimokuCalculator ichimokuCalculator;
 
   @Inject
-  public IchimokuService(PriceDao priceDao, MeanDao meanDao) {
+  public IchimokuDao(PriceDao priceDao, MeanDao meanDao) {
     this.priceDao = priceDao;
     this.meanDao = meanDao;
   }
