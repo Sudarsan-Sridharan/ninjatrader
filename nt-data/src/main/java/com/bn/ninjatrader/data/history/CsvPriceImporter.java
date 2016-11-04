@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -26,20 +27,27 @@ import java.util.Map;
  * Created by Brad on 4/28/16.
  */
 @Singleton
-public class PriceImporter {
+public class CsvPriceImporter {
 
-  private static final Logger log = LoggerFactory.getLogger(PriceImporter.class);
+  private static final Logger log = LoggerFactory.getLogger(CsvPriceImporter.class);
   private static final String[] SUPPORTED_FORMATS = new String[] {"csv"};
-  private static final String DIR = "/Users/a-/Downloads/boardlot";
+  private static final String DEFAULT_DIR = "/Users/a-/Downloads/stock";
+
+  private final CsvDataParser parser;
+  private final PriceDao priceDao;
 
   @Inject
-  private CsvDataParser parser;
+  public CsvPriceImporter(CsvDataParser parser, PriceDao priceDao) {
+    this.parser = parser;
+    this.priceDao = priceDao;
+  }
 
-  @Inject
-  private PriceDao priceDao;
+  public void importPrices() throws IOException {
+    importPricesFromDir(DEFAULT_DIR);
+  }
 
-  public void importData() throws Exception {
-    File dir = new File(DIR);
+  public void importPricesFromDir(String directory) throws IOException {
+    File dir = new File(directory);
     Collection<File> files = FileUtils.listFiles(dir, SUPPORTED_FORMATS, true);
     List<DailyQuote> quotes = Lists.newArrayList();
 
@@ -47,7 +55,6 @@ public class PriceImporter {
       log.debug("Importing file: {}", file.getAbsoluteFile());
       quotes.addAll(parser.parse(file));
     }
-
     save(quotes);
   }
 
@@ -88,7 +95,7 @@ public class PriceImporter {
         new NtModelModule()
     );
 
-    PriceImporter app = injector.getInstance(PriceImporter.class);
-    app.importData();
+    CsvPriceImporter app = injector.getInstance(CsvPriceImporter.class);
+    app.importPrices();
   }
 }

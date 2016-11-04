@@ -4,7 +4,7 @@ import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.common.data.DailyQuote;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.util.TestUtil;
-import com.bn.ninjatrader.data.history.PriceImporter;
+import com.bn.ninjatrader.data.history.CsvPriceImporter;
 import com.bn.ninjatrader.data.history.parser.CsvDataParser;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.request.SaveRequest;
@@ -25,9 +25,9 @@ import static org.testng.Assert.fail;
 /**
  * Created by Brad on 6/6/16.
  */
-public class PriceImporterTest {
+public class CsvPriceImporterTest {
 
-  private static final Logger log = LoggerFactory.getLogger(PriceImporterTest.class);
+  private static final Logger log = LoggerFactory.getLogger(CsvPriceImporterTest.class);
 
   @Mocked
   @Injectable
@@ -38,7 +38,7 @@ public class PriceImporterTest {
   private PriceDao priceDao;
 
   @Tested
-  private PriceImporter importer;
+  private CsvPriceImporter importer;
 
   private LocalDate date1 = LocalDate.of(2016, 1, 1);
   private LocalDate date2 = LocalDate.of(2016, 1, 2);
