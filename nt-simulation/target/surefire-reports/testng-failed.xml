@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite verbose="0" name="Failed suite [Command line suite]">
+  <test name="Command line test(failed)">
+    <classes>
+      <class name="com.bn.ninjatrader.testplay.simulation.broker.SellOrderExecutorTest">
+        <methods>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.simulation.broker.SellOrderExecutorTest -->
+      <class name="com.bn.ninjatrader.testplay.simulation.datafinder.PriceDataFinderTest">
+        <methods>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.simulation.datafinder.PriceDataFinderTest -->
+      <class name="com.bn.ninjatrader.testplay.account.AccountTest">
+        <methods>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.account.AccountTest -->
+      <class name="com.bn.ninjatrader.testplay.simulation.broker.OrderExecutorTest">
+        <methods>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.simulation.broker.OrderExecutorTest -->
+      <class name="com.bn.ninjatrader.testplay.operation.function.HighestInLastNBarsFunctionTest">
+        <methods>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.operation.function.HighestInLastNBarsFunctionTest -->
+      <class name="com.bn.ninjatrader.testplay.simulation.stats.TradeStatisticTest">
+        <methods>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.simulation.stats.TradeStatisticTest -->
+      <class name="com.bn.ninjatrader.testplay.simulation.broker.BuyOrderExecutorTest">
+        <methods>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.simulation.broker.BuyOrderExecutorTest -->
+      <class name="com.bn.ninjatrader.testplay.account.PortfolioTest">
+        <methods>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.account.PortfolioTest -->
+      <class name="com.bn.ninjatrader.testplay.simulation.transaction.BookkeeperTest">
+        <methods>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.simulation.transaction.BookkeeperTest -->
+      <class name="com.bn.ninjatrader.testplay.simulation.broker.BrokerTest">
+        <methods>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.simulation.broker.BrokerTest -->
+      <class name="com.bn.ninjatrader.testplay.simulation.data.DataMapTest">
+        <methods>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.simulation.data.DataMapTest -->
+      <class name="com.bn.ninjatrader.testplay.operation.BinaryOperationTest">
+        <methods>
+          <include name="testGetDataTypesForVariables"/>
+          <include name="setup"/>
+          <include name="testGetNestedDataTypes"/>
+          <include name="testGetDataTypesForConstants"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.operation.BinaryOperationTest -->
+      <class name="com.bn.ninjatrader.testplay.operation.OperationsTest">
+        <methods>
+          <include name="testWithSingleOperand"/>
+          <include name="testGetDataTypes"/>
+          <include name="testWithMixedTypes"/>
+          <include name="setup"/>
+          <include name="testWithDataTypes"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.operation.OperationsTest -->
+      <class name="com.bn.ninjatrader.testplay.simulation.adaptor.IchimokuDataMapAdaptorTest">
+        <methods>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.simulation.adaptor.IchimokuDataMapAdaptorTest -->
+      <class name="com.bn.ninjatrader.testplay.operation.UnaryOperationTest">
+        <methods>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.operation.UnaryOperationTest -->
+      <class name="com.bn.ninjatrader.testplay.simulation.adaptor.PriceDataMapAdaptorTest">
+        <methods>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.simulation.adaptor.PriceDataMapAdaptorTest -->
+      <class name="com.bn.ninjatrader.testplay.operation.function.HistoryFunctionTest">
+        <methods>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.operation.function.HistoryFunctionTest -->
+      <class name="com.bn.ninjatrader.testplay.simulation.datafinder.IchimokuDataFinderTest">
+        <methods>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.simulation.datafinder.IchimokuDataFinderTest -->
+      <class name="com.bn.ninjatrader.testplay.condition.ConditionsTest">
+        <methods>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.condition.ConditionsTest -->
+      <class name="com.bn.ninjatrader.testplay.simulation.data.BarDataFactoryTest">
+        <methods>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- com.bn.ninjatrader.testplay.simulation.data.BarDataFactoryTest -->
+    </classes>
+  </test> <!-- Command line test(failed) -->
+</suite> <!-- Failed suite [Command line suite] -->

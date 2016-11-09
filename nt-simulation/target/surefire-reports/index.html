@@ -1,0 +1,2703 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+  <title>TestNG reports</title>
+
+    <link type="text/css" href="testng-reports.css" rel="stylesheet" />  
+    <script type="text/javascript" src="jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="testng-reports.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type='text/javascript'>
+      google.load('visualization', '1', {packages:['table']});
+      google.setOnLoadCallback(drawTable);
+      var suiteTableInitFunctions = new Array();
+      var suiteTableData = new Array();
+    </script>
+    <!--
+      <script type="text/javascript" src="jquery-ui/js/jquery-ui-1.8.16.custom.min.js"></script>
+     -->
+  </head>
+
+  <body>
+    <div class="top-banner-root">
+      <span class="top-banner-title-font">Test results</span>
+      <br/>
+      <span class="top-banner-font-1">1 suite</span>
+    </div> <!-- top-banner-root -->
+    <div class="navigator-root">
+      <div class="navigator-suite-header">
+        <span>All suites</span>
+        <a href="#" class="collapse-all-link" title="Collapse/expand all the suites">
+          <img class="collapse-all-icon" src="collapseall.gif">
+          </img> <!-- collapse-all-icon -->
+        </a> <!-- collapse-all-link -->
+      </div> <!-- navigator-suite-header -->
+      <div class="suite">
+        <div class="rounded-window">
+          <div class="suite-header light-rounded-window-top">
+            <a href="#" class="navigator-link" panel-name="suite-Command_line_suite">
+              <span class="suite-name border-passed">Command line suite</span>
+            </a> <!-- navigator-link -->
+          </div> <!-- suite-header light-rounded-window-top -->
+          <div class="navigator-suite-content">
+            <div class="suite-section-title">
+              <span>Info</span>
+            </div> <!-- suite-section-title -->
+            <div class="suite-section-content">
+              <ul>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="test-xml-Command_line_suite">
+                    <span>[unset file name]</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="testlist-Command_line_suite">
+                    <span class="test-stats">1 test</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="group-Command_line_suite">
+                    <span>0 groups</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="times-Command_line_suite">
+                    <span>Times</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="reporter-Command_line_suite">
+                    <span>Reporter output</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="ignored-methods-Command_line_suite">
+                    <span>Ignored methods</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="chronological-Command_line_suite">
+                    <span>Chronological view</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+              </ul>
+            </div> <!-- suite-section-content -->
+            <div class="result-section">
+              <div class="suite-section-title">
+                <span>Results</span>
+              </div> <!-- suite-section-title -->
+              <div class="suite-section-content">
+                <ul>
+                  <li>
+                    <span class="method-stats">97 methods,   97 passed</span>
+                  </li>
+                  <li>
+                    <span class="method-list-title passed">Passed methods</span>
+                    <span class="show-or-hide-methods passed">
+                      <a href="#" panel-name="suite-Command_line_suite" class="hide-methods passed suite-Command_line_suite"> (hide)</a> <!-- hide-methods passed suite-Command_line_suite -->
+                      <a href="#" panel-name="suite-Command_line_suite" class="show-methods passed suite-Command_line_suite"> (show)</a> <!-- show-methods passed suite-Command_line_suite -->
+                    </span>
+                    <div class="method-list-content passed suite-Command_line_suite">
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.account.PortfolioTest" hash-for-method="testAdd">testAdd</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.account.AccountTest" hash-for-method="testAddCash">testAddCash</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.condition.AndConditionTest" hash-for-method="testAddCondition">testAddCondition</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.account.AccountTest" hash-for-method="testAddToPortfolio">testAddToPortfolio</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.operation.BinaryOperationTest" hash-for-method="testAddVariables">testAddVariables</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.condition.OrConditionTest" hash-for-method="testAllFalse">testAllFalse</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.condition.AndConditionTest" hash-for-method="testAllFalse">testAllFalse</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.condition.OrConditionTest" hash-for-method="testAllTrue">testAllTrue</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.condition.AndConditionTest" hash-for-method="testAllTrue">testAllTrue</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.operation.BinaryOperationTest" hash-for-method="testArithmeticOnConstants">testArithmeticOnConstants</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.account.PortfolioTest" hash-for-method="testAvgPrice">testAvgPrice</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.order.SellOrderParametersTest" hash-for-method="testBuild">testBuild</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.order.BuyOrderParametersTest" hash-for-method="testBuild">testBuild</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.broker.OrderExecutorTest" hash-for-method="testCalculateProfit">testCalculateProfit</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.broker.OrderExecutorTest" hash-for-method="testCalculateProfitAtLowerPrice">testCalculateProfitAtLowerPrice</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.transaction.SellTransactionTest" hash-for-method="testCalculateValue">testCalculateValue</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.transaction.BuyTransactionTest" hash-for-method="testCalculateValue">testCalculateValue</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.account.PortfolioTest" hash-for-method="testClear">testClear</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.data.DataMapTest" hash-for-method="testClearDataMap">testClearDataMap</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.account.AccountTest" hash-for-method="testClearPortfolio">testClearPortfolio</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.transaction.BookkeeperTest" hash-for-method="testCreate">testCreate</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.data.BarDataFactoryTest" hash-for-method="testCreateBarData">testCreateBarData</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.data.BarDataFactoryTest" hash-for-method="testCreateBarDataWithSimulationData">testCreateBarDataWithSimulationData</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.data.BarDataHistoryTest" hash-for-method="testCreateEmpty">testCreateEmpty</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.broker.BrokerTest" hash-for-method="testCreateEmpty">testCreateEmpty</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.transaction.BuyTransactionTest" hash-for-method="testCreateEmpty">testCreateEmpty</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.order.SellOrderTest" hash-for-method="testCreateEmpty">testCreateEmpty</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.order.BuyOrderTest" hash-for-method="testCreateEmpty">testCreateEmpty</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.transaction.SellTransactionTest" hash-for-method="testCreateEmpty">testCreateEmpty</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.transaction.SellTransactionTest" hash-for-method="testCreateWithData">testCreateWithData</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.order.SellOrderTest" hash-for-method="testCreateWithData">testCreateWithData</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.transaction.BuyTransactionTest" hash-for-method="testCreateWithData">testCreateWithData</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.order.BuyOrderTest" hash-for-method="testCreateWithData">testCreateWithData</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.transaction.BuyTransactionTest" hash-for-method="testEquals">testEquals</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.transaction.SellTransactionTest" hash-for-method="testEquals">testEquals</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.broker.SellOrderExecutorTest" hash-for-method="testExecute">testExecute</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.broker.BuyOrderExecutorTest" hash-for-method="testExecute">testExecute</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.datafinder.PriceDataFinderTest" hash-for-method="testFind">testFind</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.datafinder.IchimokuDataFinderTest" hash-for-method="testFind">testFind</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.data.SimulationDataTest" hash-for-method="testGetDataMap">testGetDataMap</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.condition.AndConditionTest" hash-for-method="testGetDataTypes">testGetDataTypes</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.condition.OrConditionTest" hash-for-method="testGetDataTypes">testGetDataTypes</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.operation.BinaryOperationTest" hash-for-method="testGetDataTypesForConstants">testGetDataTypesForConstants</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.operation.BinaryOperationTest" hash-for-method="testGetDataTypesForVariables">testGetDataTypesForVariables</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.broker.OrderExecutorTest" hash-for-method="testGetFulfilledPrice">testGetFulfilledPrice</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.operation.BinaryOperationTest" hash-for-method="testGetNestedDataTypes">testGetNestedDataTypes</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.broker.OrderExecutorTest" hash-for-method="testGetNumberOfSharesCanBuy">testGetNumberOfSharesCanBuy</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.operation.UnaryOperationTest" hash-for-method="testGetVariables">testGetVariables</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.operation.OperationsTest" hash-for-method="testGetVariables">testGetVariables</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.data.DataMapTest" hash-for-method="testGetWithEmptyMap">testGetWithEmptyMap</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.condition.ConditionsTest" hash-for-method="testGreaterThanCondition">testGreaterThanCondition</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.condition.ConditionsTest" hash-for-method="testGreaterThanOrEqualsCondition">testGreaterThanOrEqualsCondition</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.transaction.BuyTransactionTest" hash-for-method="testHashCode">testHashCode</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.transaction.SellTransactionTest" hash-for-method="testHashCode">testHashCode</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.stats.TradeStatisticTest" hash-for-method="testLossStats">testLossStats</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.condition.AndConditionTest" hash-for-method="testMixedTrueAndFalse">testMixedTrueAndFalse</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.condition.OrConditionTest" hash-for-method="testMixedTrueAndFalse">testMixedTrueAndFalse</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.operation.function.HistoryFunctionTest" hash-for-method="testMultiHistoryFunction">testMultiHistoryFunction</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.transaction.BookkeeperTest" hash-for-method="testMultiLog">testMultiLog</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.stats.TradeStatisticTest" hash-for-method="testMultiTradeStats">testMultiTradeStats</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.condition.ConditionsTest" hash-for-method="testMultipleEqualsCondition">testMultipleEqualsCondition</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.condition.AndConditionTest" hash-for-method="testNullCondition">testNullCondition</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.account.PortfolioTest" hash-for-method="testNumOfShares">testNumOfShares</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.account.AccountTest" hash-for-method="testOnCreate">testOnCreate</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.account.PortfolioTest" hash-for-method="testOnCreate">testOnCreate</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.stats.TradeStatisticTest" hash-for-method="testOnCreate">testOnCreate</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.data.BarDataTest" hash-for-method="testOverwriteDataMap">testOverwriteDataMap</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.broker.BrokerTest" hash-for-method="testProcessPendingOrder">testProcessPendingOrder</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.data.BarDataTest" hash-for-method="testPutDataMap">testPutDataMap</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.data.DataMapTest" hash-for-method="testPutDataMap">testPutDataMap</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.data.DataMapTest" hash-for-method="testPutHashMap">testPutHashMap</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.data.DataMapTest" hash-for-method="testPutKeyValue">testPutKeyValue</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.order.SellOrderTest" hash-for-method="testReadyForProcessing">testReadyForProcessing</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.order.BuyOrderTest" hash-for-method="testReadyForProcessing">testReadyForProcessing</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.condition.BasicConditionTest" hash-for-method="testSerializationDeserialization">testSerializationDeserialization</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.transaction.BookkeeperTest" hash-for-method="testSimpleBuy">testSimpleBuy</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.condition.ConditionsTest" hash-for-method="testSingleEqualsCondition">testSingleEqualsCondition</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.operation.function.HistoryFunctionTest" hash-for-method="testSingleHistoryFunction">testSingleHistoryFunction</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.broker.BrokerTest" hash-for-method="testSubmitOrder">testSubmitOrder</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.adaptor.PriceDataMapAdaptorTest" hash-for-method="testToDataMap">testToDataMap</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.adaptor.IchimokuDataMapAdaptorTest" hash-for-method="testToDataMap">testToDataMap</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.condition.BasicConditionTest" hash-for-method="testUnaryEquals">testUnaryEquals</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.condition.BasicConditionTest" hash-for-method="testUnaryGreaterThan">testUnaryGreaterThan</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.condition.BasicConditionTest" hash-for-method="testUnaryLessThan">testUnaryLessThan</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.stats.TradeStatisticTest" hash-for-method="testWinStats">testWinStats</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.operation.UnaryOperationTest" hash-for-method="testWithConstant">testWithConstant</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.operation.OperationsTest" hash-for-method="testWithConstants">testWithConstants</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.operation.OperationsTest" hash-for-method="testWithConstantsAndVaraibles">testWithConstantsAndVaraibles</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.data.BarDataHistoryTest" hash-for-method="testWithData">testWithData</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.data.BarDataHistoryTest" hash-for-method="testWithDataExceedingMaxSize">testWithDataExceedingMaxSize</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.operation.function.HighestInLastNBarsFunctionTest" hash-for-method="testWithMultipleBars">testWithMultipleBars</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.order.SellOrderTest" hash-for-method="testWithParams">testWithParams</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.simulation.order.BuyOrderTest" hash-for-method="testWithParams">testWithParams</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.operation.function.HighestInLastNBarsFunctionTest" hash-for-method="testWithSingleHistoryBar">testWithSingleHistoryBar</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.operation.OperationsTest" hash-for-method="testWithSingleOperand">testWithSingleOperand</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.operation.UnaryOperationTest" hash-for-method="testWithVariables">testWithVariables</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Command_line_suite" title="com.bn.ninjatrader.testplay.operation.OperationsTest" hash-for-method="testWithVariables">testWithVariables</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                    </div> <!-- method-list-content passed suite-Command_line_suite -->
+                  </li>
+                </ul>
+              </div> <!-- suite-section-content -->
+            </div> <!-- result-section -->
+          </div> <!-- navigator-suite-content -->
+        </div> <!-- rounded-window -->
+      </div> <!-- suite -->
+    </div> <!-- navigator-root -->
+    <div class="wrapper">
+      <div class="main-panel-root">
+        <div panel-name="suite-Command_line_suite" class="panel Command_line_suite">
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.condition.BasicConditionTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testSerializationDeserialization">
+                  </a> <!-- testSerializationDeserialization -->
+                  <span class="method-name">testSerializationDeserialization</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testUnaryEquals">
+                  </a> <!-- testUnaryEquals -->
+                  <span class="method-name">testUnaryEquals</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testUnaryGreaterThan">
+                  </a> <!-- testUnaryGreaterThan -->
+                  <span class="method-name">testUnaryGreaterThan</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testUnaryLessThan">
+                  </a> <!-- testUnaryLessThan -->
+                  <span class="method-name">testUnaryLessThan</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.condition.OrConditionTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testAllFalse">
+                  </a> <!-- testAllFalse -->
+                  <span class="method-name">testAllFalse</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testAllTrue">
+                  </a> <!-- testAllTrue -->
+                  <span class="method-name">testAllTrue</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testGetDataTypes">
+                  </a> <!-- testGetDataTypes -->
+                  <span class="method-name">testGetDataTypes</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testMixedTrueAndFalse">
+                  </a> <!-- testMixedTrueAndFalse -->
+                  <span class="method-name">testMixedTrueAndFalse</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.broker.OrderExecutorTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCalculateProfit">
+                  </a> <!-- testCalculateProfit -->
+                  <span class="method-name">testCalculateProfit</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCalculateProfitAtLowerPrice">
+                  </a> <!-- testCalculateProfitAtLowerPrice -->
+                  <span class="method-name">testCalculateProfitAtLowerPrice</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testGetFulfilledPrice">
+                  </a> <!-- testGetFulfilledPrice -->
+                  <span class="method-name">testGetFulfilledPrice</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testGetNumberOfSharesCanBuy">
+                  </a> <!-- testGetNumberOfSharesCanBuy -->
+                  <span class="method-name">testGetNumberOfSharesCanBuy</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.operation.function.HighestInLastNBarsFunctionTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testWithMultipleBars">
+                  </a> <!-- testWithMultipleBars -->
+                  <span class="method-name">testWithMultipleBars</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testWithSingleHistoryBar">
+                  </a> <!-- testWithSingleHistoryBar -->
+                  <span class="method-name">testWithSingleHistoryBar</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.account.PortfolioTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testAdd">
+                  </a> <!-- testAdd -->
+                  <span class="method-name">testAdd</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testAvgPrice">
+                  </a> <!-- testAvgPrice -->
+                  <span class="method-name">testAvgPrice</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testClear">
+                  </a> <!-- testClear -->
+                  <span class="method-name">testClear</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testNumOfShares">
+                  </a> <!-- testNumOfShares -->
+                  <span class="method-name">testNumOfShares</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testOnCreate">
+                  </a> <!-- testOnCreate -->
+                  <span class="method-name">testOnCreate</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.condition.AndConditionTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testAddCondition">
+                  </a> <!-- testAddCondition -->
+                  <span class="method-name">testAddCondition</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testAllFalse">
+                  </a> <!-- testAllFalse -->
+                  <span class="method-name">testAllFalse</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testAllTrue">
+                  </a> <!-- testAllTrue -->
+                  <span class="method-name">testAllTrue</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testGetDataTypes">
+                  </a> <!-- testGetDataTypes -->
+                  <span class="method-name">testGetDataTypes</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testMixedTrueAndFalse">
+                  </a> <!-- testMixedTrueAndFalse -->
+                  <span class="method-name">testMixedTrueAndFalse</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testNullCondition">
+                  </a> <!-- testNullCondition -->
+                  <span class="method-name">testNullCondition</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.data.BarDataTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testOverwriteDataMap">
+                  </a> <!-- testOverwriteDataMap -->
+                  <span class="method-name">testOverwriteDataMap</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testPutDataMap">
+                  </a> <!-- testPutDataMap -->
+                  <span class="method-name">testPutDataMap</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.operation.BinaryOperationTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testAddVariables">
+                  </a> <!-- testAddVariables -->
+                  <span class="method-name">testAddVariables</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testArithmeticOnConstants">
+                  </a> <!-- testArithmeticOnConstants -->
+                  <span class="method-name">testArithmeticOnConstants</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testGetDataTypesForConstants">
+                  </a> <!-- testGetDataTypesForConstants -->
+                  <span class="method-name">testGetDataTypesForConstants</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testGetDataTypesForVariables">
+                  </a> <!-- testGetDataTypesForVariables -->
+                  <span class="method-name">testGetDataTypesForVariables</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testGetNestedDataTypes">
+                  </a> <!-- testGetNestedDataTypes -->
+                  <span class="method-name">testGetNestedDataTypes</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.adaptor.IchimokuDataMapAdaptorTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testToDataMap">
+                  </a> <!-- testToDataMap -->
+                  <span class="method-name">testToDataMap</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.data.BarDataFactoryTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCreateBarData">
+                  </a> <!-- testCreateBarData -->
+                  <span class="method-name">testCreateBarData</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCreateBarDataWithSimulationData">
+                  </a> <!-- testCreateBarDataWithSimulationData -->
+                  <span class="method-name">testCreateBarDataWithSimulationData</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.broker.SellOrderExecutorTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testExecute">
+                  </a> <!-- testExecute -->
+                  <span class="method-name">testExecute</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.account.AccountTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testAddCash">
+                  </a> <!-- testAddCash -->
+                  <span class="method-name">testAddCash</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testAddToPortfolio">
+                  </a> <!-- testAddToPortfolio -->
+                  <span class="method-name">testAddToPortfolio</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testClearPortfolio">
+                  </a> <!-- testClearPortfolio -->
+                  <span class="method-name">testClearPortfolio</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testOnCreate">
+                  </a> <!-- testOnCreate -->
+                  <span class="method-name">testOnCreate</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.datafinder.PriceDataFinderTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testFind">
+                  </a> <!-- testFind -->
+                  <span class="method-name">testFind</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.stats.TradeStatisticTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testLossStats">
+                  </a> <!-- testLossStats -->
+                  <span class="method-name">testLossStats</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testMultiTradeStats">
+                  </a> <!-- testMultiTradeStats -->
+                  <span class="method-name">testMultiTradeStats</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testOnCreate">
+                  </a> <!-- testOnCreate -->
+                  <span class="method-name">testOnCreate</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testWinStats">
+                  </a> <!-- testWinStats -->
+                  <span class="method-name">testWinStats</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.broker.BuyOrderExecutorTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testExecute">
+                  </a> <!-- testExecute -->
+                  <span class="method-name">testExecute</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.transaction.BookkeeperTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCreate">
+                  </a> <!-- testCreate -->
+                  <span class="method-name">testCreate</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testMultiLog">
+                  </a> <!-- testMultiLog -->
+                  <span class="method-name">testMultiLog</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testSimpleBuy">
+                  </a> <!-- testSimpleBuy -->
+                  <span class="method-name">testSimpleBuy</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.broker.BrokerTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCreateEmpty">
+                  </a> <!-- testCreateEmpty -->
+                  <span class="method-name">testCreateEmpty</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testProcessPendingOrder">
+                  </a> <!-- testProcessPendingOrder -->
+                  <span class="method-name">testProcessPendingOrder</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testSubmitOrder">
+                  </a> <!-- testSubmitOrder -->
+                  <span class="method-name">testSubmitOrder</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.data.BarDataHistoryTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCreateEmpty">
+                  </a> <!-- testCreateEmpty -->
+                  <span class="method-name">testCreateEmpty</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testWithData">
+                  </a> <!-- testWithData -->
+                  <span class="method-name">testWithData</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testWithDataExceedingMaxSize">
+                  </a> <!-- testWithDataExceedingMaxSize -->
+                  <span class="method-name">testWithDataExceedingMaxSize</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.data.DataMapTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testClearDataMap">
+                  </a> <!-- testClearDataMap -->
+                  <span class="method-name">testClearDataMap</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testGetWithEmptyMap">
+                  </a> <!-- testGetWithEmptyMap -->
+                  <span class="method-name">testGetWithEmptyMap</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testPutDataMap">
+                  </a> <!-- testPutDataMap -->
+                  <span class="method-name">testPutDataMap</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testPutHashMap">
+                  </a> <!-- testPutHashMap -->
+                  <span class="method-name">testPutHashMap</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testPutKeyValue">
+                  </a> <!-- testPutKeyValue -->
+                  <span class="method-name">testPutKeyValue</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.data.SimulationDataTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testGetDataMap">
+                  </a> <!-- testGetDataMap -->
+                  <span class="method-name">testGetDataMap</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.order.BuyOrderTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCreateEmpty">
+                  </a> <!-- testCreateEmpty -->
+                  <span class="method-name">testCreateEmpty</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCreateWithData">
+                  </a> <!-- testCreateWithData -->
+                  <span class="method-name">testCreateWithData</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testReadyForProcessing">
+                  </a> <!-- testReadyForProcessing -->
+                  <span class="method-name">testReadyForProcessing</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testWithParams">
+                  </a> <!-- testWithParams -->
+                  <span class="method-name">testWithParams</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.order.BuyOrderParametersTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testBuild">
+                  </a> <!-- testBuild -->
+                  <span class="method-name">testBuild</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.operation.OperationsTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testGetVariables">
+                  </a> <!-- testGetVariables -->
+                  <span class="method-name">testGetVariables</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testWithConstants">
+                  </a> <!-- testWithConstants -->
+                  <span class="method-name">testWithConstants</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testWithConstantsAndVaraibles">
+                  </a> <!-- testWithConstantsAndVaraibles -->
+                  <span class="method-name">testWithConstantsAndVaraibles</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testWithSingleOperand">
+                  </a> <!-- testWithSingleOperand -->
+                  <span class="method-name">testWithSingleOperand</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testWithVariables">
+                  </a> <!-- testWithVariables -->
+                  <span class="method-name">testWithVariables</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.transaction.SellTransactionTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCalculateValue">
+                  </a> <!-- testCalculateValue -->
+                  <span class="method-name">testCalculateValue</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCreateEmpty">
+                  </a> <!-- testCreateEmpty -->
+                  <span class="method-name">testCreateEmpty</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCreateWithData">
+                  </a> <!-- testCreateWithData -->
+                  <span class="method-name">testCreateWithData</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testEquals">
+                  </a> <!-- testEquals -->
+                  <span class="method-name">testEquals</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testHashCode">
+                  </a> <!-- testHashCode -->
+                  <span class="method-name">testHashCode</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.operation.UnaryOperationTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testGetVariables">
+                  </a> <!-- testGetVariables -->
+                  <span class="method-name">testGetVariables</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testWithConstant">
+                  </a> <!-- testWithConstant -->
+                  <span class="method-name">testWithConstant</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testWithVariables">
+                  </a> <!-- testWithVariables -->
+                  <span class="method-name">testWithVariables</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.operation.function.HistoryFunctionTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testMultiHistoryFunction">
+                  </a> <!-- testMultiHistoryFunction -->
+                  <span class="method-name">testMultiHistoryFunction</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testSingleHistoryFunction">
+                  </a> <!-- testSingleHistoryFunction -->
+                  <span class="method-name">testSingleHistoryFunction</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.order.SellOrderTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCreateEmpty">
+                  </a> <!-- testCreateEmpty -->
+                  <span class="method-name">testCreateEmpty</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCreateWithData">
+                  </a> <!-- testCreateWithData -->
+                  <span class="method-name">testCreateWithData</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testReadyForProcessing">
+                  </a> <!-- testReadyForProcessing -->
+                  <span class="method-name">testReadyForProcessing</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testWithParams">
+                  </a> <!-- testWithParams -->
+                  <span class="method-name">testWithParams</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.adaptor.PriceDataMapAdaptorTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testToDataMap">
+                  </a> <!-- testToDataMap -->
+                  <span class="method-name">testToDataMap</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.datafinder.IchimokuDataFinderTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testFind">
+                  </a> <!-- testFind -->
+                  <span class="method-name">testFind</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.condition.ConditionsTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testGreaterThanCondition">
+                  </a> <!-- testGreaterThanCondition -->
+                  <span class="method-name">testGreaterThanCondition</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testGreaterThanOrEqualsCondition">
+                  </a> <!-- testGreaterThanOrEqualsCondition -->
+                  <span class="method-name">testGreaterThanOrEqualsCondition</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testMultipleEqualsCondition">
+                  </a> <!-- testMultipleEqualsCondition -->
+                  <span class="method-name">testMultipleEqualsCondition</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testSingleEqualsCondition">
+                  </a> <!-- testSingleEqualsCondition -->
+                  <span class="method-name">testSingleEqualsCondition</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.order.SellOrderParametersTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testBuild">
+                  </a> <!-- testBuild -->
+                  <span class="method-name">testBuild</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bn.ninjatrader.testplay.simulation.transaction.BuyTransactionTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCalculateValue">
+                  </a> <!-- testCalculateValue -->
+                  <span class="method-name">testCalculateValue</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCreateEmpty">
+                  </a> <!-- testCreateEmpty -->
+                  <span class="method-name">testCreateEmpty</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCreateWithData">
+                  </a> <!-- testCreateWithData -->
+                  <span class="method-name">testCreateWithData</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testEquals">
+                  </a> <!-- testEquals -->
+                  <span class="method-name">testEquals</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testHashCode">
+                  </a> <!-- testHashCode -->
+                  <span class="method-name">testHashCode</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+        </div> <!-- panel Command_line_suite -->
+        <div panel-name="test-xml-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <pre>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE suite SYSTEM &quot;http://testng.org/testng-1.0.dtd&quot;&gt;
+&lt;suite verbose=&quot;0&quot; name=&quot;Command line suite&quot;&gt;
+  &lt;test name=&quot;Command line test&quot; preserve-order=&quot;false&quot;&gt;
+    &lt;classes&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.account.AccountTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.account.PortfolioTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.condition.AndConditionTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.condition.BasicConditionTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.condition.ConditionsTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.condition.MultiConditionTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.condition.OrConditionTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.operation.AbstractOperationTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.operation.BinaryOperationTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.operation.function.AbstractHistoryFunctionTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.operation.function.HighestInLastNBarsFunctionTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.operation.function.HistoryFunctionTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.operation.OperationsTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.operation.UnaryOperationTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.adaptor.IchimokuDataMapAdaptorTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.adaptor.PriceDataMapAdaptorTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.adaptor.RSIDataMapAdaptorTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.adaptor.SMADataMapAdaptorTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.broker.BrokerTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.broker.BuyOrderExecutorTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.broker.OrderExecutorTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.broker.SellOrderExecutorTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.data.BarDataFactoryTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.data.BarDataHistoryTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.data.BarDataTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.data.DataMapTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.data.SimulationDataTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.datafinder.IchimokuDataFinderTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.datafinder.PriceDataFinderTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.order.BuyOrderParametersTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.order.BuyOrderTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.order.SellOrderParametersTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.order.SellOrderTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.stats.TradeStatisticTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.transaction.BookkeeperTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.transaction.BuyTransactionTest&quot;/&gt;
+      &lt;class name=&quot;com.bn.ninjatrader.testplay.simulation.transaction.SellTransactionTest&quot;/&gt;
+    &lt;/classes&gt;
+  &lt;/test&gt; &lt;!-- Command line test --&gt;
+&lt;/suite&gt; &lt;!-- Command line suite --&gt;
+            </pre>
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="testlist-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Tests for Command line suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <ul>
+              <li>
+                <span class="test-name">Command line test (37 classes)</span>
+              </li>
+            </ul>
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="group-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Groups for Command line suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="times-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Times for Command line suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <div class="times-div">
+              <script type="text/javascript">
+suiteTableInitFunctions.push('tableData_Command_line_suite');
+function tableData_Command_line_suite() {
+var data = new google.visualization.DataTable();
+data.addColumn('number', 'Number');
+data.addColumn('string', 'Method');
+data.addColumn('string', 'Class');
+data.addColumn('number', 'Time (ms)');
+data.addRows(97);
+data.setCell(0, 0, 0)
+data.setCell(0, 1, 'testProcessPendingOrder')
+data.setCell(0, 2, 'com.bn.ninjatrader.testplay.simulation.broker.BrokerTest')
+data.setCell(0, 3, 77);
+data.setCell(1, 0, 1)
+data.setCell(1, 1, 'testCreateBarDataWithSimulationData')
+data.setCell(1, 2, 'com.bn.ninjatrader.testplay.simulation.data.BarDataFactoryTest')
+data.setCell(1, 3, 62);
+data.setCell(2, 0, 2)
+data.setCell(2, 1, 'testBuild')
+data.setCell(2, 2, 'com.bn.ninjatrader.testplay.simulation.order.BuyOrderParametersTest')
+data.setCell(2, 3, 42);
+data.setCell(3, 0, 3)
+data.setCell(3, 1, 'testEquals')
+data.setCell(3, 2, 'com.bn.ninjatrader.testplay.simulation.transaction.BuyTransactionTest')
+data.setCell(3, 3, 41);
+data.setCell(4, 0, 4)
+data.setCell(4, 1, 'testFind')
+data.setCell(4, 2, 'com.bn.ninjatrader.testplay.simulation.datafinder.PriceDataFinderTest')
+data.setCell(4, 3, 27);
+data.setCell(5, 0, 5)
+data.setCell(5, 1, 'testExecute')
+data.setCell(5, 2, 'com.bn.ninjatrader.testplay.simulation.broker.BuyOrderExecutorTest')
+data.setCell(5, 3, 15);
+data.setCell(6, 0, 6)
+data.setCell(6, 1, 'testFind')
+data.setCell(6, 2, 'com.bn.ninjatrader.testplay.simulation.datafinder.IchimokuDataFinderTest')
+data.setCell(6, 3, 13);
+data.setCell(7, 0, 7)
+data.setCell(7, 1, 'testGetDataTypes')
+data.setCell(7, 2, 'com.bn.ninjatrader.testplay.condition.AndConditionTest')
+data.setCell(7, 3, 9);
+data.setCell(8, 0, 8)
+data.setCell(8, 1, 'testAddCash')
+data.setCell(8, 2, 'com.bn.ninjatrader.testplay.account.AccountTest')
+data.setCell(8, 3, 7);
+data.setCell(9, 0, 9)
+data.setCell(9, 1, 'testAddVariables')
+data.setCell(9, 2, 'com.bn.ninjatrader.testplay.operation.BinaryOperationTest')
+data.setCell(9, 3, 7);
+data.setCell(10, 0, 10)
+data.setCell(10, 1, 'testHashCode')
+data.setCell(10, 2, 'com.bn.ninjatrader.testplay.simulation.transaction.BuyTransactionTest')
+data.setCell(10, 3, 6);
+data.setCell(11, 0, 11)
+data.setCell(11, 1, 'testCalculateProfit')
+data.setCell(11, 2, 'com.bn.ninjatrader.testplay.simulation.broker.OrderExecutorTest')
+data.setCell(11, 3, 6);
+data.setCell(12, 0, 12)
+data.setCell(12, 1, 'testGetFulfilledPrice')
+data.setCell(12, 2, 'com.bn.ninjatrader.testplay.simulation.broker.OrderExecutorTest')
+data.setCell(12, 3, 4);
+data.setCell(13, 0, 13)
+data.setCell(13, 1, 'testCreateEmpty')
+data.setCell(13, 2, 'com.bn.ninjatrader.testplay.simulation.data.BarDataHistoryTest')
+data.setCell(13, 3, 3);
+data.setCell(14, 0, 14)
+data.setCell(14, 1, 'testAddCondition')
+data.setCell(14, 2, 'com.bn.ninjatrader.testplay.condition.AndConditionTest')
+data.setCell(14, 3, 3);
+data.setCell(15, 0, 15)
+data.setCell(15, 1, 'testWithMultipleBars')
+data.setCell(15, 2, 'com.bn.ninjatrader.testplay.operation.function.HighestInLastNBarsFunctionTest')
+data.setCell(15, 3, 3);
+data.setCell(16, 0, 16)
+data.setCell(16, 1, 'testEquals')
+data.setCell(16, 2, 'com.bn.ninjatrader.testplay.simulation.transaction.SellTransactionTest')
+data.setCell(16, 3, 3);
+data.setCell(17, 0, 17)
+data.setCell(17, 1, 'testGetNumberOfSharesCanBuy')
+data.setCell(17, 2, 'com.bn.ninjatrader.testplay.simulation.broker.OrderExecutorTest')
+data.setCell(17, 3, 2);
+data.setCell(18, 0, 18)
+data.setCell(18, 1, 'testGetVariables')
+data.setCell(18, 2, 'com.bn.ninjatrader.testplay.operation.OperationsTest')
+data.setCell(18, 3, 2);
+data.setCell(19, 0, 19)
+data.setCell(19, 1, 'testPutHashMap')
+data.setCell(19, 2, 'com.bn.ninjatrader.testplay.simulation.data.DataMapTest')
+data.setCell(19, 3, 2);
+data.setCell(20, 0, 20)
+data.setCell(20, 1, 'testMultiHistoryFunction')
+data.setCell(20, 2, 'com.bn.ninjatrader.testplay.operation.function.HistoryFunctionTest')
+data.setCell(20, 3, 2);
+data.setCell(21, 0, 21)
+data.setCell(21, 1, 'testCreateEmpty')
+data.setCell(21, 2, 'com.bn.ninjatrader.testplay.simulation.order.SellOrderTest')
+data.setCell(21, 3, 2);
+data.setCell(22, 0, 22)
+data.setCell(22, 1, 'testHashCode')
+data.setCell(22, 2, 'com.bn.ninjatrader.testplay.simulation.transaction.SellTransactionTest')
+data.setCell(22, 3, 2);
+data.setCell(23, 0, 23)
+data.setCell(23, 1, 'testGreaterThanCondition')
+data.setCell(23, 2, 'com.bn.ninjatrader.testplay.condition.ConditionsTest')
+data.setCell(23, 3, 2);
+data.setCell(24, 0, 24)
+data.setCell(24, 1, 'testBuild')
+data.setCell(24, 2, 'com.bn.ninjatrader.testplay.simulation.order.SellOrderParametersTest')
+data.setCell(24, 3, 2);
+data.setCell(25, 0, 25)
+data.setCell(25, 1, 'testWithSingleHistoryBar')
+data.setCell(25, 2, 'com.bn.ninjatrader.testplay.operation.function.HighestInLastNBarsFunctionTest')
+data.setCell(25, 3, 2);
+data.setCell(26, 0, 26)
+data.setCell(26, 1, 'testGetDataTypesForConstants')
+data.setCell(26, 2, 'com.bn.ninjatrader.testplay.operation.BinaryOperationTest')
+data.setCell(26, 3, 1);
+data.setCell(27, 0, 27)
+data.setCell(27, 1, 'testClearPortfolio')
+data.setCell(27, 2, 'com.bn.ninjatrader.testplay.account.AccountTest')
+data.setCell(27, 3, 1);
+data.setCell(28, 0, 28)
+data.setCell(28, 1, 'testReadyForProcessing')
+data.setCell(28, 2, 'com.bn.ninjatrader.testplay.simulation.order.SellOrderTest')
+data.setCell(28, 3, 1);
+data.setCell(29, 0, 29)
+data.setCell(29, 1, 'testAddToPortfolio')
+data.setCell(29, 2, 'com.bn.ninjatrader.testplay.account.AccountTest')
+data.setCell(29, 3, 1);
+data.setCell(30, 0, 30)
+data.setCell(30, 1, 'testCreateEmpty')
+data.setCell(30, 2, 'com.bn.ninjatrader.testplay.simulation.broker.BrokerTest')
+data.setCell(30, 3, 1);
+data.setCell(31, 0, 31)
+data.setCell(31, 1, 'testWithConstants')
+data.setCell(31, 2, 'com.bn.ninjatrader.testplay.operation.OperationsTest')
+data.setCell(31, 3, 1);
+data.setCell(32, 0, 32)
+data.setCell(32, 1, 'testSingleEqualsCondition')
+data.setCell(32, 2, 'com.bn.ninjatrader.testplay.condition.ConditionsTest')
+data.setCell(32, 3, 1);
+data.setCell(33, 0, 33)
+data.setCell(33, 1, 'testCreateEmpty')
+data.setCell(33, 2, 'com.bn.ninjatrader.testplay.simulation.transaction.BuyTransactionTest')
+data.setCell(33, 3, 1);
+data.setCell(34, 0, 34)
+data.setCell(34, 1, 'testWithConstantsAndVaraibles')
+data.setCell(34, 2, 'com.bn.ninjatrader.testplay.operation.OperationsTest')
+data.setCell(34, 3, 1);
+data.setCell(35, 0, 35)
+data.setCell(35, 1, 'testClearDataMap')
+data.setCell(35, 2, 'com.bn.ninjatrader.testplay.simulation.data.DataMapTest')
+data.setCell(35, 3, 1);
+data.setCell(36, 0, 36)
+data.setCell(36, 1, 'testGetDataMap')
+data.setCell(36, 2, 'com.bn.ninjatrader.testplay.simulation.data.SimulationDataTest')
+data.setCell(36, 3, 1);
+data.setCell(37, 0, 37)
+data.setCell(37, 1, 'testPutKeyValue')
+data.setCell(37, 2, 'com.bn.ninjatrader.testplay.simulation.data.DataMapTest')
+data.setCell(37, 3, 1);
+data.setCell(38, 0, 38)
+data.setCell(38, 1, 'testExecute')
+data.setCell(38, 2, 'com.bn.ninjatrader.testplay.simulation.broker.SellOrderExecutorTest')
+data.setCell(38, 3, 1);
+data.setCell(39, 0, 39)
+data.setCell(39, 1, 'testAvgPrice')
+data.setCell(39, 2, 'com.bn.ninjatrader.testplay.account.PortfolioTest')
+data.setCell(39, 3, 1);
+data.setCell(40, 0, 40)
+data.setCell(40, 1, 'testWithDataExceedingMaxSize')
+data.setCell(40, 2, 'com.bn.ninjatrader.testplay.simulation.data.BarDataHistoryTest')
+data.setCell(40, 3, 1);
+data.setCell(41, 0, 41)
+data.setCell(41, 1, 'testCreateEmpty')
+data.setCell(41, 2, 'com.bn.ninjatrader.testplay.simulation.order.BuyOrderTest')
+data.setCell(41, 3, 1);
+data.setCell(42, 0, 42)
+data.setCell(42, 1, 'testCreateWithData')
+data.setCell(42, 2, 'com.bn.ninjatrader.testplay.simulation.order.BuyOrderTest')
+data.setCell(42, 3, 1);
+data.setCell(43, 0, 43)
+data.setCell(43, 1, 'testToDataMap')
+data.setCell(43, 2, 'com.bn.ninjatrader.testplay.simulation.adaptor.IchimokuDataMapAdaptorTest')
+data.setCell(43, 3, 1);
+data.setCell(44, 0, 44)
+data.setCell(44, 1, 'testAllTrue')
+data.setCell(44, 2, 'com.bn.ninjatrader.testplay.condition.OrConditionTest')
+data.setCell(44, 3, 1);
+data.setCell(45, 0, 45)
+data.setCell(45, 1, 'testGetWithEmptyMap')
+data.setCell(45, 2, 'com.bn.ninjatrader.testplay.simulation.data.DataMapTest')
+data.setCell(45, 3, 1);
+data.setCell(46, 0, 46)
+data.setCell(46, 1, 'testOnCreate')
+data.setCell(46, 2, 'com.bn.ninjatrader.testplay.simulation.stats.TradeStatisticTest')
+data.setCell(46, 3, 1);
+data.setCell(47, 0, 47)
+data.setCell(47, 1, 'testMultipleEqualsCondition')
+data.setCell(47, 2, 'com.bn.ninjatrader.testplay.condition.ConditionsTest')
+data.setCell(47, 3, 1);
+data.setCell(48, 0, 48)
+data.setCell(48, 1, 'testReadyForProcessing')
+data.setCell(48, 2, 'com.bn.ninjatrader.testplay.simulation.order.BuyOrderTest')
+data.setCell(48, 3, 1);
+data.setCell(49, 0, 49)
+data.setCell(49, 1, 'testCreateEmpty')
+data.setCell(49, 2, 'com.bn.ninjatrader.testplay.simulation.transaction.SellTransactionTest')
+data.setCell(49, 3, 1);
+data.setCell(50, 0, 50)
+data.setCell(50, 1, 'testWithVariables')
+data.setCell(50, 2, 'com.bn.ninjatrader.testplay.operation.OperationsTest')
+data.setCell(50, 3, 1);
+data.setCell(51, 0, 51)
+data.setCell(51, 1, 'testUnaryEquals')
+data.setCell(51, 2, 'com.bn.ninjatrader.testplay.condition.BasicConditionTest')
+data.setCell(51, 3, 1);
+data.setCell(52, 0, 52)
+data.setCell(52, 1, 'testCalculateProfitAtLowerPrice')
+data.setCell(52, 2, 'com.bn.ninjatrader.testplay.simulation.broker.OrderExecutorTest')
+data.setCell(52, 3, 1);
+data.setCell(53, 0, 53)
+data.setCell(53, 1, 'testOnCreate')
+data.setCell(53, 2, 'com.bn.ninjatrader.testplay.account.AccountTest')
+data.setCell(53, 3, 0);
+data.setCell(54, 0, 54)
+data.setCell(54, 1, 'testGetVariables')
+data.setCell(54, 2, 'com.bn.ninjatrader.testplay.operation.UnaryOperationTest')
+data.setCell(54, 3, 0);
+data.setCell(55, 0, 55)
+data.setCell(55, 1, 'testCreateBarData')
+data.setCell(55, 2, 'com.bn.ninjatrader.testplay.simulation.data.BarDataFactoryTest')
+data.setCell(55, 3, 0);
+data.setCell(56, 0, 56)
+data.setCell(56, 1, 'testWithSingleOperand')
+data.setCell(56, 2, 'com.bn.ninjatrader.testplay.operation.OperationsTest')
+data.setCell(56, 3, 0);
+data.setCell(57, 0, 57)
+data.setCell(57, 1, 'testCreateWithData')
+data.setCell(57, 2, 'com.bn.ninjatrader.testplay.simulation.transaction.SellTransactionTest')
+data.setCell(57, 3, 0);
+data.setCell(58, 0, 58)
+data.setCell(58, 1, 'testUnaryGreaterThan')
+data.setCell(58, 2, 'com.bn.ninjatrader.testplay.condition.BasicConditionTest')
+data.setCell(58, 3, 0);
+data.setCell(59, 0, 59)
+data.setCell(59, 1, 'testGetDataTypesForVariables')
+data.setCell(59, 2, 'com.bn.ninjatrader.testplay.operation.BinaryOperationTest')
+data.setCell(59, 3, 0);
+data.setCell(60, 0, 60)
+data.setCell(60, 1, 'testWinStats')
+data.setCell(60, 2, 'com.bn.ninjatrader.testplay.simulation.stats.TradeStatisticTest')
+data.setCell(60, 3, 0);
+data.setCell(61, 0, 61)
+data.setCell(61, 1, 'testCalculateValue')
+data.setCell(61, 2, 'com.bn.ninjatrader.testplay.simulation.transaction.SellTransactionTest')
+data.setCell(61, 3, 0);
+data.setCell(62, 0, 62)
+data.setCell(62, 1, 'testClear')
+data.setCell(62, 2, 'com.bn.ninjatrader.testplay.account.PortfolioTest')
+data.setCell(62, 3, 0);
+data.setCell(63, 0, 63)
+data.setCell(63, 1, 'testLossStats')
+data.setCell(63, 2, 'com.bn.ninjatrader.testplay.simulation.stats.TradeStatisticTest')
+data.setCell(63, 3, 0);
+data.setCell(64, 0, 64)
+data.setCell(64, 1, 'testAllFalse')
+data.setCell(64, 2, 'com.bn.ninjatrader.testplay.condition.OrConditionTest')
+data.setCell(64, 3, 0);
+data.setCell(65, 0, 65)
+data.setCell(65, 1, 'testSubmitOrder')
+data.setCell(65, 2, 'com.bn.ninjatrader.testplay.simulation.broker.BrokerTest')
+data.setCell(65, 3, 0);
+data.setCell(66, 0, 66)
+data.setCell(66, 1, 'testOnCreate')
+data.setCell(66, 2, 'com.bn.ninjatrader.testplay.account.PortfolioTest')
+data.setCell(66, 3, 0);
+data.setCell(67, 0, 67)
+data.setCell(67, 1, 'testNumOfShares')
+data.setCell(67, 2, 'com.bn.ninjatrader.testplay.account.PortfolioTest')
+data.setCell(67, 3, 0);
+data.setCell(68, 0, 68)
+data.setCell(68, 1, 'testWithConstant')
+data.setCell(68, 2, 'com.bn.ninjatrader.testplay.operation.UnaryOperationTest')
+data.setCell(68, 3, 0);
+data.setCell(69, 0, 69)
+data.setCell(69, 1, 'testCreateWithData')
+data.setCell(69, 2, 'com.bn.ninjatrader.testplay.simulation.order.SellOrderTest')
+data.setCell(69, 3, 0);
+data.setCell(70, 0, 70)
+data.setCell(70, 1, 'testMixedTrueAndFalse')
+data.setCell(70, 2, 'com.bn.ninjatrader.testplay.condition.AndConditionTest')
+data.setCell(70, 3, 0);
+data.setCell(71, 0, 71)
+data.setCell(71, 1, 'testMultiTradeStats')
+data.setCell(71, 2, 'com.bn.ninjatrader.testplay.simulation.stats.TradeStatisticTest')
+data.setCell(71, 3, 0);
+data.setCell(72, 0, 72)
+data.setCell(72, 1, 'testCreateWithData')
+data.setCell(72, 2, 'com.bn.ninjatrader.testplay.simulation.transaction.BuyTransactionTest')
+data.setCell(72, 3, 0);
+data.setCell(73, 0, 73)
+data.setCell(73, 1, 'testAllFalse')
+data.setCell(73, 2, 'com.bn.ninjatrader.testplay.condition.AndConditionTest')
+data.setCell(73, 3, 0);
+data.setCell(74, 0, 74)
+data.setCell(74, 1, 'testCalculateValue')
+data.setCell(74, 2, 'com.bn.ninjatrader.testplay.simulation.transaction.BuyTransactionTest')
+data.setCell(74, 3, 0);
+data.setCell(75, 0, 75)
+data.setCell(75, 1, 'testWithVariables')
+data.setCell(75, 2, 'com.bn.ninjatrader.testplay.operation.UnaryOperationTest')
+data.setCell(75, 3, 0);
+data.setCell(76, 0, 76)
+data.setCell(76, 1, 'testOverwriteDataMap')
+data.setCell(76, 2, 'com.bn.ninjatrader.testplay.simulation.data.BarDataTest')
+data.setCell(76, 3, 0);
+data.setCell(77, 0, 77)
+data.setCell(77, 1, 'testToDataMap')
+data.setCell(77, 2, 'com.bn.ninjatrader.testplay.simulation.adaptor.PriceDataMapAdaptorTest')
+data.setCell(77, 3, 0);
+data.setCell(78, 0, 78)
+data.setCell(78, 1, 'testArithmeticOnConstants')
+data.setCell(78, 2, 'com.bn.ninjatrader.testplay.operation.BinaryOperationTest')
+data.setCell(78, 3, 0);
+data.setCell(79, 0, 79)
+data.setCell(79, 1, 'testSimpleBuy')
+data.setCell(79, 2, 'com.bn.ninjatrader.testplay.simulation.transaction.BookkeeperTest')
+data.setCell(79, 3, 0);
+data.setCell(80, 0, 80)
+data.setCell(80, 1, 'testUnaryLessThan')
+data.setCell(80, 2, 'com.bn.ninjatrader.testplay.condition.BasicConditionTest')
+data.setCell(80, 3, 0);
+data.setCell(81, 0, 81)
+data.setCell(81, 1, 'testSingleHistoryFunction')
+data.setCell(81, 2, 'com.bn.ninjatrader.testplay.operation.function.HistoryFunctionTest')
+data.setCell(81, 3, 0);
+data.setCell(82, 0, 82)
+data.setCell(82, 1, 'testMixedTrueAndFalse')
+data.setCell(82, 2, 'com.bn.ninjatrader.testplay.condition.OrConditionTest')
+data.setCell(82, 3, 0);
+data.setCell(83, 0, 83)
+data.setCell(83, 1, 'testPutDataMap')
+data.setCell(83, 2, 'com.bn.ninjatrader.testplay.simulation.data.BarDataTest')
+data.setCell(83, 3, 0);
+data.setCell(84, 0, 84)
+data.setCell(84, 1, 'testCreate')
+data.setCell(84, 2, 'com.bn.ninjatrader.testplay.simulation.transaction.BookkeeperTest')
+data.setCell(84, 3, 0);
+data.setCell(85, 0, 85)
+data.setCell(85, 1, 'testAdd')
+data.setCell(85, 2, 'com.bn.ninjatrader.testplay.account.PortfolioTest')
+data.setCell(85, 3, 0);
+data.setCell(86, 0, 86)
+data.setCell(86, 1, 'testMultiLog')
+data.setCell(86, 2, 'com.bn.ninjatrader.testplay.simulation.transaction.BookkeeperTest')
+data.setCell(86, 3, 0);
+data.setCell(87, 0, 87)
+data.setCell(87, 1, 'testWithParams')
+data.setCell(87, 2, 'com.bn.ninjatrader.testplay.simulation.order.SellOrderTest')
+data.setCell(87, 3, 0);
+data.setCell(88, 0, 88)
+data.setCell(88, 1, 'testNullCondition')
+data.setCell(88, 2, 'com.bn.ninjatrader.testplay.condition.AndConditionTest')
+data.setCell(88, 3, 0);
+data.setCell(89, 0, 89)
+data.setCell(89, 1, 'testGetNestedDataTypes')
+data.setCell(89, 2, 'com.bn.ninjatrader.testplay.operation.BinaryOperationTest')
+data.setCell(89, 3, 0);
+data.setCell(90, 0, 90)
+data.setCell(90, 1, 'testSerializationDeserialization')
+data.setCell(90, 2, 'com.bn.ninjatrader.testplay.condition.BasicConditionTest')
+data.setCell(90, 3, 0);
+data.setCell(91, 0, 91)
+data.setCell(91, 1, 'testPutDataMap')
+data.setCell(91, 2, 'com.bn.ninjatrader.testplay.simulation.data.DataMapTest')
+data.setCell(91, 3, 0);
+data.setCell(92, 0, 92)
+data.setCell(92, 1, 'testGetDataTypes')
+data.setCell(92, 2, 'com.bn.ninjatrader.testplay.condition.OrConditionTest')
+data.setCell(92, 3, 0);
+data.setCell(93, 0, 93)
+data.setCell(93, 1, 'testGreaterThanOrEqualsCondition')
+data.setCell(93, 2, 'com.bn.ninjatrader.testplay.condition.ConditionsTest')
+data.setCell(93, 3, 0);
+data.setCell(94, 0, 94)
+data.setCell(94, 1, 'testAllTrue')
+data.setCell(94, 2, 'com.bn.ninjatrader.testplay.condition.AndConditionTest')
+data.setCell(94, 3, 0);
+data.setCell(95, 0, 95)
+data.setCell(95, 1, 'testWithParams')
+data.setCell(95, 2, 'com.bn.ninjatrader.testplay.simulation.order.BuyOrderTest')
+data.setCell(95, 3, 0);
+data.setCell(96, 0, 96)
+data.setCell(96, 1, 'testWithData')
+data.setCell(96, 2, 'com.bn.ninjatrader.testplay.simulation.data.BarDataHistoryTest')
+data.setCell(96, 3, 0);
+window.suiteTableData['Command_line_suite']= { tableData: data, tableDiv: 'times-div-Command_line_suite'}
+return data;
+}
+              </script>
+              <span class="suite-total-time">Total running time: 373 ms</span>
+              <div id="times-div-Command_line_suite">
+              </div> <!-- times-div-Command_line_suite -->
+            </div> <!-- times-div -->
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="reporter-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Reporter output for Command line suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="ignored-methods-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">0 ignored methods</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="chronological-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Methods in chronological order</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.account.AccountTest</div> <!-- chronological-class-name -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">0 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testAddCash</span>
+                <span class="method-start">22 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">30 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testAddToPortfolio</span>
+                <span class="method-start">30 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">31 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testClearPortfolio</span>
+                <span class="method-start">31 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">32 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testOnCreate</span>
+                <span class="method-start">32 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.condition.AndConditionTest</div> <!-- chronological-class-name -->
+              <div class="test-method">
+                <span class="method-name">testAddCondition</span>
+                <span class="method-start">33 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testAllFalse</span>
+                <span class="method-start">37 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testAllTrue</span>
+                <span class="method-start">37 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testGetDataTypes</span>
+                <span class="method-start">38 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testMixedTrueAndFalse</span>
+                <span class="method-start">47 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testNullCondition</span>
+                <span class="method-start">48 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.data.BarDataFactoryTest</div> <!-- chronological-class-name -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">48 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testCreateBarData</span>
+                <span class="method-start">51 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">54 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testCreateBarDataWithSimulationData</span>
+                <span class="method-start">54 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.data.BarDataHistoryTest</div> <!-- chronological-class-name -->
+              <div class="test-method">
+                <span class="method-name">testCreateEmpty</span>
+                <span class="method-start">130 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testWithData</span>
+                <span class="method-start">133 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testWithDataExceedingMaxSize</span>
+                <span class="method-start">133 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.data.BarDataTest</div> <!-- chronological-class-name -->
+              <div class="test-method">
+                <span class="method-name">testOverwriteDataMap</span>
+                <span class="method-start">134 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testPutDataMap</span>
+                <span class="method-start">134 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.condition.BasicConditionTest</div> <!-- chronological-class-name -->
+              <div class="test-method">
+                <span class="method-name">testSerializationDeserialization</span>
+                <span class="method-start">135 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testUnaryEquals</span>
+                <span class="method-start">135 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testUnaryGreaterThan</span>
+                <span class="method-start">137 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testUnaryLessThan</span>
+                <span class="method-start">137 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.operation.BinaryOperationTest</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">setup</span>
+                <span class="method-start">137 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">testAddVariables</span>
+                <span class="method-start">138 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testArithmeticOnConstants</span>
+                <span class="method-start">146 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testGetDataTypesForConstants</span>
+                <span class="method-start">146 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testGetDataTypesForVariables</span>
+                <span class="method-start">147 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testGetNestedDataTypes</span>
+                <span class="method-start">147 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.transaction.BookkeeperTest</div> <!-- chronological-class-name -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">148 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testCreate</span>
+                <span class="method-start">148 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">149 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testMultiLog</span>
+                <span class="method-start">149 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">149 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testSimpleBuy</span>
+                <span class="method-start">149 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.broker.BrokerTest</div> <!-- chronological-class-name -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">150 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testCreateEmpty</span>
+                <span class="method-start">966 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">968 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testProcessPendingOrder</span>
+                <span class="method-start">978 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1082 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testSubmitOrder</span>
+                <span class="method-start">1087 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.broker.BuyOrderExecutorTest</div> <!-- chronological-class-name -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1088 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testExecute</span>
+                <span class="method-start">1316 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.order.BuyOrderParametersTest</div> <!-- chronological-class-name -->
+              <div class="test-method">
+                <span class="method-name">testBuild</span>
+                <span class="method-start">1332 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.order.BuyOrderTest</div> <!-- chronological-class-name -->
+              <div class="test-method">
+                <span class="method-name">testCreateEmpty</span>
+                <span class="method-start">1374 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCreateWithData</span>
+                <span class="method-start">1376 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testReadyForProcessing</span>
+                <span class="method-start">1379 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testWithParams</span>
+                <span class="method-start">1381 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.transaction.BuyTransactionTest</div> <!-- chronological-class-name -->
+              <div class="test-method">
+                <span class="method-name">testCalculateValue</span>
+                <span class="method-start">1382 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCreateEmpty</span>
+                <span class="method-start">1382 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCreateWithData</span>
+                <span class="method-start">1383 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testEquals</span>
+                <span class="method-start">1384 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testHashCode</span>
+                <span class="method-start">1426 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.condition.ConditionsTest</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1433 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">testGreaterThanCondition</span>
+                <span class="method-start">1434 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testGreaterThanOrEqualsCondition</span>
+                <span class="method-start">1437 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testMultipleEqualsCondition</span>
+                <span class="method-start">1437 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testSingleEqualsCondition</span>
+                <span class="method-start">1438 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.data.DataMapTest</div> <!-- chronological-class-name -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1441 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testClearDataMap</span>
+                <span class="method-start">1442 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1443 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testGetWithEmptyMap</span>
+                <span class="method-start">1443 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1445 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testPutDataMap</span>
+                <span class="method-start">1445 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1446 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testPutHashMap</span>
+                <span class="method-start">1446 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1449 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testPutKeyValue</span>
+                <span class="method-start">1452 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.operation.function.HighestInLastNBarsFunctionTest</div> <!-- chronological-class-name -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1453 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testWithMultipleBars</span>
+                <span class="method-start">1457 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1461 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testWithSingleHistoryBar</span>
+                <span class="method-start">1461 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.operation.function.HistoryFunctionTest</div> <!-- chronological-class-name -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1464 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testMultiHistoryFunction</span>
+                <span class="method-start">1465 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1468 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testSingleHistoryFunction</span>
+                <span class="method-start">1469 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.datafinder.IchimokuDataFinderTest</div> <!-- chronological-class-name -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1471 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testFind</span>
+                <span class="method-start">1570 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.adaptor.IchimokuDataMapAdaptorTest</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1583 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">testToDataMap</span>
+                <span class="method-start">1610 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.operation.OperationsTest</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1611 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">testGetVariables</span>
+                <span class="method-start">1612 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testWithConstants</span>
+                <span class="method-start">1614 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testWithConstantsAndVaraibles</span>
+                <span class="method-start">1615 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testWithSingleOperand</span>
+                <span class="method-start">1616 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testWithVariables</span>
+                <span class="method-start">1616 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.condition.OrConditionTest</div> <!-- chronological-class-name -->
+              <div class="test-method">
+                <span class="method-name">testAllFalse</span>
+                <span class="method-start">1617 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testAllTrue</span>
+                <span class="method-start">1617 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testGetDataTypes</span>
+                <span class="method-start">1618 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testMixedTrueAndFalse</span>
+                <span class="method-start">1618 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.broker.OrderExecutorTest</div> <!-- chronological-class-name -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1619 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testCalculateProfit</span>
+                <span class="method-start">1658 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1667 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testCalculateProfitAtLowerPrice</span>
+                <span class="method-start">1702 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1704 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testGetFulfilledPrice</span>
+                <span class="method-start">1736 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1743 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testGetNumberOfSharesCanBuy</span>
+                <span class="method-start">1774 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.account.PortfolioTest</div> <!-- chronological-class-name -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1780 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testAdd</span>
+                <span class="method-start">1796 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1797 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testAvgPrice</span>
+                <span class="method-start">1797 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1798 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testClear</span>
+                <span class="method-start">1798 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1798 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testNumOfShares</span>
+                <span class="method-start">1799 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1799 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testOnCreate</span>
+                <span class="method-start">1799 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.datafinder.PriceDataFinderTest</div> <!-- chronological-class-name -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1800 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testFind</span>
+                <span class="method-start">1914 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.adaptor.PriceDataMapAdaptorTest</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1941 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">testToDataMap</span>
+                <span class="method-start">1986 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.broker.SellOrderExecutorTest</div> <!-- chronological-class-name -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">1987 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testExecute</span>
+                <span class="method-start">1999 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.order.SellOrderParametersTest</div> <!-- chronological-class-name -->
+              <div class="test-method">
+                <span class="method-name">testBuild</span>
+                <span class="method-start">2000 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.order.SellOrderTest</div> <!-- chronological-class-name -->
+              <div class="test-method">
+                <span class="method-name">testCreateEmpty</span>
+                <span class="method-start">2002 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCreateWithData</span>
+                <span class="method-start">2004 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testReadyForProcessing</span>
+                <span class="method-start">2004 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testWithParams</span>
+                <span class="method-start">2005 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.transaction.SellTransactionTest</div> <!-- chronological-class-name -->
+              <div class="test-method">
+                <span class="method-name">testCalculateValue</span>
+                <span class="method-start">2005 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCreateEmpty</span>
+                <span class="method-start">2005 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCreateWithData</span>
+                <span class="method-start">2006 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testEquals</span>
+                <span class="method-start">2006 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testHashCode</span>
+                <span class="method-start">2010 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.data.SimulationDataTest</div> <!-- chronological-class-name -->
+              <div class="test-method">
+                <span class="method-name">testGetDataMap</span>
+                <span class="method-start">2012 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.simulation.stats.TradeStatisticTest</div> <!-- chronological-class-name -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">2014 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testLossStats</span>
+                <span class="method-start">2014 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">2015 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testMultiTradeStats</span>
+                <span class="method-start">2015 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">2015 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testOnCreate</span>
+                <span class="method-start">2015 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">setup</span>
+                <span class="method-start">2016 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">testWinStats</span>
+                <span class="method-start">2016 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bn.ninjatrader.testplay.operation.UnaryOperationTest</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">setup</span>
+                <span class="method-start">2016 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">testGetVariables</span>
+                <span class="method-start">2017 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testWithConstant</span>
+                <span class="method-start">2017 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testWithVariables</span>
+                <span class="method-start">2018 ms</span>
+              </div> <!-- test-method -->
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+      </div> <!-- main-panel-root -->
+    </div> <!-- wrapper -->
+  </body>
+</html>
