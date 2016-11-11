@@ -2,7 +2,6 @@ package com.bn.ninjatrader.simulation.operation.function;
 
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.operation.Operation;
-import com.bn.ninjatrader.simulation.operation.OperationType;
 import com.bn.ninjatrader.simulation.operation.Variable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Optional;
@@ -14,20 +13,31 @@ import java.util.Set;
 /**
  * Created by Brad on 8/29/16.
  */
-public class HighestInLastNBarsFunction implements Operation {
+public class HighestInNBarsAgoFunction implements Operation {
+  private static final Logger LOG = LoggerFactory.getLogger(HighestInNBarsAgoFunction.class);
 
-  private static final Logger log = LoggerFactory.getLogger(HighestInLastNBarsFunction.class);
+  public static final HighestInNBarsAgoFunction of(final Operation operation) {
+    return new HighestInNBarsAgoFunction(operation);
+  }
 
-  private final int numOfBarsAgo;
+  @JsonProperty("numOfBarsAgo")
+  private int numOfBarsAgo;
+
+  @JsonProperty("operation")
   private final Operation operation;
 
-  public HighestInLastNBarsFunction(Operation operation, int numOfBarsAgo) {
+  public HighestInNBarsAgoFunction(final Operation operation) {
+    this(operation, 0);
+  }
+
+  public HighestInNBarsAgoFunction(@JsonProperty("operation") final Operation operation,
+                                   @JsonProperty("numOfBarsAgo") final int numOfBarsAgo) {
     this.numOfBarsAgo = numOfBarsAgo;
     this.operation = operation;
   }
 
   @Override
-  public double getValue(BarData barData) {
+  public double getValue(final BarData barData) {
     double highestValue = 0;
     for (int i=1; i <= numOfBarsAgo; i++) {
       Optional<BarData> pastBarData = barData.getNBarsAgo(i);
@@ -45,8 +55,16 @@ public class HighestInLastNBarsFunction implements Operation {
     return operation.getVariables();
   }
 
-  @JsonProperty("type")
-  public OperationType getOperationType() {
-    return OperationType.HIGHEST_LAST_N_BARS;
+  public int getNumOfBarsAgo() {
+    return numOfBarsAgo;
+  }
+
+  public HighestInNBarsAgoFunction withinBarsAgo(int numOfBarsAgo) {
+    this.numOfBarsAgo = numOfBarsAgo;
+    return this;
+  }
+
+  public Operation getOperation() {
+    return operation;
   }
 }
