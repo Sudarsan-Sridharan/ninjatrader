@@ -9,23 +9,29 @@ import java.util.Arrays;
 /**
  * Created by Brad on 6/23/16.
  */
-public class Data {
+public class Group {
 
   private int[] count;
 
   private LocalDate date;
 
-  public Data(int max) {
+  public Group(int max) {
     count = new int[max + 1];
   }
 
-  public Data(LocalDate date, int[] count) {
+  public Group(LocalDate date, int[] count) {
     this.date = date;
     this.count = count;
   }
 
   public int[] getCount() {
     return count;
+  }
+
+  public void incrementWinningNumbers(int ... lottoNums) {
+    for (int lottoNum : lottoNums) {
+      count[lottoNum]++;
+    }
   }
 
   public void setCount(int[] nums) {

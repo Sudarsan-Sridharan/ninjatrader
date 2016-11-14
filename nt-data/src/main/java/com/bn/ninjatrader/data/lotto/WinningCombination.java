@@ -9,17 +9,17 @@ import java.util.Arrays;
 /**
  * Created by a- on 6/23/16.
  */
-public class Win {
+public class WinningCombination {
 
   private int nums[];
 
   private LocalDate date;
 
-  public Win() {
+  public WinningCombination() {
 
   }
 
-  public Win(LocalDate date, int[] nums) {
+  public WinningCombination(LocalDate date, int[] nums) {
     this.date = date;
     this.nums = nums;
   }

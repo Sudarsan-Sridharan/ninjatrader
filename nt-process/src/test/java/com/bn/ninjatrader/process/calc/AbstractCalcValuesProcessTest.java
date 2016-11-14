@@ -2,125 +2,109 @@ package com.bn.ninjatrader.process.calc;
 
 import com.beust.jcommander.internal.Maps;
 import com.bn.ninjatrader.calculator.ValueCalculator;
-import com.bn.ninjatrader.calculator.parameter.CalcParams;
+import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.data.Value;
+import com.bn.ninjatrader.common.type.TimeFrame;
+import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.ValueDao;
 import com.bn.ninjatrader.model.request.SaveRequest;
 import com.bn.ninjatrader.process.request.CalcRequest;
-import com.google.common.collect.Lists;
-import mockit.Expectations;
-import mockit.Verifications;
+import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static com.bn.ninjatrader.process.request.CalcRequest.forSymbol;
-import static org.testng.Assert.assertEquals;
+import static com.bn.ninjatrader.process.request.CalcRequest.calcSymbol;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by Brad on 8/16/16.
  */
-public abstract class AbstractCalcValuesProcessTest {
+public class AbstractCalcValuesProcessTest {
 
-  private static final Logger log = LoggerFactory.getLogger(AbstractCalcValuesProcessTest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(AbstractCalcValuesProcessTest.class);
 
-  static final String SYMBOL = "MEG";
-  static final int PERIOD_WITH_NO_VALUES = 5;
-  static final int PERIOD_1 = 20;
-  static final int PERIOD_2 = 50;
-  static final int PERIOD_3 = 100;
-  static final int[] PERIODS = new int[] { PERIOD_WITH_NO_VALUES, PERIOD_1, PERIOD_2, PERIOD_3 };
+  private final LocalDate DATE_2014 = LocalDate.of(2014, 1, 1);
+  private final LocalDate DATE_2015 = LocalDate.of(2015, 1, 1);
+  private final LocalDate DATE_2017 = LocalDate.of(2017, 1, 1);
+  private final List<Price> priceList = TestUtil.randomPrices(5);
+  private final Map<Integer, List<Value>> calcResult = Maps.newHashMap();
 
-  final LocalDate date1 = LocalDate.of(2014, 1, 1);
-  final LocalDate date2 = LocalDate.of(2015, 1, 1);
-  final LocalDate date3 = LocalDate.of(2016, 1, 1);
-
-  final Value value1 = new Value(date1, 100d);
-  final Value value2 = new Value(date2, 200d);
-  final Value value3 = new Value(date3, 300d);
-  final Value value4 = new Value(date3, 400d);
-
-  final Map<Integer, List<Value>> calcResult = Maps.newHashMap();
-
-  private ValueDao dao;
   private ValueCalculator calculator;
-
-  @BeforeClass
-  public void setupData() {
-    calcResult.put(PERIOD_WITH_NO_VALUES, Lists.newArrayList());
-    calcResult.put(PERIOD_1, Lists.newArrayList(value1, value2, value3, value4));
-    calcResult.put(PERIOD_2, Lists.newArrayList(value2, value3, value4));
-    calcResult.put(PERIOD_3, Lists.newArrayList(value3, value4));
-  }
+  private PriceDao priceDao;
+  private ValueDao valueDao;
+  private AbstractCalcValuesProcess process;
 
   @BeforeMethod
-  public void setupTest() {
-    provideTestedProcess();
-    calculator = provideCalculator();
-    dao = provideDao();
+  public void setup() {
+    calculator = mock(ValueCalculator.class);
+    priceDao = mock(PriceDao.class);
+    valueDao = mock(ValueDao.class);
+
+    process = new DummyProcess(calculator, priceDao, valueDao);
+
+    calcResult.clear();
+    calcResult.put(1, Collections.emptyList());
+    calcResult.put(20, TestUtil.randomValues(3));
+    calcResult.put(50, TestUtil.randomValues(3));
+    calcResult.put(100, TestUtil.randomValues(2));
+
+    when(priceDao.find(any())).thenReturn(priceList);
   }
 
   @Test
-  public void testProcessWithNoData() {
+  public void testProcessWithNoData_shouldNotSave() {
     LocalDate date = LocalDate.MIN;
-    provideTestedProcess().processMissingBars(forSymbol(SYMBOL).from(date).to(date).periods(PERIODS));
-    assertSaveNotCalled();
-  }
+    process.process(calcSymbol("MEG").from(date).to(date).periods(process.getDefaultPeriods()));
 
-  void assertSaveNotCalled() {
-    new Verifications() {{
-      dao.save(withInstanceOf(SaveRequest.class));
-      times = 0;
-    }};
+    verify(priceDao, times(0)).save(any(SaveRequest.class));
   }
 
   @Test
-  void testProcessWithData() {
-    new Expectations() {{
-      calculator.calc(withInstanceOf(CalcParams.class));
-      result = calcResult;
-    }};
-    provideTestedProcess().processMissingBars(CalcRequest.forSymbol(SYMBOL).from(date2).to(date3).periods(PERIODS));
-    assertSaveCalledForEachPeriodOnDao();
+  public void TestProcessWithMultiplePeriods_shouldSaveForEachPeriod() {
+    ArgumentCaptor<SaveRequest> saveRequestCaptor = ArgumentCaptor.forClass(SaveRequest.class);
+    when(calculator.calc(any())).thenReturn(calcResult);
+
+    process.process(CalcRequest.calcSymbol("MEG")
+        .timeFrames(TimeFrame.ONE_DAY)
+        .from(DATE_2014)
+        .to(DATE_2017)
+        .periods(new int[] {20, 50, 100}));
+
+    verify(valueDao, times(3)).save(saveRequestCaptor.capture());
+
+    List<SaveRequest> saveRequests = saveRequestCaptor.getAllValues();
+    assertThat(saveRequests).extracting("period").containsOnly(20, 50, 100);
   }
 
-  public abstract ValueDao provideDao();
+  /**
+   * Dummy class extending abstract class for test purposes.
+   */
+  private static final class DummyProcess extends AbstractCalcValuesProcess {
 
-  public abstract CalcProcess provideTestedProcess();
-
-  public abstract ValueCalculator provideCalculator();
-
-  void assertSaveCalledForEachPeriodOnDao() {
-    new Verifications() {{
-      List<SaveRequest> saveRequestList = Lists.newArrayList();
-
-      dao.save(withCapture(saveRequestList)); times = 3;
-
-      Map<Integer, SaveRequest> periodToSaveRequestMap = toPeriodToSaveRequestMap(saveRequestList);
-      assertEquals(periodToSaveRequestMap.size(), 3);
-
-      SaveRequest saveRequest = periodToSaveRequestMap.get(PERIOD_1);
-      assertEquals(saveRequest, SaveRequest.save(SYMBOL).period(PERIOD_1).values(value2, value3, value4));
-
-      saveRequest = periodToSaveRequestMap.get(PERIOD_2);
-      assertEquals(saveRequest, SaveRequest.save(SYMBOL).period(PERIOD_2).values(value2, value3, value4));
-
-      saveRequest = periodToSaveRequestMap.get(PERIOD_3);
-      assertEquals(saveRequest, SaveRequest.save(SYMBOL).period(PERIOD_3).values(value3, value4));
-    }};
-  }
-
-  private Map<Integer, SaveRequest> toPeriodToSaveRequestMap(List<SaveRequest> saveRequestList) {
-    Map<Integer, SaveRequest> periodToSaveRequestMap = Maps.newHashMap();
-    for (SaveRequest saveRequest : saveRequestList) {
-      periodToSaveRequestMap.put(saveRequest.getPeriod(), saveRequest);
+    public DummyProcess(final ValueCalculator calculator,
+                        final PriceDao priceDao,
+                        final ValueDao valueDao) {
+      super(calculator, priceDao, valueDao);
     }
-    return periodToSaveRequestMap;
+
+    @Override
+    protected int[] getDefaultPeriods() {
+      return new int[] { 20, 50, 100};
+    }
+
+    @Override
+    public String getProcessName() {
+      return "DummyProcess";
+    }
   }
 }
