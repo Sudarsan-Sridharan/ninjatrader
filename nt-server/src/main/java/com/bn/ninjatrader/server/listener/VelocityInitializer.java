@@ -13,13 +13,13 @@ import java.util.Properties;
 /**
  * @author Brad
  */
-public class InitializeListener implements ServletContextListener {
+public class VelocityInitializer implements ServletContextListener {
 
-  private static final Logger log = LoggerFactory.getLogger(InitializeListener.class);
+  private static final Logger log = LoggerFactory.getLogger(VelocityInitializer.class);
 
   public void contextInitialized(ServletContextEvent event) {
     Properties prop = new Properties();
-    InputStream is = InitializeListener.class.getResourceAsStream("/velocity.properties");
+    InputStream is = VelocityInitializer.class.getResourceAsStream("/velocity.properties");
     try {
       prop.load(is);
 
