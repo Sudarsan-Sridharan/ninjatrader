@@ -1,46 +1,134 @@
 package com.bn.ninjatrader.process.calc;
 
-import com.bn.ninjatrader.calculator.ValueCalculator;
-import com.bn.ninjatrader.calculator.RSICalculator;
+import com.bn.ninjatrader.calculator.parameter.CalcParams;
+import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.common.data.RSIValue;
+import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.RSIDao;
-import com.bn.ninjatrader.model.dao.ValueDao;
-import mockit.Injectable;
-import mockit.Tested;
+import com.bn.ninjatrader.model.guice.NtModelTestModule;
+import com.bn.ninjatrader.model.request.SaveRequest;
+import com.google.common.collect.Lists;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import static com.bn.ninjatrader.common.type.TimeFrame.ONE_DAY;
+import static com.bn.ninjatrader.model.request.FindRequest.findSymbol;
+import static com.bn.ninjatrader.process.request.CalcRequest.calcSymbol;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Brad on 6/11/16.
  */
-public class CalcRSIProcessTest extends AbstractCalcValuesProcessTest {
+public class CalcRSIProcessTest {
 
-  private static final Logger log = LoggerFactory.getLogger(CalcRSIProcessTest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(CalcRSIProcessTest.class);
 
-  @Injectable
-  private RSICalculator calculator;
+  private final Integer period = 14;
 
-  @Injectable
-  private RSIDao dao;
+  private final LocalDate startDate = LocalDate.of(2016, 1, 1);
+  private final LocalDate endDate = LocalDate.of(2016, 12, 31);
 
-  @Injectable
-  private PriceDao priceDao;
+  private final LocalDate fromDate = LocalDate.of(2016, 6, 1);
+  private final LocalDate toDate = LocalDate.of(2016, 12, 1);
 
-  @Tested
-  private CalcRSIProcess process;
+  private static CalcRSIProcess process;
+  private static RSIDao rsiDao;
+  private static PriceDao priceDao;
 
-  @Override
-  public ValueDao provideDao() {
-    return dao;
+  @BeforeClass
+  public static void setup() {
+    Injector injector = Guice.createInjector(new NtModelTestModule());
+    process = injector.getInstance(CalcRSIProcess.class);
+    rsiDao = injector.getInstance(RSIDao.class);
+    priceDao = injector.getInstance(PriceDao.class);
   }
 
-  @Override
-  public CalcProcess provideTestedProcess() {
-    return process;
+  @Before
+  public void before() {
+    final List<Price> dummyPrices = TestUtil.randomPricesForDateRange(startDate, endDate);
+    priceDao.save(SaveRequest.save("MEG").values(dummyPrices));
   }
 
-  @Override
-  public ValueCalculator provideCalculator() {
-    return calculator;
+  @After
+  public void cleanup() {
+    rsiDao.getMongoCollection().remove();
+    priceDao.getMongoCollection().remove();
+  }
+
+  @Test
+  public void testCalcParamsWithNoExistingRSIValues_shouldHaveNoContinueFromValue() {
+    final List<Price> prices = priceDao.find(findSymbol("MEG").from(fromDate).to(toDate).period(period));
+    final CalcParams params =
+        process.provideCalcParams("MEG", ONE_DAY, prices, Lists.newArrayList(period));
+
+    assertThat(params.getPrices()).isEqualTo(prices);
+    assertThat(params.getPeriods()).containsExactly(14);
+    assertThat(params.getPriorValueForPeriod(14)).isEmpty();
+  }
+
+  @Test
+  public void testCalcParamsWithExistingRSIValues_shouldContinueFromExistingRSIValues() {
+    // Add RSI values to db first
+    process.process(calcSymbol("MEG").from(fromDate).to(toDate).periods(period));
+
+    // Retrieve RSIValue to continue calculating from
+    final RSIValue expectedValueToContinueFrom = rsiDao.find(findSymbol("MEG")
+        .from(fromDate).to(fromDate).period(period)).get(0);
+
+    // Move search date by 1 day
+    final LocalDate fromDate = this.fromDate.plusDays(1);
+    final List<Price> prices = priceDao.find(findSymbol("MEG").from(fromDate).to(toDate));
+
+    // Get CalcParams
+    final CalcParams<RSIValue> params = process.provideCalcParams("MEG", ONE_DAY, prices, Lists.newArrayList(period));
+
+    // Verify values
+    assertThat(params.getPrices()).isEqualTo(prices);
+    assertThat(params.getPeriods()).containsExactly(14);
+    assertThat(params.getPriorValueForPeriod(14)).isPresent();
+
+    // Verify RSIValue to continue from
+    RSIValue value = params.getPriorValueForPeriod(14).get();
+    assertThat(value).isEqualTo(expectedValueToContinueFrom);
+  }
+
+  @Test
+  public void testCalcTwice_shouldGiveSameResults() {
+    process.process(calcSymbol("MEG").from(fromDate).to(toDate).periods(14));
+    List<RSIValue> rsiValues1 = rsiDao.find(findSymbol("MEG").from(fromDate).to(toDate).period(14));
+
+    process.process(calcSymbol("MEG").from(fromDate).to(toDate).periods(14));
+    List<RSIValue> rsiValues2 = rsiDao.find(findSymbol("MEG").from(fromDate).to(toDate).period(14));
+
+    assertThat(rsiValues1).isEqualTo(rsiValues2);
+  }
+
+  @Test
+  public void testCalcMultipleTimesWithContinuation_shouldGiveSameResultsAsFirstCalc() {
+    // Calculate RSI values from start date
+    process.process(calcSymbol("MEG").from(startDate).to(toDate).periods(14));
+
+    // Baseline RSI values
+    final List<RSIValue> rsiValues1 = rsiDao.find(findSymbol("MEG").from(fromDate).to(toDate).period(14));
+
+    // Calculate a second time, moving the from date. It should continue from prior RSI value.
+    process.process(calcSymbol("MEG").from(fromDate.plusDays(1)).to(toDate).periods(14));
+    final List<RSIValue> rsiValues2 = rsiDao.find(findSymbol("MEG").from(fromDate).to(toDate).period(14));
+    assertThat(rsiValues1).isEqualTo(rsiValues2);
+
+    // Calculate a third time with different fromDate
+    process.process(calcSymbol("MEG").from(fromDate.plusMonths(2)).to(toDate).periods(14));
+    List<RSIValue> rsiValues3 = rsiDao.find(findSymbol("MEG").from(fromDate).to(toDate).period(14));
+    assertThat(rsiValues1).isEqualTo(rsiValues3);
   }
 }
