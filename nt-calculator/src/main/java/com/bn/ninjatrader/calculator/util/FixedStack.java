@@ -47,6 +47,10 @@ public class FixedStack<T> {
     }
   }
 
+  public void addAll(T t, T ... more) {
+    addAll(Lists.asList(t, more));
+  }
+
   protected void handleAfterAdd(T added) {
 
   }

@@ -1,71 +1,67 @@
 package com.bn.ninjatrader.simulation.operation;
 
-import org.testng.annotations.Test;
+import com.bn.ninjatrader.simulation.data.BarData;
+import com.bn.ninjatrader.simulation.data.DataMap;
+import org.junit.Before;
+import org.junit.Test;
 
-import static com.bn.ninjatrader.simulation.data.DataType.*;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static com.bn.ninjatrader.simulation.operation.Variables.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Brad on 8/2/16.
  */
-public class OperationsTest extends AbstractOperationTest {
+public class OperationsTest {
+
+  private BarData barData;
+
+  @Before
+  public void before() {
+    final DataMap dataMap = new DataMap();
+    dataMap.put(Variables.PRICE_OPEN, 1.0);
+    dataMap.put(Variables.PRICE_HIGH, 2.0);
+    dataMap.put(Variables.PRICE_LOW, 3.0);
+    dataMap.put(Variables.PRICE_CLOSE, 4.0);
+    dataMap.put(Variables.VOLUME, 10000);
+
+    barData = new BarData();
+    barData.put(dataMap);
+  }
+
 
   @Test
   public void testWithSingleOperand() {
-    Operation operation = Operations.create(1.0);
-    assertOperationEquals(operation, 1.0);
-
-    operation = Operations.create(PRICE_OPEN);
-    assertOperationEquals(operation, 1.0);
+    assertThat(Operations.create(1.0).getValue(barData)).isEqualTo(1.0);
+    assertThat(Operations.create(PRICE_OPEN).getValue(barData)).isEqualTo(1.0);
   }
 
   @Test
-  public void testWithConstants() {
-    Operation operation = Operations.create(1.0).plus(2.1).plus(3.2);
-    assertOperationEquals(operation, 6.3);
-
-    operation = Operations.create(10).minus(4).minus(1);
-    assertOperationEquals(operation, 5.0);
-
-    operation = Operations.create(10).plus(4).minus(2);
-    assertOperationEquals(operation, 12.0);
-
-    operation = Operations.create(10).minus(4).plus(9);
-    assertOperationEquals(operation, 15.0);
+  public void testWithConstants_shouldReturnCalculatedValue() {
+    assertThat(Operations.create(1).plus(2.1).plus(3.2).getValue(barData)).isEqualTo(6.3);
+    assertThat(Operations.create(10).minus(4).minus(1).getValue(barData)).isEqualTo(5.0);
+    assertThat(Operations.create(10).plus(4).minus(2).getValue(barData)).isEqualTo(12.0);
+    assertThat(Operations.create(10).minus(4).plus(9).getValue(barData)).isEqualTo(15.0);
   }
 
   @Test
-  public void testWithVariables() {
-    Operation operation = Operations.create(PRICE_OPEN).plus(PRICE_HIGH).plus(PRICE_LOW);
-    assertOperationEquals(operation, 6.0);
-
-    operation = Operations.create(PRICE_CLOSE).minus(PRICE_OPEN).minus(PRICE_HIGH);
-    assertOperationEquals(operation, 1.0);
+  public void testWithVariables_shouldReturnCalculatedValue() {
+    assertThat(Operations.create(PRICE_OPEN).plus(PRICE_HIGH).plus(Variables.PRICE_LOW).getValue(barData))
+        .isEqualTo(6.0);
+    assertThat(Operations.create(PRICE_CLOSE).minus(PRICE_OPEN).minus(PRICE_HIGH).getValue(barData))
+        .isEqualTo(1.0);
   }
 
   @Test
-  public void testWithConstantsAndVaraibles() {
-    Operation operation = Operations.create(10.0).plus(PRICE_HIGH);
-    assertOperationEquals(operation, 12.0);
-
-    operation = Operations.create(PRICE_HIGH).minus(3);
-    assertOperationEquals(operation, -1.0);
-    assertEquals(operation.getVariables().size(), 2);
-    assertTrue(operation.getVariables().contains(Variable.of(PRICE_HIGH)));
-    assertTrue(operation.getVariables().contains(Variable.of(CONSTANT)));
+  public void testWithConstantsAndVariables_shouldReturnCalculatedValue() {
+    assertThat(Operations.create(10).plus(PRICE_HIGH).getValue(barData)).isEqualTo(12.0);
+    assertThat(Operations.create(PRICE_HIGH).minus(3).getValue(barData)).isEqualTo(-1.0);
   }
 
   @Test
-  public void testGetVariables() {
-    Operation operation = Operations.create(Variable.of(PRICE_HIGH)).minus(3);
-    assertOperationEquals(operation, -1.0);
-    assertEquals(operation.getVariables().size(), 2);
-    assertTrue(operation.getVariables().contains(Variable.of(PRICE_HIGH)));
-    assertTrue(operation.getVariables().contains(Variable.of(CONSTANT)));
-  }
-
-  private void assertOperationEquals(Operation operation, double expected) {
-    assertEquals(operation.getValue(barData), expected);
+  public void testGetVariables_shouldReturnVariablesUsedInOperation() {
+    assertThat(Operations.create(PRICE_HIGH).minus(3).getVariables()).containsExactly(PRICE_HIGH);
+    assertThat(Operations.create(PRICE_HIGH).plus(PRICE_HIGH).getVariables()).containsExactly(PRICE_HIGH);
+    assertThat(Operations.create(PRICE_HIGH).plus(PRICE_LOW).getVariables())
+        .containsExactlyInAnyOrder(PRICE_HIGH, PRICE_LOW);
   }
 }

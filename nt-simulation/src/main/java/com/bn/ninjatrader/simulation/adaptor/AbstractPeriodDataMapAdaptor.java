@@ -19,7 +19,7 @@ public abstract class AbstractPeriodDataMapAdaptor implements DataMapAdaptor<Val
   @Override
   public DataMap toDataMap(Value value) {
     DataMap dataMap = new DataMap();
-    dataMap.put(Variable.withPeriod(getDataType(), period), value.getValue());
+    dataMap.put(Variable.of(getDataType()).period(period), value.getValue());
     return dataMap;
   }
 

@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.service.resource;
 
-import com.bn.ninjatrader.common.data.Value;
-import com.bn.ninjatrader.model.dao.SMADao;
+import com.bn.ninjatrader.common.data.RSIValue;
+import com.bn.ninjatrader.model.dao.RSIDao;
 import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.service.model.MultiPeriodRequest;
 import com.bn.ninjatrader.service.model.MultiPeriodResponse;
@@ -22,25 +22,26 @@ import java.util.List;
  * @author bradwee2000@gmail.com
  */
 @Singleton
-@Path("/sma")
+@Path("/rsi")
 @Produces(MediaType.APPLICATION_JSON)
 public class RSIResource extends AbstractDataResource {
   private static final Logger LOG = LoggerFactory.getLogger(RSIResource.class);
 
-  private final SMADao smaDao;
+  private final RSIDao rsiDao;
 
   @Inject
-  public RSIResource(SMADao smaDao, Clock clock) {
+  public RSIResource(final RSIDao rsiDao,
+                     final Clock clock) {
     super(clock);
-    this.smaDao = smaDao;
+    this.rsiDao = rsiDao;
   }
 
   @GET
   @Path("/{symbol}")
-  public MultiPeriodResponse getSMA(@BeanParam MultiPeriodRequest req) {
-    MultiPeriodResponse response = new MultiPeriodResponse();
-    for (FindRequest findRequest : req.toFindRequest(getClock())) {
-      List<Value> values = smaDao.find(findRequest);
+  public MultiPeriodResponse<RSIValue> getRSI(@BeanParam final MultiPeriodRequest req) {
+    final MultiPeriodResponse<RSIValue> response = new MultiPeriodResponse();
+    for (final FindRequest findRequest : req.toFindRequest(getClock())) {
+      final List<RSIValue> values = rsiDao.find(findRequest);
       response.put(findRequest.getPeriod(), values);
     }
     return response;

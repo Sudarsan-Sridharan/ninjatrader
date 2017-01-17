@@ -1,94 +1,79 @@
 package com.bn.ninjatrader.model.request;
 
 import com.beust.jcommander.internal.Sets;
-import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
 import java.util.Set;
 
-import static org.testng.Assert.*;
-import static org.testng.AssertJUnit.assertTrue;
+import static com.bn.ninjatrader.model.request.FindBeforeDateRequest.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Created by Brad on 7/27/16.
+ * @author bradwee2000@gmail.com
  */
 public class FindBeforeDateRequestTest {
 
-  private LocalDate date = LocalDate.of(2016, 1, 1);
-  private Value value1 = Value.of(date, 1d);
-  private Value value2 = Value.of(date, 2d);
-
-  private SaveRequest orig = SaveRequest.save("MEG").period(1).values(value1);
-  private SaveRequest same = SaveRequest.save("MEG").period(1).values(value1);
-
-  private SaveRequest differentSymbol = SaveRequest.save("BDO").period(1).values(value1);
-  private SaveRequest differentPeriod = SaveRequest.save("MEG").period(2).values(value1);
-
-  private SaveRequest differentValue = SaveRequest.save("MEG").period(1).values(value2);
-  private SaveRequest differentValueSize = SaveRequest.save("MEG").period(1).values(value1, value1);
-
-  private SaveRequest differentTimeFrame = SaveRequest.save("MEG").period(1).values(value1).timeFrame(TimeFrame.ONE_WEEK);
+  private final LocalDate now = LocalDate.of(2016, 2, 1);
 
   @Test
-  public void testEqualsWithSameObject() {
-    assertTrue(orig.equals(orig));
+  public void testCreateWithBuilder_shouldReturnFindBeforeDateRequest() {
+    FindBeforeDateRequest request = builder()
+        .symbol("MEG")
+        .timeFrame(TimeFrame.ONE_WEEK)
+        .numOfValues(1000)
+        .beforeDate(now)
+        .period(100)
+        .build();
+    assertThat(request.getSymbol()).isEqualTo("MEG");
+    assertThat(request.getTimeFrame()).isEqualTo(TimeFrame.ONE_WEEK);
+    assertThat(request.getNumOfValues()).isEqualTo(1000);
+    assertThat(request.getBeforeDate()).isEqualTo(now);
+    assertThat(request.getPeriod()).isEqualTo(100);
   }
 
   @Test
-  public void testEqualsWithSameValue() {
-    assertTrue(orig.equals(same));
-    assertTrue(same.equals(orig));
+  public void testEqualsWithSameValues_shouldReturnEqual() {
+    assertThat(builder().symbol("BDO").build())
+        .isEqualTo(builder().symbol("BDO").build());
+    assertThat(builder().timeFrame(TimeFrame.ONE_DAY).build())
+        .isEqualTo(builder().timeFrame(TimeFrame.ONE_DAY).build());
+    assertThat(builder().numOfValues(16).build())
+        .isEqualTo(builder().numOfValues(16).build());
+    assertThat(builder().beforeDate(now).build())
+        .isEqualTo(builder().beforeDate(now).build());
+    assertThat(builder().period(20).build())
+        .isEqualTo(builder().period(20).build());
   }
 
   @Test
-  public void testEqualsWithDifferences() {
-    assertFalse(orig.equals(differentSymbol));
-    assertFalse(orig.equals(differentPeriod));
-    assertFalse(orig.equals(differentValue));
-    assertFalse(orig.equals(differentValueSize));
+  public void testEqualsWithDifferences_shouldReturnNotEqual() {
+    assertThat(builder().symbol("MEG").build())
+        .isNotEqualTo(builder().symbol("BDO").build());
+    assertThat(builder().timeFrame(TimeFrame.ONE_DAY).build())
+        .isNotEqualTo(builder().timeFrame(TimeFrame.ONE_WEEK).build());
+    assertThat(builder().numOfValues(1).build())
+        .isNotEqualTo(builder().numOfValues(100).build());
+    assertThat(builder().beforeDate(now).build())
+        .isNotEqualTo(builder().beforeDate(now.plusDays(1)).build());
+    assertThat(builder().period(10).build())
+        .isNotEqualTo(builder().period(21).build());
   }
 
   @Test
-  public void testEqualsWithDiffObjectType() {
-    assertFalse(orig.equals(new Object()));
-    assertFalse(orig.equals("Wrong Object"));
-    assertFalse(orig.equals(1));
-    assertFalse(orig.equals(null));
-  }
-
-  @Test
-  public void testEqualsWIthDiffTimeFrame() {
-    assertFalse(orig.equals(differentTimeFrame));
-  }
-
-  @Test
-  public void testHashCode() {
-    assertNotEquals(orig.hashCode(), differentSymbol.hashCode());
-    assertNotEquals(orig.hashCode(), differentPeriod.hashCode());
-    assertNotEquals(orig.hashCode(), differentValue.hashCode());
-    assertNotEquals(orig.hashCode(), differentValueSize.hashCode());
-    assertNotEquals(orig.hashCode(), differentTimeFrame.hashCode());
-
-    assertEquals(orig.hashCode(), same.hashCode());
-  }
-
-  @Test
-  public void testHashCodeWithSet() {
-    Set<SaveRequest> set = Sets.newHashSet();
-
-    set.add(orig);
-    set.add(orig);
-    assertEquals(set.size(), 1); // Should overwrite
-
-    set.add(same);
-    assertEquals(set.size(), 1); // Should overwrite
-
-    set.add(differentSymbol);
-    assertEquals(set.size(), 2);
-
-    set.add(differentPeriod);
-    assertEquals(set.size(), 3);
+  public void testHashCode_shouldReturnDiffHashCodeIfNotEqual() {
+    Set<FindBeforeDateRequest> set = Sets.newHashSet();
+    set.add(builder().symbol("MEG").build());
+    set.add(builder().symbol("BDO").build());
+    set.add(builder().timeFrame(TimeFrame.ONE_DAY).build());
+    set.add(builder().timeFrame(TimeFrame.ONE_WEEK).build());
+    set.add(builder().numOfValues(1).build());
+    set.add(builder().numOfValues(2).build());
+    set.add(builder().beforeDate(now).build());
+    set.add(builder().beforeDate(now.plusDays(1)).build());
+    set.add(builder().period(10).build());
+    set.add(builder().period(11).build());
+    assertThat(set).hasSize(10);
   }
 }

@@ -31,6 +31,7 @@ public class DailyPriceDownloader {
   public List<DailyQuote> download() {
     try {
       Document doc = documentDownloader.getDocumentFromUrl(DAILY_QUOTES_URL);
+
       Element stockQuoteTable = doc.getElementById("StockQuoteTable");
 
       Preconditions.checkNotNull(stockQuoteTable, "Stock table not found. Perhaps site is down?");

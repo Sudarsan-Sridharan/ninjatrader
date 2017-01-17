@@ -22,6 +22,9 @@ public class PseStock {
   @JsonProperty("lastTradedPrice")
   private String close;
 
+  @JsonProperty("totalVolume") // TODO Seems inaccurate.
+  private String volume;
+
   public String getSymbol() {
     return symbol;
   }
@@ -54,6 +57,14 @@ public class PseStock {
     this.close = close;
   }
 
+  public String getVolume() {
+    return volume;
+  }
+
+  public void setVolume(String volume) {
+    this.volume = volume;
+  }
+
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
@@ -61,6 +72,7 @@ public class PseStock {
         .append("name", name)
         .append("close", close)
         .append("pcntChange", pcntChangeClose)
+        .append("volume", volume)
         .toString();
   }
 

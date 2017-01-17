@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.common.util;
 
+import com.google.common.collect.Lists;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
@@ -98,8 +99,8 @@ public class NumUtilTest {
 
   @Test
   public void testMaxOfArray() {
-    assertEquals(50, NumUtil.max(new int[] {50}));
-    assertEquals(50, NumUtil.max(new int[] {0, 10, 20, 30, 50, 40, -1}));
+    assertEquals(50, NumUtil.max(Lists.newArrayList(50)));
+    assertEquals(50, NumUtil.max(Lists.newArrayList(0, 10, 20, 30, 50, 40, -1)));
   }
 
   @Test

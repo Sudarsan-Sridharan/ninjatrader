@@ -13,7 +13,7 @@ public class PriceDocument extends AbstractDocument<Price> {
     super();
   }
 
-  public PriceDocument(String symbol, int year) {
+  public PriceDocument(final String symbol, final int year) {
     super(symbol, year);
   }
 }

@@ -10,11 +10,12 @@ import static org.testng.Assert.assertEquals;
  */
 public class SMACalculatingStackTest {
 
-  private final Price highPrecisionPrice = new Price(0.00001, 0.00002, 0.00003, 0.00004, 1000);
-  private final Price price1 = new Price(1.0, 2.0, 3.0, 4.0, 10000);
-  private final Price price2 = new Price(10.0, 20.0, 30.0, 40.0, 20000);
-  private final Price price3 = new Price(100.0, 200.0, 300.0, 400.0, 30000);
-  private final Price price4 = new Price(1000.0, 2000.0, 3000.0, 4000.0, 40000);
+  private final Price highPrecisionPrice = Price.builder()
+      .open(0.00001).high(0.00002).low(0.00003).close(0.00004).volume(100).build();
+  private final Price price1 = Price.builder().open(1.0).high(2.0).low(3.0).close(4.0).volume(1000).build();
+  private final Price price2 = Price.builder().open(10.0).high(20.0).low(30.0).close(40.0).volume(2000).build();
+  private final Price price3 = Price.builder().open(100.0).high(200.0).low(300.0).close(400.0).volume(3000).build();
+  private final Price price4 = Price.builder().open(1000.0).high(2000.0).low(3000.0).close(4000.0).volume(4000).build();
 
   @Test
   public void testEmptyStack() {

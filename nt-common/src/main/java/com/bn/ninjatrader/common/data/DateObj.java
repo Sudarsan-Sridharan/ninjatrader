@@ -8,6 +8,4 @@ import java.time.LocalDate;
 public interface DateObj<T> extends Comparable<T> {
 
   LocalDate getDate();
-
-  void setDate(LocalDate date);
 }

@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.model.document;
 
-import com.bn.ninjatrader.model.util.QueryParamName;
+import com.bn.ninjatrader.common.type.TimeFrame;
+import com.bn.ninjatrader.model.util.QueryParam;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
@@ -21,13 +22,16 @@ public abstract class AbstractDocument<T> implements Comparable<AbstractDocument
   @MongoObjectId
   public String id;
 
-  @JsonProperty(QueryParamName.SYMBOL)
+  @JsonProperty(QueryParam.SYMBOL)
   private String symbol;
 
-  @JsonProperty(QueryParamName.YEAR)
+  @JsonProperty(QueryParam.TIMEFRAME)
+  private TimeFrame timeFrame;
+
+  @JsonProperty(QueryParam.YEAR)
   private int year;
 
-  @JsonProperty(QueryParamName.DATA)
+  @JsonProperty(QueryParam.DATA)
   private List<T> data = Lists.newArrayList();
 
   public AbstractDocument() {}
@@ -51,6 +55,14 @@ public abstract class AbstractDocument<T> implements Comparable<AbstractDocument
 
   public void setSymbol(String symbol) {
     this.symbol = symbol;
+  }
+
+  public TimeFrame getTimeFrame() {
+    return timeFrame;
+  }
+
+  public void setTimeFrame(TimeFrame timeFrame) {
+    this.timeFrame = timeFrame;
   }
 
   public int getYear() {
@@ -77,6 +89,7 @@ public abstract class AbstractDocument<T> implements Comparable<AbstractDocument
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
         .append("symbol", symbol)
+        .append("timeFrame", timeFrame)
         .append("year", year)
         .append("data", data)
         .build();
@@ -85,6 +98,9 @@ public abstract class AbstractDocument<T> implements Comparable<AbstractDocument
   public int compareTo(AbstractDocument data2) {
     if (!symbol.equals(data2.getSymbol())) {
       return symbol.compareTo(data2.getSymbol());
+    }
+    if (!timeFrame.equals(data2.getTimeFrame())) {
+      return timeFrame.compareTo(data2.getTimeFrame());
     }
     return year - data2.getYear();
   }

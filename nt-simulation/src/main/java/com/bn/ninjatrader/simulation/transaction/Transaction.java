@@ -5,6 +5,8 @@ import com.bn.ninjatrader.common.util.NtLocalDateSerializer;
 import com.bn.ninjatrader.common.util.NumUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -18,6 +20,14 @@ import java.time.LocalDate;
  * Created by Brad on 8/3/16.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = BuyTransaction.class, name = "buy"),
+    @JsonSubTypes.Type(value = SellTransaction.class, name = "sell")
+})
 public abstract class Transaction {
 
   @JsonProperty("index")
@@ -31,7 +41,7 @@ public abstract class Transaction {
   @JsonDeserialize(using = NtLocalDateDeserializer.class)
   private final LocalDate date;
 
-  @JsonProperty("type")
+  @JsonProperty("tnxType")
   private final TransactionType transactionType;
 
   @JsonProperty("price")
@@ -48,8 +58,14 @@ public abstract class Transaction {
     return SellTransaction.create();
   }
 
-  public Transaction(String symbol, LocalDate date, TransactionType transactionType,
-                     double price, long numOfShares, int barIndex) {
+  public Transaction(@JsonProperty("sym") String symbol,
+                     @JsonProperty("dt")
+                     @JsonSerialize(using = NtLocalDateSerializer.class)
+                     @JsonDeserialize(using = NtLocalDateDeserializer.class) LocalDate date,
+                     @JsonProperty("tnxType") TransactionType transactionType,
+                     @JsonProperty("price") double price,
+                     @JsonProperty("shares") long numOfShares,
+                     @JsonProperty("index") int barIndex) {
     this.symbol = symbol;
     this.date = date;
     this.transactionType = transactionType;
@@ -95,7 +111,7 @@ public abstract class Transaction {
         .append("shares", numOfShares)
         .append("price", price)
         .append("barIndex", barIndex)
-        .build();
+        .toString();
   }
 
   @Override
@@ -132,6 +148,9 @@ public abstract class Transaction {
         .isEquals();
   }
 
+  /**
+   * Abstract builder for Transaction.
+   */
   public static abstract class AbstractTransactionLogBuilder<T extends AbstractTransactionLogBuilder> {
     private LocalDate date;
     private double price;

@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>com.beachninja</groupId>
-            <artifactId>nt-data</artifactId>
+            <artifactId>nt-data-import</artifactId>
         </dependency>
         <dependency>
             <groupId>com.beachninja</groupId>

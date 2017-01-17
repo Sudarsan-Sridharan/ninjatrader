@@ -14,6 +14,7 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import java.util.List;
  * Created by Brad on 7/11/16.
  */
 public class IchimokuCalculator {
-  private static final Logger log = LoggerFactory.getLogger(IchimokuCalculator.class);
+  private static final Logger LOG = LoggerFactory.getLogger(IchimokuCalculator.class);
 
   @Inject
   private IchimokuSenkouShiftForwardHandler senkouShiftForwardHandler;
@@ -29,29 +30,29 @@ public class IchimokuCalculator {
   @Inject
   private IchimokuChikouShiftBackwardHandler chikouShiftBackwardHandler;
 
-  public List<Ichimoku> calc(IchimokuParameters parameters) {
+  public List<Ichimoku> calc(final IchimokuParameters parameters) {
     if (parameters.isIncomplete()) {
       return Collections.emptyList();
     }
 
-    List<Ichimoku> ichimokuList = Lists.newArrayList();
+    final List<Ichimoku> ichimokuList = Lists.newArrayList();
 
-    SubProcess tenkanProcess = new TenkanSubProcess(parameters.getTenkanList());
-    SubProcess kijunProcess = new KijunSubProcess(parameters.getKijunList());
-    SubProcess senkouAProcess = new SenkouAProcess(parameters.getKijunList());
-    SubProcess senkouBProcess = new SenkouBProcess(parameters.getSenkouBList());
+    final SubProcess tenkanProcess = new TenkanSubProcess(parameters.getTenkanList());
+    final SubProcess kijunProcess = new KijunSubProcess(parameters.getKijunList());
+    final SubProcess senkouAProcess = new SenkouAProcess(parameters.getKijunList());
+    final SubProcess senkouBProcess = new SenkouBProcess(parameters.getSenkouBList());
 
-    for (Price price : parameters.getPriceList()) {
-      Ichimoku ichimoku = new Ichimoku();
-      ichimoku.setDate(price.getDate());
-      ichimoku.setChikou(price.getClose());
+    for (final Price price : parameters.getPriceList()) {
+      final Ichimoku.Builder ichimokuBuilder = Ichimoku.builder()
+          .date(price.getDate())
+          .chikou(price.getClose());
 
-      tenkanProcess.process(price, ichimoku);
-      kijunProcess.process(price, ichimoku);
-      senkouAProcess.process(price, ichimoku);
-      senkouBProcess.process(price, ichimoku);
+      tenkanProcess.process(price, ichimokuBuilder);
+      kijunProcess.process(price, ichimokuBuilder);
+      senkouAProcess.process(price, ichimokuBuilder);
+      senkouBProcess.process(price, ichimokuBuilder);
 
-      ichimokuList.add(ichimoku);
+      ichimokuList.add(ichimokuBuilder.build());
     }
 
     // Shift Chikou backward to past
@@ -74,13 +75,13 @@ public class IchimokuCalculator {
    */
   private static class TenkanSubProcess extends SubProcess {
 
-    TenkanSubProcess(List<Value> tenkanList) {
+    TenkanSubProcess(final Collection<Value> tenkanList) {
       super(tenkanList);
     }
 
     @Override
-    public void processValue(Value value, Ichimoku ichimoku) {
-      ichimoku.setTenkan(value.getValue());
+    public void processValue(final Value value, final Ichimoku.Builder ichimokuBuilder) {
+      ichimokuBuilder.tenkan(value.getValue());
     }
   }
 
@@ -89,13 +90,13 @@ public class IchimokuCalculator {
    */
   private static class KijunSubProcess extends SubProcess {
 
-    KijunSubProcess(List<Value> kijunList) {
+    KijunSubProcess(final Collection<Value> kijunList) {
       super(kijunList);
     }
 
     @Override
-    public void processValue(Value value, Ichimoku ichimoku) {
-      ichimoku.setKijun(value.getValue());
+    public void processValue(final Value value, final Ichimoku.Builder ichimokuBuilder) {
+      ichimokuBuilder.kijun(value.getValue());
     }
   }
 
@@ -103,13 +104,13 @@ public class IchimokuCalculator {
    * SenkouA SubProcess to set SenkouA values in the Ichimoku
    */
   private static class SenkouAProcess extends SubProcess {
-    SenkouAProcess(List<Value> kijunList) {
+    SenkouAProcess(final Collection<Value> kijunList) {
       super(kijunList);
     }
 
     @Override
-    public void processValue(Value kijun, Ichimoku ichimoku) {
-      ichimoku.setSenkouA((ichimoku.getTenkan() + kijun.getValue()) / 2);
+    public void processValue(final Value kijun, final Ichimoku.Builder ichimokuBuilder) {
+      ichimokuBuilder.senkouA((ichimokuBuilder.getTenkan() + kijun.getValue()) / 2);
     }
   }
 
@@ -118,13 +119,13 @@ public class IchimokuCalculator {
    */
   private static class SenkouBProcess extends SubProcess {
 
-    SenkouBProcess(List<Value> kijunList) {
+    SenkouBProcess(final Collection<Value> kijunList) {
       super(kijunList);
     }
 
     @Override
-    public void processValue(Value value, Ichimoku ichimoku) {
-      ichimoku.setSenkouB(value.getValue());
+    public void processValue(final Value value, final Ichimoku.Builder ichimokuBuilder) {
+      ichimokuBuilder.senkouB(value.getValue());
     }
   }
 
@@ -136,31 +137,34 @@ public class IchimokuCalculator {
     private int index;
     private boolean isStart;
 
-    SubProcess(List<Value> valueList) {
+    SubProcess(final Collection<Value> valueList) {
       this.values = valueList.toArray(new Value[]{});
     }
 
-    public void process(Price price, Ichimoku ichimoku) {
+    public void process(final Price price, final Ichimoku.Builder ichimokuBuilder) {
       startIfDateMatches(price);
 
       if (isStart) {
         try {
-          processValue(values[index], ichimoku);
+          processValue(values[index], ichimokuBuilder);
         } catch (ArrayIndexOutOfBoundsException e) {
-          log.error("Error processing [price={}] [ichimoku={}] [last value={}]", price, ichimoku, values[values.length-1]);
-          log.error(e.getMessage(), e);
+          LOG.error("Error processing {} [index={}] [value size={}]", price, index, values.length);
+          LOG.error(e.getMessage(), e);
+        } catch (Exception e) {
+          LOG.error("Error processing. [values size={}] [index={}]", values.length, index);
+          throw e;
         }
         index++;
       }
     }
 
-    private void startIfDateMatches(Price price) {
+    private void startIfDateMatches(final Price price) {
       if (!isStart && DateObjUtil.isDateEquals(price, values[0])) {
         isStart = true;
       }
     }
 
-    public abstract void processValue(Value value, Ichimoku ichimoku);
+    public abstract void processValue(final Value value, final Ichimoku.Builder ichimokuBuilder);
   }
 }
 

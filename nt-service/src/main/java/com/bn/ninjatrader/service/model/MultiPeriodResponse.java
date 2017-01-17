@@ -3,7 +3,7 @@ package com.bn.ninjatrader.service.model;
 import com.bn.ninjatrader.common.data.Value;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -14,17 +14,17 @@ import java.util.List;
  * Created by Brad on 5/28/16.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MultiPeriodResponse {
+public class MultiPeriodResponse<T extends Value> {
 
   @JsonProperty("values")
-  private Multimap<Integer, Value> values = HashMultimap.create();
+  private Multimap<Integer, T> values = LinkedHashMultimap.create();
 
-  public MultiPeriodResponse put(int period, List<Value> newValues) {
+  public MultiPeriodResponse put(int period, List<T> newValues) {
     values.putAll(period, newValues);
     return this;
   }
 
-  public Multimap<Integer, Value> getValues() {
+  public Multimap<Integer, T> getValues() {
     return values;
   }
 

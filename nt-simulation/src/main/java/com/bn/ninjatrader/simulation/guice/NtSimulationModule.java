@@ -1,9 +1,8 @@
 package com.bn.ninjatrader.simulation.guice;
 
+import com.bn.ninjatrader.simulation.broker.BrokerFactory;
 import com.bn.ninjatrader.simulation.datafinder.*;
 import com.bn.ninjatrader.simulation.guice.annotation.AllDataFinders;
-import com.bn.ninjatrader.testplay.simulation.datafinder.*;
-import com.bn.ninjatrader.simulation.broker.BrokerFactory;
 import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;

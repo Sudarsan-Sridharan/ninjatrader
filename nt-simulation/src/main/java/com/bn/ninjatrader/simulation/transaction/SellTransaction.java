@@ -1,6 +1,10 @@
 package com.bn.ninjatrader.simulation.transaction;
 
+import com.bn.ninjatrader.common.util.NtLocalDateDeserializer;
+import com.bn.ninjatrader.common.util.NtLocalDateSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -20,7 +24,14 @@ public class SellTransaction extends Transaction {
     return new SellTransactionBuilder();
   }
 
-  private SellTransaction(String symbol, LocalDate date, double price, long numOfShares, int barIndex, double profit) {
+  public SellTransaction(@JsonProperty("sym") final String symbol,
+                         @JsonSerialize(using = NtLocalDateSerializer.class)
+                         @JsonDeserialize(using = NtLocalDateDeserializer.class)
+                         @JsonProperty("dt") final LocalDate date,
+                         @JsonProperty("price") final double price,
+                         @JsonProperty("shares") final long numOfShares,
+                         @JsonProperty("index") final int barIndex,
+                         @JsonProperty("profit") final double profit) {
     super(symbol, date, TransactionType.SELL, price, numOfShares, barIndex);
     this.profit = profit;
   }
@@ -58,14 +69,14 @@ public class SellTransaction extends Transaction {
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .append("index", getBarIndex())
-        .append("date", getDate())
-        .append("shares", getNumOfShares())
-        .append("price", getPrice())
+        .appendSuper(super.toString())
         .append("profit", getProfit())
         .build();
   }
 
+  /**
+   * Builder for SellTransaction.
+   */
   public static class SellTransactionBuilder extends AbstractTransactionLogBuilder<SellTransactionBuilder> {
     double profit;
 

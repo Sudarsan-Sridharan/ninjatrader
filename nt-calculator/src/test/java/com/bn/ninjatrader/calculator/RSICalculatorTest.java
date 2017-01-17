@@ -1,7 +1,6 @@
 package com.bn.ninjatrader.calculator;
 
 import com.beust.jcommander.internal.Lists;
-import com.bn.ninjatrader.calculator.parameter.CalcParams;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.data.Value;
 import mockit.Tested;
@@ -14,6 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+import static com.bn.ninjatrader.calculator.parameter.CalcParams.withPrices;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -38,12 +38,12 @@ public class RSICalculatorTest {
   @Test
   public void testWithZeroGain() {
     List<Price> priceList = createPricesWithChanges(-1);
-    List<Value> values = calculator.calc(priceList, 1);
+    List<Value> values = calculator.calcForPeriod(withPrices(priceList), 1);
     assertEquals(values.size(), 1);
     assertEquals(values.get(0).getValue(), 0.0);
 
     priceList = createPricesWithChanges(-1, -2, -3, -4, -5, -6, -7, -8, -9, -10);
-    values = calculator.calc(priceList, 5);
+    values = calculator.calcForPeriod(withPrices(priceList), 5);
 
     assertEquals(values.size(), 6);
     assertEquals(values.get(0).getValue(), 0.0);
@@ -53,12 +53,12 @@ public class RSICalculatorTest {
   @Test
   public void testWithZeroLoss() {
     List<Price> priceList = createPricesWithChanges(1);
-    List<Value> values = calculator.calc(priceList, 1);
+    List<Value> values = calculator.calcForPeriod(withPrices(priceList), 1);
     assertEquals(values.size(), 1);
     assertEquals(values.get(0).getValue(), 100.0);
 
     priceList = createPricesWithChanges(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-    values = calculator.calc(priceList, 5);
+    values = calculator.calcForPeriod(withPrices(priceList), 5);
 
     assertEquals(values.size(), 6);
     assertEquals(values.get(0).getValue(), 100.0);
@@ -68,11 +68,11 @@ public class RSICalculatorTest {
   @Test
   public void testCalcWithSimplePeriod() {
     List<Price> priceList = createPricesWithChanges(1, -1);
-    List<Value> values = calculator.calc(priceList, 2);
+    List<Value> values = calculator.calcForPeriod(withPrices(priceList), 2);
     assertEquals(values.get(0).getValue(), 50.0);
 
     priceList = createPricesWithChanges(2, -1);
-    values = calculator.calc(priceList, 2);
+    values = calculator.calcForPeriod(withPrices(priceList), 2);
     assertEquals(values.get(0).getValue(), 66.67);
   }
 
@@ -80,12 +80,12 @@ public class RSICalculatorTest {
   public void testCalcWithBigPeriod() {
     List<Price> priceList = createPricesWithChanges(1.11, 0.24, -0.27, -0.15, -0.05, 0.80, 0.86, -0.15,
         1.71, -0.02, -1.03, -0.63, 0.04, 0.47);
-    List<Value> values = calculator.calc(priceList, 14);
+    List<Value> values = calculator.calcForPeriod(withPrices(priceList), 14);
     assertEquals(values.size(), 1);
     assertEquals(values.get(0).getValue(), 69.46);
 
     priceList.add(createPriceWithChange(-0.87));
-    values = calculator.calc(priceList, 14);
+    values = calculator.calcForPeriod(withPrices(priceList), 14);
     assertEquals(values.size(), 2);
     assertEquals(values.get(1).getValue(), 61.77);
   }
@@ -95,7 +95,7 @@ public class RSICalculatorTest {
     List<Price> priceList = createPricesWithChanges(1.11, 0.24, -0.27, -0.15, -0.05, 0.80, 0.86, -0.15,
         1.71, -0.02, -1.03, -0.63, 0.04, 0.47);
 
-    Map<Integer, List<Value>> map = calculator.calc(CalcParams.withPrice(priceList).periods(1, 2, 14));
+    Map<Integer, List<Value>> map = calculator.calc(withPrices(priceList).periods(1, 2, 14));
 
     assertEquals(map.size(), 3);
     assertTrue(map.keySet().contains(1));
@@ -107,7 +107,7 @@ public class RSICalculatorTest {
     assertEquals(map.get(14).size(), 1);
   }
 
-  private List<Price> createPricesWithChanges(double ... changes) {
+  private List<Price> createPricesWithChanges(final double ... changes) {
     List<Price> priceList = Lists.newArrayList(changes.length);
     for (double change : changes) {
       priceList.add(createPriceWithChange(change));
@@ -116,9 +116,7 @@ public class RSICalculatorTest {
   }
 
   private Price createPriceWithChange(double change) {
-    Price price = new Price();
-    price.setChange(change);
-    price.setDate(dateCounter);
+    Price price = Price.builder().date(dateCounter).change(change).build();
     dateCounter = dateCounter.plusDays(1);
     return price;
   }

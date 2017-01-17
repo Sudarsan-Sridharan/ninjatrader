@@ -1,77 +1,128 @@
 package com.bn.ninjatrader.simulation.condition;
 
-import com.bn.ninjatrader.simulation.operation.Operation;
-import com.bn.ninjatrader.simulation.operation.UnaryOperation;
+import com.beust.jcommander.internal.Sets;
+import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.simulation.data.BarData;
+import com.bn.ninjatrader.simulation.operation.Constant;
+import com.bn.ninjatrader.simulation.operation.Operation;
 import com.bn.ninjatrader.simulation.type.InequalityOperator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.util.Set;
 
-import static com.bn.ninjatrader.simulation.type.InequalityOperator.EQUALS;
-import static com.bn.ninjatrader.simulation.type.InequalityOperator.GREATER_THAN;
-import static com.bn.ninjatrader.simulation.type.InequalityOperator.LESS_THAN;
-import static org.testng.Assert.assertFalse;
-import static org.testng.AssertJUnit.assertTrue;
+import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_CLOSE;
+import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_OPEN;
+import static com.bn.ninjatrader.simulation.type.InequalityOperator.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Brad on 8/2/16.
  */
 public class BasicConditionTest {
 
-  private final BarData barParameters = new BarData();
-  private final ObjectMapper om = new ObjectMapper();
+  private static final Logger LOG = LoggerFactory.getLogger(BasicConditionTest.class);
+
+  private final BarData barParam = new BarData();
+  private final ObjectMapper om = TestUtil.objectMapper();
 
   @Test
-  public void testUnaryEquals() {
-    assertConditionMatch(0, EQUALS, -0);
-    assertConditionMatch(4.2345, EQUALS, 4.2345);
-    assertConditionMatch(4.2345, EQUALS, 4.23450);
-
-    assertConditionNotMatch(4.2345, EQUALS, 4.23456);
-  }
-
-  @Test
-  public void testUnaryGreaterThan() {
-    assertConditionMatch(4.2345, GREATER_THAN, 4.2344);
-
-    assertConditionNotMatch(4.2345, GREATER_THAN, 4.2345);
-    assertConditionNotMatch(4.2345, GREATER_THAN, 5.0);
+  public void testEqualsCondition_shouldReturnTrueIfEqual() {
+    assertThat(isConditionMatch(0, EQUALS, -0)).isTrue();
+    assertThat(isConditionMatch(4.2345, EQUALS, 4.2345)).isTrue();
+    assertThat(isConditionMatch(4.2345, EQUALS, 4.23450)).isTrue();
+    assertThat(isConditionMatch(4.2345, EQUALS, 4.23456)).isFalse();
   }
 
   @Test
-  public void testUnaryLessThan() {
-    assertConditionMatch(4.2345, LESS_THAN, 4.2346);
-
-    assertConditionNotMatch(4.2345, LESS_THAN, 4.2345);
-    assertConditionNotMatch(4.2345, LESS_THAN, 3.0);
+  public void testGreaterThanCondition_shouldReturnTrueIfGreater() {
+    assertThat(isConditionMatch(4.2345, GREATER_THAN, 4.2344)).isTrue();
+    assertThat(isConditionMatch(4.2345, GREATER_THAN, 4.2345)).isFalse();
+    assertThat(isConditionMatch(4.2345, GREATER_THAN, 5.0)).isFalse();
   }
 
-  @Test //TODO
-  public void testSerializationDeserialization() throws IOException {
-//    Condition condition = new BasicCondition(UnaryOperation.of(3.0),
-//        InequalityOperator.GREATER_THAN, UnaryOperation.of(1.0));
-//    String serialized = om.writeValueAsString(condition);
-//
-//    Condition deserialised = om.readValue(serialized, Condition.class);
+  @Test
+  public void testLessThanCondition_shouldReturnTrueIfLess() {
+    assertThat(isConditionMatch(4.2345, LESS_THAN, 4.2346)).isTrue();
+    assertThat(isConditionMatch(-4.2345, LESS_THAN, -4.2344)).isTrue();
+    assertThat(isConditionMatch(4.2345, LESS_THAN, 4.2345)).isFalse();
+    assertThat(isConditionMatch(4.2345, LESS_THAN, 3.0)).isFalse();
   }
 
-  private void assertConditionMatch(double lhsValue, InequalityOperator operator, double rhsValue) {
-    assertConditionMatch(UnaryOperation.of(lhsValue), operator, UnaryOperation.of(rhsValue));
+  @Test
+  public void testGetVariablesOfConstantCondition_shouldReturnZeroVariables() {
+    Condition condition = new BasicCondition(Constant.of(3.0), GREATER_THAN, Constant.of(1.0));
+    assertThat(condition.getVariables()).hasSize(0);
   }
 
-  private void assertConditionMatch(Operation lhsOperation, InequalityOperator operator, Operation rhsOperation) {
-    Condition condition = new BasicCondition(lhsOperation, operator, rhsOperation);
-    assertTrue(condition.isMatch(barParameters));
+  @Test
+  public void testGetVariablesOfVariableCondition_shouldReturnAllVariables() {
+    Condition condition = new BasicCondition(PRICE_CLOSE, GREATER_THAN, PRICE_OPEN);
+    assertThat(condition.getVariables()).containsOnly(PRICE_OPEN, PRICE_CLOSE);
   }
 
-  private void assertConditionNotMatch(double lhsValue, InequalityOperator operator, double rhsValue) {
-    assertConditionNotMatch(UnaryOperation.of(lhsValue), operator, UnaryOperation.of(rhsValue));
+  @Test
+  public void testEqualsWithSameObjects_shouldReturnEqual() {
+    assertThat(new BasicCondition(PRICE_CLOSE, GREATER_THAN, PRICE_OPEN))
+        .isEqualTo(new BasicCondition(PRICE_CLOSE, GREATER_THAN, PRICE_OPEN));
+    assertThat(new BasicCondition(PRICE_CLOSE, EQUALS, Constant.of(100)))
+        .isEqualTo(new BasicCondition(PRICE_CLOSE, EQUALS, Constant.of(100)));
+    assertThat(new BasicCondition(Constant.of(555), LESS_THAN, Constant.of(100)))
+        .isEqualTo(new BasicCondition(Constant.of(555), LESS_THAN, Constant.of(100)));
   }
 
-  private void assertConditionNotMatch(Operation lhsOperation, InequalityOperator operator, Operation rhsOperation) {
-    Condition condition = new BasicCondition(lhsOperation, operator, rhsOperation);
-    assertFalse(condition.isMatch(barParameters));
+  @Test
+  public void testEqualsWithDiffObjects_shouldReturnNotEqual() {
+    assertThat(new BasicCondition(PRICE_CLOSE, GREATER_THAN, PRICE_OPEN))
+        .isNotEqualTo(new BasicCondition(PRICE_CLOSE, GREATER_THAN, PRICE_CLOSE));
+    assertThat(new BasicCondition(PRICE_CLOSE, EQUALS, Constant.of(100)))
+        .isNotEqualTo(new BasicCondition(PRICE_CLOSE, EQUALS, Constant.of(101)));
+    assertThat(new BasicCondition(Constant.of(555), LESS_THAN, Constant.of(100)))
+        .isNotEqualTo(new BasicCondition(Constant.of(444), LESS_THAN, Constant.of(100)));
+  }
+
+  @Test
+  public void testHashCode_shouldReturnDiffHashCodesForDiffObjects() {
+    Set<BasicCondition> set = Sets.newHashSet();
+    set.add(new BasicCondition(PRICE_CLOSE, GREATER_THAN, PRICE_OPEN));
+    set.add(new BasicCondition(PRICE_CLOSE, GREATER_THAN, PRICE_OPEN)); // Add duplicate
+    set.add(new BasicCondition(PRICE_CLOSE, EQUALS, Constant.of(100)));
+    set.add(new BasicCondition(Constant.of(555), LESS_THAN, Constant.of(100)));
+    set.add(new BasicCondition(Constant.of(555), LESS_THAN, Constant.of(100))); // Add duplicate
+
+    assertThat(set).hasSize(3);
+  }
+
+  @Test
+  public void testSerializeDeserialize_shouldReturnSameObject() throws IOException {
+    Condition condition = new BasicCondition(Constant.of(3.0), GREATER_THAN, Constant.of(1.0));
+    String serialized = om.writeValueAsString(condition);
+    Condition deserialised = om.readValue(serialized, Condition.class);
+    assertThat(deserialised).isEqualTo(condition);
+  }
+
+  /**
+   * Creates a basic condition and checks if it matches.
+   * @param lhs Left-hand-side operation
+   * @param operator Inequality operator
+   * @param rhs Right-hand-side operation
+   * @return true if condition matches.
+   */
+  private boolean isConditionMatch(double lhs, InequalityOperator operator, double rhs) {
+    return isConditionMatch(Constant.of(lhs), operator, Constant.of(rhs));
+  }
+
+  /**
+   * Creates a basic condition and checks if it matches.
+   * @param lhs Left-hand-side operation
+   * @param operator Inequality operator
+   * @param rhs Right-hand-side operation
+   * @return true if condition matches.
+   */
+  private boolean isConditionMatch(Operation lhs, InequalityOperator operator, Operation rhs) {
+    return new BasicCondition(lhs, operator, rhs).isMatch(barParam);
   }
 }

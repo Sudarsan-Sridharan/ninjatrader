@@ -2,7 +2,7 @@ package com.bn.ninjatrader.process.calc;
 
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.process.request.CalcRequest;
+import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
@@ -17,23 +17,20 @@ import java.util.List;
 @Singleton
 public abstract class AbstractCalcProcess implements CalcProcess {
 
-  private static final Logger log = LoggerFactory.getLogger(CalcMeanProcess.class);
+  private static final Logger LOG = LoggerFactory.getLogger(CalcMeanProcess.class);
 
   private final PriceDao priceDao;
 
   @Inject
-  public AbstractCalcProcess(PriceDao priceDao) {
+  public AbstractCalcProcess(final PriceDao priceDao) {
     this.priceDao = priceDao;
   }
 
-  public LocalDate getFromDateToHaveEnoughBars(CalcRequest calcRequest, int numOfBars) {
-    String symbol = calcRequest.getSymbol();
-    LocalDate fromDate = calcRequest.getFromDate();
-
-    List<Price> prices = priceDao.findNBarsBeforeDate(symbol, numOfBars, fromDate);
-    if (!prices.isEmpty() && prices.size() == numOfBars) {
+  public LocalDate getFromDateToHaveEnoughBars(final FindBeforeDateRequest request) {
+    final List<Price> prices = priceDao.findBeforeDate(request);
+    if (!prices.isEmpty() && prices.size() == request.getNumOfValues()) {
       return prices.get(0).getDate();
     }
-    return calcRequest.getFromDate();
+    return request.getBeforeDate();
   }
 }

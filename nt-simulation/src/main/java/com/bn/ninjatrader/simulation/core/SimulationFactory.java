@@ -30,17 +30,20 @@ public class SimulationFactory {
 
   private static final Logger LOG = LoggerFactory.getLogger(SimulationFactory.class);
 
-  @Inject
-  @AllDataFinders
-  private List<DataFinder> dataFinders;
+  private final List<DataFinder> dataFinders;
+  private final PriceDao priceDao;
+  private final BrokerFactory brokerFactory;
 
   @Inject
-  private PriceDao priceDao;
+  public SimulationFactory(@AllDataFinders final List<DataFinder> dataFinders,
+                           final PriceDao priceDao,
+                           final BrokerFactory brokerFactory) {
+    this.dataFinders = dataFinders;
+    this.priceDao = priceDao;
+    this.brokerFactory = brokerFactory;
+  }
 
-  @Inject
-  private BrokerFactory brokerFactory;
-
-  public Simulation create(SimulationParams params) {
+  public Simulation create(final SimulationParams params) {
     Preconditions.checkNotNull(params, "SimulationParams must not be null");
     FindRequest findRequest = findSymbol(params.getSymbol()).from(params.getFromDate()).to(params.getToDate());
     List<Price> priceList = priceDao.find(findRequest);

@@ -3,7 +3,6 @@ package com.bn.ninjatrader.common.data;
 import com.beust.jcommander.internal.Sets;
 import org.testng.annotations.Test;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 import static org.testng.Assert.*;
@@ -14,75 +13,67 @@ import static org.testng.AssertJUnit.assertTrue;
  */
 public class ReportTest {
 
-  private LocalDate date = LocalDate.of(2016, 1, 1);
+  private Report orig = new Report("report_id", "user_id", "sample_report_data");
 
-  private Value origValue = Value.of(date, 1);
-  private Value sameValue = Value.of(date, 1);
+  private Report sameReport = new Report("report_id", "user_id", "sample_report_data");
 
-  private Value diffValue1 = Value.of(date, 2);
-  private Value diffValue2 = Value.of(date, 1.0000001);
-
-  private Value diffDayValue = Value.of(date.plusDays(1), 1);
-  private Value diffMonthValue = Value.of(date.plusMonths(1), 1);
-  private Value diffYearValue = Value.of(date.plusYears(1), 1);
+  private Report diffReport1 = new Report("X", "user_id", "sample_report_data");
+  private Report diffReport2 = new Report("report_id", "X", "sample_report_data");
+  private Report diffReport3 = new Report("report_id", "user_id", "X");
 
   @Test
   public void testEqualsWithSameObject() {
-    assertTrue(origValue.equals(origValue));
+    assertTrue(orig.equals(orig));
   }
 
   @Test
   public void testEqualsWithSameValue() {
-    assertTrue(origValue.equals(sameValue));
-    assertTrue(sameValue.equals(origValue));
+    assertTrue(orig.equals(sameReport));
+    assertTrue(sameReport.equals(orig));
   }
 
   @Test
   public void testEqualsWithDifferences() {
-    assertFalse(origValue.equals(diffValue1));
-    assertFalse(origValue.equals(diffValue2));
-
-    assertFalse(origValue.equals(diffDayValue));
-    assertFalse(origValue.equals(diffMonthValue));
-    assertFalse(origValue.equals(diffYearValue));
+    assertFalse(orig.equals(diffReport1));
+    assertFalse(orig.equals(diffReport2));
+    assertFalse(orig.equals(diffReport3));
   }
 
   @Test
   public void testEqualsWithDiffObjectType() {
-    assertFalse(origValue.equals(new Object()));
-    assertFalse(origValue.equals("Wrong Object"));
-    assertFalse(origValue.equals(1));
-    assertFalse(origValue.equals(null));
+    assertFalse(orig.equals(new Object()));
+    assertFalse(orig.equals("Wrong Object"));
+    assertFalse(orig.equals(1));
+    assertFalse(orig.equals(null));
   }
 
   @Test
   public void testHashCode() {
-    assertEquals(origValue.hashCode(), sameValue.hashCode());
-    assertNotEquals(origValue.hashCode(), diffValue1.hashCode());
-    assertNotEquals(origValue.hashCode(), diffDayValue.hashCode());
-    assertNotEquals(origValue.hashCode(), diffMonthValue.hashCode());
-    assertNotEquals(origValue.hashCode(), diffYearValue.hashCode());
+    assertEquals(orig.hashCode(), sameReport.hashCode());
+    assertNotEquals(orig.hashCode(), diffReport1.hashCode());
+    assertNotEquals(orig.hashCode(), diffReport2.hashCode());
+    assertNotEquals(orig.hashCode(), diffReport3.hashCode());
   }
 
   @Test
   public void testHashCodeWithSet() {
-    Set<Value> valueSet = Sets.newHashSet();
+    Set<Report> valueSet = Sets.newHashSet();
 
     // Add same object
-    valueSet.add(origValue);
-    valueSet.add(origValue);
+    valueSet.add(orig);
+    valueSet.add(orig);
     assertEquals(valueSet.size(), 1);
 
     // Add different object with same values
-    valueSet.add(sameValue);
+    valueSet.add(sameReport);
     assertEquals(valueSet.size(), 1);
 
     // Add Value object with different value
-    valueSet.add(diffValue1);
+    valueSet.add(diffReport1);
     assertEquals(valueSet.size(), 2);
 
     // Add Value with different date
-    valueSet.add(diffDayValue);
+    valueSet.add(diffReport2);
     assertEquals(valueSet.size(), 3);
   }
 }

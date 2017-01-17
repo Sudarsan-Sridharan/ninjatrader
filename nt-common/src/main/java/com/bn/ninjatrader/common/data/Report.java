@@ -1,6 +1,5 @@
 package com.bn.ninjatrader.common.data;
 
-import com.bn.ninjatrader.common.util.NumUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -16,55 +15,48 @@ import java.time.LocalDateTime;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Report {
 
-  @JsonProperty("n")
-  private String name;
+  @JsonProperty("report_id")
+  private String reportId;
 
-  @JsonProperty("v")
-  private String value;
+  @JsonProperty("user")
+  private String user;
 
-  //TODO change to proper format
+  @JsonProperty("data")
+  private Object data;
+
   @JsonProperty("lud")
   private LocalDateTime lastUpdateDate;
 
-  public static Report of(String name, String value) {
-    return new Report(name, value);
+  public Report() {}
+
+  public Report(String reportId, String user, String data) {
+    this.reportId = reportId;
+    this.user = user;
+    this.data = data;
   }
 
-  public Report(String name, String value) {
-    this.name = name;
-    this.value = value;
+  public String getReportId() {
+    return reportId;
   }
 
-  public Report(@JsonProperty("n") String name,
-                @JsonProperty("v") String value,
-                @JsonProperty("lud") LocalDateTime lastUpdateDate) {
-    this.name = name;
-    this.value = value;
-    this.lastUpdateDate = lastUpdateDate;
+  public void setReportId(String reportId) {
+    this.reportId = reportId;
   }
 
-  public String getName() {
-    return name;
+  public String getUser() {
+    return user;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setUser(String user) {
+    this.user = user;
   }
 
-  public String getValue() {
-    return value;
+  public Object getData() {
+    return data;
   }
 
-  public long getValueAsLong() {
-    return NumUtil.toLongOrDefault(value, 0);
-  }
-
-  public double getValueAsDouble() {
-    return NumUtil.toDoubleOrDefault(value, 0);
-  }
-
-  public void setValue(String value) {
-    this.value = value;
+  public void setData(Object data) {
+    this.data = data;
   }
 
   public LocalDateTime getLastUpdateDate() {
@@ -78,17 +70,19 @@ public class Report {
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .append("Name", name)
-        .append("Value", value)
-        .append("Last Update", lastUpdateDate)
+        .append("reportId", reportId)
+        .append("user", user)
+        .append("data", data)
+        .append("lastUpdateDate", lastUpdateDate)
         .toString();
   }
 
   @Override
   public int hashCode() {
     return new HashCodeBuilder()
-        .append(name)
-        .append(value)
+        .append(reportId)
+        .append(user)
+        .append(data)
         .append(lastUpdateDate)
         .toHashCode();
   }
@@ -106,9 +100,10 @@ public class Report {
 
     Report rhs = (Report) obj;
     return new EqualsBuilder()
-        .append(name, rhs.getName())
-        .append(value, rhs.getValue())
-        .append(lastUpdateDate, rhs.getLastUpdateDate())
+        .append(reportId, rhs.reportId)
+        .append(user, rhs.user)
+        .append(data, rhs.data)
+        .append(lastUpdateDate, rhs.lastUpdateDate)
         .isEquals();
   }
 }

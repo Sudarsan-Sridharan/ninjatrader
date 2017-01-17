@@ -1,117 +1,98 @@
-define(function() {
-    function IchimokuChart(config, selection) {
-        this.config = config;
-        this.main = selection.append("g").classed("ichimoku", true);
-        this.removeEmptyFilter = function(e) {return e};
-        this.x = function(ichimoku) { return config.xByDate(ichimoku.d) + config.columnWidth / 2 };
+define(["d3", "require", "./abstractchart"], function(d3, require) {
 
-        var x = this.x;
-        var lineX = function(ichimoku) { return x(ichimoku); };
+    var AbstractChart = require("./abstractchart");
 
-        this.tenkanLine = d3.line()
-            .x(lineX)
-            .y(function(ichimoku) { return config.yByPrice(ichimoku.t); });
-        this.kijunLine = d3.line()
-            .x(lineX)
-            .y(function(ichimoku) { return config.yByPrice(ichimoku.k); });
-        this.chikouLine = d3.line()
-            .x(lineX)
-            .y(function(ichimoku) { return config.yByPrice(ichimoku.c); });
-        this.senkouALine = d3.line()
-            .x(lineX)
-            .y(function(ichimoku) { return config.yByPrice(ichimoku.sa); });
-        this.senkouBLine = d3.line()
-            .x(lineX)
-            .y(function(ichimoku) { return config.yByPrice(ichimoku.sb); });
+    function CandleChart(config, panel) {
+        AbstractChart.call(this, config, panel, "", "candles");
 
-        this.tenkan = this.main.append("path").classed("tenkan", true);
-        this.kijun = this.main.append("path").classed("kijun", true);
-        this.chikou = this.main.append("path").classed("chikou", true);
-        this.senkouA = this.main.append("path").classed("senkouA", true);
-        this.senkouB = this.main.append("path").classed("senkouB", true);
-        this.kumo = this.main.append("g").classed("kumo", true);
+        this.wicks = this.main.append("g").classed("wicks", true);
+        this.bars = this.main.append("g").classed("bars", true);
+        this.candleMargin = config.columnWidth * 0.25;
+        this.candleWidth = config.columnWidth - this.candleMargin * 2;
+
+        this._init();
     }
 
-    IchimokuChart.prototype.show = function(priceData, query) {
+    CandleChart.prototype = Object.create(AbstractChart.prototype);
+    CandleChart.prototype.constructor = CandleChart;
 
-        //TODO Sample Ichimoku Data
-        var responseData = ichimokuMeg;
-        if(query.symbol == "BDO") {
-            responseData = ichimokuBdo;
-        }
+    /**
+     * Initialize functions.
+     */
+    CandleChart.prototype._init = function() {
+        var self = this;
 
-        this.printTenkan(responseData);
-        this.printKijun(responseData);
-        this.printChikou(responseData);
-        this.printSenkouA(responseData);
-        this.printSenkouB(responseData);
-        this.printKumo(responseData);
+        this._getCandleStickPath = function(price) {
+            var x = self.config.xByDate(price.d);
+            var barX = x + self.candleMargin;
+            var wickX = x + self.config.columnWidth / 2;
+            var openY = self.yScale(price.o);
+            var highY = self.yScale(price.h);
+            var lowY = self.yScale(price.l);
+            var closeY = self.yScale(price.c);
+
+            return "M" + wickX + "," + highY + "V" + Math.min(closeY, openY) // draw top wick
+                    + "M" + wickX + "," + lowY + "V" + Math.max(closeY, openY) // draw bottom wick
+                    + "M" + barX + "," + closeY + "h" + self.candleWidth + "V" + openY + "h-" + self.candleWidth + "Z"; // draw bar
+        };
+    }
+
+    CandleChart.prototype.query = function(query, priceData, successCallback) {
+        this.data = priceData;
+        successCallback(this);
     };
 
-    IchimokuChart.prototype.printTenkan = function(ichimokuData) {
-        var data = ichimokuData.map(function(ichimoku) { if (ichimoku.t != 0) return ichimoku; })
-            .filter(this.removeEmptyFilter);
-        this.tenkan.datum(data)
-            .transition().duration(this.config.transitionDuration)
-            .attr("d", this.tenkanLine);
+    CandleChart.prototype.show = function() {
+        if (!this.data) return;
+
+        this.candleMargin = this.config.columnWidth * 0.25;
+        this.candleWidth = this.config.columnWidth - this.candleMargin * 2;
+
+        this.main.style("visibility", "visible");
+
+        var prices = this.getViewportValues();
+
+        this._printCandleSticks(prices);
     };
 
-    IchimokuChart.prototype.printKijun = function(ichimokuData) {
-        var data = ichimokuData.map(function(ichimoku) { if (ichimoku.k) return ichimoku; })
-            .filter(this.removeEmptyFilter);
-        this.kijun.datum(data)
-            .transition().duration(this.config.transitionDuration)
-            .attr("d", this.kijunLine);
+    CandleChart.prototype._printCandleSticks = function(prices) {
+        var bar = this.bars.selectAll("path")
+            .data(prices);
+        bar.enter()
+            .append("path")
+            .attr("class", this._getCandleClass)
+            .attr("d", this._getCandleStickPath);
+        bar.merge(bar)
+            .attr("class", this._getCandleClass)
+            .attr("d", this._getCandleStickPath)
+        bar.exit()
+            .remove();
     };
 
-    IchimokuChart.prototype.printChikou = function(ichimokuData) {
-        var data = ichimokuData.map(function(ichimoku) { if (ichimoku.c) return ichimoku; })
-            .filter(this.removeEmptyFilter);
-        this.chikou.datum(data)
-            .transition().duration(this.config.transitionDuration)
-            .attr("d", this.chikouLine);
+    /**
+     * Returns class for the candle depending on whether it closed higher or lower.
+     */
+    CandleChart.prototype._getCandleClass = function(price) {
+        return price.c > price.o ? "up" : "down"
     };
 
-    IchimokuChart.prototype.printSenkouA = function(ichimokuData) {
-        var data = ichimokuData.map(function(ichimoku) { if (ichimoku.sa) return ichimoku; })
-            .filter(this.removeEmptyFilter);
-        this.senkouA.datum(data)
-            .transition().duration(this.config.transitionDuration)
-            .attr("d", this.senkouALine);
+    /**
+     * Override from AbstractChart
+     * Returns the price's low.
+     * Used as callback function when finding the lowest price in an array of prices.
+     */
+    CandleChart.prototype.getLowestDomainValue = function(price) {
+        return price.l;
     };
 
-    IchimokuChart.prototype.printSenkouB = function(ichimokuData) {
-        var data = ichimokuData.map(function(ichimoku) { if (ichimoku.sb) return ichimoku; })
-            .filter(this.removeEmptyFilter);
-        this.senkouB.datum(data)
-            .transition().duration(this.config.transitionDuration)
-            .attr("d", this.senkouBLine);
+    /**
+     * Override from AbstractChart
+     * Returns the price's high.
+     * Used as callback function when finding the highest price in an array of prices.
+     */
+    CandleChart.prototype.getHighestDomainValue = function(price) {
+        return price.h;
     };
 
-    IchimokuChart.prototype.printKumo = function(ichimokuData) {
-        var config = this.config;
-        var data = ichimokuData.map(function(ichimoku) { if (ichimoku.sb) return ichimoku; })
-            .filter(this.removeEmptyFilter);
-
-        var line = this.kumo.selectAll("line")
-            .data(data);
-        line.enter()
-            .append("line")
-            .classed("up", function(ichimoku) {return ichimoku.sa > ichimoku.sb})
-            .attr("x1", this.x)
-            .attr("x2", this.x)
-            .attr("y1", function(ichimoku) { return config.yByPrice(ichimoku.sa) })
-            .attr("y2", function(ichimoku) { return config.yByPrice(ichimoku.sb) });
-        line.merge(line)
-            .classed("up", function(ichimoku) {return ichimoku.sa > ichimoku.sb})
-            .transition().duration(this.config.transitionDuration)
-            .attr("x1", this.x)
-            .attr("x2", this.x)
-            .attr("y1", function(ichimoku) { return config.yByPrice(ichimoku.sa) })
-            .attr("y2", function(ichimoku) { return config.yByPrice(ichimoku.sb) });
-        line.exit().remove();
-    };
-
-
-    return IchimokuChart;
+    return CandleChart;
 });

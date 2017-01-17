@@ -2,79 +2,69 @@ package com.bn.ninjatrader.simulation.datafinder;
 
 import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.common.data.Ichimoku;
-import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.model.dao.IchimokuDao;
-import com.bn.ninjatrader.simulation.core.SimulationParams;
 import com.bn.ninjatrader.simulation.adaptor.IchimokuDataMapAdaptor;
+import com.bn.ninjatrader.simulation.core.SimulationParams;
 import com.bn.ninjatrader.simulation.data.DataMap;
 import com.bn.ninjatrader.simulation.data.SimulationData;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Tested;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.bn.ninjatrader.simulation.data.DataType.KIJUN;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static com.bn.ninjatrader.simulation.operation.Variables.ICHIMOKU_KIJUN;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Brad on 9/1/16.
  */
 public class IchimokuDataFinderTest {
 
-  @Tested
-  private IchimokuDataFinder dataFinder;
-
-  @Injectable
-  private IchimokuDao ichimokuService;
-
-  @Injectable
-  private IchimokuDataMapAdaptor dataMapAdaptor;
-
   private final LocalDate fromDate = LocalDate.of(2016, 2, 2);
   private final LocalDate toDate = LocalDate.of(2016, 4, 30);
-
   private final Ichimoku ichimoku = new Ichimoku(fromDate, 1, 2, 3, 4, 5);
 
   private SimulationParams params;
   private DataMap dataMap;
+  private IchimokuDataFinder dataFinder;
+  private IchimokuDao ichimokuDao;
+  private IchimokuDataMapAdaptor dataMapAdaptor;
 
   @BeforeMethod
   public void setup() {
+    ichimokuDao = mock(IchimokuDao.class);
+    dataMapAdaptor = mock(IchimokuDataMapAdaptor.class);
+    dataFinder = new IchimokuDataFinder(ichimokuDao, dataMapAdaptor);
+
     params = new SimulationParams();
     params.setSymbol("MEG");
     params.setFromDate(fromDate);
     params.setToDate(toDate);
 
     dataMap = new DataMap();
-    dataMap.put(KIJUN, ichimoku.getKijun());
+    dataMap.put(ICHIMOKU_KIJUN, ichimoku.getKijun());
 
-    new Expectations() {{
-      ichimokuService.find(withInstanceOf(FindRequest.class));
-      result = Lists.newArrayList(ichimoku);
-
-      dataMapAdaptor.toDataMap(ichimoku);
-      result = dataMap;
-    }};
+    when(ichimokuDao.find(any())).thenReturn(Lists.newArrayList(ichimoku));
+    when(dataMapAdaptor.toDataMap(ichimoku)).thenReturn(dataMap);
   }
 
   @Test
-  public void testFind() {
+  public void testFind_shouldReturnSimulationData() {
     final int requiredSize = 10;
-    List<SimulationData<Ichimoku>> dataList = dataFinder.find(params, requiredSize);
-    assertNotNull(dataList);
-    assertEquals(dataList.size(), 1);
+    final List<SimulationData<Ichimoku>> dataList = dataFinder.find(params, requiredSize);
+    assertThat(dataList).isNotNull().hasSize(1);
 
-    SimulationData<Ichimoku> simulationData = dataList.get(0);
-    assertEquals(simulationData.size(), requiredSize);
+    // Should return SimulationData with the required size.
+    final SimulationData<Ichimoku> simulationData = dataList.get(0);
+    assertThat(simulationData.size()).isEqualTo(requiredSize);
 
-    DataMap dataMap = simulationData.getDataMap(requiredSize - 1);
-    assertNotNull(dataMap);
-    assertEquals(dataMap.size(), 1);
-    assertEquals(dataMap.get(KIJUN), ichimoku.getKijun());
+    // Verify variable values are correct.
+    final DataMap dataMap = simulationData.getDataMap(requiredSize - 1);
+    assertThat(dataMap).isNotNull().hasSize(1);
+    assertThat(dataMap.get(ICHIMOKU_KIJUN)).isEqualTo(ichimoku.getKijun());
   }
 }

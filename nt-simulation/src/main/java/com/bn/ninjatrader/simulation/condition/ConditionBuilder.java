@@ -13,7 +13,6 @@ public class ConditionBuilder {
 
   private Operation lhsOperation;
 
-
   private ConditionBuilder(Operation lhsOperation) {
     this.lhsOperation = lhsOperation;
   }

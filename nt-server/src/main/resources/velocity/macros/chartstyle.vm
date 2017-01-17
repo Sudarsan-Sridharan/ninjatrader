@@ -1,11 +1,16 @@
 #macro(chartstyle)
 <style>
-    .ninjaChart svg {
+    .ninjaChart {
+        cursor:default;
         background-color:#fff;
         font-family: Arial;
         font-size:10px;
+        border:1px solid #000;
     }
-    .ninjaChart .candles rect {
+    .ninjaChart .chart {
+        cursor:none;
+    }
+    .ninjaChart .candles path {
         stroke-width:1px;
     }
     .ninjaChart .candles .up {
@@ -16,13 +21,9 @@
         stroke: #650900;
         fill:#D20E00;
     }
-    .ninjaChart .wicks .up {
-        stroke-width: 1px;
-        stroke: #038003;
-    }
-    .ninjaChart .wicks .down {
-        stroke-width: 1px;
-        stroke: #a30d00;
+    .ninjaChart .wicks path {
+        stroke-width: 0.8px;
+        stroke: #000;
     }
     .ninjaChart .prices text {
         font-family: Arial;
@@ -49,32 +50,64 @@
         stroke-width: 1px;
         stroke: #aaa;
     }
-    .ninjaChart .dateLabels text {
-        color:#aaa;
+    .ninjaChart .xAxis  {
         cursor:default;
+    }
+    .ninjaChart .xAxis text {
+        font-size:10px;
+    }
+    .ninjaChart .xAxis .year {
+        font-weight: bold;
+    }
+    .ninjaChart .xAxis .tick line {
+        stroke: #000;
     }
     .ninjaChart .cols rect {
         opacity: 0;
     }
-    .ninjaChart .xCursorLine {
+    .ninjaChart .dateCursor line {
         stroke-width: 1px;
         stroke: #ee7d02;
     }
-    .ninjaChart .xCursor rect {
-        fill:#777;
+    .ninjaChart .targetDate rect {
+        fill:#666;
     }
-    .ninjaChart .xCursor .dateInd {
+    .ninjaChart .targetDate text {
         fill:#fff;
     }
-    .ninjaChart .priceMeta {
+    .ninjaChart .priceCursor line {
+        stroke:red;
+    }
+    .ninjaChart .currentPrice rect {
+        fill:#777;
+    }
+    .ninjaChart .currentPrice text {
+        fill:#fff;
+    }
+    .ninjaChart .meta {
+        position:absolute;
+        margin:10px;
+    }
+    .ninjaChart .stockMeta .priceMeta {
         font-size:12px;
-        fill:#000;
+        color:#000;
     }
-    .ninjaChart .priceMeta.up .metaValue  {
-        fill:#038003;
+    .ninjaChart .stockMeta .symbol {
+        padding-right:20px;
     }
-    .ninjaChart .priceMeta.down .metaValue {
-        fill:#a30d00;
+    .ninjaChart .stockMeta .metaValue {
+        color:#ff9800;
+        padding:0 0.5em 0 0.5em;
+    }
+    .ninjaChart .stockMeta .up .metaValue {
+        color:#038003;
+    }
+    .ninjaChart .stockMeta .down .metaValue {
+        color:#a30d00;
+    }
+    .ninjaChart .grid path {
+        stroke:#ddd;
+        stroke-width:0.5px;
     }
     .ninjaChart .tenkan {
         fill:none;
@@ -103,18 +136,25 @@
         stroke-width: 0.8px;
         stroke-dasharray: 1,1;
     }
-    .ninjaChart .kumo line {
+    .ninjaChart .kumo path {
         stroke-dasharray: 1,1;
         stroke-width: 0.5px;
-    }
-    .ninjaChart .kumo line.u {
-        stroke: #0C70C5;
-    }
-    .ninjaChart .kumo line.d {
         stroke: #FF7380;
+    }
+    .ninjaChart .kumo path.up {
+        stroke: #0C70C5;
     }
     .ninjaChart .stockMeta .symbol {
         font-size: 14px;
+    }
+
+    .ninjaChart .simulation .sell {
+        stroke:red;
+        stroke-width:1px;
+    }
+    .ninjaChart .simulation .buy {
+        stroke:green;
+        stroke-width:1px;
     }
 </style>
 #end

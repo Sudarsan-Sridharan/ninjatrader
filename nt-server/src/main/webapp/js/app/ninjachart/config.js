@@ -1,109 +1,113 @@
 
-define(['require',
-    'd3',
-    './chart/candlechart',
-    './chart/ichimokuchart',
-    './component/column',
-    './component/datecursor',
-    './component/datexaxis',
-    './component/grid',
-    './component/pricecursor',
-    './component/priceyaxis',
-    './component/stockmeta',
-    './layout/defaultlayout',
-    './util/date'],
-    function (require, d3) {
+define(["d3", "require", "./util/date", "./util/color"], function(d3, require) {
 
-    var CandleChart = require('./chart/candlechart');
-    var IchimokuChart = require('./chart/ichimokuchart');
-    var ColumnChart = require('./component/column');
-    var DateCursor = require('./component/datecursor');
-    var DateXAxis = require('./component/datexaxis');
-    var Grid = require('./component/grid');
-    var PriceCursor = require('./component/pricecursor');
-    var PriceYAxis = require('./component/priceyaxis');
-    var StockMeta = require('./component/stockmeta');
-    var DefaultLayout = require('./layout/defaultlayout');
-        
+    var Color = require("./util/color");
 
-    function NinjaChart(divId) {
-        this.config = new Config();
-        this.container = d3.select("#" + divId);
-        this.layout = new DefaultLayout(this.config, this.container);
-        this.chart = this.layout.chart;
-        this.charts = [];
-        this.xAxis = new DateXAxis(this.config, this.layout.chart);
-        this.yAxis = new PriceYAxis(this.config, this.layout.yAxis);
-        this.grid = new Grid(this.config, this.layout.chart, this.xAxis, this.yAxis);
-        this.stockMeta = new StockMeta(this.config, this.layout.meta);
-        this.dateCursor = new DateCursor(this.config, this.chart);
-        this.priceCursor = new PriceCursor(this.config, this.chart);
-        this.listeners = [this.priceCursor, this.yAxis];
-        this.columns = new ColumnChart(this.config, this.chart)
-            .addListener(this.dateCursor)
-            .addListener(this.stockMeta)
-            .addListener(this.xAxis);
-        this.components = [this.xAxis, this.yAxis, this.stockMeta, this.dateCursor, this.columns, this.grid];
+    var _minColumnWidth = 2;
+    var _maxColumnWidth = 40;
 
-        this.addChart(new CandleChart(this.config, this.chart));
-        this.addChart(new IchimokuChart(this.config, this.chart));
+    function Config(container) {
+        this.container = container;
+        this.contextPath = "http://localhost:8080";
+        this.chartWidth = 2000;
+        this.chartHeight = 500;
+        this.columnWidth = 8;
+        this.readOnly = false;
+        this.numOfFutureBars = 40;
+        this.futureBars = [];
+        this.xAxisHeight = 35;
+        this.yAxisWidth = 50;
+        this.priceFormat = d3.format(".4");
+        this.xByIndex = d3.scaleLinear();
+        this.onChartWidthChange();
+        this.color = new Color();
+    }
 
-        var ninjaChart = this;
-        var config = this.config;
-        this.chart.on("mousemove", function(e) {
-            var coords = d3.mouse(this);
-            if (coords[1] > config.chartHeight) return;
-            for (var i in ninjaChart.listeners) {
-                if (ninjaChart.listeners[i].mousemove) {
-                    ninjaChart.listeners[i].mousemove(coords)
+    Config.prototype.recalibrate = function(priceData) {
+        this.priceData = priceData;
+        this.recalculateChartWidth();
+
+        this.dates = priceData.values.map(this._getPriceDate);
+        this.futureBars = [];
+        var lastDate = Date.parseDbFormat(this.dates[this.dates.length-1]);
+
+        for (var i = 0; i < this.numOfFutureBars; i++) {
+            lastDate = Date.nextWeekDay(lastDate);
+            this.dates.push(lastDate.toDbFormat());
+            this.futureBars.push({d:lastDate.toDbFormat()});
+        }
+
+        this.xAxisTickData = this.createXAxisTickData(this.dates);
+        this.xByIndex.domain([0, priceData.values.length + this.numOfFutureBars]);
+
+        var pixelsFrom = this.chartWidth - this.container.node().getBoundingClientRect().width - this.yAxisWidth;
+        var pixelsTo = this.chartWidth;
+
+        this.updateViewport(pixelsFrom, pixelsTo);
+
+        this.dateIndexMap = [];
+        for (var i in this.dates) {
+            this.dateIndexMap[this.dates[i]] = i;
+        }
+    };
+
+    Config.prototype.recalibrateOnZoom = function(delta) {
+        this.columnWidth += delta * 0.01;
+        if (this.columnWidth < _minColumnWidth) {
+            this.columnWidth = _minColumnWidth;
+        }
+        if (this.columnWidth > _maxColumnWidth) {
+            this.columnWidth = _maxColumnWidth;
+        }
+        this.recalculateChartWidth();
+        this.onChartWidthChange();
+    }
+
+    Config.prototype.xByDate = function(date) {
+        var index = this.dateIndexMap[date];
+        return this.xByIndex(index);
+    };
+
+    Config.prototype.updateViewport = function(pixelsFrom, pixelsTo) {
+        var indexFrom = Math.floor(this.xByIndex.invert(pixelsFrom));
+        var indexTo = Math.floor(this.xByIndex.invert(pixelsTo));
+        this.viewportIndexRange = [indexFrom, indexTo];
+        this.viewportDates = this.dates.slice(indexFrom, indexTo);
+    }
+
+    Config.prototype.onChartWidthChange = function() {
+        this.xByIndex.range([0, this.chartWidth]);
+    };
+
+    Config.prototype.createXAxisTickData = function(dates) {
+        var ticks = [];
+        var lastMonth = 0;
+        var lastYear = 0;
+
+        for (var i in dates) {
+            var date = Date.parseDbFormat(dates[i]);
+            var month = date.getMonth()+1;
+            var year = date.getFullYear();
+
+            if (lastMonth != month || lastYear != year) {
+                if (lastMonth) { // Ignore first date. Say it's Sept 30, we'll wait to print Oct 1 instead.
+                    ticks.push({d:dates[i], month:month, year:year});
                 }
-            }
-        });
-
-        var query = { symbol:"MEG" };
-
-        this.show(query);
-
-        // priceData.prices[0].l = 2;
-        // priceData.prices.splice(1, 11);
-
-        query.symbol = "BDO";
-        var that = this;
-        var xx = function() {that.show(query)};
-
-        setTimeout(xx, 1000);
-    };
-
-    NinjaChart.prototype.addChart = function(chart) {
-        this.charts.push(chart);
-        return this;
-    };
-
-    NinjaChart.prototype.show = function(query) {
-
-        //TODO Sample Test Data
-        var responseData = priceData;
-        if (query.symbol == "BDO") {
-            responseData = priceData2;
-        }
-
-        this.config.update(responseData);
-        this.layout.chartInner.property("scrollLeft", this.config.chartWidth);
-
-        for (var i in this.components) {
-            if (this.components[i].show) {
-                this.components[i].show(responseData, query);
+                lastMonth = month;
+                lastYear = year;
             }
         }
-
-        for (var i in this.charts) {
-            if (this.charts[i].show) {
-                this.charts[i].show(responseData, query);
-            }
-        }
-        return this;
+        return ticks;
     };
 
-    return NinjaChart;
+    Config.prototype.recalculateChartWidth = function() {
+        this.chartWidth = this.columnWidth * (this.priceData.values.length + this.numOfFutureBars);
+        this.onChartWidthChange();
+    };
 
+    Config.prototype._getPriceDate = function(price) {
+        return price.d;
+    };
+
+    return Config;
 });

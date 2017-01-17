@@ -1,88 +1,47 @@
 package com.bn.ninjatrader.common.data;
 
-import com.beust.jcommander.internal.Sets;
-import org.testng.annotations.Test;
+import com.bn.ninjatrader.common.util.TestUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Sets;
+import org.junit.Test;
 
+import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Set;
 
-import static org.testng.Assert.*;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Brad on 7/27/16.
  */
 public class ValueTest {
+  private final LocalDate now = LocalDate.of(2016, 1, 1);
 
-  private LocalDate date = LocalDate.of(2016, 1, 1);
-
-  private Value origValue = Value.of(date, 1);
-  private Value sameValue = Value.of(date, 1);
-
-  private Value diffValue1 = Value.of(date, 2);
-  private Value diffValue2 = Value.of(date, 1.0000001);
-
-  private Value diffDayValue = Value.of(date.plusDays(1), 1);
-  private Value diffMonthValue = Value.of(date.plusMonths(1), 1);
-  private Value diffYearValue = Value.of(date.plusYears(1), 1);
+  private final Value orig = Value.of(now, 1);
+  private final Value equal = Value.of(now, 1);
+  private final Value diffValue = Value.of(now, 1.0000001);
+  private final Value diffDate = Value.of(now.plusDays(1), 1);
 
   @Test
-  public void testEqualsWithSameObject() {
-    assertTrue(origValue.equals(origValue));
+  public void testEquals_shouldBeEqualIfAllPropertiesAreEqual() {
+    assertThat(equal).isEqualTo(orig);
+    assertThat(orig).isEqualTo(orig).isEqualTo(equal)
+        .isNotEqualTo(null)
+        .isNotEqualTo("")
+        .isNotEqualTo(diffValue)
+        .isNotEqualTo(diffDate);
   }
 
   @Test
-  public void testEqualsWithSameValue() {
-    assertTrue(origValue.equals(sameValue));
-    assertTrue(sameValue.equals(origValue));
+  public void testHashCode_shouldHaveEqualHashcodeIfAllPropertiesAreEqual() {
+    assertThat(Sets.newHashSet(orig, equal, diffValue, diffDate))
+        .containsExactlyInAnyOrder(orig, diffValue, diffDate);
   }
 
   @Test
-  public void testEqualsWithDifferences() {
-    assertFalse(origValue.equals(diffValue1));
-    assertFalse(origValue.equals(diffValue2));
-
-    assertFalse(origValue.equals(diffDayValue));
-    assertFalse(origValue.equals(diffMonthValue));
-    assertFalse(origValue.equals(diffYearValue));
-  }
-
-  @Test
-  public void testEqualsWithDiffObjectType() {
-    assertFalse(origValue.equals(new Object()));
-    assertFalse(origValue.equals("Wrong Object"));
-    assertFalse(origValue.equals(1));
-    assertFalse(origValue.equals(null));
-  }
-
-  @Test
-  public void testHashCode() {
-    assertEquals(origValue.hashCode(), sameValue.hashCode());
-    assertNotEquals(origValue.hashCode(), diffValue1.hashCode());
-    assertNotEquals(origValue.hashCode(), diffDayValue.hashCode());
-    assertNotEquals(origValue.hashCode(), diffMonthValue.hashCode());
-    assertNotEquals(origValue.hashCode(), diffYearValue.hashCode());
-  }
-
-  @Test
-  public void testHashCodeWithSet() {
-    Set<Value> valueSet = Sets.newHashSet();
-
-    // Add same object
-    valueSet.add(origValue);
-    valueSet.add(origValue);
-    assertEquals(valueSet.size(), 1);
-
-    // Add different object with same values
-    valueSet.add(sameValue);
-    assertEquals(valueSet.size(), 1);
-
-    // Add Value object with different value
-    valueSet.add(diffValue1);
-    assertEquals(valueSet.size(), 2);
-
-    // Add Value with different date
-    valueSet.add(diffDayValue);
-    assertEquals(valueSet.size(), 3);
+  public void testSerializeDeserialize_shouldReturnEqualObject() throws IOException {
+    final ObjectMapper om = TestUtil.objectMapper();
+    final String json = om.writeValueAsString(orig);
+    final Value deserialized = om.readValue(json, Value.class);
+    assertThat(deserialized).isEqualTo(orig);
   }
 }

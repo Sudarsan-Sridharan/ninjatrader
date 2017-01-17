@@ -21,9 +21,9 @@ public class PriceChangeCalculatorTest {
   @Tested
   private PriceChangeCalculator calculator;
 
-  private final Price price1 = new Price(1.1, 2.1, 3.1, 4.1, 1000);
-  private final Price price2 = new Price(2.1, 2.2, 2.3, 2.3384, 1000);
-  private final Price price3 = new Price(3.1, 3.2, 3.3, 3.4981, 1000);
+  private final Price price1 = Price.builder().open(1.1).high(2.1).low(3.1).close(4.1).volume(1000).build();
+  private final Price price2 = Price.builder().open(2.1).high(2.2).low(2.3).close(2.3384).volume(1000).build();
+  private final Price price3 = Price.builder().open(3.1).high(3.2).low(3.3).close(3.4981).volume(1000).build();
 
   @Test
   public void testCalc() {

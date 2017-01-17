@@ -2,19 +2,14 @@ define(["d3", "require", "./linechart"], function(d3, require) {
 
     var LineChart = require("./linechart");
 
-    function RSIChart(config, panel) {
+    function SMAChart(config, panel) {
         LineChart.call(this, config, panel);
-        this.setAjaxUrl("/rsi")
-            .setChartName("rsi");
-        panel.yAxis.yAxis.tickArguments([5]);
+        this.setAjaxUrl("/sma")
+            .setChartName("sma");
     }
 
-    RSIChart.prototype = Object.create(LineChart.prototype);
-    RSIChart.prototype.constructor = RSIChart;
+    SMAChart.prototype = Object.create(LineChart.prototype);
+    SMAChart.prototype.constructor = SMAChart;
 
-    RSIChart.prototype.getDataDomain = function() {
-        return [0, 100];
-    };
-
-    return RSIChart;
+    return SMAChart;
 });

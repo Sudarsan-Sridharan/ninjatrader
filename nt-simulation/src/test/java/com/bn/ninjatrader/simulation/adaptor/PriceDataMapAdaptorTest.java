@@ -3,11 +3,11 @@ package com.bn.ninjatrader.simulation.adaptor;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.simulation.data.DataMap;
-import com.bn.ninjatrader.simulation.data.DataType;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertEquals;
+import static com.bn.ninjatrader.simulation.operation.Variables.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Brad on 8/18/16.
@@ -16,21 +16,20 @@ public class PriceDataMapAdaptorTest {
 
   private PriceDataMapAdaptor adaptor;
 
-  @BeforeClass
+  @BeforeMethod
   public void setup() {
     adaptor = new PriceDataMapAdaptor();
   }
 
   @Test
   public void testToDataMap() {
-    Price price = TestUtil.randomPrice();
-    price.setVolume(1000000000000l);
-    DataMap dataMap = adaptor.toDataMap(price);
+    final Price price = TestUtil.randomPriceBuilder().volume(1000000000000l).build();
+    final DataMap dataMap = adaptor.toDataMap(price);
 
-    assertEquals(dataMap.get(DataType.PRICE_OPEN), price.getOpen());
-    assertEquals(dataMap.get(DataType.PRICE_HIGH), price.getHigh());
-    assertEquals(dataMap.get(DataType.PRICE_LOW), price.getLow());
-    assertEquals(dataMap.get(DataType.PRICE_CLOSE), price.getClose());
-    assertEquals(dataMap.get(DataType.VOLUME).longValue(), price.getVolume());
+    assertThat(dataMap.get(PRICE_OPEN)).isEqualTo(price.getOpen());
+    assertThat(dataMap.get(PRICE_HIGH)).isEqualTo(price.getHigh());
+    assertThat(dataMap.get(PRICE_LOW)).isEqualTo(price.getLow());
+    assertThat(dataMap.get(PRICE_CLOSE)).isEqualTo(price.getClose());
+    assertThat(dataMap.get(VOLUME).longValue()).isEqualTo(price.getVolume());
   }
 }

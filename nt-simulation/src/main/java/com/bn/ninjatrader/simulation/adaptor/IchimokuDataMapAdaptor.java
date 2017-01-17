@@ -2,10 +2,10 @@ package com.bn.ninjatrader.simulation.adaptor;
 
 import com.bn.ninjatrader.common.data.Ichimoku;
 import com.bn.ninjatrader.simulation.data.DataMap;
-import com.bn.ninjatrader.simulation.data.DataType;
-import com.bn.ninjatrader.simulation.operation.Variable;
 import com.google.common.base.Preconditions;
 import com.google.inject.Singleton;
+
+import static com.bn.ninjatrader.simulation.operation.Variables.*;
 
 /**
  * Created by Brad on 8/17/16.
@@ -18,11 +18,11 @@ public class IchimokuDataMapAdaptor implements DataMapAdaptor<Ichimoku> {
     Preconditions.checkNotNull(ichimoku);
 
     DataMap dataMap = new DataMap();
-    dataMap.put(Variable.of(DataType.CHIKOU), ichimoku.getChikou());
-    dataMap.put(Variable.of(DataType.TENKAN), ichimoku.getTenkan());
-    dataMap.put(Variable.of(DataType.KIJUN), ichimoku.getKijun());
-    dataMap.put(Variable.of(DataType.SENKOU_A), ichimoku.getSenkouA());
-    dataMap.put(Variable.of(DataType.SENKOU_B), ichimoku.getSenkouB());
+    dataMap.put(ICHIMOKU_CHIKOU, ichimoku.getChikou());
+    dataMap.put(ICHIMOKU_TENKAN, ichimoku.getTenkan());
+    dataMap.put(ICHIMOKU_KIJUN, ichimoku.getKijun());
+    dataMap.put(ICHIMOKU_SENKOU_A, ichimoku.getSenkouA());
+    dataMap.put(ICHIMOKU_SENKOU_B, ichimoku.getSenkouB());
     return dataMap;
   }
 }

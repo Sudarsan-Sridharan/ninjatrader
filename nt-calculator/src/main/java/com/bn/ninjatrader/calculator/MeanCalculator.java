@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.calculator;
 
+import com.bn.ninjatrader.calculator.parameter.CalcParams;
 import com.bn.ninjatrader.calculator.util.MeanCalculatingStack;
-import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.data.Value;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
@@ -14,11 +14,10 @@ import java.util.List;
  */
 @Singleton
 public class MeanCalculator extends AbstractValueCalculator {
-
-  private static final Logger log = LoggerFactory.getLogger(MeanCalculator.class);
+  private static final Logger LOG = LoggerFactory.getLogger(MeanCalculator.class);
 
   @Override
-  public List<Value> calc(List<Price> priceList, int period) {
-    return calcWithStack(priceList, MeanCalculatingStack.withFixedSize(period));
+  public List<Value> calcForPeriod(CalcParams params, int period) {
+    return calcWithStack(params.getPrices(), MeanCalculatingStack.withFixedSize(period));
   }
 }

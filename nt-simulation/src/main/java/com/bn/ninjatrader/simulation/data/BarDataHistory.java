@@ -1,9 +1,9 @@
 package com.bn.ninjatrader.simulation.data;
 
 import com.bn.ninjatrader.common.util.FixedList;
-import com.google.common.base.Optional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.bn.ninjatrader.common.util.FixedList.TrimDirection.RIGHT_TO_LEFT;
 
@@ -30,7 +30,7 @@ public class BarDataHistory {
     try {
       return Optional.of(barDataList.get(numOfBarsAgo));
     } catch (IndexOutOfBoundsException e) {
-      return Optional.absent();
+      return Optional.empty();
     }
   }
 }

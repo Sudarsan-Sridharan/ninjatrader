@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.model.dao;
 
-import com.bn.ninjatrader.model.annotation.SMACollection;
+import com.bn.ninjatrader.model.annotation.EMACollection;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.jongo.MongoCollection;
@@ -16,7 +16,7 @@ public class EMADao extends AbstractValueDao {
   private static final Logger LOG = LoggerFactory.getLogger(EMADao.class);
 
   @Inject
-  public EMADao(@SMACollection final MongoCollection mongoCollection) {
+  public EMADao(@EMACollection final MongoCollection mongoCollection) {
     super(mongoCollection);
   }
 }

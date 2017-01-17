@@ -7,5 +7,7 @@ import com.bn.ninjatrader.process.request.CalcRequest;
  */
 public interface CalcProcess {
 
-  void processMissingBars(CalcRequest calcRequest);
+  void process(CalcRequest calcRequest);
+
+  String getProcessName();
 }

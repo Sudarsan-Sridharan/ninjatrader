@@ -1,9 +1,10 @@
 package com.bn.ninjatrader.service.resource;
 
-import com.bn.ninjatrader.common.data.Ichimoku;
-import com.bn.ninjatrader.service.indicator.IchimokuService;
-import com.bn.ninjatrader.service.model.IchimokuResponse;
-import com.bn.ninjatrader.service.model.ResourceRequest;
+import com.bn.ninjatrader.common.data.Value;
+import com.bn.ninjatrader.model.dao.SMADao;
+import com.bn.ninjatrader.model.request.FindRequest;
+import com.bn.ninjatrader.service.model.MultiPeriodRequest;
+import com.bn.ninjatrader.service.model.MultiPeriodResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
@@ -21,24 +22,27 @@ import java.util.List;
  * @author bradwee2000@gmail.com
  */
 @Singleton
-@Path("/ichimoku")
+@Path("/sma")
 @Produces(MediaType.APPLICATION_JSON)
 public class SMAResource extends AbstractDataResource {
-
   private static final Logger LOG = LoggerFactory.getLogger(SMAResource.class);
 
-  private final IchimokuService ichimokuService;
+  private final SMADao smaDao;
 
   @Inject
-  public SMAResource(IchimokuService ichimokuService, Clock clock) {
+  public SMAResource(SMADao smaDao, Clock clock) {
     super(clock);
-    this.ichimokuService = ichimokuService;
+    this.smaDao = smaDao;
   }
 
   @GET
   @Path("/{symbol}")
-  public IchimokuResponse getIchimoku(@BeanParam ResourceRequest req) {
-    List<Ichimoku> ichimokuList = ichimokuService.find(req.toFindRequest(getClock()));
-    return new IchimokuResponse().setValues(ichimokuList);
+  public MultiPeriodResponse<Value> getSMA(@BeanParam MultiPeriodRequest req) {
+    MultiPeriodResponse<Value> response = new MultiPeriodResponse<>();
+    for (FindRequest findRequest : req.toFindRequest(getClock())) {
+      List<Value> values = smaDao.find(findRequest);
+      response.put(findRequest.getPeriod(), values);
+    }
+    return response;
   }
 }

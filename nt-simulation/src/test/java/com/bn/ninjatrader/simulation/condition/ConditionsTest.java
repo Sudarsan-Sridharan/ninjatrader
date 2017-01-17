@@ -9,7 +9,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static com.bn.ninjatrader.simulation.condition.Conditions.*;
-import static com.bn.ninjatrader.simulation.data.DataType.*;
+import static com.bn.ninjatrader.simulation.operation.Variables.*;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
@@ -18,26 +18,14 @@ import static org.testng.Assert.assertTrue;
  */
 public class ConditionsTest {
 
+  private final Price price = Price.builder().open(1.1).high(2.2).low(3.3).close(4.4).volume(100000).build();
+  private final Ichimoku ichimoku = Ichimoku.builder()
+      .chikou(1.1).tenkan(1.2).kijun(1.3).senkouA(1.4).senkouB(1.5).build();
+
   private BarData barParameters;
-  private Price price;
-  private Ichimoku ichimoku;
 
   @BeforeClass
   public void setup() {
-    price = new Price();
-    price.setOpen(1.1);
-    price.setHigh(2.2);
-    price.setLow(3.3);
-    price.setClose(4.4);
-    price.setVolume(100000);
-
-    ichimoku = new Ichimoku();
-    ichimoku.setChikou(1.1);
-    ichimoku.setTenkan(1.2);
-    ichimoku.setKijun(1.3);
-    ichimoku.setSenkouA(1.4);
-    ichimoku.setSenkouB(1.5);
-
     barParameters = new BarData();
     barParameters.put(new PriceDataMapAdaptor().toDataMap(price));
     barParameters.put(new IchimokuDataMapAdaptor().toDataMap(ichimoku));
@@ -48,7 +36,7 @@ public class ConditionsTest {
     Condition condition = create().add(eq(PRICE_CLOSE, PRICE_HIGH));
     assertFalseCondition(condition);
 
-    condition = create().add(eq(PRICE_OPEN, CHIKOU));
+    condition = create().add(eq(PRICE_OPEN, ICHIMOKU_CHIKOU));
     assertTrueCondition(condition);
 
     condition = create().add(eq(PRICE_OPEN, 1.1));
@@ -61,7 +49,7 @@ public class ConditionsTest {
   @Test
   public void testMultipleEqualsCondition() {
     AndCondition condition = create()
-        .add(eq(PRICE_OPEN, CHIKOU))
+        .add(eq(PRICE_OPEN, ICHIMOKU_CHIKOU))
         .add(eq(PRICE_OPEN, 1.1))
         .add(eq(PRICE_HIGH, 2.2))
         .add(eq(PRICE_LOW, 3.3))
@@ -83,13 +71,13 @@ public class ConditionsTest {
     condition = create()
         .add(gt(PRICE_CLOSE, PRICE_LOW))
         .add(gt(PRICE_HIGH, PRICE_OPEN))
-        .add(gt(SENKOU_B, 1.4));
+        .add(gt(ICHIMOKU_SENKOU_B, 1.4));
     assertTrueCondition(condition);
 
     condition = create()
         .add(gt(PRICE_CLOSE, PRICE_LOW))
         .add(gt(PRICE_HIGH, PRICE_OPEN))
-        .add(gt(SENKOU_B, 1.5));
+        .add(gt(ICHIMOKU_SENKOU_B, 1.5));
     assertFalseCondition(condition);
   }
 
@@ -102,15 +90,15 @@ public class ConditionsTest {
     assertFalseCondition(condition);
 
     condition = create()
-        .add(gte(CHIKOU, 1.1))
-        .add(gte(TENKAN, CHIKOU))
-        .add(gte(PRICE_OPEN, CHIKOU));
+        .add(gte(ICHIMOKU_CHIKOU, 1.1))
+        .add(gte(ICHIMOKU_TENKAN, ICHIMOKU_CHIKOU))
+        .add(gte(PRICE_OPEN, ICHIMOKU_CHIKOU));
     assertTrueCondition(condition);
 
     condition = create()
-        .add(gte(CHIKOU, 1.11))
-        .add(gte(TENKAN, CHIKOU))
-        .add(gte(PRICE_OPEN, CHIKOU));
+        .add(gte(ICHIMOKU_CHIKOU, 1.11))
+        .add(gte(ICHIMOKU_TENKAN, ICHIMOKU_CHIKOU))
+        .add(gte(PRICE_OPEN, ICHIMOKU_CHIKOU));
     assertFalseCondition(condition);
   }
 

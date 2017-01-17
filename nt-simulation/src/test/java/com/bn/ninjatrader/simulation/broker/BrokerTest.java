@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 
 import java.time.LocalDate;
 
-import static org.testng.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Brad on 8/23/16.
@@ -33,8 +33,7 @@ public class BrokerTest {
   private final Price price = new Price(now, 1, 2, 3, 4, 1000);
   private final BarData barData;
   private final BuyTransaction buyTransaction = Transaction.buy().price(4).shares(1000).date(now).build();
-
-  private final BuyOrder buyOrder1 = Order.buy().cashAmount(100000).build();
+  private final BuyOrder buyOrder = Order.buy().cashAmount(100000).build();
 
   private Broker broker;
   private Account account;
@@ -55,34 +54,34 @@ public class BrokerTest {
 
   @Test
   public void testCreateEmpty() {
-    assertFalse(broker.hasPendingOrder());
-    assertFalse(broker.getLastFulfilledBuy().isPresent());
-    assertFalse(broker.getLastFulfilledSell().isPresent());
+    assertThat(broker.hasPendingOrder()).isFalse();
+    assertThat(broker.getLastFulfilledBuy().isPresent()).isFalse();
+    assertThat(broker.getLastFulfilledSell().isPresent()).isFalse();
   }
 
   @Test
   public void testSubmitOrder() {
-    broker.submitOrder(buyOrder1);
-    assertTrue(broker.hasPendingOrder());
-    assertFalse(broker.getLastFulfilledBuy().isPresent());
-    assertFalse(broker.getLastFulfilledSell().isPresent());
+    broker.submitOrder(buyOrder);
+    assertThat(broker.hasPendingOrder()).isTrue();
+    assertThat(broker.getLastFulfilledBuy().isPresent()).isFalse();
+    assertThat(broker.getLastFulfilledSell().isPresent()).isFalse();
   }
 
   @Test
   public void testProcessPendingOrder() {
     new Expectations() {{
-      buyOrderExecutor.execute(account, buyOrder1, barData);
+      buyOrderExecutor.execute(account, buyOrder, barData);
       result = buyTransaction;
     }};
 
-    broker.submitOrder(buyOrder1);
+    broker.submitOrder(buyOrder);
     broker.processPendingOrders(barData);
 
-    assertFalse(broker.hasPendingOrder());
-    assertTrue(broker.getLastFulfilledBuy().isPresent());
-    assertFalse(broker.getLastFulfilledSell().isPresent());
+    assertThat(broker.hasPendingOrder()).isFalse();
+    assertThat(broker.getLastFulfilledBuy()).isPresent();
+    assertThat(broker.getLastFulfilledSell()).isNotPresent();
 
     BuyTransaction buy = broker.getLastFulfilledBuy().get();
-    assertEquals(buy, buyTransaction);
+    assertThat(buy).isEqualTo(buyTransaction);
   }
 }

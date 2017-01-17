@@ -1,12 +1,14 @@
 package com.bn.ninjatrader.common.data;
 
 import com.bn.ninjatrader.common.util.TestUtil;
-import org.testng.annotations.Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Sets;
+import org.junit.Test;
 
+import java.io.IOException;
 import java.time.LocalDate;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 /**
@@ -14,35 +16,61 @@ import static org.testng.Assert.assertFalse;
  */
 public class PriceTest {
 
-  private LocalDate date1 = LocalDate.of(2016, 1, 1);
-  private LocalDate date2 = LocalDate.of(2016, 1, 2);
+  private final LocalDate now = LocalDate.of(2016, 1, 1);
+  private final LocalDate tomorrow = now.plusDays(1);
 
-  private Price price1 = new Price(date1, 5.0, 10.0, 4.0, 6.0, 10000);
-  private Price price2 = new Price(date1, 5.0, 10.0, 4.0, 6.0, 10000);
-  private Price price3 = new Price(date1, 5.1, 10.0, 4.0, 6.0, 10000);
-  private Price price4 = new Price(date1, 5.0, 10.1, 4.0, 6.0, 10000);
-  private Price price5 = new Price(date1, 5.0, 10.0, 4.1, 6.0, 10000);
-  private Price price6 = new Price(date1, 5.0, 10.0, 4.0, 6.1, 10000);
-  private Price price7 = new Price(date1, 5.0, 10.0, 4.0, 6.0, 10001);
-  private Price price8 = new Price(date2, 5.0, 10.0, 4.0, 6.0, 10000);
+  private final Price orig = Price.builder().date(now).open(5).high(10).low(4).close(6).volume(10000).build();
+  private final Price equal = Price.builder().date(now).open(5).high(10).low(4).close(6).volume(10000).build();
+  private final Price diffDate = Price.builder().date(tomorrow).open(5).high(10).low(4).close(6).volume(10000).build();
+  private final Price diffOpen = Price.builder().date(now).open(5.1).high(10).low(4).close(6).volume(10000).build();
+  private final Price diffHigh = Price.builder().date(now).open(5).high(10.1).low(4).close(6).volume(10000).build();
+  private final Price diffLow = Price.builder().date(now).open(5).high(10).low(4.1).close(6).volume(10000).build();
+  private final Price diffClose = Price.builder().date(now).open(5).high(10).low(4).close(6.1).volume(10000).build();
+  private final Price diffChange = Price.builder()
+      .date(now).open(5).high(10).low(4).close(6).volume(10000).change(1.1).build();
+  private final Price diffVolume = Price.builder().date(now).open(5).high(10).low(4).close(6).volume(10001).build();
 
   @Test
-  public void testHashCode() {
-    assertEquals(price1.hashCode(), price2.hashCode());
-
-    TestUtil.assertHashCodeNotEquals(price1, price3, price4, price5, price6, price7, price8);
-    TestUtil.assertHashCodeNotEquals(price2, price3, price4, price5, price6, price7, price8);
+  public void testBuilder_shouldSetProperties() {
+    assertThat(orig.getDate()).isEqualTo(now);
+    assertThat(orig.getOpen()).isEqualTo(5.0);
+    assertThat(orig.getHigh()).isEqualTo(10.0);
+    assertThat(orig.getLow()).isEqualTo(4.0);
+    assertThat(orig.getClose()).isEqualTo(6.0);
+    assertThat(orig.getChange()).isEqualTo(0.0);
+    assertThat(orig.getVolume()).isEqualTo(10000);
   }
 
   @Test
-  public void testEquals() {
-    assertEquals(price1, price1);
-    assertEquals(price1, price2);
+  public void testCopy_shouldReturnEqualObject() {
+    assertThat(Price.builder().copyOf(orig).build()).isEqualTo(orig);
+  }
 
-    TestUtil.assertNotEqualsList(price1, price3, price4, price5, price6, price7, price8);
-    TestUtil.assertNotEqualsList(price2, price3, price4, price5, price6, price7, price8);
+  @Test
+  public void testHashCode_shouldHaveEqualHashcodeIfAllPropertiesAreEqual() {
+    assertThat(Sets.newHashSet(orig, equal, diffOpen, diffHigh, diffLow, diffClose, diffVolume, diffChange, diffDate))
+        .containsExactlyInAnyOrder(orig, diffOpen, diffHigh, diffLow, diffClose, diffChange, diffVolume, diffDate);
+  }
 
-    assertFalse(price1.equals(new Object()));
-    assertFalse(price1.equals(null));
+  @Test
+  public void testEquals_shouldBeEqualIfAllPropertiesAreEqual() {
+    assertThat(equal).isEqualTo(orig);
+    assertThat(orig).isEqualTo(orig).isEqualTo(equal)
+        .isNotEqualTo(null)
+        .isNotEqualTo("")
+        .isNotEqualTo(diffOpen)
+        .isNotEqualTo(diffHigh)
+        .isNotEqualTo(diffLow)
+        .isNotEqualTo(diffClose)
+        .isNotEqualTo(diffChange)
+        .isNotEqualTo(diffVolume)
+        .isNotEqualTo(diffDate);
+  }
+
+  @Test
+  public void testSerializeDeserialize_shouldReturnEqualObject() throws IOException {
+    final ObjectMapper om = TestUtil.objectMapper();
+    final String json = om.writeValueAsString(orig);
+    assertThat(om.readValue(json, Price.class)).isEqualTo(orig);
   }
 }

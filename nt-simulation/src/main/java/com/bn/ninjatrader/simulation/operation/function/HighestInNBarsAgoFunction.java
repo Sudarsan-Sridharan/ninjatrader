@@ -4,10 +4,10 @@ import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.operation.Operation;
 import com.bn.ninjatrader.simulation.operation.Variable;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -40,7 +40,7 @@ public class HighestInNBarsAgoFunction implements Operation {
   public double getValue(final BarData barData) {
     double highestValue = 0;
     for (int i=1; i <= numOfBarsAgo; i++) {
-      Optional<BarData> pastBarData = barData.getNBarsAgo(i);
+      final Optional<BarData> pastBarData = barData.getNBarsAgo(i);
       if (pastBarData.isPresent()) {
         highestValue = Math.max(operation.getValue(pastBarData.get()), highestValue);
       } else {
@@ -59,7 +59,7 @@ public class HighestInNBarsAgoFunction implements Operation {
     return numOfBarsAgo;
   }
 
-  public HighestInNBarsAgoFunction withinBarsAgo(int numOfBarsAgo) {
+  public HighestInNBarsAgoFunction withinBarsAgo(final int numOfBarsAgo) {
     this.numOfBarsAgo = numOfBarsAgo;
     return this;
   }

@@ -1,7 +1,14 @@
 package com.bn.ninjatrader.model.dao;
 
 import com.bn.ninjatrader.common.data.Value;
+import com.bn.ninjatrader.common.type.TimeFrame;
+import com.bn.ninjatrader.model.annotation.TestCollection;
+import com.bn.ninjatrader.model.guice.NtModelTestModule;
+import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 import com.bn.ninjatrader.model.request.FindRequest;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import org.jongo.MongoCollection;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -12,14 +19,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.bn.ninjatrader.model.request.SaveRequest.save;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Brad on 5/4/16.
  */
-public abstract class AbstractValueDaoTest extends AbstractDaoTest {
+public class AbstractValueDaoTest {
 
+  private static Injector injector;
   private final LocalDate date1 = LocalDate.of(2016, 1, 1);
   private final LocalDate date2 = LocalDate.of(2016, 1, 2);
   private final LocalDate date3 = LocalDate.of(2016, 1, 3);
@@ -28,110 +35,128 @@ public abstract class AbstractValueDaoTest extends AbstractDaoTest {
   private final Value value2 = new Value(date2, 2d);
   private final Value value3 = new Value(date3, 3d);
 
-  private ValueDao dao;
+  private DummyValueDao dao;
 
   @BeforeClass
-  public void init() {
-    this.dao = provideTestedDao();
+  public void initInjector() {
+    injector = Guice.createInjector(new NtModelTestModule());
   }
 
   @BeforeMethod
+  public void setup() {
+    dao = injector.getInstance(DummyValueDao.class);
+    dao.getMongoCollection().drop();
+  }
+
   @AfterMethod
   public void cleanup() {
-    MongoCollection collection = dao.getMongoCollection();
-    collection.remove();
+    dao.getMongoCollection().drop();
   }
 
   @Test
-  public void testSorting() {
+  public void testSorting_shouldSortByDateFromOldestToNewest() {
     dao.save(save("X").period(1).values(value3, value1, value2));
 
-    List<Value> result = dao.find(FindRequest.forSymbol("X").period(1).from(date1).to(date3));
+    List<Value> result = dao.find(FindRequest.findSymbol("X").period(1).from(date1).to(date3));
 
-    assertEqualValues(result, value1, value2, value3);
+    assertThat(result).containsExactly(value1, value2, value3);
   }
 
   @Test
-  public void testSaveForMultipleSymbols() {
+  public void testSaveForDiffSymbols_shouldSaveSeparatelyPerSymbol() {
     dao.save(save("MEG").period(1).values(value1, value2));
     dao.save(save("BDO").period(1).values(value2, value3));
 
-    List<Value> result = dao.find(FindRequest.forSymbol("MEG").period(1).from(date1).to(date3));
-    assertEqualValues(result, value1, value2);
+    List<Value> result = dao.find(FindRequest.findSymbol("MEG").period(1).from(date1).to(date3));
+    assertThat(result).containsExactly(value1, value2);
 
-    result = dao.find(FindRequest.forSymbol("BDO").period(1).from(date1).to(date3));
-    assertEqualValues(result, value2, value3);
+    result = dao.find(FindRequest.findSymbol("BDO").period(1).from(date1).to(date3));
+    assertThat(result).containsExactly(value2, value3);
   }
 
   @Test
-  public void testSaveForMultiplePeriods() {
+  public void testSaveForDiffPeriods_shouldSaveSeparatelyPerPeriod() {
     dao.save(save("MEG").period(1).values(value1, value2));
     dao.save(save("MEG").period(2).values(value2, value3));
 
-    List<Value> result = dao.find(FindRequest.forSymbol("MEG").period(1).from(date1).to(date2));
-    assertEqualValues(result, value1, value2);
-
-    result = dao.find(FindRequest.forSymbol("MEG").period(2).from(date1).to(date3));
-    assertEqualValues(result, value2, value3);
+    assertThat(dao.find(FindRequest.findSymbol("MEG").period(1).from(date1).to(date2)))
+        .containsExactly(value1, value2);
+    assertThat(dao.find(FindRequest.findSymbol("MEG").period(2).from(date1).to(date3)))
+        .containsExactly(value2, value3);
   }
 
   @Test
-  public void testSaveForMultipleYears() {
+  public void testSaveForDiffYears_shouldSaveForEachYear() {
     LocalDate diffYearDate = LocalDate.of(2015, 1, 1);
     Value diffYearValue = new Value(diffYearDate, 0.5d);
 
     dao.save(save("MEG").period(1).values(value3, value1, value2, diffYearValue));
 
-    List<Value> result = dao.find(FindRequest.forSymbol("MEG").period(1).from(diffYearDate).to(date3));
-    assertEqualValues(result, diffYearValue, value1, value2, value3);
+    assertThat(dao.find(FindRequest.findSymbol("MEG").period(1).from(diffYearDate).to(date3)))
+        .containsExactly(diffYearValue, value1, value2, value3);
   }
 
   @Test
-  public void testSaveOverwrite() {
+  public void testSaveOverwrite_shouldOverwritePreviousValues() {
     dao.save(save("MEG").period(1).values(value3, value1, value2));
 
     Value overwriteValue = new Value(date1, 10d);
     dao.save(save("MEG").period(1).values(overwriteValue));
 
-    List<Value> result;
-    result = dao.find(FindRequest.forSymbol("MEG").period(1).from(date1).to(date3));
-    assertEqualValues(result, overwriteValue, value2, value3);
+    assertThat(dao.find(FindRequest.findSymbol("MEG").period(1).from(date1).to(date3)))
+        .containsExactly(overwriteValue, value2, value3);
   }
 
   @Test
-  public void testFindByDateRange() {
+  public void testFindByDateRange_shouldReturnValuesWithinDateRange() {
     dao.save(save("MEG").period(26).values(value1, value2, value3));
 
-    List<Value> results = dao.find(FindRequest.forSymbol("MEG").period(26).from(date1).to(date3));
-    assertEqualValues(results, value1, value2, value3);
+    assertThat(dao.find(FindRequest.findSymbol("MEG").period(26).from(date1).to(date3)))
+        .containsExactly(value1, value2, value3);
 
-    results = dao.find(FindRequest.forSymbol("MEG").period(26).from(date2).to(date3));
-    assertEqualValues(results, value2, value3);
+    assertThat(dao.find(FindRequest.findSymbol("MEG").period(26).from(date2).to(date3)))
+        .containsExactly(value2, value3);
 
     // Same from and to date
-    results = dao.find(FindRequest.forSymbol("MEG").period(26).from(date2).to(date2));
-    assertEqualValues(results, value2);
+    assertThat(dao.find(FindRequest.findSymbol("MEG").period(26).from(date2).to(date2)))
+        .containsExactly(value2);
 
     // Wrong symbol
-    results = dao.find(FindRequest.forSymbol("WRONG_SYMBOL").period(26).from(date1).to(date3));
-    assertTrue(results.isEmpty());
+    assertThat(dao.find(FindRequest.findSymbol("WRONG_SYMBOL").period(26).from(date1).to(date3))).isEmpty();
 
     // Wrong period
-    results = dao.find(FindRequest.forSymbol("MEG").period(20).from(date1).to(date3));
-    assertTrue(results.isEmpty());
+    assertThat(dao.find(FindRequest.findSymbol("MEG").period(20).from(date1).to(date3))).isEmpty();
   }
 
-  private void assertEqualValues(List<Value> actual, Value ... expected) {
-    assertEquals(actual.size(), expected.length);
-    for(int i=0; i<actual.size(); i++) {
-      assertValueEquals(actual.get(i), expected[i]);
+  @Test
+  public void testFindNBarsBeforeDate_shouldReturnValuesBeforeDate() {
+    dao.save(save("MEG").period(10).values(value1, value2, value3));
+
+    assertThat(dao.findBeforeDate(FindBeforeDateRequest.builder()
+        .symbol("MEG").timeFrame(TimeFrame.ONE_DAY).numOfValues(1).beforeDate(date2).period(10).build()))
+        .containsExactly(value1);
+
+    assertThat(dao.findBeforeDate(FindBeforeDateRequest.builder()
+        .symbol("MEG").timeFrame(TimeFrame.ONE_DAY).numOfValues(1).beforeDate(date3).period(10).build()))
+        .containsExactly(value2);
+
+    assertThat(dao.findBeforeDate(FindBeforeDateRequest.builder()
+        .symbol("MEG").timeFrame(TimeFrame.ONE_DAY).numOfValues(2).beforeDate(date3).period(10).build()))
+        .containsExactly(value1, value2);
+
+    assertThat(dao.findBeforeDate(FindBeforeDateRequest.builder()
+        .symbol("MEG").timeFrame(TimeFrame.ONE_DAY).numOfValues(3).beforeDate(date3).period(10).build()))
+        .containsExactly(value1, value2);
+  }
+
+  /**
+   * Dummy test class
+   */
+  private static final class DummyValueDao extends AbstractValueDao {
+
+    @Inject
+    public DummyValueDao(@TestCollection final MongoCollection mongoCollection) {
+      super(mongoCollection);
     }
   }
-
-  private void assertValueEquals(Value actual, Value expected) {
-    assertEquals(actual.getDate(), expected.getDate());
-    assertEquals(actual.getValue(), expected.getValue());
-  }
-
-  public abstract ValueDao provideTestedDao();
 }

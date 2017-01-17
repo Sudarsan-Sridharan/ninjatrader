@@ -1,13 +1,30 @@
-define(function() {
-    function PriceCursor(config, selection) {
-        this.config = config;
-        this.main = selection.append("g").classed("priceCursor", true);
-        this.line = this.main.append("line").attr("x2", config.chartWidth);
+define(["d3", "require", "./abstractcomponent"], function(d3, require) {
+
+    var AbstractComponent = require("./abstractcomponent");
+
+    var _componentName = "dateCursor";
+
+    function DateCursor(config) {
+        AbstractComponent.call(this, config, null, _componentName);
+
+        this.getMain().append("line")
+            .attr("y2", config.chartHeight);
     }
 
-    PriceCursor.prototype.mousemove = function(coords) {
-        this.main.attr("transform", "translate(0," + coords[1] + ")");
-    }
+    DateCursor.prototype = Object.create(AbstractComponent.prototype);
+    DateCursor.prototype.constructor = DateCursor;
 
-    return PriceCursor;
+    DateCursor.prototype.onMouseMove = function(coords) {
+        if (!coords) return;
+        var index = Math.floor(this.getConfig().xByIndex.invert(coords[0]));
+        this.moveToIndex(index);
+    };
+
+    DateCursor.prototype.moveToIndex = function(index) {
+        var config = this.getConfig();
+        var x = config.xByIndex(index) + config.columnWidth / 2;
+        this.getMain().attr("transform", "translate(" + x + ",0)");
+    };
+    
+    return DateCursor;
 });

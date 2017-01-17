@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
+import static com.bn.ninjatrader.simulation.type.Operator.*;
+
 /**
  * Created by Brad on 8/2/16.
  */
@@ -20,7 +22,7 @@ public class ArithmeticOperation implements Operation {
   }
 
   public ArithmeticOperation(double constant) {
-    operation = UnaryOperation.of(constant);
+    operation = Constant.of(constant);
   }
 
   @Override
@@ -38,7 +40,7 @@ public class ArithmeticOperation implements Operation {
   }
 
   public ArithmeticOperation plus(double rhs) {
-    return basicOperation(PLUS, UnaryOperation.of(rhs));
+    return basicOperation(PLUS, Constant.of(rhs));
   }
 
   public ArithmeticOperation minus(Operation rhs) {
@@ -46,7 +48,7 @@ public class ArithmeticOperation implements Operation {
   }
 
   public ArithmeticOperation minus(double rhs) {
-    return basicOperation(MINUS, UnaryOperation.of(rhs));
+    return basicOperation(MINUS, Constant.of(rhs));
   }
 
   public ArithmeticOperation mult(Operation rhs) {
@@ -54,7 +56,7 @@ public class ArithmeticOperation implements Operation {
   }
 
   public ArithmeticOperation mult(double rhs) {
-    return basicOperation(MULTIPLY, UnaryOperation.of(rhs));
+    return basicOperation(MULTIPLY, Constant.of(rhs));
   }
 
   public ArithmeticOperation div(Operation rhs) {
@@ -62,16 +64,11 @@ public class ArithmeticOperation implements Operation {
   }
 
   public ArithmeticOperation div(double rhs) {
-    return basicOperation(DIVIDE, UnaryOperation.of(rhs));
+    return basicOperation(DIVIDE, Constant.of(rhs));
   }
 
   private ArithmeticOperation basicOperation(Operator operator, Operation rhs) {
     operation = new BinaryOperation(operation, operator, rhs);
     return this;
-  }
-
-  @Override
-  public OperationType getOperationType() {
-    return OperationType.ARITHMETIC;
   }
 }

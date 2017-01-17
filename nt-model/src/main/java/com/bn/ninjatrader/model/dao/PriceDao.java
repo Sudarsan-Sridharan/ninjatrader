@@ -1,15 +1,16 @@
 package com.bn.ninjatrader.model.dao;
 
 import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.common.util.DateObjUtil;
 import com.bn.ninjatrader.common.util.DateUtil;
-import com.bn.ninjatrader.common.util.FixedList;
-import com.bn.ninjatrader.model.annotation.DailyPriceCollection;
-import com.bn.ninjatrader.model.request.FindRequest;
+import com.bn.ninjatrader.model.annotation.PriceCollection;
 import com.bn.ninjatrader.model.document.PriceDocument;
+import com.bn.ninjatrader.model.request.FindRequest;
+import com.bn.ninjatrader.model.request.SaveRequest;
 import com.bn.ninjatrader.model.util.Queries;
-import com.bn.ninjatrader.model.util.QueryParamName;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.jongo.MongoCollection;
@@ -19,55 +20,46 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
+
+import static com.bn.ninjatrader.model.util.QueryParam.*;
 
 /**
  * Created by Brad on 4/30/16.
  */
 @Singleton
-public class PriceDao extends AbstractDao<PriceDocument> {
+public class PriceDao extends AbstractDateObjDao<PriceDocument, Price> {
 
-  private static final Logger log = LoggerFactory.getLogger(PriceDao.class);
-  private static final LocalDate MINIMUM_FROM_DATE = LocalDate.of(1999, 1, 1);
+  private static final Logger LOG = LoggerFactory.getLogger(PriceDao.class);
 
   @Inject
-  public PriceDao(@DailyPriceCollection MongoCollection mongoCollection) {
-    super(mongoCollection);
-    mongoCollection.ensureIndex(
-            String.format("{%s : 1 ,%s : 1}", QueryParamName.SYMBOL, QueryParamName.YEAR), "{unique: true}");
+  public PriceDao(@PriceCollection final MongoCollection priceCollection) {
+    super(priceCollection);
+    priceCollection.ensureIndex(Queries.createIndex(SYMBOL, TIMEFRAME, YEAR),
+            "{unique: true}");
   }
 
-  public List<Price> find(FindRequest findRequest) {
-    String symbol = findRequest.getSymbol();
-    LocalDate fromDate = findRequest.getFromDate();
-    LocalDate toDate = findRequest.getToDate();
+  public List<Price> find(final FindRequest findRequest) {
+    final LocalDate fromDate = findRequest.getFromDate();
+    final LocalDate toDate = findRequest.getToDate();
 
-    List<PriceDocument> priceDataList = Lists.newArrayList(getMongoCollection()
-        .find(Queries.FIND_BY_YEAR_RANGE, symbol, fromDate.getYear(), toDate.getYear())
+    final List<PriceDocument> priceDataList = Lists.newArrayList(getMongoCollection()
+        .find(Queries.FIND_BY_SYMBOL_TIMEFRAME_YEAR_RANGE, findRequest.getSymbol(),
+            findRequest.getTimeFrame(),
+            fromDate.getYear(),
+            toDate.getYear())
         .as(PriceDocument.class).iterator());
-    List<Price> prices = Lists.newArrayList();
+    final List<Price> prices = Lists.newArrayList();
 
-    for (PriceDocument priceData : priceDataList) {
+    for (final PriceDocument priceData : priceDataList) {
       prices.addAll(priceData.getData());
     }
 
     DateObjUtil.trimToDateRange(prices, fromDate, toDate);
-
-    return prices;
-  }
-
-  public List<Price> findNBarsBeforeDate(String symbol, int numOfBars, LocalDate beforeDate) {
-    List<Price> prices = FixedList.withMaxSize(numOfBars);
-    LocalDate fromDate = beforeDate.withDayOfYear(1);
-
-    do {
-      List<Price> pricesForYear = find(FindRequest.forSymbol(symbol).from(fromDate).to(beforeDate));
-      prices.clear();
-      prices.addAll(pricesForYear);
-      fromDate = fromDate.minusYears(1);
-    } while (prices.size() < numOfBars && fromDate.isAfter(MINIMUM_FROM_DATE));
 
     return prices;
   }
@@ -77,26 +69,26 @@ public class PriceDao extends AbstractDao<PriceDocument> {
   }
 
   @Override
-  public void save(PriceDocument priceData) {
-    Collections.sort(priceData.getData());
-    super.save(priceData);
+  public void save(final PriceDocument priceDocument) {
+    Collections.sort(priceDocument.getData());
+    super.save(priceDocument);
   }
 
-  public void save(String symbol, List<Price> prices) {
-    Collections.sort(prices);
-    List<LocalDate> removeDates = Lists.newArrayList();
-    List<Price> perYearPriceList = Lists.newArrayList();
+  public void save(final SaveRequest<Price> req) {
+    Collections.sort(req.getValues());
+    final List<LocalDate> removeDates = Lists.newArrayList();
+    final List<Price> perYearPriceList = Lists.newArrayList();
 
     int currYear = 0;
-    for (Price price : prices) {
+    for (final Price price : req.getValues()) {
 
       if (currYear != price.getDate().getYear()) {
 
         // Remove all old values w/ date in new values
-        removeByDates(symbol, removeDates);
+        removeByDates(req, removeDates);
 
         // Save list of values to year
-        saveToYear(symbol, currYear, perYearPriceList);
+        saveByYear(req, currYear, perYearPriceList);
 
         removeDates.clear();
         perYearPriceList.clear();
@@ -109,51 +101,56 @@ public class PriceDao extends AbstractDao<PriceDocument> {
     }
 
     // For the last year
-    removeByDates(symbol, removeDates);
-    saveToYear(symbol, currYear, perYearPriceList);
+    removeByDates(req, removeDates);
+    saveByYear(req, currYear, perYearPriceList);
   }
 
-  public void removeByDates(String symbol, List<LocalDate> removeDates) {
+  public void removeByDates(final SaveRequest<Price> req, final List<LocalDate> removeDates) {
     if (!removeDates.isEmpty()) {
-      List<String> dates = DateUtil.toListOfString(removeDates);
+      final List<String> dates = DateUtil.toListOfString(removeDates);
 
-      getMongoCollection().update(Queries.FIND_BY_SYMBOL, symbol).multi()
+      getMongoCollection()
+          .update(Queries.FIND_BY_SYMBOL_TIMEFRAME, req.getSymbol(), req.getTimeFrame())
+          .multi()
           .with("{$pull: {data :{d: {$in: #}}}}", dates);
     }
   }
 
-  public void removeByDates(List<LocalDate> removeDates) {
+  public void removeByDates(final List<LocalDate> removeDates) {
     if (!removeDates.isEmpty()) {
-      List<String> dates = DateUtil.toListOfString(removeDates);
+      final List<String> dates = DateUtil.toListOfString(removeDates);
 
       getMongoCollection().update("{}").multi()
           .with("{$pull: {data :{d: {$in: #}}}}", dates);
     }
   }
 
-  private void saveToYear(String symbol, int year, List<Price> prices) {
+  private void saveByYear(final SaveRequest<Price> req,
+                          final int year,
+                          final List<Price> prices) {
     if (!prices.isEmpty()) {
       // Insert new values
-      getMongoCollection().update(Queries.FIND_BY_YEAR, symbol, year)
+      getMongoCollection()
+          .update(Queries.FIND_BY_SYMBOL_TIMEFRAME_YEAR, req.getSymbol(), req.getTimeFrame(), year)
           .upsert()
           .with("{$push: { data: { $each: #, $sort: { d: 1}}}}", prices);
     }
   }
 
-  public List<String> findAllSymbols() {
-    int year = LocalDate.now().getYear();
-    final List<String> symbols = Lists.newArrayList();
+  public Collection<String> findAllSymbols() {
+    final int thisYear = LocalDate.now().getYear();
+    final Set<String> symbols = Sets.newHashSet();
 
-    try (MongoCursor<PriceDocument> cursor = getMongoCollection()
-            .find(Queries.FIND_ALL_FOR_YEAR, year)
+    try (final MongoCursor<PriceDocument> cursor = getMongoCollection()
+            .find(Queries.FIND_BY_TIMEFRAME_YEAR, TimeFrame.ONE_DAY, thisYear)
             .as(PriceDocument.class)) {
       cursor.forEach(new Consumer<PriceDocument>() {
         @Override
-        public void accept(PriceDocument priceData) {
+        public void accept(final PriceDocument priceData) {
           symbols.add(priceData.getSymbol());
         }
       });
-    } catch (IOException e) {
+    } catch (final IOException e) {
       throw new RuntimeException(e);
     }
     return symbols;

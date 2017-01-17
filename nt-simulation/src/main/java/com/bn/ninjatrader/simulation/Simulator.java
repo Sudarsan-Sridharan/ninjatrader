@@ -21,10 +21,10 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 
 import static com.bn.ninjatrader.simulation.condition.Conditions.*;
-import static com.bn.ninjatrader.simulation.data.DataType.PRICE_CLOSE;
+import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_CLOSE;
 import static com.bn.ninjatrader.simulation.data.DataType.RSI;
 import static com.bn.ninjatrader.simulation.data.DataType.SMA;
-import static com.bn.ninjatrader.simulation.operation.function.Functions.highestInLastNBars;
+import static com.bn.ninjatrader.simulation.operation.function.Functions.highestInBarsAgo;
 import static com.bn.ninjatrader.simulation.order.MarketTime.CLOSE;
 import static com.bn.ninjatrader.simulation.order.OrderParameters.buy;
 import static com.bn.ninjatrader.simulation.order.OrderParameters.sell;
@@ -43,19 +43,16 @@ public class Simulator {
   private ReportDao reportDao;
 
   public SimulationReport play(final SimulationParams params) {
-    Simulation simulation = simulationFactory.create(params);
+    final Simulation simulation = simulationFactory.create(params);
     SimulationReport simulationReport = simulation.play();
-
     saveReport(simulationReport);
-
     return simulationReport;
   }
 
   private void saveReport(SimulationReport simulationReport) {
-    Report report = new Report();
+    final Report report = new Report();
     report.setReportId("SAMPLE_REPORT"); // TODO REMOVE THIS!!
     report.setData(simulationReport);
-
     reportDao.save(report);
   }
 
@@ -76,8 +73,8 @@ public class Simulator {
     params.setBuyCondition(Conditions.create()
         .add(gt(PRICE_CLOSE, Variable.of(SMA).period(21)))
         .add(gt(Variable.of(SMA).period(21), Variable.of(SMA).period(50)))
-        .add(gt(PRICE_CLOSE, highestInLastNBars(PRICE_CLOSE, 4)))
-//        .add(gt(PRICE_CLOSE, barsAgo(PRICE_CLOSE, 100)))
+        .add(gt(PRICE_CLOSE, highestInBarsAgo(PRICE_CLOSE, 4)))
+//        .add(gt(PRICE_CLOSE, withinBarsAgo(PRICE_CLOSE, 100)))
     );
 
     params.setBuyOrderParams(buy()

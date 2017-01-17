@@ -6,23 +6,33 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.time.LocalDate;
+
 /**
  * @author bradwee2000@gmail.com
  */
 public class FindBeforeDateRequest {
 
-  public static final EntityIdBuilder builder() {
-    return new EntityIdBuilder();
+  public static final FindBeforeDateRequestBuilder builder() {
+    return new FindBeforeDateRequestBuilder();
   }
 
   private final String symbol;
   private final TimeFrame timeFrame;
   private final int period;
+  private final LocalDate beforeDate;
+  private final int numOfValues;
 
-  private FindBeforeDateRequest(final String symbol, final TimeFrame timeFrame, final int period) {
+  private FindBeforeDateRequest(final String symbol,
+                                final TimeFrame timeFrame,
+                                final int period,
+                                final LocalDate beforeDate,
+                                final int numOfValues) {
     this.symbol = symbol;
     this.timeFrame = timeFrame;
     this.period = period;
+    this.beforeDate = beforeDate;
+    this.numOfValues = numOfValues;
   }
 
   public String getSymbol() {
@@ -37,12 +47,22 @@ public class FindBeforeDateRequest {
     return timeFrame;
   }
 
+  public LocalDate getBeforeDate() {
+    return beforeDate;
+  }
+
+  public int getNumOfValues() {
+    return numOfValues;
+  }
+
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
         .append("symbol", symbol)
         .append("timeFrame", timeFrame)
         .append("period", period)
+        .append("beforeDate", beforeDate)
+        .append("numOfValues", numOfValues)
         .toString();
   }
 
@@ -61,39 +81,59 @@ public class FindBeforeDateRequest {
         .append(symbol, rhs.symbol)
         .append(timeFrame, rhs.timeFrame)
         .append(period, rhs.period)
+        .append(beforeDate, rhs.beforeDate)
+        .append(numOfValues, rhs.numOfValues)
         .isEquals();
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder().append(symbol).append(timeFrame).append(period).toHashCode();
+    return new HashCodeBuilder()
+        .append(symbol)
+        .append(timeFrame)
+        .append(period)
+        .append(beforeDate)
+        .append(numOfValues)
+        .toHashCode();
   }
 
   /**
    * Builder for EntityId.
    */
-  public static final class EntityIdBuilder {
+  public static final class FindBeforeDateRequestBuilder {
     private String symbol;
     private TimeFrame timeFrame;
     private int period;
+    private LocalDate beforeDate;
+    private int numOfValues;
 
-    public EntityIdBuilder symbol(final String symbol) {
+    public FindBeforeDateRequestBuilder symbol(final String symbol) {
       this.symbol = symbol;
       return this;
     }
 
-    public EntityIdBuilder timeFrame(final TimeFrame timeFrame) {
+    public FindBeforeDateRequestBuilder timeFrame(final TimeFrame timeFrame) {
       this.timeFrame = timeFrame;
       return this;
     }
 
-    public EntityIdBuilder symbol(final int period) {
+    public FindBeforeDateRequestBuilder period(final int period) {
       this.period = period;
       return this;
     }
 
+    public FindBeforeDateRequestBuilder beforeDate(final LocalDate beforeDate) {
+      this.beforeDate = beforeDate;
+      return this;
+    }
+
+    public FindBeforeDateRequestBuilder numOfValues(final int numOfValues) {
+      this.numOfValues = numOfValues;
+      return this;
+    }
+
     public FindBeforeDateRequest build() {
-      return new FindBeforeDateRequest(symbol, timeFrame, period);
+      return new FindBeforeDateRequest(symbol, timeFrame, period, beforeDate, numOfValues);
     }
   }
 }

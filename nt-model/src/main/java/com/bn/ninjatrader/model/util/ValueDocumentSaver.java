@@ -18,12 +18,12 @@ import java.util.List;
  */
 public class ValueDocumentSaver {
 
-  private static final Logger log = LoggerFactory.getLogger(ValueDocumentSaver.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ValueDocumentSaver.class);
 
-  private MongoCollection mongoCollection;
+  private final MongoCollection mongoCollection;
 
-  public ValueDocumentSaver(MongoCollection mongoCollection) {
-    this.mongoCollection = mongoCollection;
+  public ValueDocumentSaver(MongoCollection mongoCollections) {
+    this.mongoCollection = mongoCollections;
   }
 
   public void save(SaveRequest saveRequest) {
@@ -33,7 +33,7 @@ public class ValueDocumentSaver {
     }
 
     List<ValuesPerYear> valuesPerYearList = splitToValuesPerYear(saveRequest.getValues());
-    saveValuesPerYear(saveRequest.getSymbol(), saveRequest.getPeriod(), valuesPerYearList);
+    saveValuesPerYear(saveRequest, valuesPerYearList);
   }
 
   private void assertPreconditions(SaveRequest saveRequest) {
@@ -60,30 +60,37 @@ public class ValueDocumentSaver {
     return valuesPerYearList;
   }
 
-  private void saveValuesPerYear(String symbol, int period, List<ValuesPerYear> valuesPerYearList) {
+  private void saveValuesPerYear(SaveRequest saveRequest, List<ValuesPerYear> valuesPerYearList) {
     for (ValuesPerYear valuesPerYear : valuesPerYearList) {
-      int year = valuesPerYear.getYear();
-      removeByDates(symbol, year, period, valuesPerYear.getDatesToRemove());
-      saveByYearAndPeriod(symbol, year, period, valuesPerYear.getValues());
+      removeByDates(saveRequest, valuesPerYear);
+      saveByYearAndPeriod(saveRequest, valuesPerYear);
     }
   }
 
   /**
    * Remove all existing Values w/ same dates
    */
-  private void removeByDates(String symbol, int year, int period, List<String> dates) {
-    if (!dates.isEmpty()) {
-      mongoCollection.update(Queries.FIND_BY_PERIOD, symbol, year, period)
-          .with("{$pull: { data: {d: {$in: #}}}}", dates);
+  private void removeByDates(SaveRequest saveRequest, ValuesPerYear valuesPerYear) {
+    if (!valuesPerYear.getDatesToRemove().isEmpty()) {
+      mongoCollection.update(Queries.FIND_BY_PERIOD,
+          saveRequest.getSymbol(),
+          saveRequest.getTimeFrame(),
+          valuesPerYear.getYear(),
+          saveRequest.getPeriod())
+          .with("{$pull: { data: {d: {$in: #}}}}", valuesPerYear.getDatesToRemove());
     }
   }
 
-  private void saveByYearAndPeriod(String symbol, int year, int period, List<? extends Value> values) {
-    if (!values.isEmpty()) {
+  private void saveByYearAndPeriod(SaveRequest saveRequest, ValuesPerYear valuesPerYear) {
+    if (!valuesPerYear.getValues().isEmpty()) {
       // Insert new values
-      mongoCollection.update(Queries.FIND_BY_PERIOD, symbol, year, period)
+      mongoCollection.update(Queries.FIND_BY_PERIOD,
+          saveRequest.getSymbol(),
+          saveRequest.getTimeFrame(),
+          valuesPerYear.getYear(),
+          saveRequest.getPeriod())
           .upsert()
-          .with("{$push: { data: { $each: #, $sort: { d: 1}}}}", values);
+          .with("{$push: { data: { $each: #, $sort: { d: 1}}}}", valuesPerYear.getValues());
     }
   }
 

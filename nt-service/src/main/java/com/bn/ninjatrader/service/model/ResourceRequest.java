@@ -1,11 +1,13 @@
 package com.bn.ninjatrader.service.model;
 
 import com.bn.ninjatrader.common.type.TimeFrame;
+import com.bn.ninjatrader.model.request.FindRequest;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -19,9 +21,6 @@ public class ResourceRequest {
 
   @QueryParam("timeframe")
   private Optional<TimeFrame> timeFrame;
-
-  @QueryParam("period")
-  private int period;
 
   @QueryParam("from")
   private Optional<LocalDate> from;
@@ -45,14 +44,6 @@ public class ResourceRequest {
     this.timeFrame = timeFrame;
   }
 
-  public int getPeriod() {
-    return period;
-  }
-
-  public void setPeriod(int period) {
-    this.period = period;
-  }
-
   public Optional<LocalDate> getFrom() {
     return from;
   }
@@ -71,12 +62,18 @@ public class ResourceRequest {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(ToStringStyle.SHORT_PREFIX_STYLE)
+    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
         .append("symbol", symbol)
         .append("timeFrame", timeFrame)
-        .append("period", period)
         .append("from", from)
         .append("to", to)
         .build();
+  }
+
+  public FindRequest toFindRequest(Clock clock) {
+    return FindRequest.findSymbol(symbol)
+        .timeframe(timeFrame.orElse(TimeFrame.ONE_DAY))
+        .from(from.orElse(LocalDate.now(clock).minusYears(2)))
+        .to(to.orElse(LocalDate.now(clock)));
   }
 }

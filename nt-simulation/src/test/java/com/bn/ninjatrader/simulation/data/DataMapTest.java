@@ -7,8 +7,10 @@ import org.testng.annotations.Test;
 
 import java.util.Map;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
+import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_CLOSE;
+import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_OPEN;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * Created by Brad on 8/18/16.
@@ -22,53 +24,52 @@ public class DataMapTest {
     dataMap = new DataMap();
   }
 
-  @Test(expectedExceptions = IllegalArgumentException.class)
-  public void testGetWithEmptyMap() {
-    assertEquals(dataMap.size(), 0);
-    assertNull(dataMap.get(DataType.PRICE_OPEN));
+  @Test
+  public void testGetWithEmptyMap_shouldThrowException() {
+    assertThat(dataMap.size()).isEqualTo(0);
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> dataMap.get(PRICE_OPEN));
   }
 
   @Test
-  public void testPutKeyValue() {
-    dataMap.put(DataType.PRICE_OPEN, 10);
-    dataMap.put(DataType.PRICE_CLOSE, 20);
+  public void testPutKeyValue_shouldAssignValuesToVariables() {
+    dataMap.put(PRICE_OPEN, 10);
+    dataMap.put(PRICE_CLOSE, 20);
 
-    assertEquals(dataMap.size(), 2);
-    assertEquals(dataMap.get(DataType.PRICE_OPEN), 10d);
-    assertEquals(dataMap.get(DataType.PRICE_CLOSE), 20d);
+    assertThat(dataMap.size()).isEqualTo(2);
+    assertThat(dataMap.get(PRICE_OPEN)).isEqualTo(10d);
+    assertThat(dataMap.get(PRICE_CLOSE)).isEqualTo(20d);
   }
 
   @Test
-  public void testPutHashMap() {
+  public void testPutHashMapOfValues_shouldAssignValuesToVariables() {
     Map<Variable, Double> map = Maps.newHashMap();
-    map.put(Variable.of(DataType.PRICE_OPEN), 10d);
-    map.put(Variable.of(DataType.PRICE_CLOSE), 20d);
+    map.put(PRICE_OPEN, 10d);
+    map.put(PRICE_CLOSE, 20d);
 
-    dataMap.put(map);
-    assertEquals(dataMap.size(), 2);
-    assertEquals(dataMap.get(DataType.PRICE_OPEN), 10d);
-    assertEquals(dataMap.get(DataType.PRICE_CLOSE), 20d);
+    dataMap.putAll(map);
+    assertThat(dataMap.size()).isEqualTo(2);
+    assertThat(dataMap.get(PRICE_OPEN)).isEqualTo(10d);
+    assertThat(dataMap.get(PRICE_CLOSE)).isEqualTo(20d);
   }
 
   @Test
-  public void testPutDataMap() {
+  public void testPutAnotherDataMap_shouldAssignValuesToVariables() {
     DataMap subDataMap = new DataMap();
-    subDataMap.put(DataType.PRICE_OPEN, 10d);
-    subDataMap.put(DataType.PRICE_CLOSE, 20d);
+    subDataMap.put(PRICE_OPEN, 10d);
+    subDataMap.put(PRICE_CLOSE, 20d);
 
-    dataMap.put(subDataMap);
-    assertEquals(dataMap.size(), 2);
-    assertEquals(dataMap.get(DataType.PRICE_OPEN), 10d);
-    assertEquals(dataMap.get(DataType.PRICE_CLOSE), 20d);
+    dataMap.putAll(subDataMap);
+    assertThat(dataMap.size()).isEqualTo(2);
+    assertThat(dataMap.get(PRICE_OPEN)).isEqualTo(10d);
+    assertThat(dataMap.get(PRICE_CLOSE)).isEqualTo(20d);
   }
 
   @Test
-  public void testClearDataMap() {
-    dataMap.put(DataType.PRICE_OPEN, 10);
-    dataMap.put(DataType.PRICE_CLOSE, 20);
-
+  public void testClear_shouldBeEmpty() {
+    dataMap.put(PRICE_OPEN, 10);
+    dataMap.put(PRICE_CLOSE, 20);
     dataMap.clear();
 
-    assertEquals(dataMap.size(), 0);
+    assertThat(dataMap.size()).isEqualTo(0);
   }
 }

@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.service.task;
 
-import com.bn.ninjatrader.data.history.PriceImporter;
+import com.bn.ninjatrader.dataimport.history.CsvPriceImporter;
 import com.google.common.collect.ImmutableMultimap;
 import org.junit.Test;
 
@@ -14,8 +14,8 @@ import static org.mockito.Mockito.*;
 public class ImportCSVPriceTaskTest {
 
   private final PrintWriter printWriter = mock(PrintWriter.class);
-  private final PriceImporter  priceImporter = mock(PriceImporter.class);
-  private final ImportCSVPriceTask importPriceTask = new ImportCSVPriceTask(priceImporter);
+  private final CsvPriceImporter csvPriceImporter = mock(CsvPriceImporter.class);
+  private final ImportCSVPriceTask importPriceTask = new ImportCSVPriceTask(csvPriceImporter);
 
   @Test
   public void execute_shouldImportPrices() throws Exception {
@@ -23,6 +23,6 @@ public class ImportCSVPriceTaskTest {
 
     importPriceTask.execute(map, printWriter);
 
-    verify(priceImporter, times(1)).importPrices();
+    verify(csvPriceImporter, times(1)).importPrices();
   }
 }

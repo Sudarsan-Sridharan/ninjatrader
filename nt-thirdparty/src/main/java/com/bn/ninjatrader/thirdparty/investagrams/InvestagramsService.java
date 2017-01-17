@@ -34,6 +34,6 @@ public class InvestagramsService {
 
   public static void main(String args[]) throws IOException, ExecutionException, InterruptedException {
     InvestagramsService service = new InvestagramsService();
-    service.getDailyQuotes();
+    service.getHistoricalQuotesForAllStocks();
   }
 }

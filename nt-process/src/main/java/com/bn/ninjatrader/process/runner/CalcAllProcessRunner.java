@@ -3,7 +3,6 @@ package com.bn.ninjatrader.process.runner;
 import com.bn.ninjatrader.common.data.Stock;
 import com.bn.ninjatrader.model.dao.StockDao;
 import com.bn.ninjatrader.model.guice.NtModelModule;
-import com.bn.ninjatrader.process.annotation.CalcAllProcess;
 import com.bn.ninjatrader.process.calc.*;
 import com.bn.ninjatrader.process.guice.NtProcessModule;
 import com.bn.ninjatrader.process.request.CalcRequest;
@@ -18,12 +17,12 @@ import java.time.LocalDate;
 /**
  * Created by Brad on 8/15/16.
  */
+@Deprecated
 public class CalcAllProcessRunner {
   private static final Logger log = LoggerFactory.getLogger(CalcAllProcessRunner.class);
 
   @Inject
-  @CalcAllProcess
-  private CalcProcess calcAllProcess;
+  private CalcAllProcess calcAllProcess;
 
   @Inject
   private CalcWeeklyPriceProcess calcMeanProcess;
@@ -35,13 +34,7 @@ public class CalcAllProcessRunner {
   private CalcPriceChangeProcess calcPriceChangeProcess;
 
   @Inject
-  private CalcWeeklyPriceChangeProcess calcWeeklyPriceChangeProcess;
-
-  @Inject
   private CalcWeeklyPriceProcess calcWeeklyPriceProcess;
-
-  @Inject
-  private CalcWeeklyMeanProcess calcWeeklyMeanProcess;
 
   @Inject
   private CalcRSIProcess calcRSIProcess;
@@ -59,7 +52,7 @@ public class CalcAllProcessRunner {
     log.info("Running: {}", calcProcess.getClass().getSimpleName());
 
     for (Stock stock : stockDao.find()) {
-      calcProcess.processMissingBars(
+      calcProcess.process(
           CalcRequest.forStock(stock)
               .from(fromDate)
               .to(toDate));

@@ -1,82 +1,46 @@
 package com.bn.ninjatrader.thirdparty.pse;
 
-import com.bn.ninjatrader.common.data.Stock;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 /**
- * Created by Brad on 6/21/16.
+ * Created by Brad on 11/04/16.
  */
 public class PseAllStockUpdate {
 
-  @JsonProperty("securitySymbol")
-  private String symbol;
+  private LocalDateTime lastUpdateDate;
 
-  @JsonProperty("securityAlias")
-  private String name;
+  private List<PseStock> stocks;
 
-  @JsonProperty("percChangeClose")
-  private double pcntChangeClose;
-
-  @JsonProperty("lastTradedPrice")
-  private String close;
-
-  @JsonProperty("totalVolume") // TODO Seems inaccurate.
-  private String volume;
-
-  public String getSymbol() {
-    return symbol;
+  public PseAllStockUpdate(LocalDateTime lastUpdateDate, List<PseStock> stocks) {
+    this.lastUpdateDate = lastUpdateDate;
+    this.stocks = stocks;
   }
 
-  public void setSymbol(String symbol) {
-    this.symbol = symbol;
+  public LocalDateTime getLastUpdateDate() {
+    return lastUpdateDate;
   }
 
-  public String getName() {
-    return name;
+  public void setLastUpdateDate(LocalDateTime lastUpdateDate) {
+    this.lastUpdateDate = lastUpdateDate;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public List<PseStock> getStocks() {
+    return stocks;
   }
 
-  public double getPcntChangeClose() {
-    return pcntChangeClose;
-  }
-
-  public void setPcntChangeClose(double pcntChangeClose) {
-    this.pcntChangeClose = pcntChangeClose;
-  }
-
-  public String getClose() {
-    return close;
-  }
-
-  public void setClose(String close) {
-    this.close = close;
-  }
-
-  public String getVolume() {
-    return volume;
-  }
-
-  public void setVolume(String volume) {
-    this.volume = volume;
+  public void setStocks(List<PseStock> stocks) {
+    this.stocks = stocks;
   }
 
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .append("symbol", symbol)
-        .append("name", name)
-        .append("close", close)
-        .append("pcntChange", pcntChangeClose)
-        .append("volume", volume)
+        .append("lastUpdateDate", lastUpdateDate)
+        .append("stocks", stocks)
         .toString();
-  }
-
-  public Stock toStock() {
-    return new Stock(symbol, name);
   }
 }

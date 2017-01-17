@@ -11,4 +11,5 @@ public class DateFormats {
 
   public static final DateTimeFormatter DB_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
   public static final DateTimeFormatter DB_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+  public static final DateTimeFormatter PSE_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a");
 }

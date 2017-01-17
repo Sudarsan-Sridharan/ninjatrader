@@ -1,64 +1,54 @@
-define(function() {
-    function Grid(config, selection, xAxis, yAxis) {
+define(["d3"], function(d3) {
+    function StockMeta(config) {
         this.config = config;
-        this.main = selection.append("g").classed("grid", true);
-        this.vertical = this.main.append("g").classed("vertical", true);
-        this.horizontal = this.main.append("g").classed("horizontal", true);
-        this.xAxis = xAxis;
-        this.yAxis = yAxis;
-        this.verticalX = function(date) { return config.xByDate(date.d) + config.columnWidth / 2 };
-        this.horizontalY = function(price) { return config.yByPrice(price) };
-    }
+        this.main = d3.select(document.createElementNS(d3.namespaces.xhtml, "div"))
+            .classed("stockMeta", true);
+        this.symbol = this.main.append("span").classed("symbol", true);
+        this.priceMeta = this.main.append("span").classed("priceMeta", true);
 
-    Grid.prototype.show = function(priceData, query) {
-        this.printVerticalLines();
-        this.printHorizontalLines();
+        this.open = this.addField(this.priceMeta, "O:", "open");
+        this.high = this.addField(this.priceMeta, "H:", "high");
+        this.low = this.addField(this.priceMeta, "L:", "low");
+        this.close = this.addField(this.priceMeta, "C:", "close");
+        this.volume = this.addField(this.priceMeta, "V:", "volume");
     };
 
-    Grid.prototype.printVerticalLines = function() {
+    StockMeta.prototype.addField = function(selection, label, name) {
+        selection.append("span").classed("metaLabel", 1).html(label);
+        return selection.append("span")
+            .classed("metaValue", true)
+            .classed(name, true);
+    };
+
+    StockMeta.prototype.show = function(priceData, query) {
+        this.symbol.html(query.symbol);
+        this.priceData = priceData;
+    };
+
+    StockMeta.prototype.getNode = function() {
+        return this.main.node();
+    };
+
+    StockMeta.prototype.meta = function(price) {
+        this.open.html(price.o);
+        this.high.html(price.h);
+        this.low.html(price.l);
+        this.close.html(price.c);
+        this.volume.html(price.v);
+        this.priceMeta.classed("up", price.c > price.o)
+            .classed("down", price.o > price.c);
+    };
+
+    StockMeta.prototype.onMouseMove = function(coords) {
         var config = this.config;
-        var xTicks = [];
-        this.xAxis.getTicks().selectAll(".tick").each(function(date) { xTicks.push(date) });
-
-        var verticalLine = this.vertical.selectAll("line")
-            .data(xTicks);
-
-        verticalLine.enter()
-            .append("line")
-            .attr("x1", this.verticalX)
-            .attr("x2", this.verticalX)
-            .attr("y2", config.chartHeight);
-        verticalLine.merge(verticalLine)
-            .attr("y2", config.chartHeight)
-            .transition().duration(this.config.transitionDuration)
-            .attr("x1", this.verticalX)
-            .attr("x2", this.verticalX);
-        verticalLine.exit().remove();
+        var index = Math.floor(config.xByIndex.invert(coords[0]));
+        if (this.currentIndex != index) {
+            this.currentIndex = index;
+            if (this.priceData && this.priceData.values[index]) {
+                this.meta(this.priceData.values[index]);
+            }
+        }
     };
 
-    Grid.prototype.printHorizontalLines = function() {
-        var config = this.config;
-        var yTicks = [];
-        this.yAxis.getTicks().selectAll(".tick").each(function(price) { yTicks.push(price) });
-
-        var horizontalLine = this.horizontal.selectAll("line")
-            .data(yTicks);
-        horizontalLine.enter()
-            .append("line")
-            .attr("x2", config.chartWidth)
-            .attr("y1", this.horizontalY)
-            .attr("y2", this.horizontalY);
-        horizontalLine.merge(horizontalLine)
-            .attr("x2", config.chartWidth)
-            .transition().duration(this.config.transitionDuration)
-            .attr("y1", this.horizontalY)
-            .attr("y2", this.horizontalY);
-        horizontalLine.exit()
-            .transition().duration(this.config.transitionDuration)
-            .attr("y1", -10)
-            .attr("y2", -10)
-            .remove();
-    };
-
-    return Grid;
+    return StockMeta;
 });

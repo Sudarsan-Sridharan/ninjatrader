@@ -6,9 +6,9 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-import static com.bn.ninjatrader.simulation.data.DataType.PRICE_CLOSE;
+import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_CLOSE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 
 /**
  * Created by Brad on 8/18/16.
@@ -31,9 +31,9 @@ public class SimulationDataTest {
     SimulationData<Double> data = new SimulationData<>(values, adaptor);
     assertEquals(data.size(), 3);
 
-    assertNotNull(data.getDataMap(0));
-    assertEquals(data.getDataMap(0).get(PRICE_CLOSE), 1d);
-    assertEquals(data.getDataMap(1).get(PRICE_CLOSE), 2d);
-    assertEquals(data.getDataMap(2).get(PRICE_CLOSE), 3d);
+    assertThat(data.getDataMap(0)).isNotNull();
+    assertThat(data.getDataMap(0).get(PRICE_CLOSE)).isEqualTo(1d);
+    assertThat(data.getDataMap(1).get(PRICE_CLOSE)).isEqualTo(2d);
+    assertThat(data.getDataMap(2).get(PRICE_CLOSE)).isEqualTo(3d);
   }
 }

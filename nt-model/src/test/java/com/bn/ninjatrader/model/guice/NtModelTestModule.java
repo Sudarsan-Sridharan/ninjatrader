@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.model.guice;
 
+import com.bn.ninjatrader.model.annotation.TestCollection;
 import com.bn.ninjatrader.model.mongo.DbClient;
 import org.jongo.MongoCollection;
 
@@ -9,7 +10,7 @@ import org.jongo.MongoCollection;
 public class NtModelTestModule extends NtModelModule {
 
   private static final String DB_NAME = "test_ninja_trader";
-  private static final String HOST = "192.168.99.100:32769";
+  private static final String HOST = "192.168.99.100:32768";
   private static final DbClient dbClient = DbClient.create().host(HOST).databaseName(DB_NAME).connect();
   private MongoCollection testCollection;
 
@@ -23,9 +24,5 @@ public class NtModelTestModule extends NtModelModule {
     testCollection = dbClient.getMongoCollection("test_collection");
 
     bind(MongoCollection.class).annotatedWith(TestCollection.class).toInstance(testCollection);
-  }
-
-  public MongoCollection getTestCollection() {
-    return testCollection;
   }
 }

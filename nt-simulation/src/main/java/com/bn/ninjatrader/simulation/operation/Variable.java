@@ -2,6 +2,7 @@ package com.bn.ninjatrader.simulation.operation;
 
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.DataType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -10,33 +11,31 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Set;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * @author bradwee2000@gmail.com
  */
 public class Variable implements Operation {
 
-  private static final Variable CONSTANT = new Variable(DataType.CONSTANT);
-
-  public static final Variable constant() { return CONSTANT; }
-
   public static final Variable of(DataType dataType) {
     return new Variable(dataType);
   }
 
-  public static final Variable withPeriod(DataType dataType, int period) {
-    return new Variable(dataType, period);
-  }
-
+  @JsonProperty("dataType")
   private DataType dataType;
+
+  @JsonProperty("period")
   private int period;
 
-  public Variable() {}
-
   public Variable(DataType dataType) {
-    this.dataType = dataType;
+    this(dataType, 0);
   }
 
-  public Variable(DataType dataType, int period) {
+  public Variable(@JsonProperty("dataType") final DataType dataType,
+                  @JsonProperty("period") final int period) {
+    checkNotNull(dataType, "DataType must not be null.");
+
     this.dataType = dataType;
     this.period = period;
   }
@@ -71,14 +70,6 @@ public class Variable implements Operation {
   }
 
   @Override
-  public int hashCode() {
-    return new HashCodeBuilder()
-        .append(dataType)
-        .append(period)
-        .build();
-  }
-
-  @Override
   public boolean equals(Object obj) {
     if (obj == null) { return false; }
     if (!(obj instanceof Variable)) {
@@ -98,17 +89,20 @@ public class Variable implements Operation {
   }
 
   @Override
-  public double getValue(BarData barData) {
+  public int hashCode() {
+    return new HashCodeBuilder()
+        .append(dataType)
+        .append(period)
+        .build();
+  }
+
+  @Override
+  public double getValue(final BarData barData) {
     return barData.get(this);
   }
 
   @Override
   public Set<Variable> getVariables() {
     return Sets.newHashSet(this);
-  }
-
-  @Override
-  public OperationType getOperationType() {
-    return OperationType.VARIABLE;
   }
 }

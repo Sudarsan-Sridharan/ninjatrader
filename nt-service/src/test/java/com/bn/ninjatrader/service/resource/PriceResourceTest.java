@@ -1,12 +1,12 @@
 package com.bn.ninjatrader.service.resource;
 
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.common.rest.PriceResponse;
+import com.bn.ninjatrader.service.model.PriceResponse;
 import com.bn.ninjatrader.common.type.TimeFrame;
+import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.service.provider.LocalDateParamConverterProvider;
-import com.bn.ninjatrader.service.resource.PriceResource;
 import com.google.common.collect.Lists;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;
@@ -19,7 +19,6 @@ import org.mockito.Mockito;
 import javax.ws.rs.NotFoundException;
 import java.time.Clock;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,9 +35,7 @@ public class PriceResourceTest {
   private static final LocalDate date2 = LocalDate.of(2016, 2, 5);
   private static final Price price1 = new Price(date1, 1, 2, 3, 4, 10000);
   private static final Price price2 = new Price(date2, 5, 6, 7, 8, 20000);
-
-  private static final ZoneId zoneId = ZoneId.systemDefault();
-  private static final Clock fixedClock = Clock.fixed(date1.atStartOfDay(zoneId).toInstant(), zoneId);
+  private static final Clock fixedClock = TestUtil.fixedClock(date1);
 
   @ClassRule
   public static final ResourceTestRule resources = ResourceTestRule.builder()

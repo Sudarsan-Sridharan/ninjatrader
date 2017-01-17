@@ -6,12 +6,13 @@ package com.bn.ninjatrader.model.util;
 public class QueryParam {
 
   public static final String SYMBOL = "sym";
-  public static final String TIME_FRAME = "tf";
+  public static final String TIMEFRAME = "tf";
   public static final String YEAR = "yr";
   public static final String PERIOD = "pr";
   public static final String DATA = "data";
 
-  public static final String OWNER = "owner";
+  public static final String USER = "user";
+  public static final String REPORT_ID = "report_id";
   public static final String SETTING_NAME = "n";
   public static final String SETTING_VALUE = "v";
 }

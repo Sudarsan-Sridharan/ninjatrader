@@ -1,13 +1,13 @@
 package com.bn.ninjatrader.simulation.operation;
 
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.data.DataType;
-import com.google.common.collect.Sets;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -15,66 +15,42 @@ import java.util.Set;
  */
 public class Constant implements Operation {
 
-  private static final Constant CONSTANT = new Constant(DataType.CONSTANT);
+  private double value;
 
-  public static final Constant constant() { return CONSTANT; }
-
-  public static final Constant of(DataType dataType) {
-    return new Constant(dataType);
+  public static final Constant of(final double value) {
+    return new Constant(value);
   }
 
-  public static final Constant withPeriod(DataType dataType, int period) {
-    return new Constant(dataType, period);
+  public Constant(@JsonProperty("value") final double value) {
+    this.value = value;
   }
 
-  private DataType dataType;
-  private int period;
-
-  public Constant() {}
-
-  public Constant(DataType dataType) {
-    this.dataType = dataType;
+  @Override
+  public double getValue(BarData barData) {
+    return value;
   }
 
-  public Constant(DataType dataType, int period) {
-    this.dataType = dataType;
-    this.period = period;
+  @JsonProperty("value")
+  public double getValue() {
+    return value;
   }
 
-  public DataType getDataType() {
-    return dataType;
-  }
-
-  public void setDataType(DataType dataType) {
-    this.dataType = dataType;
-  }
-
-  public int getPeriod() {
-    return period;
-  }
-
-  public void setPeriod(int period) {
-    this.period = period;
-  }
-
-  public Constant period(int period) {
-    this.period = period;
-    return this;
+  @Override
+  public Set<Variable> getVariables() {
+    return Collections.emptySet();
   }
 
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .append("dataType", dataType)
-        .append("period", period)
+        .append("value", value)
         .build();
   }
 
   @Override
   public int hashCode() {
     return new HashCodeBuilder()
-        .append(dataType)
-        .append(period)
+        .append(value)
         .build();
   }
 
@@ -92,23 +68,7 @@ public class Constant implements Operation {
     Constant rhs = (Constant) obj;
 
     return new EqualsBuilder()
-        .append(dataType, rhs.dataType)
-        .append(period, rhs.period)
+        .append(value, rhs.value)
         .build();
-  }
-
-  @Override
-  public double getValue(BarData barData) {
-    return barData.get(this);
-  }
-
-  @Override
-  public Set<Constant> getVariables() {
-    return Sets.newHashSet(this);
-  }
-
-  @Override
-  public OperationType getOperationType() {
-    return OperationType.VARIABLE;
   }
 }

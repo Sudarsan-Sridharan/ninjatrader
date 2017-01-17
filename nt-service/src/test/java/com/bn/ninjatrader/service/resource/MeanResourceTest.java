@@ -2,7 +2,7 @@ package com.bn.ninjatrader.service.resource;
 
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.common.util.TestUtil;
-import com.bn.ninjatrader.model.dao.SMADao;
+import com.bn.ninjatrader.model.dao.MeanDao;
 import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.service.model.MultiPeriodResponse;
 import com.bn.ninjatrader.service.provider.LocalDateParamConverterProvider;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
  */
 public class MeanResourceTest {
 
-  private static final SMADao smaDao = mock(SMADao.class);
+  private static final MeanDao meanDao = mock(MeanDao.class);
   private static final LocalDate date1 = LocalDate.of(2016, 2, 1);
   private static final LocalDate date2 = LocalDate.of(2016, 2, 5);
   private static final Value value1 = Value.of(date1, 1);
@@ -37,27 +37,27 @@ public class MeanResourceTest {
 
   @ClassRule
   public static final ResourceTestRule resources = ResourceTestRule.builder()
-      .addResource(new SMAResource(smaDao, fixedClock))
+      .addResource(new MeanResource(meanDao, fixedClock))
       .addProvider(LocalDateParamConverterProvider.class)
       .build();
 
   @Before
   public void before() {
-    when(smaDao.find(any(FindRequest.class)))
+    when(meanDao.find(any(FindRequest.class)))
         .thenReturn(Lists.newArrayList(value1, value2));
   }
 
   @After
   public void after() {
-    Mockito.reset(smaDao);
+    Mockito.reset(meanDao);
   }
 
   @Test
   public void requestValuesForOnePeriod_shouldReturnValuesForOnePeriod() {
-    int period = 20;
+    int period = 9;
 
     MultiPeriodResponse<Value> response = resources.client()
-        .target(String.format("/sma/MEG?timeframe=ONE_DAY&from=20160101&to=20171231&period=%d", period))
+        .target(String.format("/mean/MEG?timeframe=ONE_DAY&from=20160101&to=20171231&period=%d", period))
         .request()
         .get(MultiPeriodResponse.class);
 
@@ -81,7 +81,7 @@ public class MeanResourceTest {
     int unknownPeriod = 200;
 
     MultiPeriodResponse response = resources.client()
-        .target(String.format("/sma/MEG?period=%d&period=%d&period=%d", period1, period2, period3))
+        .target(String.format("/mean/MEG?period=%d&period=%d&period=%d", period1, period2, period3))
         .request()
         .get(MultiPeriodResponse.class);
 

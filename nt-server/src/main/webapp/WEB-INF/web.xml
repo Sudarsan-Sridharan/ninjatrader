@@ -20,7 +20,7 @@
     <!-- END Guice configuration -->
 
     <listener>
-        <listener-class>com.bn.ninjatrader.server.listener.InitializeListener</listener-class>
+        <listener-class>com.bn.ninjatrader.server.listener.VelocityInitializer</listener-class>
     </listener>
     <listener>
         <listener-class>com.bn.ninjatrader.server.guice.NtGuiceServletContextListener</listener-class>

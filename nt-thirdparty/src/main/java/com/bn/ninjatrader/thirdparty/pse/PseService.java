@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.thirdparty.pse;
 
 import com.bn.ninjatrader.common.data.DailyQuote;
+import com.bn.ninjatrader.common.util.DateFormats;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -12,7 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Comparator;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -37,21 +39,7 @@ public class PseService {
       .configure(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS, false)
       .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-  private Comparator<PseStock> losersComparator = new Comparator<PseStock>() {
-    @Override
-    public int compare(PseStock o1, PseStock o2) {
-      return (int)(o1.getPcntChangeClose() * 100000) - (int)(o2.getPcntChangeClose() * 100000);
-    }
-  };
-
-  private Comparator<PseStock> winnersComparator = new Comparator<PseStock>() {
-    @Override
-    public int compare(PseStock o1, PseStock o2) {
-      return (int)(o2.getPcntChangeClose() * 100000) - (int)(o1.getPcntChangeClose() * 100000);
-    }
-  };
-
-  public List<PseStock> getAllStockIndices() throws IOException {
+  public PseAllStockUpdate getAllStockIndices() throws IOException {
     String json = Request.Get(ALL_STOCK_URL)
         .connectTimeout(10000)
         .socketTimeout(10000)
@@ -67,24 +55,29 @@ public class PseService {
       throw e;
     }
 
-    // remove 1st one -- the header
-    stockList.remove(0);
+    // remove 1st one -- the header contains the last updated date.
+    PseStock header = stockList.remove(0);
+    LocalDateTime lastUpdated = LocalDateTime.parse(header.getName(), DateFormats.PSE_DATE_TIME_FORMAT);
 
-    return stockList;
+    return new PseAllStockUpdate(lastUpdated, stockList);
   }
 
-  public List<DailyQuote> getDailyQuotes() {
+  public List<DailyQuote> getAllDailyQuotes() {
     try {
       ExecutorService executor = Executors.newFixedThreadPool(10);
-      List<DailyQuote> quotes = Lists.newArrayList();
-      for (PseStock stock : getAllStockIndices()) {
+      List<DailyQuote> quotes = Collections.synchronizedList(Lists.newArrayList());
+      PseAllStockUpdate pseAllStockUpdate = getAllStockIndices();
+      LocalDate lastUpdate = pseAllStockUpdate.getLastUpdateDate().toLocalDate();
+
+      for (PseStock stock : pseAllStockUpdate.getStocks()) {
         executor.execute(new Runnable() {
           @Override
           public void run() {
             Optional<DailyQuote> quote = getDailyQuote(stock.getSymbol());
-            log.info("PRICE: {} - {}", stock.getSymbol(), quote);
             if (quote.isPresent()) {
+              quote.get().setDate(lastUpdate);
               quotes.add(quote.get());
+              log.info("{}", quote.orElse(null));
             }
           }
         });
@@ -98,19 +91,33 @@ public class PseService {
         log.error(e.getMessage(), e);
         throw new RuntimeException(e);
       }
-
-      log.info("lalala " + quotes);
       return quotes;
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
-  public void getAllSecurityId() throws IOException {
-    List<PseStock> pseStocks = getAllStockIndices();
+  public Optional<DailyQuote> getDailyQuote(String symbol) {
+    try {
+      String url = String.format(GET_QUOTE_URL, symbol);
+      String json = Request.Get(url)
+          .connectTimeout(10000)
+          .socketTimeout(10000)
+          .execute()
+          .returnContent().asString();
 
-    for (PseStock pseStock : pseStocks) {
-      int securityId = getSecurityId(pseStock.getSymbol());
+      PseQuote.Response results = om.readValue(json, PseQuote.Response.class);
+
+      if (results.getRecords().isEmpty()) {
+        return Optional.empty();
+      }
+
+      DailyQuote quote = results.getRecords().get(0).toDailyQuote();
+      return Optional.of(quote);
+    } catch (Exception e) {
+      log.error("Error getting PSE price for symbol: {}", symbol);
+      log.error(e.getMessage(), e);
+      return Optional.empty();
     }
   }
 
@@ -136,45 +143,8 @@ public class PseService {
     }
   }
 
-  public Optional<DailyQuote> getDailyQuote(String symbol) {
-    try {
-      String url = String.format(GET_QUOTE_URL, symbol);
-      String json = Request.Get(url)
-          .connectTimeout(10000)
-          .socketTimeout(10000)
-          .execute()
-          .returnContent().asString();
-
-      PseQuote.Response results = om.readValue(json, PseQuote.Response.class);
-
-      if (results.getRecords().isEmpty()) {
-        return Optional.empty();
-      }
-
-      DailyQuote quote = results.getRecords().get(0).toDailyQuote();
-      quote.setDate(LocalDate.now());
-      return Optional.of(quote);
-
-    } catch (Exception e) {
-      log.error("Error getting PSE price for symbol: {}", symbol);
-      log.error(e.getMessage(), e);
-      return Optional.empty();
-    }
-  }
-
-  private void printTop20(List<PseStock> list) {
-    int count = 0;
-    for (PseStock stock : list) {
-      log.info("{}", stock);
-      count++;
-      if (count >= 20) {
-        break;
-      }
-    }
-  }
-
   public static void main(String args[]) throws IOException {
     PseService app = new PseService();
-    app.getDailyQuotes();
+    app.getAllDailyQuotes();
   }
 }

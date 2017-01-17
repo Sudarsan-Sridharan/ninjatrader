@@ -2,6 +2,7 @@ package com.bn.ninjatrader.service.converter;
 
 import com.bn.ninjatrader.common.util.DateFormats;
 import com.bn.ninjatrader.service.provider.LocalDateParamConverterProvider;
+import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 /**
  * @author bradwee2000@gmail.com
  */
+@Singleton
 public class LocalDateParamConverter implements ParamConverter<LocalDate> {
 
   private static final Logger LOG = LoggerFactory.getLogger(LocalDateParamConverterProvider.class);
@@ -20,7 +22,7 @@ public class LocalDateParamConverter implements ParamConverter<LocalDate> {
     try {
       return LocalDate.parse(value, DateFormats.DB_DATE_FORMAT);
     } catch (Exception e) {
-      LocalDateParamConverterProvider.LOG.error("Failed to parse {} to LocalDate.", value);
+      LOG.error("Failed to parse {} to LocalDate.", value);
       throw e;
     }
   }

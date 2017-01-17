@@ -1,7 +1,9 @@
 package com.bn.ninjatrader.model.dao;
 
-import com.beust.jcommander.internal.Lists;
-import com.bn.ninjatrader.common.data.Setting;
+import com.bn.ninjatrader.common.data.Report;
+import com.bn.ninjatrader.model.guice.NtModelTestModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import org.jongo.MongoCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,93 +11,83 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.List;
+import java.util.Optional;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Brad on 7/28/16.
  */
 public class ReportDaoTest extends AbstractDaoTest {
 
-  private static final Logger log = LoggerFactory.getLogger(ReportDaoTest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ReportDaoTest.class);
 
-  private static final String OWNER = "USER";
-  private static final String DIFF_OWNER = "DIFF_OWNER";
-
-  private SettingsDao settingsDao;
+  private ReportDao reportDao;
 
   @BeforeClass
   public void setup() {
-    settingsDao = getInjector().getInstance(SettingsDao.class);
+    Injector injector = Guice.createInjector(new NtModelTestModule());
+    reportDao = injector.getInstance(ReportDao.class);
   }
 
   @BeforeMethod
   public void cleanup() {
-    MongoCollection collection = settingsDao.getMongoCollection();
+    MongoCollection collection = reportDao.getMongoCollection();
     collection.remove();
   }
 
   @Test
-  public void testSaveAndFind() {
-    Setting setting1 = Setting.of("KEY_1", "1");
-    Setting setting2 = Setting.of("KEY_2", "2");
-    settingsDao.save(OWNER, Lists.newArrayList(setting1, setting2));
+  public void testSaveAndFind_shouldSaveAndReturnSameReport() {
+    Report report = new Report();
+    report.setReportId("REPORT_ID");
+    report.setUser("test_user");
+    report.setData("Sample Data");
 
-    List<Setting> settings = settingsDao.find(OWNER);
-    assertNotNull(settings);
-    assertEquals(settings.size(), 2);
+    reportDao.save(report);
+
+    Optional<Report> foundReport = reportDao.findByReportId(report.getReportId());
+
+    assertThat(foundReport.isPresent()).isTrue();
+    assertThat(foundReport.get()).isEqualTo(report);
   }
 
   @Test
-  public void testFindNonExisting() {
-    List<Setting> settings = settingsDao.find("NON_EXISTING_SETTING");
-    assertNotNull(settings);
-    assertEquals(settings.size(), 0);
+  public void testSaveAndFindWithNoPriorReportId_shouldHaveReportIdAssigned() {
+    Report report = new Report();
+    report.setUser("test_user");
+    report.setData("Sample Data");
+
+    report = reportDao.save(report);
+
+    assertThat(report.getReportId()).isNotEmpty();
+
+    Optional<Report> foundReport = reportDao.findByReportId(report.getReportId());
+
+    assertThat(foundReport.isPresent()).isTrue();
+    assertThat(foundReport.get()).isEqualTo(report);
   }
 
   @Test
-  public void testSaveWithOverwrite() {
-    Setting setting = Setting.of("TEST", "1");
-    settingsDao.save(OWNER, Lists.newArrayList(setting));
-
-    setting = Setting.of("TEST", "2");
-    settingsDao.save(OWNER, Lists.newArrayList(setting));
-
-    List<Setting> settings = settingsDao.find(OWNER);
-    assertEquals(settings.size(), 1);
+  public void testFindNonExisting_shouldReturnOptionalEmpty() {
+    Optional<Report> foundReport = reportDao.findByReportId("NON_EXISTING_SETTING");
+    assertThat(foundReport.isPresent()).isFalse();
   }
 
   @Test
-  public void testWithDiffOwners() {
-    Setting setting = Setting.of("TEST", "1");
-    settingsDao.save(OWNER, Lists.newArrayList(setting));
+  public void testSaveWithSameReportId_shouldOverwrite() {
+    Report oldReport = new Report();
+    oldReport.setReportId("report_id");
+    oldReport.setData("Old Data");
 
-    setting = Setting.of("TEST", "2");
-    settingsDao.save(DIFF_OWNER, Lists.newArrayList(setting));
+    Report newReport = new Report();
+    newReport.setReportId("report_id");
+    newReport.setData("New Data");
 
-    List<Setting> settings = settingsDao.find(OWNER);
-    assertEquals(settings.size(), 1);
-    assertEquals(settings.get(0).getValue(), "1");
+    reportDao.save(oldReport);
+    reportDao.save(newReport);
 
-    settings = settingsDao.find(DIFF_OWNER);
-    assertEquals(settings.size(), 1);
-    assertEquals(settings.get(0).getValue(), "2");
-  }
-
-  @Test
-  public void testWithDiffOwnersOverwrite() {
-    settingsDao.save(OWNER, Setting.of("TEST", "1"));
-    settingsDao.save(DIFF_OWNER, Setting.of("TEST", "2"));
-    settingsDao.save(DIFF_OWNER, Setting.of("TEST", "OVERWRITTEN_VALUE"));
-
-    List<Setting> settings = settingsDao.find(OWNER);
-    assertEquals(settings.size(), 1);
-    assertEquals(settings.get(0).getValue(), "1");
-
-    settings = settingsDao.find(DIFF_OWNER);
-    assertEquals(settings.size(), 1);
-    assertEquals(settings.get(0).getValue(), "OVERWRITTEN_VALUE");
+    Optional<Report> foundReport = reportDao.findByReportId(oldReport.getReportId());
+    assertThat(foundReport.isPresent()).isTrue();
+    assertThat(foundReport.get()).isEqualTo(newReport);
   }
 }

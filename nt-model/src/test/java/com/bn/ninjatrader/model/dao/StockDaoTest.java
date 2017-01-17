@@ -1,6 +1,9 @@
 package com.bn.ninjatrader.model.dao;
 
 import com.bn.ninjatrader.common.data.Stock;
+import com.bn.ninjatrader.model.guice.NtModelTestModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import org.jongo.MongoCollection;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -9,9 +12,7 @@ import org.testng.annotations.Test;
 import java.util.List;
 import java.util.Optional;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /**
  * Created by Brad on 5/4/16.
@@ -22,7 +23,8 @@ public class StockDaoTest extends AbstractDaoTest {
 
   @BeforeClass
   public void setup() {
-    stockDao = getInjector().getInstance(StockDao.class);
+    Injector injector = Guice.createInjector(new NtModelTestModule());
+    stockDao = injector.getInstance(StockDao.class);
   }
 
   @BeforeMethod
@@ -64,7 +66,7 @@ public class StockDaoTest extends AbstractDaoTest {
     // Save boardlot document
     stockDao.save(stock);
 
-    // Update w/ Security ID
+    // Update w/ Security REPORT_ID
     stock.setSecurityId(300);
     stockDao.save(stock);
 

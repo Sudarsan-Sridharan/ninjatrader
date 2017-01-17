@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Created by Brad on 6/3/16.
@@ -18,7 +19,6 @@ public class NtLocalDateDeserializer extends JsonDeserializer<LocalDate> {
     if (string.length() == 0) {
       return null;
     }
-    return LocalDate.parse(string, DateFormats.DB_DATE_FORMAT);
+    return LocalDate.parse(string, DateTimeFormatter.BASIC_ISO_DATE);
   }
-
 }

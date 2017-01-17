@@ -2,10 +2,8 @@ package com.bn.ninjatrader.simulation.data;
 
 import org.testng.annotations.Test;
 
-import static com.bn.ninjatrader.simulation.data.DataType.CHIKOU;
-import static com.bn.ninjatrader.simulation.data.DataType.KIJUN;
-import static com.bn.ninjatrader.simulation.data.DataType.TENKAN;
-import static org.testng.Assert.assertEquals;
+import static com.bn.ninjatrader.simulation.operation.Variables.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Brad on 8/11/16.
@@ -13,33 +11,33 @@ import static org.testng.Assert.assertEquals;
 public class BarDataTest {
 
   @Test
-  public void testPutDataMap() {
+  public void testPutDataMap_shouldSetValuesToVariables() {
     DataMap dataMap = new DataMap();
-    dataMap.put(CHIKOU, 100d);
-    dataMap.put(TENKAN, 200d);
+    dataMap.put(ICHIMOKU_CHIKOU, 100d);
+    dataMap.put(ICHIMOKU_TENKAN, 200d);
 
-    BarData params = new BarData().put(dataMap);
+    BarData barData = new BarData().put(dataMap);
 
-    assertEquals(params.get(CHIKOU), 100d);
-    assertEquals(params.get(TENKAN), 200d);
+    assertThat(barData.get(ICHIMOKU_CHIKOU)).isEqualTo(100d);
+    assertThat(barData.get(ICHIMOKU_TENKAN)).isEqualTo(200d);
   }
 
   @Test
-  public void testOverwriteDataMap() {
+  public void testOverwriteDataMap_shouldOvrwriteVariableValues() {
     DataMap dataMap = new DataMap();
-    dataMap.put(CHIKOU, 100d);
-    dataMap.put(TENKAN, 200d);
+    dataMap.put(ICHIMOKU_CHIKOU, 100d);
+    dataMap.put(ICHIMOKU_TENKAN, 200d);
 
-    BarData params = new BarData().put(dataMap);
+    BarData barData = new BarData().put(dataMap);
 
     DataMap overlayDataMap = new DataMap();
-    overlayDataMap.put(TENKAN, 300d);
-    overlayDataMap.put(KIJUN, 400d);
+    overlayDataMap.put(ICHIMOKU_TENKAN, 300d);
+    overlayDataMap.put(ICHIMOKU_KIJUN, 400d);
 
-    params.put(overlayDataMap);
+    barData.put(overlayDataMap);
 
-    assertEquals(params.get(CHIKOU), 100d);
-    assertEquals(params.get(TENKAN), 300d);
-    assertEquals(params.get(KIJUN), 400d);
+    assertThat(barData.get(ICHIMOKU_CHIKOU)).isEqualTo(100d);
+    assertThat(barData.get(ICHIMOKU_TENKAN)).isEqualTo(300d);
+    assertThat(barData.get(ICHIMOKU_KIJUN)).isEqualTo(400d);
   }
 }

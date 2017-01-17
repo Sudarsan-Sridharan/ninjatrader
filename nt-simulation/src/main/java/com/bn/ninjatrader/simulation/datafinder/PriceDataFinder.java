@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.bn.ninjatrader.model.request.FindRequest.findSymbol;
+import static com.bn.ninjatrader.simulation.data.DataType.*;
 
 /**
  * Created by Brad on 8/20/16.
@@ -24,15 +25,19 @@ public class PriceDataFinder implements DataFinder<Price> {
   private static final List<DataType> SUPPORTED_DATA_TYPES = Collections.unmodifiableList(
       Lists.newArrayList(PRICE_OPEN, PRICE_HIGH, PRICE_LOW, PRICE_CLOSE, VOLUME));
 
-  @Inject
-  private PriceDao priceDao;
+  private final PriceDao priceDao;
+  private final PriceDataMapAdaptor dataMapAdaptor;
 
   @Inject
-  private PriceDataMapAdaptor dataMapAdaptor;
+  public PriceDataFinder(final PriceDao priceDao,
+                         final PriceDataMapAdaptor dataMapAdaptor) {
+    this.priceDao = priceDao;
+    this.dataMapAdaptor = dataMapAdaptor;
+  }
 
   @Override
-  public List<SimulationData<Price>> find(SimulationParams params, int requiredDataSize) {
-    List<Price> priceList = priceDao.find(findSymbol(params.getSymbol())
+  public List<SimulationData<Price>> find(final SimulationParams params, final int requiredDataSize) {
+    final List<Price> priceList = priceDao.find(findSymbol(params.getSymbol())
         .from(params.getFromDate())
         .to(params.getToDate()));
     return Lists.newArrayList(new SimulationData(priceList, dataMapAdaptor));

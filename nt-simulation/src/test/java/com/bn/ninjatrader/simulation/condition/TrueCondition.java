@@ -20,9 +20,4 @@ public class TrueCondition implements Condition {
   public Set<Variable> getVariables() {
     return Collections.emptySet();
   }
-
-  @Override
-  public ConditionType getConditionType() {
-    return ConditionType.TRUE;
-  }
 }

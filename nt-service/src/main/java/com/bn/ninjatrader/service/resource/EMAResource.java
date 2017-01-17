@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.service.resource;
 
 import com.bn.ninjatrader.common.data.Value;
-import com.bn.ninjatrader.model.dao.SMADao;
+import com.bn.ninjatrader.model.dao.EMADao;
 import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.service.model.MultiPeriodRequest;
 import com.bn.ninjatrader.service.model.MultiPeriodResponse;
@@ -22,25 +22,26 @@ import java.util.List;
  * @author bradwee2000@gmail.com
  */
 @Singleton
-@Path("/sma")
+@Path("/ema")
 @Produces(MediaType.APPLICATION_JSON)
 public class EMAResource extends AbstractDataResource {
   private static final Logger LOG = LoggerFactory.getLogger(EMAResource.class);
 
-  private final SMADao smaDao;
+  private final EMADao emaDao;
 
   @Inject
-  public EMAResource(SMADao smaDao, Clock clock) {
+  public EMAResource(final EMADao emaDao,
+                     final Clock clock) {
     super(clock);
-    this.smaDao = smaDao;
+    this.emaDao = emaDao;
   }
 
   @GET
   @Path("/{symbol}")
-  public MultiPeriodResponse<Value> getSMA(@BeanParam MultiPeriodRequest req) {
-    MultiPeriodResponse<Value> response = new MultiPeriodResponse<>();
-    for (FindRequest findRequest : req.toFindRequest(getClock())) {
-      List<Value> values = smaDao.find(findRequest);
+  public MultiPeriodResponse<Value> getEMA(@BeanParam final MultiPeriodRequest req) {
+    final MultiPeriodResponse<Value> response = new MultiPeriodResponse<>();
+    for (final FindRequest findRequest : req.toFindRequest(getClock())) {
+      final List<Value> values = emaDao.find(findRequest);
       response.put(findRequest.getPeriod(), values);
     }
     return response;

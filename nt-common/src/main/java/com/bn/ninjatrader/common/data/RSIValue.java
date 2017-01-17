@@ -4,10 +4,8 @@ import com.bn.ninjatrader.common.util.NtLocalDateDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import java.time.LocalDate;
 
@@ -16,85 +14,69 @@ import java.time.LocalDate;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RSIValue extends Value {
+  private static final RSIValue EMPTY_INSTANCE = new RSIValue(null, 0);
 
-  private static RSIValue EMPTY_INSTANCE = new RSIValue();
-
-  public static RSIValue empty() {
+  public static final RSIValue empty() {
     return EMPTY_INSTANCE;
+  }
+  public static final RSIValue of(final LocalDate date, final double value) {
+    return new RSIValue(date, value);
+  }
+  public static final RSIValue of(final LocalDate date, final double value,
+                                  final double avgGain, final double avgLoss) {
+    return new RSIValue(date, value, avgGain, avgLoss);
   }
 
   @JsonProperty("g")
-  private double avgGain;
+  private final double avgGain;
 
   @JsonProperty("l")
-  private double avgLoss;
-
-  public RSIValue() {}
+  private final double avgLoss;
 
   public RSIValue(LocalDate date, double value) {
     super(date, value);
+    avgGain = 0;
+    avgLoss = 0;
   }
 
-  public RSIValue(@JsonProperty("d") @JsonDeserialize(using = NtLocalDateDeserializer.class) LocalDate date,
-                  @JsonProperty("v") double value,
-                  @JsonProperty("g") double avgGain,
-                  @JsonProperty("l") double avgLoss) {
+  public RSIValue(@JsonDeserialize(using = NtLocalDateDeserializer.class)
+                  @JsonProperty("d") final LocalDate date,
+                  @JsonProperty("v") final double value,
+                  @JsonProperty("g") final double avgGain,
+                  @JsonProperty("l") final double avgLoss) {
     super(date, value);
     this.avgGain = avgGain;
     this.avgLoss = avgLoss;
   }
 
   @Override
+  public boolean equals(Object obj) {
+    if (obj == null || !(obj instanceof RSIValue)) { return false; }
+    if (obj == this) { return true; }
+    final RSIValue rhs = (RSIValue) obj;
+    return Objects.equal(getDate(), rhs.getDate())
+        && Objects.equal(getValue(), rhs.getValue())
+        && Objects.equal(avgGain, rhs.avgGain)
+        && Objects.equal(avgLoss, rhs.avgLoss);
+  }
+
+  @Override
   public String toString() {
-    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .append("D", getDate())
-        .append("V", getValue())
-        .append("avgGain", avgGain)
-        .append("avgLoss", avgLoss)
-        .toString();
+    return MoreObjects.toStringHelper(this)
+        .add("D", getDate()).add("V", getValue()).add("avgGain", avgGain).add("avgLoss", avgLoss).toString();
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder()
-        .appendSuper(super.hashCode())
-        .append(avgGain)
-        .append(avgLoss)
-        .toHashCode();
+    return Objects.hashCode(getDate(), getValue(), avgGain, avgLoss);
   }
 
   public double getAvgGain() {
     return avgGain;
   }
 
-  public void setAvgGain(double avgGain) {
-    this.avgGain = avgGain;
-  }
-
   public double getAvgLoss() {
     return avgLoss;
-  }
-
-  public void setAvgLoss(double avgLoss) {
-    this.avgLoss = avgLoss;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (obj == null) { return false; }
-    if (!(obj instanceof RSIValue)) {
-      return false;
-    }
-    if (obj == this) { return true; }
-    if (obj.getClass() != getClass()) {
-      return false;
-    }
-
-    RSIValue rhs = (RSIValue) obj;
-    return new EqualsBuilder().appendSuper(super.equals(rhs))
-        .append(avgGain, rhs.avgGain)
-        .append(avgLoss, rhs.avgLoss)
-        .isEquals();
   }
 }
 

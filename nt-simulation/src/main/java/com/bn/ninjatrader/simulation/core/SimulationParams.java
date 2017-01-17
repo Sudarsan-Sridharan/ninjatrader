@@ -3,8 +3,8 @@ package com.bn.ninjatrader.simulation.core;
 import com.bn.ninjatrader.common.util.NtLocalDateDeserializer;
 import com.bn.ninjatrader.common.util.NtLocalDateSerializer;
 import com.bn.ninjatrader.simulation.condition.Condition;
-import com.bn.ninjatrader.simulation.operation.Variable;
 import com.bn.ninjatrader.simulation.data.DataType;
+import com.bn.ninjatrader.simulation.operation.Variable;
 import com.bn.ninjatrader.simulation.order.BuyOrderParameters;
 import com.bn.ninjatrader.simulation.order.SellOrderParameters;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -12,6 +12,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.Sets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -21,6 +23,7 @@ import java.util.Set;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SimulationParams {
+  private static final Logger LOG = LoggerFactory.getLogger(SimulationParams.class);
 
   @JsonProperty("from")
   @JsonSerialize(using = NtLocalDateSerializer.class)

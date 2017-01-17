@@ -1,43 +1,68 @@
 package com.bn.ninjatrader.process.calc;
 
 import com.bn.ninjatrader.process.request.CalcRequest;
-import mockit.Mocked;
-import mockit.Verifications;
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
 
 import java.time.LocalDate;
 
-import static com.bn.ninjatrader.process.request.CalcRequest.forSymbol;
+import static com.bn.ninjatrader.process.request.CalcRequest.calcSymbol;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * Created by Brad on 6/11/16.
  */
 public class SequentialCalcProcessTest {
+  private static final Logger LOG = LoggerFactory.getLogger(SequentialCalcProcessTest.class);
 
-  private static final Logger log = LoggerFactory.getLogger(SequentialCalcProcessTest.class);
-
-  @Mocked
   private CalcProcess calcProcess1;
-
-  @Mocked
   private CalcProcess calcProcess2;
 
+  @Before
+  public void setup() {
+    calcProcess1 = mock(CalcProcess.class);
+    calcProcess2 = mock(CalcProcess.class);
+  }
+
   @Test
-  public void testProcess() {
-    LocalDate fromDate = LocalDate.of(2015, 1, 1);
-    LocalDate toDate = LocalDate.of(2017, 2, 2);
+  public void testGetProcessName_shouldReturnProcessName() {
+    final SequentialCalcProcess process = SequentialCalcProcess.newInstance("test", calcProcess1);
+    assertThat(process.getProcessName()).isEqualTo("test");
+  }
 
-    SequentialCalcProcess process = SequentialCalcProcess.newInstance(calcProcess1, calcProcess2);
+  @Test
+  public void testCreateWithMultipleProcesses_shouldAddAllProcesses() {
+    final SequentialCalcProcess process = SequentialCalcProcess.newInstance("test", calcProcess1, calcProcess2);
+    assertThat(process).containsExactly(calcProcess1, calcProcess2);
+  }
 
-    CalcRequest request = forSymbol("MEG").from(fromDate).to(toDate);
-    process.processMissingBars(request);
+  @Test
+  public void testAddingNullProcess_shouldThrowException() {
+    assertThatExceptionOfType(NullPointerException.class).isThrownBy(() ->
+        SequentialCalcProcess.newInstance("test", null));
+  }
 
-    new Verifications() {{
-      calcProcess1.processMissingBars(request); times = 1;
-      calcProcess2.processMissingBars(request); times = 1;
-    }};
+  @Test
+  public void testAddingMoreNullProcess_shouldThrowException() {
+    assertThatExceptionOfType(NullPointerException.class).isThrownBy(() ->
+        SequentialCalcProcess.newInstance("test", calcProcess1, null, null));
+  }
 
+  @Test
+  public void testExecute_shouldExecuteAllProcesses() {
+    final LocalDate fromDate = LocalDate.of(2015, 1, 1);
+    final LocalDate toDate = LocalDate.of(2017, 2, 2);
+    final SequentialCalcProcess process = SequentialCalcProcess.newInstance("test", calcProcess1, calcProcess2);
+    final CalcRequest request = calcSymbol("MEG").from(fromDate).to(toDate);
+
+    process.process(request);
+
+    verify(calcProcess1).process(request);
+    verify(calcProcess2).process(request);
   }
 }

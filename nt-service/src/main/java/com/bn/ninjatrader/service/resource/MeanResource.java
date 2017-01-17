@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.service.resource;
 
 import com.bn.ninjatrader.common.data.Value;
-import com.bn.ninjatrader.model.dao.SMADao;
+import com.bn.ninjatrader.model.dao.MeanDao;
 import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.service.model.MultiPeriodRequest;
 import com.bn.ninjatrader.service.model.MultiPeriodResponse;
@@ -22,25 +22,25 @@ import java.util.List;
  * @author bradwee2000@gmail.com
  */
 @Singleton
-@Path("/sma")
+@Path("/mean")
 @Produces(MediaType.APPLICATION_JSON)
 public class MeanResource extends AbstractDataResource {
   private static final Logger LOG = LoggerFactory.getLogger(MeanResource.class);
 
-  private final SMADao smaDao;
+  private final MeanDao meanDao;
 
   @Inject
-  public MeanResource(SMADao smaDao, Clock clock) {
+  public MeanResource(MeanDao meanDao, Clock clock) {
     super(clock);
-    this.smaDao = smaDao;
+    this.meanDao = meanDao;
   }
 
   @GET
   @Path("/{symbol}")
-  public MultiPeriodResponse<Value> getSMA(@BeanParam MultiPeriodRequest req) {
+  public MultiPeriodResponse<Value> getMean(@BeanParam MultiPeriodRequest req) {
     MultiPeriodResponse<Value> response = new MultiPeriodResponse<>();
     for (FindRequest findRequest : req.toFindRequest(getClock())) {
-      List<Value> values = smaDao.find(findRequest);
+      List<Value> values = meanDao.find(findRequest);
       response.put(findRequest.getPeriod(), values);
     }
     return response;

@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.server.guice;
 
-import com.bn.ninjatrader.data.guice.NtDataModule;
+import com.bn.ninjatrader.dataimport.guice.NtDataModule;
 import com.bn.ninjatrader.model.guice.NtModelModule;
 import com.bn.ninjatrader.process.guice.NtProcessModule;
 import com.google.inject.Guice;

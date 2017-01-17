@@ -1,19 +1,15 @@
 package com.bn.ninjatrader.process.provider;
 
-import com.bn.ninjatrader.calculator.parameter.CalcParams;
-import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.data.Value;
-import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.model.dao.AbstractValueDao;
+import com.bn.ninjatrader.model.dao.ValueDao;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
+import com.google.common.collect.Maps;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Map;
 
 /**
  * @author bradwee2000@gmail.com
@@ -22,30 +18,26 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class PriorValueProvider {
   private static final Logger LOG = LoggerFactory.getLogger(PriorValueProvider.class);
 
-  public <T extends Value> CalcParams<T> provideContinuedValues(final AbstractValueDao dao,
-                                                final String symbol,
-                                                final TimeFrame timeFrame,
-                                                final List<Price> prices,
-                                                final int ... periods) {
-    checkNotNull(prices, "prices must not be null.");
-    checkArgument(!prices.isEmpty(), "prices must not be empty.");
+  public <T extends Value> Map<Integer, T> providePriorValues(final PriorValueRequest request) {
+    final Map<Integer, T> result = Maps.newHashMap();
+    final ValueDao<T> dao = request.getValueDao();
 
-    try {
-      final Price price = prices.get(0);
-      final CalcParams calcParams = CalcParams.withPrice(prices).periods(periods);
+    // For each period, get the prior value to continue calculating from.
+    for (final int period : request.getPeriods()) {
 
-      // For each period, get the previous value to continue calculating from.
-      for (final int period : periods) {
-        final List<T> values = dao.findBeforeDate(FindBeforeDateRequest.builder()
-            .symbol(symbol).timeFrame(timeFrame).numOfValues(1).beforeDate(price.getDate()).period(period).build());
-        if (!values.isEmpty()) {
-          calcParams.addContinueFromValue(period, values.get(0));
-        }
+      // Find prior value
+      final List<T> values = dao.findBeforeDate(FindBeforeDateRequest.builder()
+          .symbol(request.getSymbol())
+          .timeFrame(request.getTimeFrame())
+          .numOfValues(1)
+          .beforeDate(request.getPriorDate())
+          .period(period)
+          .build());
+
+      if (!values.isEmpty()) {
+        result.put(period, values.get(0));
       }
-      return calcParams;
-    } catch (Exception e) {
-      LOG.error("Error providing CalcParams for: {} {}", symbol, timeFrame);
-      throw e;
     }
+    return result;
   }
 }

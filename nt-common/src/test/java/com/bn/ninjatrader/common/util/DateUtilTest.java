@@ -52,4 +52,29 @@ public class DateUtilTest {
     assertEquals(result.get(1), "20160101");
     assertEquals(result.get(2), "20160202");
   }
+
+  @Test
+  public void testNextWeekday() {
+    LocalDate wed = LocalDate.of(2016, 2, 3);
+    LocalDate thur = LocalDate.of(2016, 2, 4);
+    LocalDate fri = LocalDate.of(2016, 2, 5);
+    LocalDate sat = LocalDate.of(2016, 2, 6);
+    LocalDate sun = LocalDate.of(2016, 2, 7);
+    LocalDate mon = LocalDate.of(2016, 2, 8);
+
+    assertEquals(DateUtil.nextWeekday(wed), thur);
+    assertEquals(DateUtil.nextWeekday(thur), fri);
+    assertEquals(DateUtil.nextWeekday(fri), mon);
+    assertEquals(DateUtil.nextWeekday(sat), mon);
+    assertEquals(DateUtil.nextWeekday(sun), mon);
+  }
+
+  @Test
+  public void testParse() {
+    LocalDate valueIfEmpty = LocalDate.of(2016, 10, 1);
+
+    assertEquals(DateUtil.parse("20160201", valueIfEmpty), LocalDate.of(2016, 2, 1));
+    assertEquals(DateUtil.parse("", valueIfEmpty), valueIfEmpty);
+    assertEquals(DateUtil.parse(null, valueIfEmpty), valueIfEmpty);
+  }
 }

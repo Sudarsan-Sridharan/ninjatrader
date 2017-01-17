@@ -41,6 +41,7 @@ public class DownloadHistoricalPriceCallable implements Callable<List<DailyQuote
     try {
       return downloadHistoricalQuotes(symbol);
     } catch (Exception e) {
+      log.error("Failed to read historical quotes for symbol: {}", symbol);
       throw new StockReadFailException(symbol, e);
     }
   }

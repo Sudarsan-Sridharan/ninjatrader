@@ -11,36 +11,36 @@ public class PriceUtil {
 
   private PriceUtil() {}
 
-  public static Price createSummary(Collection<Price> prices) {
-    Price summaryPrice = new Price();
+  public static Price createSummary(final Collection<Price> prices) {
+    final Price.Builder summaryPriceBuilder = Price.builder();
 
     boolean isFirst = true;
-    for (Price price : prices) {
+    for (final Price price : prices) {
 
       // Set open
       if (isFirst) {
         isFirst = false;
-        summaryPrice.setDate(price.getDate());
-        summaryPrice.setOpen(price.getOpen());
-        summaryPrice.setLow(price.getLow());
-        summaryPrice.setHigh(price.getHigh());
+        summaryPriceBuilder.date(price.getDate());
+        summaryPriceBuilder.open(price.getOpen());
+        summaryPriceBuilder.high(price.getHigh());
+        summaryPriceBuilder.low(price.getLow());
       } else {
 
       }
 
       // Set lowest low
-      if (price.getLow() < summaryPrice.getLow()) {
-        summaryPrice.setLow(price.getLow());
+      if (price.getLow() < summaryPriceBuilder.getLow()) {
+        summaryPriceBuilder.low(price.getLow());
       }
 
       // Set highest high
-      if (price.getHigh() > summaryPrice.getHigh()) {
-        summaryPrice.setHigh(price.getHigh());
+      if (price.getHigh() > summaryPriceBuilder.getHigh()) {
+        summaryPriceBuilder.high(price.getHigh());
       }
 
       // Set close
-      summaryPrice.setClose(price.getClose());
+      summaryPriceBuilder.close(price.getClose());
     }
-    return summaryPrice;
+    return summaryPriceBuilder.build();
   }
 }

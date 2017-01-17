@@ -17,20 +17,32 @@ import org.slf4j.LoggerFactory;
  */
 public class DbClient {
   private static final Logger LOG = LoggerFactory.getLogger(NtModelModule.class);
-  private static final String MONGODB_NAME = "ninja_trader";
+  private static final String DEFAULT_DB_NAME = "ninja_trader";
+  private static final String DEFAULT_HOST = "192.168.99.100:32768";
   private static final int CONNECTION_TIMEOUT_MILLIS = 5000;
 
-  private String dbName = "ninja_trader";
-  private String host = "192.168.99.100:32769";
+  public static final DbClient createDefault() {
+    DbClient dbClient = new DbClient().databaseName(DEFAULT_DB_NAME).host(DEFAULT_HOST).connect();
+    return dbClient;
+  }
+
+  public static final DbClient create() {
+    return new DbClient();
+  }
+
+  private String dbName;
+  private String host;
   private Jongo jongo;
 
+  private DbClient() {}
+
   public DbClient connect() {
-    final MongoClient mongoClient = new MongoClient(getHost(),
+    final MongoClient mongoClient = new MongoClient(host,
         MongoClientOptions.builder()
             .serverSelectionTimeout(CONNECTION_TIMEOUT_MILLIS)
             .build());
 
-    jongo = new Jongo(new DB(mongoClient, getDbName()),
+    jongo = new Jongo(new DB(mongoClient, dbName),
         new JacksonMapper.Builder()
             .registerModule(new Jdk8Module())
             .registerModule(new JavaTimeModule())
@@ -44,19 +56,13 @@ public class DbClient {
     return jongo.getCollection(collectionName);
   }
 
-  public String getDbName() {
-    return dbName;
-  }
-
-  public void setDbName(String dbName) {
-    this.dbName = dbName;
-  }
-
-  public String getHost() {
-    return host;
-  }
-
-  public void setHost(String host) {
+  public DbClient host(String host) {
     this.host = host;
+    return this;
+  }
+
+  public DbClient databaseName(final String dbName) {
+    this.dbName = dbName;
+    return this;
   }
 }

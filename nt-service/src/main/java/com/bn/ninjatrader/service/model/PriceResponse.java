@@ -33,7 +33,7 @@ public class PriceResponse {
   @JsonProperty("summary")
   private Price priceSummary;
 
-  @JsonProperty("prices")
+  @JsonProperty("values")
   private List<Price> priceList = Lists.newArrayList();
 
   public LocalDate getFromDate() {

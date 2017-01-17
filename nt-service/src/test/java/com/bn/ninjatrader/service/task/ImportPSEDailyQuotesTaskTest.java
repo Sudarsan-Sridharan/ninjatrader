@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.service.task;
 
-import com.bn.ninjatrader.data.history.PriceImporter;
+import com.bn.ninjatrader.dataimport.daily.PseDailyPriceImporter;
 import com.google.common.collect.ImmutableMultimap;
 import org.junit.Test;
 
@@ -14,15 +14,16 @@ import static org.mockito.Mockito.*;
 public class ImportPSEDailyQuotesTaskTest {
 
   private final PrintWriter printWriter = mock(PrintWriter.class);
-  private final PriceImporter  priceImporter = mock(PriceImporter.class);
-  private final ImportCSVPriceTask importPriceTask = new ImportCSVPriceTask(priceImporter);
+  private final PseDailyPriceImporter importer = mock(PseDailyPriceImporter.class);
+  private final CalcTask calcTask = mock(CalcTask.class);
+  private final ImportPSEDailyQuotesTask task = new ImportPSEDailyQuotesTask(importer, calcTask);
 
   @Test
   public void execute_shouldImportPrices() throws Exception {
     final ImmutableMultimap<String, String> map = ImmutableMultimap.<String, String>builder().build();
 
-    importPriceTask.execute(map, printWriter);
+    task.execute(map, printWriter);
 
-    verify(priceImporter, times(1)).importPrices();
+    verify(importer, times(1)).importData();
   }
 }

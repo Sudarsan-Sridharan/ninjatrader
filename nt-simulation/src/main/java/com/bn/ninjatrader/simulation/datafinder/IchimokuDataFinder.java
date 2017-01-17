@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.bn.ninjatrader.model.request.FindRequest.findSymbol;
+import static com.bn.ninjatrader.simulation.data.DataType.*;
 
 /**
  * Created by Brad on 8/20/16.
@@ -23,17 +24,21 @@ import static com.bn.ninjatrader.model.request.FindRequest.findSymbol;
 public class IchimokuDataFinder implements DataFinder<Ichimoku> {
 
   private static final List<DataType> SUPPORTED_DATA_TYPES = Collections.unmodifiableList(
-      Lists.newArrayList(DataType.CHIKOU, DataType.TENKAN, DataType.KIJUN, DataType.SENKOU_A, DataType.SENKOU_B));
+      Lists.newArrayList(CHIKOU, TENKAN, KIJUN, SENKOU_A, SENKOU_B));
+
+  private final IchimokuDao ichimokuDao;
+  private final IchimokuDataMapAdaptor dataMapAdaptor;
 
   @Inject
-  private IchimokuDao ichimokuService;
-
-  @Inject
-  private IchimokuDataMapAdaptor dataMapAdaptor;
+  public IchimokuDataFinder(final IchimokuDao ichimokuDao,
+                            final IchimokuDataMapAdaptor dataMapAdaptor) {
+    this.ichimokuDao = ichimokuDao;
+    this.dataMapAdaptor = dataMapAdaptor;
+  }
 
   @Override
-  public List<SimulationData<Ichimoku>> find(SimulationParams params, int requiredDataSize) {
-    List<Ichimoku> ichimokuList = ichimokuService.find(findSymbol(params.getSymbol())
+  public List<SimulationData<Ichimoku>> find(final SimulationParams params, final int requiredDataSize) {
+    final List<Ichimoku> ichimokuList = ichimokuDao.find(findSymbol(params.getSymbol())
         .from(params.getFromDate())
         .to(params.getToDate()));
     ListUtil.fillToSize(ichimokuList, Ichimoku.empty(), requiredDataSize);

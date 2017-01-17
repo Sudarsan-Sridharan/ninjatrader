@@ -2,98 +2,80 @@ package com.bn.ninjatrader.calculator;
 
 import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.common.util.TestUtil;
-import mockit.Tested;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Brad on 5/27/16.
  */
 public class WeeklyPriceCalculatorTest {
 
-  @Tested
+  private final LocalDate now = LocalDate.of(2016, 6, 6);
+
   private WeeklyPriceCalculator calculator;
 
-  @Test
-  public void testCalcWithOneWeekPrices() {
-    LocalDate date = LocalDate.of(2016, 6, 6);
-    Price monPrice = new Price(date, 1.0, 1.1, 1.2, 1.3, 10000);
-    Price tuePrice = new Price(date.plusDays(1), 2.0, 2.1, 2.2, 2.3, 20000);
-    Price wedPrice = new Price(date.plusDays(2), 3.0, 3.1, 3.2, 3.3, 30000);
-    Price thrPrice = new Price(date.plusDays(3), 4.0, 4.1, 4.2, 4.3, 40000);
-    Price friPrice = new Price(date.plusDays(4), 5.0, 5.1, 5.2, 5.3, 50000);
-
-    List<Price> prices = Lists.newArrayList(monPrice, tuePrice, wedPrice, thrPrice, friPrice);
-
-    List<Price> result = calculator.calc(prices);
-
-    assertNotNull(result);
-    assertEquals(result.size(), 1);
-
-    Price weekPrice = result.get(0);
-    Price expectedWeekPrice = new Price(date, 1.0, 5.1, 1.2, 5.3, 150000);
-    TestUtil.assertPriceEquals(weekPrice, expectedWeekPrice);
+  @Before
+  public void before() {
+    calculator = new WeeklyPriceCalculator();
   }
 
   @Test
-  public void testCalcWithMultipleWeekPrices() {
+  public void testCalcWithOneWeekPrices_shouldMergePricesToWeeklyPrice() {
+    final Price mon = Price.builder().date(now).open(1).high(1.1).low(1.2).close(1.3).volume(10000).build();
+    final Price tue = Price.builder().date(now.plusDays(1)).open(2).high(2.1).low(2.2).close(2.3).volume(20000).build();
+    final Price wed = Price.builder().date(now.plusDays(2)).open(3).high(3.1).low(3.2).close(3.3).volume(30000).build();
+    final Price thr = Price.builder().date(now.plusDays(3)).open(4).high(4.1).low(4.2).close(4.3).volume(40000).build();
+    final Price fri = Price.builder().date(now.plusDays(4)).open(5).high(5.1).low(5.2).close(5.3).volume(50000).build();
 
+    assertThat(calculator.calc(mon, tue, wed, thr, fri))
+        .containsExactly(Price.builder().date(now).open(1.0).high(5.1).low(1.2).close(5.3).volume(150000).build());
+  }
+
+  @Test
+  public void testCalcWithMultipleWeekPrices_shouldReturnPriceForEachWeek() {
     // Week 1
-    LocalDate date1 = LocalDate.of(2016, 6, 6);
-    Price monPrice1 = new Price(date1, 1.0, 1.1, 1.2, 1.3, 10000);
-    Price tuePrice1 = new Price(date1.plusDays(1), 2.0, 2.1, 2.2, 2.3, 20000);
+    final LocalDate date1 = LocalDate.of(2016, 6, 6);
+    final Price monPrice1 = Price.builder().date(date1).open(1).high(1.1).low(1.2).close(1.3).volume(1000).build();
+    final Price tuePrice1 = Price.builder().date(date1.plusDays(1))
+        .open(2).high(2.1).low(2.2).close(2.3).volume(2000).build();
 
     // Week 2
-    LocalDate date2 = LocalDate.of(2016, 6, 13);
-    Price wedPrice2 = new Price(date2.plusDays(2), 3.0, 3.1, 3.2, 3.3, 30000);
-    Price thrPrice2 = new Price(date2.plusDays(3), 4.0, 4.1, 4.2, 4.3, 40000);
+    final LocalDate date2 = LocalDate.of(2016, 6, 13);
+    final Price wedPrice2 = Price.builder().date(date2.plusDays(2))
+        .open(3).high(3.1).low(3.2).close(3.3).volume(3000).build();
+    final Price thrPrice2 = Price.builder().date(date2.plusDays(3))
+        .open(4).high(4.1).low(4.2).close(4.3).volume(4000).build();
 
     // Week 3
-    LocalDate date3 = LocalDate.of(2016, 6, 20);
-    Price monPrice3 = new Price(date3, 5.0, 5.1, 5.2, 5.3, 50000);
-    Price friPrice3 = new Price(date3.plusDays(4), 6.0, 6.1, 6.2, 6.3, 50000);
+    final LocalDate date3 = LocalDate.of(2016, 6, 20);
+    final Price monPrice3 = Price.builder().date(date3).open(5).high(5.1).low(5.2).close(5.3).volume(5000).build();
+    final Price friPrice3 = Price.builder().date(date3.plusDays(4))
+        .open(6).high(6.1).low(6.2).close(6.3).volume(5000).build();
 
-    List<Price> prices = Lists.newArrayList(monPrice1, tuePrice1, wedPrice2, thrPrice2, monPrice3, friPrice3);
-
-    List<Price> result = calculator.calc(prices);
-    
-    assertNotNull(result);
-    assertEquals(result.size(), 3);
-
-    // Verify Week 1
-    Price weekPrice1 = result.get(0);
-    Price expectedWeekPrice1 = new Price(date1, 1.0, 2.1, 1.2, 2.3, 30000);
-    TestUtil.assertPriceEquals(weekPrice1, expectedWeekPrice1);
-
-    // Verify Week 2
-    Price weekPrice2 = result.get(1);
-    Price expectedWeekPrice2 = new Price(date2, 3.0, 4.1, 3.2, 4.3, 70000);
-    TestUtil.assertPriceEquals(weekPrice2, expectedWeekPrice2);
-
-    // Verify Week 3
-    Price weekPrice3 = result.get(2);
-    Price expectedWeekPrice3 = new Price(date3, 5.0, 6.1, 5.2, 6.3, 100000);
-    TestUtil.assertPriceEquals(weekPrice3, expectedWeekPrice3);
+    // Verify weekly prices
+    assertThat(calculator.calc(monPrice1, tuePrice1, wedPrice2, thrPrice2, monPrice3, friPrice3))
+        .containsExactly(
+            Price.builder().date(date1).open(1.0).high(2.1).low(1.2).close(2.3).volume(3000).build(),
+            Price.builder().date(date2).open(3.0).high(4.1).low(3.2).close(4.3).volume(7000).build(),
+            Price.builder().date(date3).open(5).high(6.1).low(5.2).close(6.3).volume(10000).build()
+    );
   }
 
   @Test
-  public void testCalcWithPricesInSameWeekButDifferentYears() {
-    LocalDate date1 = LocalDate.of(2015, 1, 5);
-    LocalDate date2 = LocalDate.of(2016, 1, 11);
+  public void testCalcWithPricesInSameWeekButDifferentYears_shouldReturnAsSeparateWeeks() {
+    final LocalDate now = LocalDate.of(2015, 1, 5);
+    final LocalDate nextYear = LocalDate.of(2016, 1, 11);
 
-    Price price1 = new Price(date1, 1.0, 2.0, 3.0, 4.0, 10000);
-    Price price2 = new Price(date2, 1.0, 2.0, 3.0, 4.0, 10000);
+    final Price price1 = Price.builder().date(now).open(1).high(2).low(3).close(4).volume(10000).build();
+    final Price price2 = Price.builder().date(nextYear).open(1).high(2).low(3).close(4).volume(10000).build();
 
-    List<Price> result = calculator.calc(Lists.newArrayList(price1, price2));
+    final List<Price> result = calculator.calc(Lists.newArrayList(price1, price2));
 
-    assertEquals(result.size(), 2);
-    TestUtil.assertPriceEquals(result.get(0), price1);
-    TestUtil.assertPriceEquals(result.get(1), price2);
+    assertThat(result).containsExactly(price1, price2);
   }
 }

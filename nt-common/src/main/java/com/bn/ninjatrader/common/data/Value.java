@@ -6,9 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import java.time.LocalDate;
 
@@ -17,11 +16,13 @@ import java.time.LocalDate;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Value implements DateObj<Value> {
-
   private static Value EMPTY_INSTANCE = new Value();
 
   public static Value empty() {
     return EMPTY_INSTANCE;
+  }
+  public static Value of(LocalDate date, double value) {
+    return new Value(date, value);
   }
 
   @JsonProperty("d")
@@ -31,10 +32,6 @@ public class Value implements DateObj<Value> {
 
   @JsonProperty("v")
   private double value;
-
-  public static Value of(LocalDate date, double value) {
-    return new Value(date, value);
-  }
 
   public Value() {}
 
@@ -47,48 +44,27 @@ public class Value implements DateObj<Value> {
     return date;
   }
 
-  public void setDate(LocalDate date) {
-    this.date = date;
-  }
-
   public double getValue() {
     return value;
   }
 
-  public void setValue(double value) {
-    this.value = value;
-  }
-
-  @Override
-  public String toString() {
-    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .append("D", date)
-        .append("V", value)
-        .toString();
-  }
-
   @Override
   public int hashCode() {
-    return new HashCodeBuilder()
-        .append(date)
-        .append(value)
-        .toHashCode();
+    return Objects.hashCode(date, value);
   }
 
   @Override
   public boolean equals(Object obj) {
-    if (obj == null) { return false; }
-    if (!(obj instanceof Value)) {
-      return false;
-    }
+    if (obj == null || !(obj instanceof Value)) { return false; }
     if (obj == this) { return true; }
-    if (obj.getClass() != getClass()) {
-      return false;
-    }
+    final Value rhs = (Value) obj;
+    return Objects.equal(date, rhs.date)
+        && Objects.equal(value, rhs.value);
+  }
 
-    Value rhs = (Value) obj;
-    return date.equals(rhs.getDate()) &&
-        value == rhs.getValue();
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this).add("D", date).add("V", value).toString();
   }
 
   public int compareTo(Value v2) {

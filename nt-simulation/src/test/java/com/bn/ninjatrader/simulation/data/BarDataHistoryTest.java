@@ -1,12 +1,12 @@
 package com.bn.ninjatrader.simulation.data;
 
 import com.bn.ninjatrader.common.data.Price;
-import com.google.common.base.Optional;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
-import static org.testng.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Brad on 8/22/16.
@@ -24,56 +24,50 @@ public class BarDataHistoryTest {
   private Price price4 = new Price(date4, 4.1, 4.2, 4.3, 4.4, 40000);
 
   @Test
-  public void testCreateEmpty() {
+  public void testCreateWithNoHistory_shouldReturnEmpty() {
     BarDataHistory history = BarDataHistory.withMaxSize(52);
 
     Optional<BarData> foundBarData = history.getNBarsAgo(0);
-    assertFalse(foundBarData.isPresent());
+    assertThat(foundBarData).isEmpty();
 
     foundBarData = history.getNBarsAgo(1);
-    assertFalse(foundBarData.isPresent());
+    assertThat(foundBarData).isEmpty();
 
     foundBarData = history.getNBarsAgo(-100);
-    assertFalse(foundBarData.isPresent());
+    assertThat(foundBarData).isEmpty();
 
     foundBarData = history.getNBarsAgo(100);
-    assertFalse(foundBarData.isPresent());
+    assertThat(foundBarData).isEmpty();
   }
 
   @Test
-  public void testWithData() {
+  public void testWithHistoryData_shouldReturnHistoryData() {
     BarDataHistory history = BarDataHistory.withMaxSize(3);
 
     history.add(BarData.forPrice(price1));
-    assertBarDataPriceEqualsPrice(history.getNBarsAgo(0), price1);
-    assertBarDataNotExist(history.getNBarsAgo(2));
+    assertThat(history.getNBarsAgo(0)).isPresent();
+    assertThat(history.getNBarsAgo(0).get().getPrice()).isEqualTo(price1);
+    assertThat(history.getNBarsAgo(2)).isEmpty();
 
     history.add(BarData.forPrice(price2));
-    assertBarDataPriceEqualsPrice(history.getNBarsAgo(0), price2);
-    assertBarDataPriceEqualsPrice(history.getNBarsAgo(1), price1);
+    assertThat(history.getNBarsAgo(0)).isPresent();
+    assertThat(history.getNBarsAgo(0).get().getPrice()).isEqualTo(price2);
+    assertThat(history.getNBarsAgo(1)).isPresent();
+    assertThat(history.getNBarsAgo(1).get().getPrice()).isEqualTo(price1);
   }
 
   @Test
-  public void testWithDataExceedingMaxSize() {
+  public void testWithHistoryDataExceedingMaxSize_shouldKeepHistoryToMaxSize() {
     BarDataHistory history = BarDataHistory.withMaxSize(3);
     history.add(BarData.forPrice(price1));
     history.add(BarData.forPrice(price2));
     history.add(BarData.forPrice(price3));
     history.add(BarData.forPrice(price4));
 
-    assertBarDataPriceEqualsPrice(history.getNBarsAgo(0), price4);
-    assertBarDataPriceEqualsPrice(history.getNBarsAgo(1), price3);
-    assertBarDataPriceEqualsPrice(history.getNBarsAgo(2), price2);
+    assertThat(history.getNBarsAgo(0)).isPresent();
+    assertThat(history.getNBarsAgo(1)).isPresent();
+    assertThat(history.getNBarsAgo(2)).isPresent();
 
-    assertBarDataNotExist(history.getNBarsAgo(3));
-  }
-
-  private void assertBarDataPriceEqualsPrice(Optional<BarData> foundBarData, Price price) {
-    assertTrue(foundBarData.isPresent());
-    assertEquals(foundBarData.get().getPrice(), price);
-  }
-
-  private void assertBarDataNotExist(Optional<BarData> foundBarData) {
-    assertFalse(foundBarData.isPresent());
+    assertThat(history.getNBarsAgo(3)).isEmpty();
   }
 }

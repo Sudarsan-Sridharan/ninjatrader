@@ -1,25 +1,8 @@
 <html>
 <head>
     <title>Test</title>
-    <script src="$contextPath/js/jquery.min.js"></script>
-    <script src="$contextPath/js/ninjachart.js"></script>
-    <script src="$contextPath/js/indicator/ichimoku.js"></script>
+    <script data-main="js/ninjachart2" src="js/lib/require.js"></script>
     <script>
-        $(document).ready(function() {
-            var ninjaChart = new NinjaChart('chart');
-            ninjaChart.addChart(new IchimokuChart(ninjaChart));
-
-            $("#symbolForm").submit(function() {
-                var symbol = $("#symbolInput").val().toUpperCase();
-                var baseUrl = '${contextPath}';
-                var period = $("#period").val();
-
-                ninjaChart.showChart(symbol, period);
-
-                $("#symbolInput").select();
-                return false;
-            });
-        });
     </script>
 
     #chartstyle()
@@ -27,14 +10,15 @@
 
 <body>
 <form id="symbolForm">
-    <input type="text" id="symbolInput">
+    <input type="text" id="symbolInput" value="MEG">
     <button type="submit" id="symbolSubmit">Submit</button>
-    <select id="period">
-        <option value="1D">1D</option>
-        <option value="1W" selected>1W</option>
+    <select id="timeframe">
+        <option value="ONE_DAY" selected>1D</option>
+        <option value="ONE_WEEK">1W</option>
     </select>
 </form>
 
 <div id="chart"></div>
+
 </body>
 </html>

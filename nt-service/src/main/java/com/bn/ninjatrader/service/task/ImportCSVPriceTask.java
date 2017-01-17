@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.service.task;
 
-import com.bn.ninjatrader.data.history.PriceImporter;
+import com.bn.ninjatrader.dataimport.history.CsvPriceImporter;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.inject.Inject;
@@ -23,17 +23,17 @@ public class ImportCSVPriceTask extends Task {
 
   private static final Logger LOG = LoggerFactory.getLogger(ImportCSVPriceTask.class);
 
-  private final PriceImporter priceImporter;
+  private final CsvPriceImporter csvPriceImporter;
 
   @Inject
-  public ImportCSVPriceTask(PriceImporter priceImporter) {
-    super("import-price");
-    this.priceImporter = priceImporter;
+  public ImportCSVPriceTask(CsvPriceImporter csvPriceImporter) {
+    super("import-csv-price");
+    this.csvPriceImporter = csvPriceImporter;
   }
 
   @Override
   public void execute(ImmutableMultimap<String, String> args, PrintWriter printWriter) throws Exception {
     LOG.info("Executing ImportPrice {}", args);
-    priceImporter.importPrices();
+    csvPriceImporter.importPrices();
   }
 }

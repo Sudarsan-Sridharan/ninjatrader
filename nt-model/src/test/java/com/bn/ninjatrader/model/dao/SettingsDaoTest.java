@@ -2,6 +2,9 @@ package com.bn.ninjatrader.model.dao;
 
 import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.common.data.Setting;
+import com.bn.ninjatrader.model.guice.NtModelTestModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import org.jongo.MongoCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,16 +22,17 @@ import static org.testng.Assert.assertNotNull;
  */
 public class SettingsDaoTest extends AbstractDaoTest {
 
-  private static final Logger log = LoggerFactory.getLogger(SettingsDaoTest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(SettingsDaoTest.class);
 
-  private static final String OWNER = "OWNER";
+  private static final String OWNER = "USER";
   private static final String DIFF_OWNER = "DIFF_OWNER";
 
   private SettingsDao settingsDao;
 
   @BeforeClass
   public void setup() {
-    settingsDao = getInjector().getInstance(SettingsDao.class);
+    Injector injector = Guice.createInjector(new NtModelTestModule());
+    settingsDao = injector.getInstance(SettingsDao.class);
   }
 
   @BeforeMethod

@@ -1,10 +1,8 @@
 package com.bn.ninjatrader.simulation.condition;
 
+import com.bn.ninjatrader.simulation.operation.Constant;
 import com.bn.ninjatrader.simulation.operation.Operation;
 import com.bn.ninjatrader.simulation.operation.Operations;
-import com.bn.ninjatrader.simulation.operation.UnaryOperation;
-import com.bn.ninjatrader.simulation.operation.Variable;
-import com.bn.ninjatrader.simulation.data.DataType;
 import com.bn.ninjatrader.simulation.type.InequalityOperator;
 
 /**
@@ -31,9 +29,6 @@ public class Conditions {
     return new OrCondition(condition1, condition2, moreConditions);
   }
 
-  public static Condition eq(DataType lhs, double rhs) {
-    return eq(Variable.of(lhs), Operations.of(rhs));
-  }
   public static Condition eq(Operation lhs, double rhs) {
     return eq(lhs, Operations.of(rhs));
   }
@@ -41,21 +36,13 @@ public class Conditions {
     return condition(lhs, InequalityOperator.EQUALS, rhs);
   }
 
-
   public static Condition gt(Operation lhs, double rhs) {
     return gt(lhs, Operations.of(rhs));
-  }
-  public static Condition gt(DataType lhs, Operation rhs) {
-    return gt(Variable.of(lhs), rhs);
   }
   public static Condition gt(Operation lhs, Operation rhs) {
     return condition(lhs, InequalityOperator.GREATER_THAN, rhs);
   }
 
-
-  public static Condition gte(DataType lhs, double rhs) {
-    return gte(Variable.of(lhs), Operations.of(rhs));
-  }
   public static Condition gte(Operation lhs, double rhs) {
     return gte(lhs, Operations.of(rhs));
   }
@@ -63,12 +50,6 @@ public class Conditions {
     return condition(lhs, InequalityOperator.GREATER_THAN_EQUALS, rhs);
   }
 
-  public static Condition lt(DataType lhs, double rhs) {
-    return lt(Variable.of(lhs), Operations.of(rhs));
-  }
-  public static Condition lt(DataType lhs, Operation rhs) {
-    return lt(Variable.of(lhs), rhs);
-  }
   public static Condition lt(Operation lhs, double rhs) {
     return lt(lhs, Operations.of(rhs));
   }
@@ -77,7 +58,7 @@ public class Conditions {
   }
 
   public static Condition lte(Operation lhs, double rhs) {
-    return lte(lhs, UnaryOperation.of(rhs));
+    return lte(lhs, Constant.of(rhs));
   }
   public static Condition lte(Operation lhs, Operation rhs) {
     return condition(lhs, InequalityOperator.LESS_THAN_OR_EQUALS, rhs);

@@ -103,7 +103,7 @@ public class PseQuote {
   }
 
   public Price toPrice() {
-    return new Price(open, high, low, close, (long)volume);
+    return Price.builder().open(open).high(high).low(low).close(close).volume((long) volume).build();
   }
 
   public DailyQuote toDailyQuote() {

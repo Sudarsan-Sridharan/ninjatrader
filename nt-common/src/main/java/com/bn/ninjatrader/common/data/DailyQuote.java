@@ -1,7 +1,6 @@
 package com.bn.ninjatrader.common.data;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.google.common.base.MoreObjects;
 
 import java.time.LocalDate;
 
@@ -11,13 +10,13 @@ import java.time.LocalDate;
 public class DailyQuote {
 
   private String symbol;
-  private Price price;
+  private final Price.Builder price;
 
-  public DailyQuote() { price = new Price(); }
+  public DailyQuote() { price = Price.builder(); }
 
   public DailyQuote(String symbol, LocalDate date, double open, double high, double low, double close, long volume) {
     this.symbol = symbol;
-    price = new Price(date, open, high, low, close, volume);
+    price = Price.builder().date(date).open(open).high(high).low(low).close(close).volume(volume);
   }
 
   public String getSymbol() {
@@ -32,8 +31,8 @@ public class DailyQuote {
     return price.getDate();
   }
 
-  public void setDate(LocalDate date) {
-    price.setDate(date);
+  public void setDate(final LocalDate date) {
+    price.date(date);
   }
 
   public double getOpen() {
@@ -41,7 +40,7 @@ public class DailyQuote {
   }
 
   public void setOpen(double open) {
-    price.setOpen(open);
+    price.open(open);
   }
 
   public double getHigh() {
@@ -49,7 +48,7 @@ public class DailyQuote {
   }
 
   public void setHigh(double high) {
-    price.setHigh(high);
+    price.high(high);
   }
 
   public double getLow() {
@@ -57,7 +56,7 @@ public class DailyQuote {
   }
 
   public void setLow(double low) {
-    price.setLow(low);
+    price.low(low);
   }
 
   public double getClose() {
@@ -65,7 +64,7 @@ public class DailyQuote {
   }
 
   public void setClose(double close) {
-    price.setClose(close);
+    price.close(close);
   }
 
   public long getVolume() {
@@ -73,22 +72,23 @@ public class DailyQuote {
   }
 
   public void setVolume(long volume) {
-    price.setVolume(volume);
+    price.volume(volume);
   }
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-            .append("symbol", symbol)
-            .append("D", price.getDate())
-            .append("O", price.getOpen())
-            .append("H", price.getHigh())
-            .append("L", price.getLow())
-            .append("C", price.getClose())
+    return MoreObjects.toStringHelper(this)
+            .add("symbol", symbol)
+            .add("D", price.getDate())
+            .add("O", price.getOpen())
+            .add("H", price.getHigh())
+            .add("L", price.getLow())
+            .add("C", price.getClose())
+            .add("V", price.getVolume())
             .toString();
   }
 
   public Price getPrice() {
-    return price;
+    return price.build();
   }
 }

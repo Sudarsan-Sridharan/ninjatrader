@@ -1,16 +1,18 @@
 package com.bn.ninjatrader.simulation.data;
 
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.broker.Broker;
 import com.bn.ninjatrader.simulation.operation.Variable;
+import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
-import com.google.common.base.Optional;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.util.Optional;
+
 /**
  * Contains data for one bar regardless if it's daily, weekly, or monthly time frame.
+ * Data can include prices or any indicator values.
  *
  * Created by Brad on 8/2/16.
  */
@@ -38,22 +40,13 @@ public class BarData {
     return dataMap.get(variable);
   }
 
-  public Double get(DataType dataType) {
-    return get(Variable.of(dataType));
-  }
-
   public BarData put(DataMap dataMap) {
-    this.dataMap.put(dataMap.toMap());
+    this.dataMap.putAll(dataMap.toMap());
     return this;
   }
 
   public BarData put(Variable variable, double value) {
     this.dataMap.put(variable, value);
-    return this;
-  }
-
-  public BarData put(DataType dataType, double value) {
-    this.dataMap.put(Variable.of(dataType), value);
     return this;
   }
 

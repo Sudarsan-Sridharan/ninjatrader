@@ -1,13 +1,13 @@
 package com.bn.ninjatrader.common.data;
 
+import com.bn.ninjatrader.common.util.NtLocalDateDeserializer;
+import com.bn.ninjatrader.common.util.NtLocalDateSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import java.time.LocalDate;
 
@@ -16,6 +16,10 @@ import java.time.LocalDate;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Ichimoku implements DateObj<Ichimoku> {
+
+  public static final Builder builder() {
+    return new Builder();
+  }
 
   private static final Ichimoku EMPTY_INSTANCE = new Ichimoku();
 
@@ -35,8 +39,8 @@ public class Ichimoku implements DateObj<Ichimoku> {
   private double senkouB;
 
   @JsonProperty("d")
-  @JsonSerialize(using = LocalDateSerializer.class)
-  @JsonDeserialize(using = LocalDateDeserializer.class)
+  @JsonSerialize(using = NtLocalDateSerializer.class)
+  @JsonDeserialize(using = NtLocalDateDeserializer.class)
   private LocalDate date;
 
   public static final Ichimoku empty() {
@@ -103,37 +107,86 @@ public class Ichimoku implements DateObj<Ichimoku> {
   }
 
   @Override
-  public String toString() {
-    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .append("d", date)
-        .append("t", tenkan)
-        .append("k", kijun)
-        .append("c", chikou)
-        .append("sa", senkouA)
-        .append("sb", senkouB)
-        .toString();
+  public boolean equals(Object obj) {
+    if (obj == null || obj.getClass() != getClass()) { return false; }
+    if (obj == this) { return true; }
+    final Ichimoku rhs = (Ichimoku) obj;
+    return Objects.equal(date, rhs.date)
+        && Objects.equal(tenkan, rhs.tenkan)
+        && Objects.equal(kijun, rhs.kijun)
+        && Objects.equal(chikou, rhs.chikou)
+        && Objects.equal(senkouA, rhs.senkouA)
+        && Objects.equal(senkouB, rhs.senkouB);
   }
 
-  public void overlapWith(Ichimoku overlap) {
-    if (overlap.getChikou() > 0d) {
-      chikou = overlap.getChikou();
-    }
-    if (overlap.getTenkan() > 0d) {
-      tenkan = overlap.getTenkan();
-    }
-    if (overlap.getKijun() > 0d) {
-      kijun = overlap.getKijun();
-    }
-    if (overlap.getSenkouA() > 0d) {
-      senkouA = overlap.getSenkouA();
-    }
-    if (overlap.getSenkouB() > 0d) {
-      senkouB = overlap.getSenkouB();
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(date, tenkan, kijun, chikou, senkouA, senkouB);
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("d", date).add("t", tenkan).add("k", kijun).add("c", chikou).add("sa", senkouA).add("sb", senkouB)
+        .toString();
   }
 
   @Override
   public int compareTo(Ichimoku o) {
     return 0;
+  }
+
+  /**
+   * Builder class
+   */
+  public static final class Builder {
+    private LocalDate date;
+    private double tenkan;
+    private double kijun;
+    private double chikou;
+    private double senkouA;
+    private double senkouB;
+
+    public Builder copyOf(final Ichimoku ichimoku) {
+      this.date = ichimoku.date;
+      this.tenkan = ichimoku.tenkan;
+      this.kijun = ichimoku.kijun;
+      this.chikou = ichimoku.chikou;
+      this.senkouA = ichimoku.senkouA;
+      this.senkouB = ichimoku.senkouB;
+      return this;
+    }
+    public Builder date(final LocalDate date) {
+      this.date = date;
+      return this;
+    }
+    public Builder tenkan(final double tenkan) {
+      this.tenkan = tenkan;
+      return this;
+    }
+    public Builder kijun(final double kijun) {
+      this.kijun = kijun;
+      return this;
+    }
+    public Builder chikou(final double chikou) {
+      this.chikou = chikou;
+      return this;
+    }
+    public Builder senkouA(final double senkouA) {
+      this.senkouA = senkouA;
+      return this;
+    }
+    public Builder senkouB(final double senkouB) {
+      this.senkouB = senkouB;
+      return this;
+    }
+
+    public double getTenkan() {
+      return tenkan;
+    }
+
+    public Ichimoku build() {
+      return new Ichimoku(date, chikou, tenkan, kijun, senkouA, senkouB);
+    }
   }
 }

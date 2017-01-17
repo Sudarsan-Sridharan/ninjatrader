@@ -1,7 +1,6 @@
 package com.bn.ninjatrader.calculator;
 
 import com.beust.jcommander.internal.Lists;
-import com.bn.ninjatrader.calculator.parameter.CalcParams;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.common.util.TestUtil;
@@ -12,6 +11,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+import static com.bn.ninjatrader.calculator.parameter.CalcParams.withPrices;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -28,15 +29,12 @@ public class SMACalculatorTest {
 
   @Test
   public void testCalcWithSimplePeriod() {
-    LocalDate date = LocalDate.of(2016, 1, 1);
-    List<Price> priceList = Lists.newArrayList();
+    final LocalDate date = LocalDate.of(2016, 1, 1);
+    final List<Price> priceList = Lists.newArrayList();
 
-    Price price = TestUtil.randomPrice();
-    price.setDate(date);
-    price.setClose(10d);
-    priceList.add(price);
+    priceList.add(TestUtil.randomPriceBuilder().date(date).close(10).build());
 
-    List<Value> values = calculator.calc(priceList, 1);
+    final List<Value> values = calculator.calcForPeriod(withPrices(priceList), 1);
     assertEquals(values.size(), 1);
     assertEquals(values.get(0).getDate(), date);
     assertEquals(values.get(0).getValue(), 10d);
@@ -50,13 +48,10 @@ public class SMACalculatorTest {
     // Add dummy data
     for (int i = 0; i < 26; i++) {
       date = date.plusDays(1);
-      Price price = TestUtil.randomPrice();
-      price.setDate(date);
-      price.setClose(2d);
-      priceList.add(price);
+      priceList.add(TestUtil.randomPriceBuilder().date(date).close(2d).build());
     }
 
-    List<Value> values = calculator.calc(priceList, 26);
+    List<Value> values = calculator.calcForPeriod(withPrices(priceList), 26);
     assertEquals(values.size(), 1);
     assertEquals(values.get(0).getDate(), date);
     assertEquals(values.get(0).getValue(), 2d);
@@ -69,19 +64,13 @@ public class SMACalculatorTest {
     List<Price> priceList = Lists.newArrayList();
 
     // Add price 1. Mean should be (5 + 10) / 2
-    Price price1 = TestUtil.randomPrice();
-    price1.setDate(date1);
-    price1.setClose(9d);
-    priceList.add(price1);
+    priceList.add(TestUtil.randomPriceBuilder().date(date1).close(9d).build());
 
     // Add price 2. Mean should be (5 + 12) / 2
-    Price price2 = TestUtil.randomPrice();
-    price2.setDate(date2);
-    price2.setClose(11.5d);
-    priceList.add(price2);
+    priceList.add(TestUtil.randomPriceBuilder().date(date2).close(11.5).build());
 
     // Calculate for multiple periods
-    Map<Integer, List<Value>> valueMap = calculator.calc(CalcParams.withPrice(priceList).periods(1, 2));
+    Map<Integer, List<Value>> valueMap = calculator.calc(withPrices(priceList).periods(1, 2));
 
     // Verify result. Should have periods for 1 and 2
     assertEquals(valueMap.size(), 2);
@@ -106,29 +95,26 @@ public class SMACalculatorTest {
   @Test
   public void testCalcWithHighPrecision() {
     // Test 1
-    Price price = new Price(now, 1.0, 3, 2, 2.92847583, 10000);
-    List<Value> result = calculator.calc(Lists.newArrayList(price), 1);
-    assertEquals(result.size(), 1);
-    assertEquals(result.get(0).getValue(), 2.928476);
+    List<Value> result = calculator.calcForPeriod(withPrices(Price.builder().close(2.92847583).build()), 1);
+    assertThat(result).hasSize(1);
+    assertThat(result.get(0).getValue()).isEqualTo(2.928476);
 
     // Test 2
-    price = new Price(now, 1.0, 9.5, 9.5, 1.0000000001, 10000);
-    result = calculator.calc(Lists.newArrayList(price), 1);
-    assertEquals(result.get(0).getValue(), 1.0);
+    result = calculator.calcForPeriod(withPrices(Price.builder().close(1.0000000001).build()), 1);
+    assertThat(result.get(0).getValue()).isEqualTo(1.0);
 
     // Test 3
-    List<Price> priceList = Lists.newArrayList();
-    priceList.add(new Price(now, 1.0, 9, 9, 1.00001, 10000));
-    priceList.add(new Price(tomorrow, 1.0, 9, 9, 1.00002, 10000));
-    result = calculator.calc(priceList, 2);
-    assertEquals(result.get(0).getValue(), 1.000015);
+    result = calculator.calcForPeriod(withPrices(
+        Price.builder().close(1.00001).build(),
+        Price.builder().close(1.00002).build()), 2);
+    assertThat(result.get(0).getValue()).isEqualTo(1.000015);
 
     // Test 3
-    priceList.clear();
-    priceList.add(new Price(now, 1.0, 3, 2, 1.057839201, 10000));
-    priceList.add(new Price(tomorrow, 1.0, 3, 2, 1.057839202, 10000));
-    priceList.add(new Price(tomorrow.plusDays(1), 1.0, 3, 2, 1.057839203, 10000));
-    result = calculator.calc(priceList, 3);
-    assertEquals(result.get(0).getValue(), 1.057839);
+    result = calculator.calcForPeriod(withPrices(
+        Price.builder().close(1.057839201).build(),
+        Price.builder().close(1.057839202).build(),
+        Price.builder().close(1.057839203).build()
+    ), 3);
+    assertThat(result.get(0).getValue()).isEqualTo(1.057839);
   }
 }

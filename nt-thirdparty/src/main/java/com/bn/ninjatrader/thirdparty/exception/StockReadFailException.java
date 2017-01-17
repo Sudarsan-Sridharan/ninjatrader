@@ -8,7 +8,7 @@ public class StockReadFailException extends RuntimeException {
   private final String symbol;
 
   public StockReadFailException(String symbol, Exception e) {
-    super(e);
+    super("Failed to read quotes for symbol: " + symbol, e);
     this.symbol = symbol;
   }
 

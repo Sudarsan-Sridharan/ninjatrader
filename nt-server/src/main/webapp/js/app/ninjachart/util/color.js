@@ -1,26 +1,40 @@
 define(function() {
-
-    function BoardLot() {
-
+    function Color() {
+        this.counter = 0;
+        this.colors = [
+            "#ff4351",
+            "#49e845",
+            "#7b72e9",
+            "#feae1b",
+            "#55dae1",
+            "#fd6631",
+            "#ffd426",
+            "#db49d8",
+            "#fc880f",
+            "#1b9af7",
+            "#a5de37",
+            "#ed4694",
+            "#6ff467",
+            "#b9acf4",
+            "#ffd728",
+            "#ff667a",
+            "#80edf0",
+            "#fe9949",
+            "#fee83a",
+            "#ec6eec",
+            "#fec418",
+            "#94e6fe",
+            "#f668ca",
+            "#d1ef51"
+        ];
     }
 
-    BoardLot.prototype.getBaseUnit = function(price) {
-        if (price > 1000) return 5;
-        if (price > 10) return 1;
-        if (price > 3) return 0.5;
-        if (price > 1) return 0.05;
-        if (price > 0.1) return 0.01;
-        if (price > 0.01) return 0.001;
-        if (price > 0.001) return 0.0005;
-        return 0.00005;
+    Color.prototype.next = function() {
+        var color = this.colors[this.counter];
+        this.counter++;
+        this.counter %= this.colors.length;
+        return color;
     };
 
-    BoardLot.prototype.getDecimalPlaces = function(price) {
-        if (price >= 1000) return 0;
-        if (price >= 0.01) return 2;
-        if (price >= 0.0001) return 4;
-        return 5;
-    };
-
-    return BoardLot;
+    return Color;
 });

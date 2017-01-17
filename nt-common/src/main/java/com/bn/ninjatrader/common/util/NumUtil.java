@@ -1,7 +1,11 @@
 package com.bn.ninjatrader.common.util;
 
-import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by Brad on 6/10/16.
@@ -103,9 +107,9 @@ public class NumUtil {
     return trim(value, 2);
   }
 
-  public static int max(int[] values) {
-    Preconditions.checkNotNull(values);
-    Preconditions.checkArgument(values.length > 0, "Array must have size > 0.");
+  public static int max(final List<Integer> values) {
+    checkNotNull(values, "values must not be null.");
+    checkArgument(values.size() > 0, "Array must have size > 0.");
 
     int max = Integer.MIN_VALUE;
     for (int value : values) {

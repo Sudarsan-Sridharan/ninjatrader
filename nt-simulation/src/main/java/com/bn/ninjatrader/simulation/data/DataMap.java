@@ -7,65 +7,98 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Brad on 8/18/16.
  */
-public class DataMap {
+public class DataMap implements Map<Variable, Double> {
 
   private static final Logger LOG = LoggerFactory.getLogger(DataMap.class);
 
   private static final String DATA_TYPE_NOT_EXIST_ERROR = "Value does not exist for the DataType: %s";
 
-  private Map<Variable, Double> dataMap = Maps.newHashMap();
+  private Map<Variable, Double> variableMap = Maps.newHashMap();
 
-  public void put(Variable variable, double value) {
-    dataMap.put(variable, value);
+  @Override
+  public Double put(Variable key, Double value) {
+    return variableMap.put(key, value);
   }
 
-  public void put(DataType dataType, double value) {
-    put(Variable.of(dataType), value);
+  public Double put(Variable key, double value) {
+    return put(key, Double.valueOf(value));
   }
 
-  public void put(Map<Variable, Double> dataMap) {
-    this.dataMap.putAll(dataMap);
+  @Override
+  public void putAll(Map<? extends Variable, ? extends Double> dataMap) {
+    this.variableMap.putAll(dataMap);
   }
 
-  public void put(DataMap dataMap) {
-    this.dataMap.putAll(dataMap.dataMap);
-  }
-
-  public Double get(Variable variable) {
-    if (dataMap.containsKey(variable)) {
-      return dataMap.get(variable);
+  @Override
+  public Double get(Object key) {
+    if (variableMap.containsKey(key)) {
+      return variableMap.get(key);
     } else {
-      LOG.info("{}", dataMap.keySet());
-      throw new IllegalArgumentException(String.format(DATA_TYPE_NOT_EXIST_ERROR, variable));
+      LOG.info("{}", variableMap.keySet());
+      throw new IllegalArgumentException(String.format(DATA_TYPE_NOT_EXIST_ERROR, key));
     }
   }
 
-  public Double get(DataType dataType) {
-    Variable variable = Variable.of(dataType);
-    return get(variable);
+  @Override
+  public int size() {
+    return variableMap.size();
   }
 
-  public int size() {
-    return dataMap.size();
+  @Override
+  public boolean isEmpty() {
+    return variableMap.isEmpty();
+  }
+
+  @Override
+  public boolean containsKey(Object key) {
+    return variableMap.containsKey(key);
+  }
+
+  @Override
+  public boolean containsValue(Object value) {
+    return variableMap.containsValue(value);
+  }
+
+  @Override
+  public Double remove(Object key) {
+    return variableMap.remove(key);
   }
 
   public Map<Variable, Double> toMap() {
-    return dataMap;
+    return variableMap;
   }
 
+  @Override
   public void clear() {
-    dataMap.clear();
+    variableMap.clear();
+  }
+
+  @Override
+  public Set<Variable> keySet() {
+    return variableMap.keySet();
+  }
+
+  @Override
+  public Collection<Double> values() {
+    return variableMap.values();
+  }
+
+  @Override
+  public Set<Entry<Variable, Double>> entrySet() {
+    return variableMap.entrySet();
   }
 
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .append("dataMap", dataMap)
+        .append("variableMap", variableMap)
         .build();
   }
 }

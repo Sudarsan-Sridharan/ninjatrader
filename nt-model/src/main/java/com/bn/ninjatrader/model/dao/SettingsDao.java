@@ -4,7 +4,7 @@ import com.bn.ninjatrader.common.data.Setting;
 import com.bn.ninjatrader.model.annotation.SettingsCollection;
 import com.bn.ninjatrader.model.document.SettingDocument;
 import com.bn.ninjatrader.model.util.Queries;
-import com.bn.ninjatrader.model.util.QueryParamName;
+import com.bn.ninjatrader.model.util.QueryParam;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import org.jongo.MongoCollection;
@@ -26,11 +26,11 @@ public class SettingsDao extends AbstractDao<SettingDocument> {
   public SettingsDao(@SettingsCollection MongoCollection mongoCollection) {
     super(mongoCollection);
     mongoCollection.ensureIndex(
-        String.format("{%s : 1}", QueryParamName.OWNER), "{unique: true}");
+        String.format("{%s : 1}", QueryParam.USER), "{unique: true}");
   }
 
   public List<Setting> find(String owner) {
-    SettingDocument settingData = getMongoCollection().findOne(Queries.FIND_BY_OWNER, owner).as(SettingDocument.class);
+    SettingDocument settingData = getMongoCollection().findOne(Queries.FIND_BY_USER, owner).as(SettingDocument.class);
     if (settingData == null) {
       return Collections.emptyList();
     }
@@ -61,14 +61,14 @@ public class SettingsDao extends AbstractDao<SettingDocument> {
 
     removeByNames(owner, names);
 
-    getMongoCollection().update(Queries.FIND_BY_OWNER, owner)
+    getMongoCollection().update(Queries.FIND_BY_USER, owner)
         .upsert()
         .with("{$push: { data: { $each: #, $sort: { n: 1}}}}", settings);
   }
 
   public void removeByNames(String owner, List<String> names) {
     if (!names.isEmpty()) {
-      getMongoCollection().update(Queries.FIND_BY_OWNER, owner).multi()
+      getMongoCollection().update(Queries.FIND_BY_USER, owner).multi()
           .with("{$pull: {data :{n: {$in: #}}}}", names);
     }
   }

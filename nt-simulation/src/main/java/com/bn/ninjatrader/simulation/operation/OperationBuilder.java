@@ -23,11 +23,11 @@ public class OperationBuilder {
   }
 
   private OperationBuilder(double constant) {
-    this.operation = UnaryOperation.of(constant);
+    this.operation = Constant.of(constant);
   }
 
   public OperationBuilder plus(double constant) {
-    return plus(UnaryOperation.of(constant));
+    return plus(Constant.of(constant));
   }
 
   public OperationBuilder plus(Operation operation) {
@@ -36,7 +36,7 @@ public class OperationBuilder {
   }
 
   public OperationBuilder minus(double constant) {
-    return minus(UnaryOperation.of(constant));
+    return minus(Constant.of(constant));
   }
 
   public OperationBuilder minus(Operation operation) {

@@ -2,11 +2,9 @@ package com.bn.ninjatrader.simulation.operation.function;
 
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.operation.Operation;
-import com.bn.ninjatrader.simulation.operation.OperationType;
 import com.bn.ninjatrader.simulation.operation.Variable;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Optional;
 
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -34,11 +32,5 @@ public class HistoryFunction implements Operation {
   @Override
   public Set<Variable> getVariables() {
     return operation.getVariables();
-  }
-
-  @Override
-  @JsonProperty("type")
-  public OperationType getOperationType() {
-    return OperationType.HISTORY;
   }
 }

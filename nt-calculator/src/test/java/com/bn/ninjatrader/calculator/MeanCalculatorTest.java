@@ -12,6 +12,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+import static com.bn.ninjatrader.calculator.parameter.CalcParams.withPrices;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -25,19 +27,16 @@ public class MeanCalculatorTest {
 
   @Test
   public void testMeanOfPeriod() {
-    int highest = 10;
-    int lowest = 5;
+    final int highest = 10;
+    final int lowest = 5;
 
-    LocalDate date = LocalDate.of(2016, 1, 1);
-    List<Price> priceList = Lists.newArrayList();
+    final LocalDate date = LocalDate.of(2016, 1, 1);
+    final List<Price> priceList = Lists.newArrayList();
 
-    Price price = TestUtil.randomPriceWithFloorCeil(lowest, highest);
-    price.setDate(date);
-    price.setLow(lowest);
-    price.setHigh(highest);
-    priceList.add(price);
+    priceList.add(TestUtil.randomPriceBuilderWithFloorCeil(lowest, highest)
+        .date(date).low(lowest).high(highest).build());
 
-    List<Value> values = calculator.calc(priceList, 1);
+    final List<Value> values = calculator.calcForPeriod(withPrices(priceList), 1);
     assertEquals(values.size(), 1);
     assertEquals(values.get(0).getDate(), date);
     assertEquals(values.get(0).getValue(), 7.5d);
@@ -45,34 +44,26 @@ public class MeanCalculatorTest {
 
   @Test
   public void testMeanOfBigPeriod() {
-    int highest = 10;
-    int lowest = 5;
+    final int highest = 10;
+    final int lowest = 5;
 
     LocalDate date = LocalDate.of(2016, 1, 1);
-    List<Price> priceList = Lists.newArrayList();
+    final List<Price> priceList = Lists.newArrayList();
 
     // Add dummy data
     for (int i = 0; i < 24; i++) {
-      Price price = TestUtil.randomPriceWithFloorCeil(lowest, highest);
-      price.setDate(date);
-      priceList.add(price);
+      priceList.add(TestUtil.randomPriceBuilderWithFloorCeil(lowest, highest).date(date).build());
       date = date.plusDays(1);
     }
 
     // Add lowest price
-    Price price = TestUtil.randomPriceWithFloorCeil(lowest, highest);
-    price.setDate(date);
-    price.setLow(lowest);
-    priceList.add(price);
+    priceList.add(TestUtil.randomPriceBuilderWithFloorCeil(lowest, highest).date(date).low(lowest).build());
     date = date.plusDays(1);
 
     // Add highest price
-    price = TestUtil.randomPriceWithFloorCeil(lowest, highest);
-    price.setDate(date);
-    price.setHigh(highest);
-    priceList.add(price);
+    priceList.add(TestUtil.randomPriceBuilderWithFloorCeil(lowest, highest).date(date).high(highest).build());
 
-    List<Value> values = calculator.calc(priceList, 26);
+    final List<Value> values = calculator.calcForPeriod(withPrices(priceList), 26);
     assertEquals(values.size(), 1);
     assertEquals(values.get(0).getDate(), date);
     assertEquals(values.get(0).getValue(), 7.5d);
@@ -81,29 +72,28 @@ public class MeanCalculatorTest {
   @Test
   public void testCalcOfMultiplePeriods() {
     int highest = 10;
-    int lowest = 5;
-
-    LocalDate date1 = LocalDate.of(2016, 1, 1);
-    LocalDate date2 = LocalDate.of(2016, 1, 2);
-    List<Price> priceList = Lists.newArrayList();
+    final int lowest = 5;
+    final LocalDate date1 = LocalDate.of(2016, 1, 1);
+    final LocalDate date2 = LocalDate.of(2016, 1, 2);
+    final List<Price> priceList = Lists.newArrayList();
 
     // Add price 1. Mean should be (5 + 10) / 2
-    Price price1 = TestUtil.randomPriceWithFloorCeil(lowest, highest);
-    price1.setDate(date1);
-    price1.setLow(lowest);
-    price1.setHigh(highest);
-    priceList.add(price1);
+    priceList.add(TestUtil.randomPriceBuilderWithFloorCeil(lowest, highest)
+        .date(date1)
+        .low(lowest)
+        .high(highest)
+        .build());
 
     // Add price 2. Mean should be (5 + 12) / 2
     highest = 12;
-    Price price2 = TestUtil.randomPriceWithFloorCeil(lowest, highest);
-    price2.setDate(date2);
-    price2.setLow(lowest);
-    price2.setHigh(highest);
-    priceList.add(price2);
+    priceList.add(TestUtil.randomPriceBuilderWithFloorCeil(lowest, highest)
+        .date(date2)
+        .low(lowest)
+        .high(highest)
+        .build());
 
     // Calculate for multiple periods
-    Map<Integer, List<Value>> valueMap = calculator.calc(CalcParams.withPrice(priceList).periods(1, 2));
+    final Map<Integer, List<Value>> valueMap = calculator.calc(CalcParams.withPrices(priceList).periods(1, 2));
 
     // Verify result. Should have periods for 1 and 2
     assertEquals(valueMap.size(), 2);
@@ -128,24 +118,20 @@ public class MeanCalculatorTest {
   @Test
   public void testMeanPrecision() {
     // Test 1
-    Price price = new Price(LocalDate.now(), 1.0, 10.0052, 0.00101, 2.0, 10000);
-    List<Value> result = calculator.calc(Lists.newArrayList(price), 1);
-    assertEquals(result.size(), 1);
-    assertEquals(result.get(0).getValue(), 5.003105);
+    List<Value> result = calculator.calcForPeriod(withPrices(Price.builder().high(10.0052).low(0.00101).build()), 1);
+    assertThat(result).hasSize(1);
+    assertThat(result.get(0).getValue()).isEqualTo(5.003105);
 
     // Test 2
-    price = new Price(LocalDate.now(), 1.0, 9.5, 9.5, 1.0, 10000);
-    result = calculator.calc(Lists.newArrayList(price), 1);
-    assertEquals(result.get(0).getValue(), 9.5);
+    result = calculator.calcForPeriod(withPrices(Price.builder().high(9.5).low(9.5).build()), 1);
+    assertThat(result.get(0).getValue()).isEqualTo(9.5);
 
     // Test 3
-    price = new Price(LocalDate.now(), 1.0, 9.5, 9.4, 1.0, 10000);
-    result = calculator.calc(Lists.newArrayList(price), 1);
-    assertEquals(result.get(0).getValue(), 9.45);
+    result = calculator.calcForPeriod(withPrices(Price.builder().high(9.5).low(9.4).build()), 1);
+    assertThat(result.get(0).getValue()).isEqualTo(9.45);
 
     // Test 3
-    price = new Price(LocalDate.now(), 1.0, 0.000051, 0.000053, 1.0, 10000);
-    result = calculator.calc(Lists.newArrayList(price), 1);
-    assertEquals(result.get(0).getValue(), 0.000052);
+    result = calculator.calcForPeriod(withPrices(Price.builder().high(0.000051).low(0.000053).build()), 1);
+    assertThat(result.get(0).getValue()).isEqualTo(0.000052);
   }
 }

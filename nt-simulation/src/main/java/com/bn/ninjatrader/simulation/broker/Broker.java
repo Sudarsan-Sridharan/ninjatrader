@@ -5,7 +5,6 @@ import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
-import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -65,9 +64,9 @@ public class Broker {
 
   private void fulfillOrder(Order order, BarData barData) {
     switch (order.getTransactionType()) {
-      case TransactionType.BUY:
+      case BUY:
         fulfillBuy(order, barData); break;
-      case TransactionType.SELL:
+      case SELL:
         fulfillSell(order, barData); break;
     }
   }

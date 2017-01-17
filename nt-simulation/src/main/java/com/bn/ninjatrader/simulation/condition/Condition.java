@@ -2,6 +2,7 @@ package com.bn.ninjatrader.simulation.condition;
 
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.operation.Variable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -15,15 +16,14 @@ import java.util.Set;
     include = JsonTypeInfo.As.PROPERTY,
     property = "type")
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = AndCondition.class, name = "AND"),
-    @JsonSubTypes.Type(value = OrCondition.class, name = "OR"),
-    @JsonSubTypes.Type(value = BasicCondition.class, name = "BASIC")
+    @JsonSubTypes.Type(value = AndCondition.class, name = "and"),
+    @JsonSubTypes.Type(value = OrCondition.class, name = "or"),
+    @JsonSubTypes.Type(value = BasicCondition.class, name = "basic")
 })
 public interface Condition {
 
   boolean isMatch(BarData barParameters);
 
+  @JsonIgnore
   Set<Variable> getVariables();
-
-  ConditionType getConditionType();
 }

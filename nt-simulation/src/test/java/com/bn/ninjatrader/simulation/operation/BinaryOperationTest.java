@@ -1,90 +1,75 @@
 package com.bn.ninjatrader.simulation.operation;
 
-import com.bn.ninjatrader.simulation.data.DataType;
-import com.bn.ninjatrader.simulation.type.Operator;
-import org.testng.annotations.Test;
+import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.simulation.data.BarData;
+import com.bn.ninjatrader.simulation.data.DataMap;
+import org.junit.Before;
+import org.junit.Test;
 
-import java.util.Set;
-
-import static com.bn.ninjatrader.simulation.data.DataType.*;
-import static com.bn.ninjatrader.simulation.type.Operator.MINUS;
-import static com.bn.ninjatrader.simulation.type.Operator.MULTIPLY;
-import static com.bn.ninjatrader.simulation.type.Operator.PLUS;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static com.bn.ninjatrader.simulation.operation.Variables.*;
+import static com.bn.ninjatrader.simulation.type.Operator.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Brad on 8/2/16.
  */
-public class BinaryOperationTest extends AbstractOperationTest {
+public class BinaryOperationTest {
 
-  @Test
-  public void testArithmeticOnConstants() {
-    assertOperationEquals(operation(5.6, PLUS, 5.8), 11.4);
-    assertOperationEquals(operation(-1.1, PLUS, 1.1), 0);
-    assertOperationEquals(operation(0, PLUS, -0), 0);
+  private final Price price = Price.builder().open(1).high(2).low(3).close(4).volume(10000).build();
 
-    assertOperationEquals(operation(5.1, MINUS, 4.1), 1.0);
-    assertOperationEquals(operation(0, MINUS, 0), 0);
-    assertOperationEquals(operation(1, MINUS, 2), -1);
-    assertOperationEquals(operation(1, MINUS, -1), 2);
+  private BarData barData;
+
+  @Before
+  public void before() {
+    final DataMap dataMap = new DataMap();
+    dataMap.put(Variables.PRICE_OPEN, 1.0);
+    dataMap.put(Variables.PRICE_HIGH, 2.0);
+    dataMap.put(Variables.PRICE_LOW, 3.0);
+    dataMap.put(Variables.PRICE_CLOSE, 4.0);
+    dataMap.put(Variables.VOLUME, 10000);
+
+    barData = BarData.forPrice(price);
+    barData.put(dataMap);
   }
 
   @Test
-  public void testGetDataTypesForConstants() {
-    BinaryOperation operation = operation(1.0, PLUS, 2.0);
-    Set<Variable> variables = operation.getVariables();
-    assertEquals(variables.size(), 1);
-    assertEquals(variables.iterator().next().getDataType(), CONSTANT);
+  public void testGetValueOnEquationWithOnlyConstants_shouldReturnCalculatedValue() {
+    assertThat(BinaryOperation.of(5.6, PLUS, 5.8).getValue(barData)).isEqualTo(11.4);
+    assertThat(BinaryOperation.of(-1.1, PLUS, 1.1).getValue(barData)).isEqualTo(0);
+    assertThat(BinaryOperation.of(0, PLUS, -0).getValue(barData)).isEqualTo(0);
+
+    assertThat(BinaryOperation.of(5.1, MINUS, 4.1).getValue(barData)).isEqualTo(1.0);
+    assertThat(BinaryOperation.of(0, MINUS, 0).getValue(barData)).isEqualTo(0);
+    assertThat(BinaryOperation.of(1, MINUS, 2).getValue(barData)).isEqualTo(-1);
+    assertThat(BinaryOperation.of(1, MINUS, -1).getValue(barData)).isEqualTo(2);
   }
 
   @Test
-  public void testGetDataTypesForVariables() {
-    BinaryOperation operation = operation(PRICE_OPEN, PLUS, PRICE_OPEN);
-    Set<Variable> variables = operation.getVariables();
-    assertEquals(variables.size(), 1);
-    assertTrue(variables.contains(Variable.of(PRICE_OPEN)));
-
-    operation = operation(PRICE_OPEN, PLUS, PRICE_CLOSE);
-    variables = operation.getVariables();
-    assertEquals(variables.size(), 2);
-    assertTrue(variables.contains(Variable.of(PRICE_OPEN)));
-    assertTrue(variables.contains(Variable.of(PRICE_CLOSE)));
+  public void testGetValueOnEquationWithVariables_shouldReturnCalculatedValue() {
+    assertThat(BinaryOperation.of(PRICE_CLOSE, PLUS, PRICE_HIGH).getValue(barData)).isEqualTo(6.0);
+    assertThat(BinaryOperation.of(PRICE_CLOSE, PLUS, PRICE_CLOSE).getValue(barData)).isEqualTo(8.0);
   }
 
   @Test
-  public void testGetNestedDataTypes() {
-    BinaryOperation operation = operation(PRICE_OPEN, PLUS, PRICE_CLOSE);
-    operation = operation(operation, MINUS, UnaryOperation.of(1.0));
-    operation = operation(operation, MULTIPLY, UnaryOperation.of(PRICE_HIGH));
-
-    Set<Variable> variables = operation.getVariables();
-    assertEquals(variables.size(), 4);
-    assertTrue(variables.contains(Variable.of(PRICE_OPEN)));
-    assertTrue(variables.contains(Variable.of(PRICE_CLOSE)));
-    assertTrue(variables.contains(Variable.of(PRICE_HIGH)));
-    assertTrue(variables.contains(Variable.of(CONSTANT)));
+  public void testGetVariablesOnConstantOnlyEquation_shouldReturnEmpty() {
+    assertThat(BinaryOperation.of(1.0, PLUS, 2.0).getVariables()).isEmpty();
   }
 
   @Test
-  public void testAddVariables() {
-    assertOperationEquals(operation(PRICE_CLOSE, PLUS, PRICE_HIGH), 6.0);
+  public void testGetVariables_shouldReturnAllVariablesInEquation() {
+    assertThat(BinaryOperation.of(PRICE_OPEN, PLUS, PRICE_OPEN).getVariables())
+        .containsExactlyInAnyOrder(PRICE_OPEN);
+
+    assertThat(BinaryOperation.of(PRICE_OPEN, PLUS, PRICE_CLOSE).getVariables())
+        .containsExactlyInAnyOrder(PRICE_OPEN, PRICE_CLOSE);
   }
 
-  private void assertOperationEquals(Operation operation, double expected) {
-    assertEquals(operation.getValue(barData), expected);
-  }
+  @Test
+  public void testGetVariablesOfNestedOperations_shouldReturnAllVariablesInEquation() {
+    BinaryOperation operation = BinaryOperation.of(PRICE_OPEN, PLUS, PRICE_CLOSE);
+    operation = BinaryOperation.of(operation, MINUS, 1.0);
+    operation = BinaryOperation.of(operation, MULTIPLY, PRICE_HIGH);
 
-  private BinaryOperation operation(double lhs, Operator operator, double rhs) {
-    return operation(UnaryOperation.of(lhs), operator, UnaryOperation.of(rhs));
-  }
-
-  private BinaryOperation operation(DataType lhs, Operator operator, DataType rhs) {
-    return operation(UnaryOperation.of(lhs), operator, UnaryOperation.of(rhs));
-  }
-
-  private BinaryOperation operation(Operation lhs, Operator operator, Operation rhs) {
-    BinaryOperation operation = new BinaryOperation(lhs, operator, rhs);
-    return operation;
+    assertThat(operation.getVariables()).containsExactlyInAnyOrder(PRICE_OPEN, PRICE_CLOSE, PRICE_HIGH);
   }
 }

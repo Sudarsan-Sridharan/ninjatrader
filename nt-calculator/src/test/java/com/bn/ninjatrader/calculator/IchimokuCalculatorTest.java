@@ -5,13 +5,11 @@ import com.bn.ninjatrader.calculator.parameter.IchimokuParameters;
 import com.bn.ninjatrader.common.data.Ichimoku;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.data.Value;
-import com.bn.ninjatrader.common.util.TestUtil;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import mockit.Tested;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -19,15 +17,13 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Brad on 7/11/16.
  */
 public class IchimokuCalculatorTest {
   private static final Logger log = LoggerFactory.getLogger(IchimokuCalculatorTest.class);
-  private static final int MAX_NUM_OF_VALUES = 10;
 
   @Tested
   private IchimokuCalculator ichimokuCalculator;
@@ -40,48 +36,32 @@ public class IchimokuCalculatorTest {
   private IchimokuParameters parameters;
   private LocalDate startingDate = LocalDate.of(2016, 1, 1);
 
-  @BeforeClass
-  public void setupBeforeClass() {
-    initData(MAX_NUM_OF_VALUES);
-
-    parameters = IchimokuParameters.builder()
-        .priceList(priceList)
-        .tenkanList(tenkanList)
-        .kijunList(kijunList)
-        .senkouBList(senkouBList)
-        .chickouShiftBackPeriods(26)
-        .senkouShiftForwardPeriods(1)
-        .build();
-  }
-
   @BeforeMethod
   public void setup() {
-    Injector injector = Guice.createInjector();
+    final Injector injector = Guice.createInjector();
     ichimokuCalculator = injector.getInstance(IchimokuCalculator.class);
   }
 
   @Test
   public void testIchimokuWithNoShift() {
-    int numOfRecords = 10;
-    initData(numOfRecords);
+    initNumOfTestData(10);
 
-    IchimokuParameters parameters = IchimokuParameters.builder()
+    final IchimokuParameters parameters = IchimokuParameters.builder()
         .priceList(priceList)
         .tenkanList(tenkanList)
         .kijunList(kijunList)
         .senkouBList(senkouBList)
         .build();
 
-    List<Ichimoku> ichimokuList = ichimokuCalculator.calc(parameters);
+    final List<Ichimoku> ichimokuList = ichimokuCalculator.calc(parameters);
 
-    assertNotNull(ichimokuList);
-    assertEquals(ichimokuList.size(), MAX_NUM_OF_VALUES);
+    assertThat(ichimokuList).hasSize(10);
 
     int i = 1;
     LocalDate date = startingDate;
     for (Ichimoku ichimoku : ichimokuList) {
-      Ichimoku expectedIchimoku = new Ichimoku(date, i, i, i*2, i*3.0/2, i*3);
-      TestUtil.assertIchimokuEquals(ichimoku, expectedIchimoku);
+      assertThat(ichimoku).isEqualTo(Ichimoku.builder()
+          .date(date).chikou(i).tenkan(i).kijun(i*2).senkouA(i*3.0/2).senkouB(i*3).build());
       i++;
       date = getNextWeekday(date);
     }
@@ -89,65 +69,53 @@ public class IchimokuCalculatorTest {
 
   @Test
   public void testCalcIchimokuWithChikouShift() {
-    int numOfRecords = 2;
-    initData(numOfRecords);
+    initNumOfTestData(2);
 
-    IchimokuParameters parameters = IchimokuParameters.builder()
+    final IchimokuParameters parameters = IchimokuParameters.builder()
         .priceList(priceList)
         .tenkanList(tenkanList)
         .kijunList(kijunList)
         .senkouBList(senkouBList)
-        .chickouShiftBackPeriods(1)
-        .senkouShiftForwardPeriods(0)
+        .chickouShiftBackPeriods(1) // Shift by 1 period back
         .build();
 
-    List<Ichimoku> ichimokuList = ichimokuCalculator.calc(parameters);
+    final List<Ichimoku> ichimokuList = ichimokuCalculator.calc(parameters);
 
-    assertNotNull(ichimokuList);
-    assertEquals(ichimokuList.size(), 2);
-
-    Ichimoku expectedIchimoku1 = new Ichimoku(startingDate, 2d, 1d, 2d, 1.5, 3d);
-    TestUtil.assertIchimokuEquals(ichimokuList.get(0), expectedIchimoku1);
-
-    Ichimoku expectedIchimoku2 = new Ichimoku(getNextWeekday(startingDate), 0d, 2d, 4d, 3d, 6d);
-    TestUtil.assertIchimokuEquals(ichimokuList.get(1), expectedIchimoku2);
+    assertThat(ichimokuList).hasSize(2).containsExactly(
+        Ichimoku.builder().date(startingDate).chikou(2d).tenkan(1d).kijun(2d).senkouA(1.5).senkouB(3d).build(),
+        Ichimoku.builder().date(getNextWeekday(startingDate)).tenkan(2d).kijun(4d).senkouA(3d).senkouB(6d).build()
+    );
   }
 
   @Test
   public void testCalcIchimokuWithSenkouShift() {
     int numOfRecords = 2;
-    initData(numOfRecords);
+    initNumOfTestData(numOfRecords);
 
-    IchimokuParameters parameters = IchimokuParameters.builder()
+    final IchimokuParameters parameters = IchimokuParameters.builder()
         .priceList(priceList)
         .tenkanList(tenkanList)
         .kijunList(kijunList)
         .senkouBList(senkouBList)
-        .chickouShiftBackPeriods(0)
-        .senkouShiftForwardPeriods(1)
+        .senkouShiftForwardPeriods(1) // Shift 1 period forward
         .build();
 
-    List<Ichimoku> ichimokuList = ichimokuCalculator.calc(parameters);
+    final List<Ichimoku> ichimokuList = ichimokuCalculator.calc(parameters);
 
-    assertNotNull(ichimokuList);
-    assertEquals(ichimokuList.size(), 3);
-
-    Ichimoku expectedIchimoku1 = new Ichimoku(startingDate, 1d, 1d, 2d, 0d, 0d);
-    TestUtil.assertIchimokuEquals(ichimokuList.get(0), expectedIchimoku1);
-
-    Ichimoku expectedIchimoku2 = new Ichimoku(getNextWeekday(startingDate), 2d, 2d, 4d, 1.5d, 3d);
-    TestUtil.assertIchimokuEquals(ichimokuList.get(1), expectedIchimoku2);
-
-    Ichimoku expectedIchimoku3 = new Ichimoku(null, 0d, 0d, 0d, 3d, 6d);
-    TestUtil.assertIchimokuEquals(ichimokuList.get(2), expectedIchimoku3);
+    assertThat(ichimokuList).hasSize(3).containsExactly(
+        Ichimoku.builder().date(startingDate).chikou(1d).tenkan(1d).kijun(2d).build(),
+        Ichimoku.builder().date(getNextWeekday(startingDate))
+            .chikou(2d).tenkan(2d).kijun(4d).senkouA(1.5d).senkouB(3d).build(),
+        Ichimoku.builder().senkouA(3d).senkouB(6d).build()
+    );
   }
 
   @Test
   public void testCalcIchimokuWithChikouAndSenkouShift() {
-    int numOfRecords = 2;
-    initData(numOfRecords);
+    final int numOfRecords = 2;
+    initNumOfTestData(numOfRecords);
 
-    IchimokuParameters parameters = IchimokuParameters.builder()
+    final IchimokuParameters parameters = IchimokuParameters.builder()
         .priceList(priceList)
         .tenkanList(tenkanList)
         .kijunList(kijunList)
@@ -156,28 +124,23 @@ public class IchimokuCalculatorTest {
         .senkouShiftForwardPeriods(1)
         .build();
 
-    List<Ichimoku> ichimokuList = ichimokuCalculator.calc(parameters);
+    final List<Ichimoku> ichimokuList = ichimokuCalculator.calc(parameters);
 
-    assertNotNull(ichimokuList);
-    assertEquals(ichimokuList.size(), 3);
-
-    Ichimoku expectedIchimoku1 = new Ichimoku(startingDate, 2d, 1d, 2d, 0d, 0d);
-    TestUtil.assertIchimokuEquals(ichimokuList.get(0), expectedIchimoku1);
-
-    Ichimoku expectedIchimoku2 = new Ichimoku(getNextWeekday(startingDate), 0d, 2d, 4d, 1.5d, 3d);
-    TestUtil.assertIchimokuEquals(ichimokuList.get(1), expectedIchimoku2);
-
-    Ichimoku expectedIchimoku3 = new Ichimoku(null, 0d, 0d, 0d, 3d, 6d);
-    TestUtil.assertIchimokuEquals(ichimokuList.get(2), expectedIchimoku3);
+    assertThat(ichimokuList).hasSize(3).containsExactly(
+        Ichimoku.builder().date(startingDate).chikou(2d).tenkan(1d).kijun(2d).build(),
+        Ichimoku.builder().date(getNextWeekday(startingDate))
+            .tenkan(2d).kijun(4d).senkouA(1.5d).senkouB(3d).build(),
+        Ichimoku.builder().senkouA(3d).senkouB(6d).build()
+    );
   }
 
-  private void initData(int numOfData) {
-    clearData();
+  private void initNumOfTestData(int numOfData) {
+    clearTestData();
 
     LocalDate date = startingDate;
 
     for (int i = 1; i <= numOfData; i++) {
-      priceList.add(new Price(date, i, i, i, i, 1000));
+      priceList.add(Price.builder().date(date).open(i).high(i).low(i).close(i).volume(1000).build());
       tenkanList.add(new Value(date, i));
       kijunList.add(new Value(date, i * 2));
       senkouBList.add(new Value(date, i * 3));
@@ -185,7 +148,7 @@ public class IchimokuCalculatorTest {
     }
   }
 
-  private void clearData() {
+  private void clearTestData() {
     priceList.clear();
     tenkanList.clear();
     kijunList.clear();

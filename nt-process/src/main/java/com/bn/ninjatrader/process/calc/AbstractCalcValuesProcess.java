@@ -4,12 +4,13 @@ import com.bn.ninjatrader.calculator.ValueCalculator;
 import com.bn.ninjatrader.calculator.parameter.CalcParams;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.data.Value;
+import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.common.util.DateObjUtil;
 import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.ValueDao;
+import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 import com.bn.ninjatrader.process.request.CalcRequest;
-import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
@@ -19,23 +20,25 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import static com.bn.ninjatrader.model.request.FindRequest.forSymbol;
+import static com.bn.ninjatrader.model.request.FindRequest.findSymbol;
 import static com.bn.ninjatrader.model.request.SaveRequest.save;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by Brad on 7/28/16.
  */
 @Singleton
 public abstract class AbstractCalcValuesProcess extends AbstractCalcProcess implements CalcProcess {
-
-  private static final Logger log = LoggerFactory.getLogger(AbstractCalcValuesProcess.class);
+  private static final Logger LOG = LoggerFactory.getLogger(AbstractCalcValuesProcess.class);
 
   private final ValueCalculator calculator;
   private final PriceDao priceDao;
   private final ValueDao valueDao;
 
   @Inject
-  public AbstractCalcValuesProcess(ValueCalculator calculator, PriceDao priceDao, ValueDao valueDao) {
+  public AbstractCalcValuesProcess(final ValueCalculator calculator,
+                                   final PriceDao priceDao,
+                                   final ValueDao valueDao) {
     super(priceDao);
     this.priceDao = priceDao;
     this.calculator = calculator;
@@ -43,45 +46,55 @@ public abstract class AbstractCalcValuesProcess extends AbstractCalcProcess impl
   }
 
   @Override
-  public void processMissingBars(CalcRequest calcRequest) {
-    Preconditions.checkNotNull(calcRequest);
-    log.debug("{}", calcRequest);
+  public void process(final CalcRequest calcRequest) {
+    checkNotNull(calcRequest);
 
-    LocalDate priceFromDate = getFromDateToHaveEnoughPricesForMissingBars(calcRequest);
-    int[] periods = getDefaultPeriodsIfNull(calcRequest);
+    for (final String symbol : calcRequest.getAllSymbols()) {
+      for (final TimeFrame timeFrame : calcRequest.getTimeFrames()) {
 
-    List<Price> prices = priceDao.find(forSymbol(calcRequest.getSymbol())
-        .from(priceFromDate)
-        .to(calcRequest.getToDate()));
+        final List<Integer> periods = calcRequest.getPeriods().isEmpty() ? getDefaultPeriods() : calcRequest.getPeriods();
+        final int biggestPeriod = NumUtil.max(periods);
+        final LocalDate priceFromDate = getFromDateToHaveEnoughBars(FindBeforeDateRequest.builder()
+            .symbol(symbol)
+            .timeFrame(timeFrame)
+            .beforeDate(calcRequest.getFromDate())
+            .numOfValues(biggestPeriod)
+            .build());
 
-    Map<Integer, List<Value>> periodToValuesMap = calculator.calc(CalcParams.withPrice(prices).periods(periods));
+        final List<Price> prices = priceDao.find(findSymbol(symbol)
+            .timeframe(timeFrame)
+            .from(priceFromDate)
+            .to(calcRequest.getToDate()));
 
-    saveValuesForEachPeriod(calcRequest, periodToValuesMap);
-  }
-
-  private LocalDate getFromDateToHaveEnoughPricesForMissingBars(CalcRequest calcRequest) {
-    int[] periods = getDefaultPeriodsIfNull(calcRequest);
-    int biggestPeriod = NumUtil.max(periods);
-    return getFromDateToHaveEnoughBars(calcRequest, biggestPeriod);
-  }
-
-  private int[] getDefaultPeriodsIfNull(CalcRequest calcRequest) {
-    int[] periods = calcRequest.getPeriods();
-    return periods == null ? getDefaultPeriods() : periods;
-  }
-
-  private void saveValuesForEachPeriod(CalcRequest calcRequest, Map<Integer, List<Value>> periodToValuesMap) {
-    for (Map.Entry<Integer, List<Value>> entry : periodToValuesMap.entrySet()) {
-      int period = entry.getKey().intValue();
-      List<Value> values = entry.getValue();
-
-      DateObjUtil.trimToDateRange(values, calcRequest.getFromDate(), calcRequest.getToDate());
-
-      if (!values.isEmpty()) {
-        valueDao.save(save(calcRequest.getSymbol()).period(period).values(values));
+        if (!prices.isEmpty()) {
+          final Map<Integer, List<Value>> periodToValuesMap =
+              calculator.calc(provideCalcParams(symbol, timeFrame, prices, periods));
+          saveValuesForEachPeriod(symbol, timeFrame, calcRequest.getFromDate(), calcRequest.getToDate(), periodToValuesMap);
+        }
       }
     }
   }
 
-  protected abstract int[] getDefaultPeriods();
+  public CalcParams provideCalcParams(String symbol, TimeFrame timeFrame, List<Price> prices, List<Integer> periods) {
+    return CalcParams.withPrices(prices).periods(periods);
+  }
+
+  private void saveValuesForEachPeriod(final String symbol,
+                                       final TimeFrame timeFrame,
+                                       final LocalDate fromDate,
+                                       final LocalDate toDate,
+                                       final Map<Integer, List<Value>> periodToValuesMap) {
+    // For each period, save list of values
+    for (final Map.Entry<Integer, List<Value>> entry : periodToValuesMap.entrySet()) {
+      final int period = entry.getKey().intValue();
+      final List<Value> values = entry.getValue();
+      DateObjUtil.trimToDateRange(values, fromDate, toDate);
+
+      if (!values.isEmpty()) {
+        valueDao.save(save(symbol).timeFrame(timeFrame).period(period).values(values));
+      }
+    }
+  }
+
+  protected abstract List<Integer> getDefaultPeriods();
 }

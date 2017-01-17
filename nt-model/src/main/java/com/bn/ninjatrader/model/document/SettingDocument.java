@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.model.document;
 
 import com.bn.ninjatrader.common.data.Setting;
-import com.bn.ninjatrader.model.util.QueryParamName;
+import com.bn.ninjatrader.model.util.QueryParam;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
@@ -20,10 +20,10 @@ public class SettingDocument {
   @MongoObjectId
   private String id;
 
-  @JsonProperty(QueryParamName.OWNER)
-  private String owner;
+  @JsonProperty(QueryParam.USER)
+  private String user;
 
-  @JsonProperty(QueryParamName.DATA)
+  @JsonProperty(QueryParam.DATA)
   private List<Setting> settings = Lists.newArrayList();
 
   public String getId() {
@@ -34,12 +34,12 @@ public class SettingDocument {
     this.id = id;
   }
 
-  public String getOwner() {
-    return owner;
+  public String getUser() {
+    return user;
   }
 
-  public void setOwner(String owner) {
-    this.owner = owner;
+  public void setUser(String user) {
+    this.user = user;
   }
 
   public List<Setting> getSettings() {
