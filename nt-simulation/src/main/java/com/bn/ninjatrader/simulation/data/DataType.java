@@ -21,6 +21,7 @@ public enum DataType {
   SENKOU_B,
   CHIKOU,
 
+  EMA,
   SMA,
   RSI
 }

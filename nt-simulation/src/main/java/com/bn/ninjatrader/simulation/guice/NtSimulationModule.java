@@ -22,14 +22,16 @@ public class NtSimulationModule extends AbstractModule {
   @Provides
   @AllDataFinders
   private List<DataFinder> provideAllDataFinders(
-      PriceDataFinder priceDataFinder,
-      IchimokuDataFinder ichimokuDataFinder,
-      SMADataFinder smaDataFinder,
-      RSIDataFinder rsiDataFinder) {
+      final PriceDataFinder priceDataFinder,
+      final IchimokuDataFinder ichimokuDataFinder,
+      final EMADataFinder emaDataFinder,
+      final SMADataFinder smaDataFinder,
+      final RSIDataFinder rsiDataFinder) {
 
-    List<DataFinder> dataFinders = Lists.newArrayList(
+    final List<DataFinder> dataFinders = Lists.newArrayList(
         priceDataFinder,
         ichimokuDataFinder,
+        emaDataFinder,
         smaDataFinder,
         rsiDataFinder);
     return dataFinders;

@@ -2,10 +2,10 @@ package com.bn.ninjatrader.simulation.datafinder;
 
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.common.util.ListUtil;
-import com.bn.ninjatrader.model.dao.SMADao;
+import com.bn.ninjatrader.model.dao.EMADao;
 import com.bn.ninjatrader.model.request.FindRequest;
+import com.bn.ninjatrader.simulation.adaptor.EMADataMapAdaptor;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
-import com.bn.ninjatrader.simulation.adaptor.SMADataMapAdaptor;
 import com.bn.ninjatrader.simulation.data.DataType;
 import com.bn.ninjatrader.simulation.data.SimulationData;
 import com.bn.ninjatrader.simulation.operation.Variable;
@@ -26,14 +26,14 @@ import static com.bn.ninjatrader.model.request.FindRequest.findSymbol;
  * Created by Brad on 8/20/16.
  */
 @Singleton
-public class SMADataFinder implements DataFinder<Value> {
+public class EMADataFinder implements DataFinder<Value> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(SMADataFinder.class);
+  private static final Logger LOG = LoggerFactory.getLogger(EMADataFinder.class);
 
-  private static final List<DataType> SUPPORTED_DATA_TYPES = Lists.newArrayList(DataType.SMA);
+  private static final List<DataType> SUPPORTED_DATA_TYPES = Lists.newArrayList(DataType.EMA);
 
   @Inject
-  private SMADao smaDao;
+  private EMADao emaDao;
 
   @Override
   public List<SimulationData<Value>> find(final SimulationParams params, final int requiredDataSize) {
@@ -42,12 +42,12 @@ public class SMADataFinder implements DataFinder<Value> {
     final Set<Variable> variables = params.getVariables();
 
     for (final Variable variable : variables) {
-      if (variable.getDataType() == DataType.SMA) {
+      if (variable.getDataType() == DataType.EMA) {
         int period = variable.getPeriod();
         findRequest.period(period);
-        final List<Value> valueList = smaDao.find(findRequest);
+        final List<Value> valueList = emaDao.find(findRequest);
         ListUtil.fillToSize(valueList, Value.empty(), requiredDataSize);
-        simulationDataList.add(new SimulationData(valueList, SMADataMapAdaptor.forPeriod(period)));
+        simulationDataList.add(new SimulationData(valueList, EMADataMapAdaptor.forPeriod(period)));
       }
     }
     return simulationDataList;

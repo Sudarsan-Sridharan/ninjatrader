@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 
 import static com.bn.ninjatrader.simulation.condition.Conditions.*;
+import static com.bn.ninjatrader.simulation.data.DataType.EMA;
 import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_CLOSE;
 import static com.bn.ninjatrader.simulation.data.DataType.RSI;
 import static com.bn.ninjatrader.simulation.data.DataType.SMA;
@@ -49,7 +50,7 @@ public class Simulator {
     return simulationReport;
   }
 
-  private void saveReport(SimulationReport simulationReport) {
+  private void saveReport(final SimulationReport simulationReport) {
     final Report report = new Report();
     report.setReportId("SAMPLE_REPORT"); // TODO REMOVE THIS!!
     report.setData(simulationReport);
@@ -64,15 +65,17 @@ public class Simulator {
     );
     Simulator simulator = injector.getInstance(Simulator.class);
 
-    SimulationParams params = new SimulationParams();
+    final SimulationParams params = new SimulationParams();
     params.setSymbol("MEG");
     params.setFromDate(LocalDate.now().minusYears(10));
     params.setToDate(LocalDate.now());
     params.setStartingCash(100000);
 
     params.setBuyCondition(Conditions.create()
-        .add(gt(PRICE_CLOSE, Variable.of(SMA).period(21)))
-        .add(gt(Variable.of(SMA).period(21), Variable.of(SMA).period(50)))
+        .add(gt(PRICE_CLOSE, Variable.of(EMA).period(18)))
+        .add(gt(Variable.of(EMA).period(18), Variable.of(EMA).period(50)))
+        .add(gt(Variable.of(EMA).period(50), Variable.of(EMA).period(100)))
+        .add(gt(Variable.of(EMA).period(100), Variable.of(EMA).period(200)))
         .add(gt(PRICE_CLOSE, highestInBarsAgo(PRICE_CLOSE, 4)))
 //        .add(gt(PRICE_CLOSE, withinBarsAgo(PRICE_CLOSE, 100)))
     );

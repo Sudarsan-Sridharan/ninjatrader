@@ -1,11 +1,11 @@
 package com.bn.ninjatrader.importer;
 
-import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.common.data.DailyQuote;
 import com.bn.ninjatrader.dataimport.history.CsvPriceImporter;
 import com.bn.ninjatrader.dataimport.history.parser.CsvDataParser;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.request.SaveRequest;
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
