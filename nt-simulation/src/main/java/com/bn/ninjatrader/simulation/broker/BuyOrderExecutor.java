@@ -15,25 +15,24 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class BuyOrderExecutor extends OrderExecutor {
-
-  private static final Logger log = LoggerFactory.getLogger(BuyOrderExecutor.class);
+  private static final Logger LOG = LoggerFactory.getLogger(BuyOrderExecutor.class);
 
   @Override
-  public BuyTransaction execute(Account account, Order order, BarData barData) {
+  public BuyTransaction execute(final Account account, final Order order, final BarData barData) {
     checkConditions(account, order, barData);
 
-    BuyTransaction buyTransaction = fulfillBuyOrder(order, barData);
+    final BuyTransaction buyTransaction = fulfillBuyOrder(order, barData);
 
     updateAccount(account, buyTransaction);
 
     return buyTransaction;
   }
 
-  private BuyTransaction fulfillBuyOrder(Order order, BarData barData) {
-    BuyOrder buyOrder = (BuyOrder) order;
+  private BuyTransaction fulfillBuyOrder(final Order order, final BarData barData) {
+    final BuyOrder buyOrder = (BuyOrder) order;
 
-    double boughtPrice = getFulfilledPrice(order, barData);
-    long numOfShares = getNumOfSharesCanBuyWithAmount(buyOrder.getCashAmount(), boughtPrice);
+    final double boughtPrice = getFulfilledPrice(order, barData);
+    final long numOfShares = getNumOfSharesCanBuyWithAmount(buyOrder.getCashAmount(), boughtPrice);
 
     return Transaction.buy()
         .date(barData.getPrice().getDate())
@@ -43,7 +42,7 @@ public class BuyOrderExecutor extends OrderExecutor {
         .build();
   }
 
-  private void updateAccount(Account account, BuyTransaction transaction) {
+  private void updateAccount(final Account account, final BuyTransaction transaction) {
     account.addToPortfolio(transaction);
     account.addCash(-transaction.getValue());
     account.onBuySuccess(transaction);

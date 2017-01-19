@@ -9,20 +9,14 @@ import java.time.LocalDate;
  */
 public class SellOrder extends Order {
 
-  private SellOrder(LocalDate orderDate,
-                    MarketTime marketTime,
-                    int daysFromNow,
-                    long numOfShares) {
+  private SellOrder(final LocalDate orderDate,
+                    final MarketTime marketTime,
+                    final int daysFromNow,
+                    final long numOfShares) {
     super(orderDate, TransactionType.SELL, marketTime, daysFromNow, numOfShares);
   }
 
   public static class SellOrderBuilder extends OrderBuilder<SellOrderBuilder> {
-
-    public SellOrderBuilder params(OrderParameters orderParams) {
-      return getThis()
-          .at(orderParams.getMarketTime())
-          .barsFromNow(orderParams.getBarsFromNow());
-    }
 
     @Override
     SellOrderBuilder getThis() {

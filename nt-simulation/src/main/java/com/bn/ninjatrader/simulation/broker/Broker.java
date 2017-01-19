@@ -5,7 +5,6 @@ import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -16,16 +15,17 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Created by Brad on 8/12/16.
  */
 public class Broker {
+  private static final Logger LOG = LoggerFactory.getLogger(Broker.class);
 
-  private static final Logger log = LoggerFactory.getLogger(Broker.class);
-
-  private List<Order> pendingOrders = Lists.newArrayList();
-  private List<BuyTransaction> fulfilledBuys = Lists.newArrayList();
-  private List<SellTransaction> fulfilledSells = Lists.newArrayList();
+  private final List<Order> pendingOrders = Lists.newArrayList();
+  private final List<BuyTransaction> fulfilledBuys = Lists.newArrayList();
+  private final List<SellTransaction> fulfilledSells = Lists.newArrayList();
   private Account account;
 
   @Inject
@@ -35,34 +35,34 @@ public class Broker {
   private SellOrderExecutor sellOrderExecutor;
 
   @Inject
-  public Broker(@Assisted Account account) {
-    Preconditions.checkNotNull(account);
+  public Broker(@Assisted final Account account) {
+    checkNotNull(account);
     this.account = account;
   }
 
-  public void submitOrder(Order order) {
-    Preconditions.checkNotNull(order);
+  public void submitOrder(final Order order) {
+    checkNotNull(order, "order must not be null.");
     pendingOrders.add(order);
   }
 
-  public void processPendingOrders(BarData barData) {
-    Preconditions.checkNotNull(barData);
+  public void processPendingOrders(final BarData barData) {
+    checkNotNull(barData, "barData must not be null.");
     if (pendingOrders.isEmpty()) {
       return;
     }
 
-    List<Order> fulfilledOrders = Lists.newArrayList();
-    for (Order order : pendingOrders) {
+    final List<Order> fulfilledOrders = Lists.newArrayList();
+    for (final Order order : pendingOrders) {
       if (order.isReadyForProcessing()) {
         fulfillOrder(order, barData);
         fulfilledOrders.add(order);
       }
-      order.decrementDaysFromNow();
+      order.decrementBarsFromNow();
     }
     pendingOrders.removeAll(fulfilledOrders);
   }
 
-  private void fulfillOrder(Order order, BarData barData) {
+  private void fulfillOrder(final Order order, final BarData barData) {
     switch (order.getTransactionType()) {
       case BUY:
         fulfillBuy(order, barData); break;
@@ -71,13 +71,13 @@ public class Broker {
     }
   }
 
-  private void fulfillBuy(Order order, BarData barData) {
-    BuyTransaction buyTransaction = buyOrderExecutor.execute(account, order, barData);
+  private void fulfillBuy(final Order order, final BarData barData) {
+    final BuyTransaction buyTransaction = buyOrderExecutor.execute(account, order, barData);
     fulfilledBuys.add(buyTransaction);
   }
 
-  private void fulfillSell(Order order, BarData barData) {
-    SellTransaction sellTransaction = sellOrderExecutor.execute(account, order, barData);
+  private void fulfillSell(final Order order, final BarData barData) {
+    final SellTransaction sellTransaction = sellOrderExecutor.execute(account, order, barData);
     fulfilledSells.add(sellTransaction);
   }
 

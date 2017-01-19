@@ -50,16 +50,9 @@ public class SellTransaction extends Transaction {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj == null) { return false; }
-    if (!(obj instanceof SellTransaction)) {
-      return false;
-    }
+    if (obj == null || !(obj instanceof SellTransaction)) { return false; }
     if (obj == this) { return true; }
-    if (obj.getClass() != getClass()) {
-      return false;
-    }
-
-    SellTransaction rhs = (SellTransaction) obj;
+    final SellTransaction rhs = (SellTransaction) obj;
     return new EqualsBuilder()
         .appendSuper(super.equals(obj))
         .append(profit, rhs.profit)

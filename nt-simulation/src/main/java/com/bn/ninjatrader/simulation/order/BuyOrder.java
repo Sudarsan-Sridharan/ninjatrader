@@ -16,13 +16,13 @@ import java.time.LocalDate;
 public class BuyOrder extends Order {
   private static final Logger LOG = LoggerFactory.getLogger(BuyOrder.class);
 
-  private double cashAmount;
+  private final double cashAmount;
 
-  private BuyOrder(LocalDate orderDate,
-                   MarketTime marketTime,
-                   int barsFromNow,
-                   long numOfShares,
-                   double cashAmount) {
+  private BuyOrder(final LocalDate orderDate,
+                   final MarketTime marketTime,
+                   final int barsFromNow,
+                   final long numOfShares,
+                   final double cashAmount) {
     super(orderDate, TransactionType.BUY, marketTime, barsFromNow, numOfShares);
     this.cashAmount = cashAmount;
   }
@@ -40,16 +40,9 @@ public class BuyOrder extends Order {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj == null) { return false; }
-    if (!(obj instanceof BuyOrder)) {
-      return false;
-    }
+    if (obj == null || !(obj instanceof BuyOrder)) { return false; }
     if (obj == this) { return true; }
-    if (obj.getClass() != getClass()) {
-      return false;
-    }
-
-    BuyOrder rhs = (BuyOrder) obj;
+    final BuyOrder rhs = (BuyOrder) obj;
 
     return new EqualsBuilder()
         .appendSuper(super.equals(obj))
@@ -74,12 +67,6 @@ public class BuyOrder extends Order {
     public BuyOrderBuilder cashAmount(double cashAmount) {
       this.cashAmount = cashAmount;
       return this;
-    }
-
-    public BuyOrderBuilder params(OrderParameters orderParams) {
-      return getThis()
-          .at(orderParams.getMarketTime())
-          .barsFromNow(orderParams.getBarsFromNow());
     }
 
     @Override

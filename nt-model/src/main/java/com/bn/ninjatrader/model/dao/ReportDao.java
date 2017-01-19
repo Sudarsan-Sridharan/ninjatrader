@@ -27,26 +27,27 @@ public class ReportDao extends AbstractDao<ReportDocument> {
   private IdGenerator idGenerator;
 
   @Inject
-  public ReportDao(@ReportCollection MongoCollection mongoCollection) {
+  public ReportDao(@ReportCollection final MongoCollection mongoCollection) {
     super(mongoCollection);
     mongoCollection.ensureIndex(
         String.format("{%s.%s : 1}", QueryParam.DATA, QueryParam.REPORT_ID), "{unique: true}");
   }
 
-  public Optional<Report> findByReportId(String reportId) {
-    ReportDocument reportDocument = getMongoCollection().findOne(Queries.FIND_BY_REPORT_ID, reportId).as(ReportDocument.class);
+  public Optional<Report> findByReportId(final String reportId) {
+    final ReportDocument reportDocument = getMongoCollection().findOne(Queries.FIND_BY_REPORT_ID, reportId)
+        .as(ReportDocument.class);
     if (reportDocument == null) {
       return Optional.empty();
     }
     return Optional.of(reportDocument.getReport());
   }
 
-  public Report save(Report report) {
+  public Report save(final Report report) {
     if (StringUtils.isEmpty(report.getReportId())) {
       report.setReportId(idGenerator.createId());
     }
 
-    ReportDocument reportDocument = new ReportDocument();
+    final ReportDocument reportDocument = new ReportDocument();
     reportDocument.setReport(report);
 
     report.setLastUpdateDate(LocalDateTime.now());

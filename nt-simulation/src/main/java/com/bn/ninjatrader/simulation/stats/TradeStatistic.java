@@ -27,6 +27,18 @@ public class TradeStatistic {
   @JsonProperty("totalProfit")
   private double totalProfit = 0;
 
+  @JsonProperty("totalGain")
+  private double totalGain = 0;
+
+  @JsonProperty("totalLosses")
+  private double totalLosses = 0;
+
+  @JsonProperty("biggestGain")
+  private double biggestGain = 0;
+
+  @JsonProperty("biggestLoss")
+  private double biggestLoss = 0;
+
   public int getNumOfTrades() {
     return numOfTrades;
   }
@@ -37,6 +49,22 @@ public class TradeStatistic {
 
   public int getNumOfLosses() {
     return numOfLosses;
+  }
+
+  public double getTotalGain() {
+    return totalGain;
+  }
+
+  public double getTotalLosses() {
+    return totalLosses;
+  }
+
+  public double getBiggestGain() {
+    return biggestGain;
+  }
+
+  public double getBiggestLoss() {
+    return biggestLoss;
   }
 
   @JsonProperty("winLoseRatio")
@@ -66,8 +94,12 @@ public class TradeStatistic {
     }
     if (transaction.getProfit() > 0) {
       numOfWins++;
+      totalGain = NumUtil.plus(totalGain, transaction.getProfit());
+      biggestGain = Math.max(biggestGain, transaction.getProfit());
     } else {
       numOfLosses++;
+      totalLosses = NumUtil.plus(totalLosses, transaction.getProfit());
+      biggestLoss = Math.min(biggestLoss, transaction.getProfit());
     }
     numOfTrades++;
     totalProfit = NumUtil.plus(totalProfit, transaction.getProfit());
@@ -78,6 +110,10 @@ public class TradeStatistic {
     log.info("Number of Wins: {} ({}%)", numOfWins, getWinPcnt());
     log.info("Number of Losses: {} ({}%)", numOfLosses, getLossPcnt());
     log.info("Win / Loss Ratio: {}", getWinLoseRatio());
+    log.info("Biggest Gain: {}", biggestGain);
+    log.info("Biggest Loss: {}", biggestLoss);
+    log.info("Total Gain: {}", NumUtil.trimPrice(totalGain));
+    log.info("Total Loss: {}", NumUtil.trimPrice(totalLosses));
     log.info("Total Profit: {}", NumUtil.trimPrice(totalProfit));
     log.info("Profit per Trade: {}", getProfitPerTrade());
   }

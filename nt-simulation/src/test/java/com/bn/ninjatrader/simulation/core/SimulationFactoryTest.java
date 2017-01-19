@@ -6,8 +6,9 @@ import com.bn.ninjatrader.simulation.broker.BrokerFactory;
 import com.bn.ninjatrader.simulation.condition.Conditions;
 import com.bn.ninjatrader.simulation.data.DataType;
 import com.bn.ninjatrader.simulation.data.provider.DataProvider;
-import com.bn.ninjatrader.simulation.order.MarketTime;
-import com.bn.ninjatrader.simulation.order.OrderParameters;
+import com.bn.ninjatrader.simulation.statement.BuyOrderStatement;
+import com.bn.ninjatrader.simulation.statement.ConditionalStatment;
+import com.bn.ninjatrader.simulation.statement.SellOrderStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeMethod;
@@ -34,7 +35,7 @@ public class SimulationFactoryTest {
 
   private PriceDao priceDao;
   private BrokerFactory brokerFactory;
-  private DataProvider dataFinder;
+  private DataProvider dataProvider;
   private List<DataProvider> dataFinderList;
   private SimulationParams params;
 
@@ -42,41 +43,41 @@ public class SimulationFactoryTest {
   public void before() {
     priceDao = mock(PriceDao.class);
     brokerFactory = mock(BrokerFactory.class);
-    dataFinder = mock(DataProvider.class);
-    dataFinderList = Lists.newArrayList(dataFinder);
+    dataProvider = mock(DataProvider.class);
+    dataFinderList = Lists.newArrayList(dataProvider);
 
-    params = new SimulationParams();
-    params.setSymbol("MEG");
-    params.setFromDate(from);
-    params.setToDate(to);
-    params.setBuyCondition(Conditions.gt(PRICE_CLOSE, 30));
-    params.setSellCondition(Conditions.gt(PRICE_CLOSE, 50));
-    params.setBuyOrderParams(OrderParameters.buy().at(MarketTime.CLOSE).build());
-    params.setSellOrderParams(OrderParameters.sell().at(MarketTime.CLOSE).build());
-    params.setStartingCash(100000);
+    params = SimulationParams.builder().symbol("MEG").from(from).to(to)
+        .startingCash(100000)
+        .addStatement(ConditionalStatment.builder()
+            .condition(Conditions.gt(PRICE_CLOSE, 30))
+            .then(BuyOrderStatement.builder().build()).build())
+        .addStatement(ConditionalStatment.builder()
+            .condition(Conditions.gt(PRICE_CLOSE, 50))
+            .then(SellOrderStatement.builder().build()).build())
+        .build();
 
     when(priceDao.find(any())).thenReturn(randomPrices(NUM_OF_PRICES));
-    when(dataFinder.getSupportedDataTypes()).thenReturn(Lists.newArrayList(DataType.PRICE_CLOSE));
+    when(dataProvider.getSupportedDataTypes()).thenReturn(Lists.newArrayList(DataType.PRICE_CLOSE));
   }
 
   @Test
-  public void testCreateWithMatchingDataFinder_shouldAddDataFindersData() {
+  public void testCreateWithMatchingDataProvider_shouldAddDataProvidersData() {
     SimulationFactory factory = new SimulationFactory(dataFinderList, priceDao, brokerFactory);
     factory.create(params);
 
-    // Verify dataFinder data is added to simulation.
-    verify(dataFinder).find(params, NUM_OF_PRICES);
+    // Verify dataProvider data is added to simulation.
+    verify(dataProvider).find(params, NUM_OF_PRICES);
   }
 
   @Test
   public void testCreateWithNoMatchingDataFinder_shouldNotAddDataFindersData() {
-    // DataFinder supports different DataType.
-    when(dataFinder.getSupportedDataTypes()).thenReturn(Lists.newArrayList(DataType.PRICE_HIGH));
+    // DataProvider supports different DataType.
+    when(dataProvider.getSupportedDataTypes()).thenReturn(Lists.newArrayList(DataType.PRICE_HIGH));
 
     SimulationFactory factory = new SimulationFactory(dataFinderList, priceDao, brokerFactory);
     factory.create(params);
 
-    // Verify dataFinder data not added to simulation.
-    verify(dataFinder, times(0)).find(any(), anyInt());
+    // Verify dataProvider data not added to simulation.
+    verify(dataProvider, times(0)).find(any(), anyInt());
   }
 }

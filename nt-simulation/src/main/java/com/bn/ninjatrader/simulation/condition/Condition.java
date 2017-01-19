@@ -22,7 +22,7 @@ import java.util.Set;
 })
 public interface Condition {
 
-  boolean isMatch(BarData barParameters);
+  boolean isMatch(final BarData barData);
 
   @JsonIgnore
   Set<Variable> getVariables();

@@ -8,9 +8,10 @@ import com.bn.ninjatrader.simulation.account.Account;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
-import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by Brad on 8/13/16.
@@ -24,9 +25,9 @@ public abstract class OrderExecutor {
   public abstract Transaction execute(Account account, Order order, BarData barData);
 
   protected void checkConditions(Account account, Order order, BarData barData) {
-    Preconditions.checkNotNull(account);
-    Preconditions.checkNotNull(order);
-    Preconditions.checkNotNull(barData);
+    checkNotNull(account, "account must not be null.");
+    checkNotNull(order, "order must not be null.");
+    checkNotNull(barData, "barData must not be null.");
   }
 
   public double getFulfilledPrice(Order order, BarData barData) {

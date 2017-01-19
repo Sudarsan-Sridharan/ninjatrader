@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.simulation.operation.function;
 
 import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
 import com.bn.ninjatrader.simulation.operation.Operation;
@@ -19,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class HighestInLastNBarsFunctionTest {
 
-  private final ObjectMapper om = new ObjectMapper();
+  private final ObjectMapper om = TestUtil.objectMapper();
   private final Price price1 = new Price(null, 1.1, 1.2, 1.3, 1.4, 10000);
   private final Price price2 = new Price(null, 2.1, 2.2, 2.3, 2.4, 20000);
   private final Price price3 = new Price(null, 3.1, 3.2, 3.3, 3.4, 30000);

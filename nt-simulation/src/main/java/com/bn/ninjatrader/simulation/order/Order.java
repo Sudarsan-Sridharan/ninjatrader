@@ -58,7 +58,7 @@ public abstract class Order {
     return marketTime;
   }
 
-  public void decrementDaysFromNow() {
+  public void decrementBarsFromNow() {
     barsFromNow--;
   }
 

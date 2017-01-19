@@ -1,15 +1,17 @@
 package com.bn.ninjatrader.simulation.core;
 
+import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.simulation.condition.Conditions;
 import com.bn.ninjatrader.simulation.data.DataType;
-import com.bn.ninjatrader.simulation.operation.Variable;
+import com.bn.ninjatrader.simulation.operation.Variables;
+import com.bn.ninjatrader.simulation.statement.ConditionalStatment;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
-import java.util.Set;
+import java.io.IOException;
 
-import static com.bn.ninjatrader.simulation.condition.Conditions.create;
-import static com.bn.ninjatrader.simulation.condition.Conditions.eq;
 import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_CLOSE;
 import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_HIGH;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,25 +25,32 @@ public class SimulationParamsTest {
 
   @Test
   public void testGetVariables_shouldReturnAllVariables() {
-    SimulationParams params = new SimulationParams();
-    params.setBuyCondition(create().add(eq(PRICE_CLOSE, 5.0)));
-    params.setSellCondition(create().add(eq(PRICE_HIGH, 7.0)));
+    final SimulationParams params = SimulationParams.builder()
+        .addStatement(ConditionalStatment.builder().condition(Conditions.eq(Variables.PRICE_CLOSE, 1.0)).build())
+        .addStatement(ConditionalStatment.builder().condition(Conditions.lt(Variables.PRICE_HIGH, 100)).build())
+        .build();
 
-    Set<Variable> variables = params.getVariables();
-
-    assertThat(variables).hasSize(2);
-    assertThat(variables).contains(PRICE_CLOSE, PRICE_HIGH);
+    assertThat(params.getVariables()).containsExactlyInAnyOrder(PRICE_CLOSE, PRICE_HIGH);
   }
 
   @Test
   public void testGetDataTypes_shouldReturnAllDataTypes() {
-    SimulationParams params = new SimulationParams();
-    params.setBuyCondition(create().add(eq(PRICE_CLOSE, 5.0)));
-    params.setSellCondition(create().add(eq(PRICE_HIGH, 7.0)));
+    final SimulationParams params = SimulationParams.builder()
+        .addStatement(ConditionalStatment.builder().condition(Conditions.eq(Variables.PRICE_CLOSE, 1.0)).build())
+        .addStatement(ConditionalStatment.builder().condition(Conditions.lt(Variables.PRICE_HIGH, 100)).build())
+        .build();
 
-    Set<DataType> dataTypes = params.getDataTypes();
+    assertThat(params.getDataTypes()).contains(DataType.PRICE_CLOSE, DataType.PRICE_HIGH);
+  }
 
-    assertThat(dataTypes).hasSize(2);
-    assertThat(dataTypes).contains(DataType.PRICE_CLOSE, DataType.PRICE_HIGH);
+  @Test
+  public void testSerializeDeserialize_shouldProduceEqualObject() throws IOException {
+    final ObjectMapper om = TestUtil.objectMapper();
+    final SimulationParams params = new SimulationParams();
+    params.setStartingCash(100000);
+    params.setSymbol("MEG");
+
+    final String json = om.writeValueAsString(params);
+    assertThat(om.readValue(json, SimulationParams.class)).isEqualTo(params);
   }
 }

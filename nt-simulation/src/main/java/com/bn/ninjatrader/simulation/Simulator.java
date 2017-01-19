@@ -8,9 +8,13 @@ import com.bn.ninjatrader.simulation.condition.Conditions;
 import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
-import com.bn.ninjatrader.simulation.operation.Variable;
 import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
+import com.bn.ninjatrader.simulation.operation.Variable;
+import com.bn.ninjatrader.simulation.order.MarketTime;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
+import com.bn.ninjatrader.simulation.statement.BuyOrderStatement;
+import com.bn.ninjatrader.simulation.statement.ConditionalStatment;
+import com.bn.ninjatrader.simulation.statement.SellOrderStatement;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -20,15 +24,10 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 
-import static com.bn.ninjatrader.simulation.condition.Conditions.*;
+import static com.bn.ninjatrader.simulation.condition.Conditions.gt;
+import static com.bn.ninjatrader.simulation.condition.Conditions.lt;
 import static com.bn.ninjatrader.simulation.data.DataType.EMA;
 import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_CLOSE;
-import static com.bn.ninjatrader.simulation.data.DataType.RSI;
-import static com.bn.ninjatrader.simulation.data.DataType.SMA;
-import static com.bn.ninjatrader.simulation.operation.function.Functions.highestInBarsAgo;
-import static com.bn.ninjatrader.simulation.order.MarketTime.CLOSE;
-import static com.bn.ninjatrader.simulation.order.OrderParameters.buy;
-import static com.bn.ninjatrader.simulation.order.OrderParameters.sell;
 
 /**
  * Created by Brad on 8/3/16.
@@ -58,45 +57,37 @@ public class Simulator {
   }
 
   public static void main(String args[]) {
-    Injector injector = Guice.createInjector(
+    final Injector injector = Guice.createInjector(
         new NtModelModule(),
         new NtCalculatorModule(),
         new NtSimulationModule()
     );
-    Simulator simulator = injector.getInstance(Simulator.class);
+    final Simulator simulator = injector.getInstance(Simulator.class);
 
-    final SimulationParams params = new SimulationParams();
-    params.setSymbol("MEG");
-    params.setFromDate(LocalDate.now().minusYears(10));
-    params.setToDate(LocalDate.now());
-    params.setStartingCash(100000);
+    final SimulationParams params = SimulationParams.builder()
+        .symbol("MEG")
+        .from(LocalDate.now().minusYears(10))
+        .to(LocalDate.now())
+        .startingCash(100000)
 
-    params.setBuyCondition(Conditions.create()
-        .add(gt(PRICE_CLOSE, Variable.of(EMA).period(18)))
-        .add(gt(Variable.of(EMA).period(18), Variable.of(EMA).period(50)))
-        .add(gt(Variable.of(EMA).period(50), Variable.of(EMA).period(100)))
-        .add(gt(Variable.of(EMA).period(100), Variable.of(EMA).period(200)))
-        .add(gt(PRICE_CLOSE, highestInBarsAgo(PRICE_CLOSE, 4)))
-//        .add(gt(PRICE_CLOSE, withinBarsAgo(PRICE_CLOSE, 100)))
-    );
+        // Buy Condition
+        .addStatement(ConditionalStatment.builder()
+            .condition(Conditions.create()
+                .add(gt(PRICE_CLOSE, Variable.of(EMA).period(18)))
+                .add(gt(Variable.of(EMA).period(18), Variable.of(EMA).period(50)))
+                .add(gt(Variable.of(EMA).period(50), Variable.of(EMA).period(100)))
+                .add(gt(Variable.of(EMA).period(100), Variable.of(EMA).period(200))))
+            .then(BuyOrderStatement.builder().marketTime(MarketTime.CLOSE).barsFromNow(1).build())
+            .build())
 
-    params.setBuyOrderParams(buy()
-        .at(CLOSE)
-        .barsFromNow(0)
-        .build());
-
-    params.setSellCondition(Conditions.create()
-        .add(Conditions.or(
-            lt(PRICE_CLOSE, Variable.of(SMA).period(50)),
-            gt(Variable.of(RSI).period(14), 80)
-            ))
-//        .add(lt(Operations.create(PRICE_CLOSE).mult(1.05), SMA_50))
-    );
-
-    params.setSellOrderParams(sell()
-        .at(CLOSE)
-        .barsFromNow(0)
-        .build());
+        // Sell Condition
+        .addStatement(ConditionalStatment.builder()
+            .condition(Conditions.create()
+                .add(lt(PRICE_CLOSE, Variable.of(EMA).period(18)))
+                .add(lt(Variable.of(EMA).period(18), Variable.of(EMA).period(50))))
+            .then(SellOrderStatement.builder().marketTime(MarketTime.CLOSE).barsFromNow(0).build())
+            .build())
+        .build();
 
     simulator.play(params);
   }

@@ -10,9 +10,8 @@ import java.time.LocalDate;
 import java.util.Set;
 
 import static com.bn.ninjatrader.simulation.order.MarketTime.CLOSE;
-import static com.bn.ninjatrader.simulation.order.MarketTime.OPEN;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertFalse;
 
 /**
  * Created by Brad on 8/17/16.
@@ -46,17 +45,8 @@ public class BuyOrderTest {
     BuyOrder order = Order.buy().date(now).at(CLOSE).shares(1000).barsFromNow(1).build();
     assertFalse(order.isReadyForProcessing());
 
-    order.decrementDaysFromNow();
+    order.decrementBarsFromNow();
     assertThat(order.isReadyForProcessing()).isTrue();
-  }
-
-  @Test
-  public void testCreateWithParams_shouldSetProperties() {
-    BuyOrderParameters params = OrderParameters.buy().at(OPEN).barsFromNow(100).build();
-    BuyOrder order = Order.buy().params(params).build();
-
-    assertThat(order.getMarketTime()).isEqualTo(OPEN);
-    assertThat(order.getBarsFromNow()).isEqualTo(100);
   }
 
   @Test

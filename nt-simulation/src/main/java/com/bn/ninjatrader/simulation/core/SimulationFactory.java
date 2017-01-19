@@ -27,7 +27,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @Singleton
 public class SimulationFactory {
-
   private static final Logger LOG = LoggerFactory.getLogger(SimulationFactory.class);
 
   private final List<DataProvider> dataFinders;

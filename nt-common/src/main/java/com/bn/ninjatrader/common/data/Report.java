@@ -2,10 +2,8 @@ package com.bn.ninjatrader.common.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import java.time.LocalDateTime;
 
@@ -69,42 +67,25 @@ public class Report {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .append("reportId", reportId)
-        .append("user", user)
-        .append("data", data)
-        .append("lastUpdateDate", lastUpdateDate)
+    return MoreObjects.toStringHelper(this)
+        .add("reportId", reportId).add("user", user).add("data", data).add("lastUpdateDate", lastUpdateDate)
         .toString();
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder()
-        .append(reportId)
-        .append(user)
-        .append(data)
-        .append(lastUpdateDate)
-        .toHashCode();
+    return Objects.hashCode(reportId, user, data, lastUpdateDate);
   }
 
   @Override
   public boolean equals(Object obj) {
-    if (obj == null) { return false; }
-    if (!(obj instanceof Report)) {
-      return false;
-    }
+    if (obj == null || !(obj instanceof Report)) { return false; }
     if (obj == this) { return true; }
-    if (obj.getClass() != getClass()) {
-      return false;
-    }
-
-    Report rhs = (Report) obj;
-    return new EqualsBuilder()
-        .append(reportId, rhs.reportId)
-        .append(user, rhs.user)
-        .append(data, rhs.data)
-        .append(lastUpdateDate, rhs.lastUpdateDate)
-        .isEquals();
+    final Report rhs = (Report) obj;
+    return Objects.equal(reportId, rhs.reportId)
+      && Objects.equal(user, rhs.user)
+      && Objects.equal(data, rhs.data)
+      && Objects.equal(lastUpdateDate, rhs.lastUpdateDate);
   }
 }
 

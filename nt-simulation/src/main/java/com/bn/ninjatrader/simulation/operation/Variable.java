@@ -18,7 +18,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class Variable implements Operation {
 
-  public static final Variable of(DataType dataType) {
+  public static final Variable of(final DataType dataType) {
     return new Variable(dataType);
   }
 
@@ -28,7 +28,7 @@ public class Variable implements Operation {
   @JsonProperty("period")
   private int period;
 
-  public Variable(DataType dataType) {
+  public Variable(final DataType dataType) {
     this(dataType, 0);
   }
 
@@ -44,7 +44,7 @@ public class Variable implements Operation {
     return dataType;
   }
 
-  public void setDataType(DataType dataType) {
+  public void setDataType(final DataType dataType) {
     this.dataType = dataType;
   }
 
