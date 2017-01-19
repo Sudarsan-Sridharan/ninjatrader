@@ -14,6 +14,7 @@ import com.bn.ninjatrader.simulation.report.SimulationReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -39,10 +40,10 @@ public class Simulation {
   private BuyOrderParameters buyOrderParams;
   private SellOrderParameters sellOrderParams;
 
-  public Simulation(Account account,
-                    Broker broker,
-                    SimulationParams simulationParams,
-                    List<Price> priceList) {
+  public Simulation(final Account account,
+                    final Broker broker,
+                    final SimulationParams simulationParams,
+                    final List<Price> priceList) {
 
     this.account = account;
     this.broker = broker;
@@ -71,15 +72,15 @@ public class Simulation {
   }
 
   public SimulationReport play() {
-    for (Price price : priceList) {
-      BarData barData = barDataFactory.create(price);
+    for (final Price price : priceList) {
+      final BarData barData = barDataFactory.create(price);
       processBar(barData);
     }
     onSimulationEnd();
     return createSimulationReport();
   }
 
-  private void processBar(BarData barData) {
+  private void processBar(final BarData barData) {
     if (account.hasShares()) {
       processSell(barData);
     } else if (!broker.hasPendingOrder()) {
@@ -88,25 +89,20 @@ public class Simulation {
     broker.processPendingOrders(barData);
   }
 
-  private void processBuy(BarData barData) {
+  private void processBuy(final BarData barData) {
     if (buyCondition.isMatch(barData)) {
-      Price price = barData.getPrice();
-      Order order = Order.buy()
-          .date(price.getDate())
-          .cashAmount(account.getCash())
-          .params(buyOrderParams)
+      final Price price = barData.getPrice();
+      final Order order = Order.buy()
+          .date(price.getDate()).cashAmount(account.getCash()).params(buyOrderParams)
           .build();
       broker.submitOrder(order);
     }
   }
 
-  private void processSell(BarData barData) {
+  private void processSell(final BarData barData) {
     if (sellCondition.isMatch(barData)) {
-      Price price = barData.getPrice();
-      Order order = Order.sell()
-          .date(price.getDate())
-          .params(sellOrderParams)
-          .build();
+      final Price price = barData.getPrice();
+      final Order order = Order.sell().date(price.getDate()).params(sellOrderParams).build();
       broker.submitOrder(order);
     }
   }
@@ -126,16 +122,20 @@ public class Simulation {
     }
   }
 
-  public void addSimulationData(List<SimulationData> dataList) {
+  public void addSimulationData(final Collection<SimulationData> dataList) {
     this.barDataFactory.addSimulationData(dataList);
   }
 
   public SimulationReport createSimulationReport() {
-    SimulationReport report = new SimulationReport();
+    final SimulationReport report = new SimulationReport();
     report.setSimulationParams(simulationParams);
     report.setTradeStatistic(account.getTradeStatistic());
     report.setTransactions(account.getBookkeeper().getTransactions());
     report.setEndingCash(account.getCash());
     return report;
+  }
+
+  public SimulationParams getSimulationParams() {
+    return simulationParams;
   }
 }

@@ -1,10 +1,11 @@
 package com.bn.ninjatrader.simulation.data;
 
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.simulation.operation.Variable;
 import com.bn.ninjatrader.simulation.adaptor.PriceDataMapAdaptor;
+import com.bn.ninjatrader.simulation.operation.Variable;
 import com.google.common.collect.Lists;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -12,25 +13,25 @@ import java.util.List;
  */
 public class BarDataFactory {
 
-  private List<SimulationData> dataList = Lists.newArrayList();
-  private PriceDataMapAdaptor priceDataMapAdaptor = new PriceDataMapAdaptor();
-  private BarDataHistory barDataHistory = BarDataHistory.withMaxSize(52);
+  private final List<SimulationData> dataList = Lists.newArrayList();
+  private final PriceDataMapAdaptor priceDataMapAdaptor = new PriceDataMapAdaptor();
+  private final BarDataHistory barDataHistory = BarDataHistory.withMaxSize(52);
   private int barIndex = 0;
 
-  public BarData create(Price price) {
-    BarData barData = create(price, barIndex);
+  public BarData create(final Price price) {
+    final BarData barData = create(price, barIndex);
     barIndex++;
     return barData;
   }
 
-  public BarData create(Price price, int barIndex) {
-    BarData barData = BarData.forPrice(price);
+  public BarData create(final Price price, int barIndex) {
+    final BarData barData = BarData.forPrice(price);
     barData.setBarIndex(barIndex);
     barData.put(priceDataMapAdaptor.toDataMap(price));
     barData.put(Variable.of(DataType.BAR_INDEX), barIndex);
 
-    for (SimulationData data : dataList) {
-      DataMap dataMap = data.getDataMap(barIndex);
+    for (final SimulationData data : dataList) {
+      final DataMap dataMap = data.getDataMap(barIndex);
       barData.put(dataMap);
     }
 
@@ -41,7 +42,7 @@ public class BarDataFactory {
     return barData;
   }
 
-  public void addSimulationData(List<SimulationData> dataList) {
+  public void addSimulationData(final Collection<SimulationData> dataList) {
     this.dataList.addAll(dataList);
   }
 }

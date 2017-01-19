@@ -52,14 +52,14 @@ public class SimulationFactory {
     final Broker broker = brokerFactory.createBroker(account);
     final Simulation simulation = new Simulation(account, broker, params, priceList);
 
-    addSimulationData(simulation, params, priceList.size());
+    addSimulationData(simulation, priceList.size());
 
     return simulation;
   }
 
   private void addSimulationData(final Simulation simulation,
-                                 final SimulationParams params,
                                  final int requiredDataSize) {
+    final SimulationParams params = simulation.getSimulationParams();
     final Set<DataType> dataTypes = params.getDataTypes();
     for (final DataProvider dataFinder : dataFinders) {
 
