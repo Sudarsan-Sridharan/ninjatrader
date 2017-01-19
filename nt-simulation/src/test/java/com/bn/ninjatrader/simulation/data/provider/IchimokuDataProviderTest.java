@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.simulation.datafinder;
+package com.bn.ninjatrader.simulation.data.provider;
 
 import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.common.data.Ichimoku;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by Brad on 9/1/16.
  */
-public class IchimokuDataFinderTest {
+public class IchimokuDataProviderTest {
 
   private final LocalDate fromDate = LocalDate.of(2016, 2, 2);
   private final LocalDate toDate = LocalDate.of(2016, 4, 30);
@@ -30,7 +30,7 @@ public class IchimokuDataFinderTest {
 
   private SimulationParams params;
   private DataMap dataMap;
-  private IchimokuDataFinder dataFinder;
+  private IchimokuDataProvider dataFinder;
   private IchimokuDao ichimokuDao;
   private IchimokuDataMapAdaptor dataMapAdaptor;
 
@@ -38,7 +38,7 @@ public class IchimokuDataFinderTest {
   public void setup() {
     ichimokuDao = mock(IchimokuDao.class);
     dataMapAdaptor = mock(IchimokuDataMapAdaptor.class);
-    dataFinder = new IchimokuDataFinder(ichimokuDao, dataMapAdaptor);
+    dataFinder = new IchimokuDataProvider(ichimokuDao, dataMapAdaptor);
 
     params = new SimulationParams();
     params.setSymbol("MEG");

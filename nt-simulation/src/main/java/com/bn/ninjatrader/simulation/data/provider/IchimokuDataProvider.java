@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.simulation.datafinder;
+package com.bn.ninjatrader.simulation.data.provider;
 
 import com.bn.ninjatrader.common.data.Ichimoku;
 import com.bn.ninjatrader.common.util.ListUtil;
@@ -21,7 +21,7 @@ import static com.bn.ninjatrader.simulation.data.DataType.*;
  * Created by Brad on 8/20/16.
  */
 @Singleton
-public class IchimokuDataFinder implements DataFinder<Ichimoku> {
+public class IchimokuDataProvider implements DataProvider<Ichimoku> {
 
   private static final List<DataType> SUPPORTED_DATA_TYPES = Collections.unmodifiableList(
       Lists.newArrayList(CHIKOU, TENKAN, KIJUN, SENKOU_A, SENKOU_B));
@@ -30,8 +30,8 @@ public class IchimokuDataFinder implements DataFinder<Ichimoku> {
   private final IchimokuDataMapAdaptor dataMapAdaptor;
 
   @Inject
-  public IchimokuDataFinder(final IchimokuDao ichimokuDao,
-                            final IchimokuDataMapAdaptor dataMapAdaptor) {
+  public IchimokuDataProvider(final IchimokuDao ichimokuDao,
+                              final IchimokuDataMapAdaptor dataMapAdaptor) {
     this.ichimokuDao = ichimokuDao;
     this.dataMapAdaptor = dataMapAdaptor;
   }

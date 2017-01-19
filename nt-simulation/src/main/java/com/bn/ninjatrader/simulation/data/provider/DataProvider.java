@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.simulation.datafinder;
+package com.bn.ninjatrader.simulation.data.provider;
 
 import com.bn.ninjatrader.simulation.data.SimulationData;
 import com.bn.ninjatrader.simulation.data.DataType;
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Brad on 8/20/16.
  */
-public interface DataFinder<T> {
+public interface DataProvider<T> {
 
   List<SimulationData<T>> find(SimulationParams params, int requiredDataSize);
 

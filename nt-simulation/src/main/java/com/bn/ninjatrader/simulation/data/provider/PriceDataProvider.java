@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.simulation.datafinder;
+package com.bn.ninjatrader.simulation.data.provider;
 
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.model.dao.PriceDao;
@@ -20,7 +20,7 @@ import static com.bn.ninjatrader.simulation.data.DataType.*;
  * Created by Brad on 8/20/16.
  */
 @Singleton
-public class PriceDataFinder implements DataFinder<Price> {
+public class PriceDataProvider implements DataProvider<Price> {
 
   private static final List<DataType> SUPPORTED_DATA_TYPES = Collections.unmodifiableList(
       Lists.newArrayList(PRICE_OPEN, PRICE_HIGH, PRICE_LOW, PRICE_CLOSE, VOLUME));
@@ -29,8 +29,8 @@ public class PriceDataFinder implements DataFinder<Price> {
   private final PriceDataMapAdaptor dataMapAdaptor;
 
   @Inject
-  public PriceDataFinder(final PriceDao priceDao,
-                         final PriceDataMapAdaptor dataMapAdaptor) {
+  public PriceDataProvider(final PriceDao priceDao,
+                           final PriceDataMapAdaptor dataMapAdaptor) {
     this.priceDao = priceDao;
     this.dataMapAdaptor = dataMapAdaptor;
   }

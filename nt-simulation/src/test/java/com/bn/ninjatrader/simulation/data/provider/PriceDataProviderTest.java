@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.simulation.datafinder;
+package com.bn.ninjatrader.simulation.data.provider;
 
 import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.common.data.Price;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by Brad on 9/1/16.
  */
-public class PriceDataFinderTest {
+public class PriceDataProviderTest {
 
   private final LocalDate fromDate = LocalDate.of(2016, 2, 2);
   private final LocalDate toDate = LocalDate.of(2016, 4, 30);
@@ -33,13 +33,13 @@ public class PriceDataFinderTest {
   private PriceDataMapAdaptor dataMapAdaptor;
   private SimulationParams params;
   private DataMap dataMap;
-  private PriceDataFinder dataFinder;
+  private PriceDataProvider dataFinder;
 
   @BeforeMethod
   public void setup() {
     priceDao = mock(PriceDao.class);
     dataMapAdaptor = mock(PriceDataMapAdaptor.class);
-    dataFinder = new PriceDataFinder(priceDao, dataMapAdaptor);
+    dataFinder = new PriceDataProvider(priceDao, dataMapAdaptor);
 
     params = new SimulationParams();
     params.setSymbol("MEG");

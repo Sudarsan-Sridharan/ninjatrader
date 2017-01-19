@@ -5,7 +5,7 @@ import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.simulation.broker.BrokerFactory;
 import com.bn.ninjatrader.simulation.condition.Conditions;
 import com.bn.ninjatrader.simulation.data.DataType;
-import com.bn.ninjatrader.simulation.datafinder.DataFinder;
+import com.bn.ninjatrader.simulation.data.provider.DataProvider;
 import com.bn.ninjatrader.simulation.order.MarketTime;
 import com.bn.ninjatrader.simulation.order.OrderParameters;
 import org.slf4j.Logger;
@@ -34,15 +34,15 @@ public class SimulationFactoryTest {
 
   private PriceDao priceDao;
   private BrokerFactory brokerFactory;
-  private DataFinder dataFinder;
-  private List<DataFinder> dataFinderList;
+  private DataProvider dataFinder;
+  private List<DataProvider> dataFinderList;
   private SimulationParams params;
 
   @BeforeMethod
   public void before() {
     priceDao = mock(PriceDao.class);
     brokerFactory = mock(BrokerFactory.class);
-    dataFinder = mock(DataFinder.class);
+    dataFinder = mock(DataProvider.class);
     dataFinderList = Lists.newArrayList(dataFinder);
 
     params = new SimulationParams();

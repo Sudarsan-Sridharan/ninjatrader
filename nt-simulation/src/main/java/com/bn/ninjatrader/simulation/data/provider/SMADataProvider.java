@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.simulation.datafinder;
+package com.bn.ninjatrader.simulation.data.provider;
 
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.common.util.ListUtil;
@@ -26,9 +26,9 @@ import static com.bn.ninjatrader.model.request.FindRequest.findSymbol;
  * Created by Brad on 8/20/16.
  */
 @Singleton
-public class SMADataFinder implements DataFinder<Value> {
+public class SMADataProvider implements DataProvider<Value> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(SMADataFinder.class);
+  private static final Logger LOG = LoggerFactory.getLogger(SMADataProvider.class);
 
   private static final List<DataType> SUPPORTED_DATA_TYPES = Lists.newArrayList(DataType.SMA);
 

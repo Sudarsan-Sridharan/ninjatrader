@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.simulation.datafinder;
+package com.bn.ninjatrader.simulation.data.provider;
 
 import com.bn.ninjatrader.common.data.RSIValue;
 import com.bn.ninjatrader.common.data.Value;
@@ -25,7 +25,7 @@ import static com.bn.ninjatrader.model.request.FindRequest.findSymbol;
  * Created by Brad on 8/20/16.
  */
 @Singleton
-public class RSIDataFinder implements DataFinder<Value> {
+public class RSIDataProvider implements DataProvider<Value> {
 
   private static final List<DataType> SUPPORTED_DATA_TYPES = Lists.newArrayList(DataType.RSI);
 
