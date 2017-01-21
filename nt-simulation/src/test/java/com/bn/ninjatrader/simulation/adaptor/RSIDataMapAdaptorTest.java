@@ -20,7 +20,7 @@ public class RSIDataMapAdaptorTest {
     final double value = 400.01;
     final RSIDataMapAdaptor adaptor = new RSIDataMapAdaptor(period);
     final DataMap dataMap = adaptor.toDataMap(Value.of(now, value));
-    final Variable variable = Variable.of(DataType.RSI).period(period);
+    final Variable variable = Variable.of(DataType.RSI).withPeriod(period);
 
     assertThat(dataMap).hasSize(1).containsOnlyKeys(variable);
     assertThat(dataMap.get(variable)).isEqualTo(value);

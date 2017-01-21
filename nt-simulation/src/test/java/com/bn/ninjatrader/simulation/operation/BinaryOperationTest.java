@@ -3,7 +3,6 @@ package com.bn.ninjatrader.simulation.operation;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.DataMap;
-import org.junit.Before;
 import org.junit.Test;
 
 import static com.bn.ninjatrader.simulation.operation.Variables.*;
@@ -16,21 +15,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BinaryOperationTest {
 
   private final Price price = Price.builder().open(1).high(2).low(3).close(4).volume(10000).build();
+  private final DataMap dataMap = DataMap.newInstance()
+      .addData(PRICE_OPEN, 1.0)
+      .addData(PRICE_HIGH, 2.0)
+      .addData(PRICE_LOW, 3.0)
+      .addData(PRICE_CLOSE, 4.0)
+      .addData(VOLUME, 10000d);
+  private BarData barData = BarData.builder().price(price).addData(dataMap).build();
 
-  private BarData barData;
-
-  @Before
-  public void before() {
-    final DataMap dataMap = new DataMap();
-    dataMap.put(Variables.PRICE_OPEN, 1.0);
-    dataMap.put(Variables.PRICE_HIGH, 2.0);
-    dataMap.put(Variables.PRICE_LOW, 3.0);
-    dataMap.put(Variables.PRICE_CLOSE, 4.0);
-    dataMap.put(Variables.VOLUME, 10000);
-
-    barData = BarData.forPrice(price);
-    barData.put(dataMap);
-  }
 
   @Test
   public void testGetValueOnEquationWithOnlyConstants_shouldReturnCalculatedValue() {

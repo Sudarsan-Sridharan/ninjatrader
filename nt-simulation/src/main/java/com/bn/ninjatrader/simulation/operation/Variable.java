@@ -3,11 +3,9 @@ package com.bn.ninjatrader.simulation.operation;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.DataType;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.google.common.collect.Sets;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Set;
 
@@ -23,19 +21,18 @@ public class Variable implements Operation {
   }
 
   @JsonProperty("dataType")
-  private DataType dataType;
+  private final DataType dataType;
 
   @JsonProperty("period")
-  private int period;
+  private final int period;
 
-  public Variable(final DataType dataType) {
+  private Variable(final DataType dataType) {
     this(dataType, 0);
   }
 
-  public Variable(@JsonProperty("dataType") final DataType dataType,
-                  @JsonProperty("period") final int period) {
+  private Variable(@JsonProperty("dataType") final DataType dataType,
+                   @JsonProperty("period") final int period) {
     checkNotNull(dataType, "DataType must not be null.");
-
     this.dataType = dataType;
     this.period = period;
   }
@@ -44,56 +41,31 @@ public class Variable implements Operation {
     return dataType;
   }
 
-  public void setDataType(final DataType dataType) {
-    this.dataType = dataType;
-  }
-
   public int getPeriod() {
     return period;
   }
 
-  public void setPeriod(int period) {
-    this.period = period;
-  }
-
-  public Variable period(int period) {
-    this.period = period;
-    return this;
+  public Variable withPeriod(final int period) {
+    return new Variable(dataType, period);
   }
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .append("dataType", dataType)
-        .append("period", period)
-        .build();
+    return MoreObjects.toStringHelper(this).add("dataType", dataType).add("period", period).toString();
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (obj == null) { return false; }
-    if (!(obj instanceof Variable)) {
-      return false;
-    }
+  public boolean equals(final Object obj) {
+    if (obj == null || !(obj instanceof Variable)) { return false; }
     if (obj == this) { return true; }
-    if (obj.getClass() != getClass()) {
-      return false;
-    }
-
-    Variable rhs = (Variable) obj;
-
-    return new EqualsBuilder()
-        .append(dataType, rhs.dataType)
-        .append(period, rhs.period)
-        .build();
+    final Variable rhs = (Variable) obj;
+    return Objects.equal(dataType, rhs.dataType)
+        && Objects.equal(period, rhs.period);
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder()
-        .append(dataType)
-        .append(period)
-        .build();
+    return Objects.hashCode(dataType, period);
   }
 
   @Override

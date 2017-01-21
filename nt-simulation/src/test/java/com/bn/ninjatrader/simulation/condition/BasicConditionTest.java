@@ -23,10 +23,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Created by Brad on 8/2/16.
  */
 public class BasicConditionTest {
-
   private static final Logger LOG = LoggerFactory.getLogger(BasicConditionTest.class);
 
-  private final BarData barParam = new BarData();
+  private final BarData barData = BarData.builder().build();
   private final ObjectMapper om = TestUtil.objectMapper();
 
   @Test
@@ -123,6 +122,6 @@ public class BasicConditionTest {
    * @return true if condition matches.
    */
   private boolean isConditionMatch(Operation lhs, InequalityOperator operator, Operation rhs) {
-    return new BasicCondition(lhs, operator, rhs).isMatch(barParam);
+    return new BasicCondition(lhs, operator, rhs).isMatch(barData);
   }
 }

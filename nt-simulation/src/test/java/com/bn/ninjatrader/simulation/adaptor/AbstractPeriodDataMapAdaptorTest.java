@@ -18,7 +18,7 @@ public class AbstractPeriodDataMapAdaptorTest {
   public void testToDataMap_shouldConvertValueToDataMap() {
     final DummyDataMapAdaptor adaptor = new DummyDataMapAdaptor(20);
     final DataMap dataMap = adaptor.toDataMap(Value.of(now, 1000.01));
-    final Variable variable = Variable.of(DataType.PRICE_CLOSE).period(20);
+    final Variable variable = Variable.of(DataType.PRICE_CLOSE).withPeriod(20);
 
     assertThat(dataMap).isNotNull().hasSize(1).containsOnlyKeys(variable);
     assertThat(dataMap.get(variable)).isEqualTo(1000.01);

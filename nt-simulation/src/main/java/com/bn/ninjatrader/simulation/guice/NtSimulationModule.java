@@ -1,14 +1,21 @@
 package com.bn.ninjatrader.simulation.guice;
 
 import com.bn.ninjatrader.simulation.broker.BrokerFactory;
+import com.bn.ninjatrader.simulation.broker.BuyOrderExecutor;
+import com.bn.ninjatrader.simulation.broker.OrderExecutor;
+import com.bn.ninjatrader.simulation.broker.SellOrderExecutor;
 import com.bn.ninjatrader.simulation.data.provider.*;
 import com.bn.ninjatrader.simulation.guice.annotation.AllDataProviders;
+import com.bn.ninjatrader.simulation.guice.annotation.OrderExecutors;
+import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Brad on 8/20/16.
@@ -35,5 +42,15 @@ public class NtSimulationModule extends AbstractModule {
         smaDataProvider,
         rsiDataProvider);
     return dataProviders;
+  }
+
+  @Provides
+  @OrderExecutors
+  private Map<TransactionType, OrderExecutor> provideOrderExecutors(final BuyOrderExecutor buyOrderExecutor,
+                                                                    final SellOrderExecutor sellOrderExecutor) {
+    final Map<TransactionType, OrderExecutor> orderExecutors = Maps.newHashMap();
+    orderExecutors.put(TransactionType.BUY, buyOrderExecutor);
+    orderExecutors.put(TransactionType.SELL, sellOrderExecutor);
+    return orderExecutors;
   }
 }

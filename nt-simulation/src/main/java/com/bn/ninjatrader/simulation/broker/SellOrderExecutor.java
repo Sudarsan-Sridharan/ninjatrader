@@ -25,7 +25,7 @@ public class SellOrderExecutor extends OrderExecutor {
         .price(soldPrice)
         .shares(numOfShares)
         .profit(profit)
-        .barIndex(barData.getBarIndex())
+        .barIndex(barData.getIndex())
         .build();
 
     updateAccount(account, sellTransaction);

@@ -33,8 +33,8 @@ public class BuyOrderExecutorTest {
 
   private Account account;
   private final LocalDate now = LocalDate.of(2016, 1, 1);
-  private final Price price = new Price(now, 1, 2, 3, 4, 1000);
-  private final BarData barData = BarData.forPrice(price);
+  private final Price price = Price.builder().date(now).open(1).high(2).low(3).close(4).volume(1000).build();
+  private final BarData barData = BarData.builder().price(price).build();
   private final BoardLot boardLot = BoardLot.newLot().lot(1000).tick(0.1).build();
   private final Order order = Order.buy().cashAmount(100000).at(MarketTime.OPEN).build();
 
@@ -50,7 +50,7 @@ public class BuyOrderExecutorTest {
 
   @Test
   public void testExecute() {
-    BuyTransaction transaction = executor.execute(account, order, barData);
+    final BuyTransaction transaction = executor.execute(account, order, barData);
 
     assertValidTransaction(transaction);
     assertBuyAddedToAccount();

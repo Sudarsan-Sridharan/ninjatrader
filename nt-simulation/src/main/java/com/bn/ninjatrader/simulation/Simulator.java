@@ -9,7 +9,6 @@ import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
 import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
-import com.bn.ninjatrader.simulation.operation.Variable;
 import com.bn.ninjatrader.simulation.order.MarketTime;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.statement.BuyOrderStatement;
@@ -26,7 +25,7 @@ import java.time.LocalDate;
 
 import static com.bn.ninjatrader.simulation.condition.Conditions.gt;
 import static com.bn.ninjatrader.simulation.condition.Conditions.lt;
-import static com.bn.ninjatrader.simulation.data.DataType.EMA;
+import static com.bn.ninjatrader.simulation.operation.Variables.EMA;
 import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_CLOSE;
 
 /**
@@ -36,11 +35,15 @@ import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_CLOSE;
 public class Simulator {
   private static final Logger LOG = LoggerFactory.getLogger(Simulator.class);
 
-  @Inject
   private SimulationFactory simulationFactory;
+  private ReportDao reportDao;
 
   @Inject
-  private ReportDao reportDao;
+  public Simulator(final SimulationFactory simulationFactory,
+                   final ReportDao reportDao) {
+    this.simulationFactory = simulationFactory;
+    this.reportDao = reportDao;
+  }
 
   public SimulationReport play(final SimulationParams params) {
     final Simulation simulation = simulationFactory.create(params);
@@ -73,18 +76,18 @@ public class Simulator {
         // Buy Condition
         .addStatement(ConditionalStatment.builder()
             .condition(Conditions.create()
-                .add(gt(PRICE_CLOSE, Variable.of(EMA).period(18)))
-                .add(gt(Variable.of(EMA).period(18), Variable.of(EMA).period(50)))
-                .add(gt(Variable.of(EMA).period(50), Variable.of(EMA).period(100)))
-                .add(gt(Variable.of(EMA).period(100), Variable.of(EMA).period(200))))
+                .add(gt(PRICE_CLOSE, EMA.withPeriod(18)))
+                .add(gt(EMA.withPeriod(18), EMA.withPeriod(50)))
+                .add(gt(EMA.withPeriod(50), EMA.withPeriod(100)))
+                .add(gt(EMA.withPeriod(100), EMA.withPeriod(200))))
             .then(BuyOrderStatement.builder().marketTime(MarketTime.CLOSE).barsFromNow(1).build())
             .build())
 
         // Sell Condition
         .addStatement(ConditionalStatment.builder()
             .condition(Conditions.create()
-                .add(lt(PRICE_CLOSE, Variable.of(EMA).period(18)))
-                .add(lt(Variable.of(EMA).period(18), Variable.of(EMA).period(50))))
+                .add(lt(PRICE_CLOSE, EMA.withPeriod(18)))
+                .add(lt(EMA.withPeriod(18), EMA.withPeriod(50))))
             .then(SellOrderStatement.builder().marketTime(MarketTime.CLOSE).barsFromNow(0).build())
             .build())
         .build();

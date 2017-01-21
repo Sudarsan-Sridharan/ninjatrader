@@ -20,7 +20,7 @@ public class AndConditionTest {
 
   private final Condition trueCondition = new TrueCondition();
   private final Condition falseCondition = new FalseCondition();
-  private final BarData barData = new BarData();
+  private final BarData barData = BarData.builder().build();
   private final ObjectMapper om = TestUtil.objectMapper();
 
   @Test

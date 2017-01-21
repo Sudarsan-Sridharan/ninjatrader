@@ -31,9 +31,9 @@ public class SimulationDataTest {
     SimulationData<Double> data = new SimulationData<>(values, adaptor);
     assertEquals(data.size(), 3);
 
-    assertThat(data.getDataMap(0)).isNotNull();
-    assertThat(data.getDataMap(0).get(PRICE_CLOSE)).isEqualTo(1d);
-    assertThat(data.getDataMap(1).get(PRICE_CLOSE)).isEqualTo(2d);
-    assertThat(data.getDataMap(2).get(PRICE_CLOSE)).isEqualTo(3d);
+    assertThat(data.getDataAtIndex(0)).isNotNull();
+    assertThat(data.getDataAtIndex(0).get(PRICE_CLOSE)).isEqualTo(1d);
+    assertThat(data.getDataAtIndex(1).get(PRICE_CLOSE)).isEqualTo(2d);
+    assertThat(data.getDataAtIndex(2).get(PRICE_CLOSE)).isEqualTo(3d);
   }
 }

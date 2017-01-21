@@ -29,7 +29,7 @@ public class SellOrderStatementTest {
 
   private final LocalDate now = LocalDate.of(2016, 2, 1);
   private final Price price = Price.builder().date(now).close(1.1).build();
-  private final BarData barData = BarData.forPrice(price);
+  private final BarData barData = BarData.builder().price(price).build();
 
   private final SellOrderStatement orig = SellOrderStatement.builder().marketTime(CLOSE).barsFromNow(1).build();
   private final SellOrderStatement equal = SellOrderStatement.builder().marketTime(CLOSE).barsFromNow(1).build();
@@ -62,6 +62,7 @@ public class SellOrderStatementTest {
   @Test
   public void testRunWithSharesAvailable_shouldSubmitBuyOrder() {
     final ArgumentCaptor<SellOrder> orderCaptor = ArgumentCaptor.forClass(SellOrder.class);
+    final ArgumentCaptor<BarData> barDataCaptor = ArgumentCaptor.forClass(BarData.class);
     final SellOrderStatement statement = SellOrderStatement.builder()
         .marketTime(MarketTime.OPEN).barsFromNow(1).build();
 
@@ -72,13 +73,15 @@ public class SellOrderStatementTest {
     statement.run(simulation, barData);
 
     // Verify order submitted to broker
-    verify(broker).submitOrder(orderCaptor.capture());
+    verify(broker).submitOrder(orderCaptor.capture(), barDataCaptor.capture());
 
     final SellOrder order = orderCaptor.getValue();
     assertThat(order.getMarketTime()).isEqualTo(MarketTime.OPEN);
     assertThat(order.getOrderDate()).isEqualTo(now);
     assertThat(order.getBarsFromNow()).isEqualTo(1);
     assertThat(order.getTransactionType()).isEqualTo(TransactionType.SELL);
+
+    assertThat(barDataCaptor.getValue()).isEqualTo(barData);
   }
 
   @Test
@@ -92,7 +95,7 @@ public class SellOrderStatementTest {
     statement.run(simulation, barData);
 
     // Verify order submitted to broker
-    verify(broker, times(0)).submitOrder(any(SellOrder.class));
+    verify(broker, times(0)).submitOrder(any(SellOrder.class), any(BarData.class));
   }
 
   @Test

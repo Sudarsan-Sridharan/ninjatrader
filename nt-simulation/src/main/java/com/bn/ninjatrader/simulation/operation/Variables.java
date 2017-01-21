@@ -20,4 +20,7 @@ public class Variables {
   public static final Variable ICHIMOKU_SENKOU_A = Variable.of(DataType.SENKOU_A);
   public static final Variable ICHIMOKU_SENKOU_B = Variable.of(DataType.SENKOU_B);
   public static final Variable ICHIMOKU_CHIKOU = Variable.of(DataType.CHIKOU);
+
+  public static final Variable EMA = Variable.of(DataType.EMA);
+  public static final Variable SMA = Variable.of(DataType.SMA);
 }

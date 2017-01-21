@@ -18,11 +18,11 @@ public class BarDataHistory {
 
   private final List<BarData> barDataList;
 
-  private BarDataHistory(int maxSize) {
+  private BarDataHistory(final int maxSize) {
     this.barDataList = FixedList.withMaxSizeAndTrimDirection(maxSize, RIGHT_TO_LEFT);
   }
 
-  public void add(BarData barData) {
+  public void add(final BarData barData) {
     barDataList.add(0, barData);
   }
 

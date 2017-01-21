@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.simulation.data;
 
-import org.testng.annotations.Test;
+import com.bn.ninjatrader.common.data.Price;
+import org.junit.Test;
 
 import static com.bn.ninjatrader.simulation.operation.Variables.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -11,30 +12,35 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BarDataTest {
 
   @Test
-  public void testPutDataMap_shouldSetValuesToVariables() {
-    DataMap dataMap = new DataMap();
-    dataMap.put(ICHIMOKU_CHIKOU, 100d);
-    dataMap.put(ICHIMOKU_TENKAN, 200d);
+  public void testBuild_shouldSetProperties() {
+    final Price price = Price.builder().close(1).build();
+    final BarData barData = BarData.builder().price(price).index(10).build();
 
-    BarData barData = new BarData().put(dataMap);
+    assertThat(barData).isNotNull();
+    assertThat(barData.getPrice()).isEqualTo(price);
+    assertThat(barData.getIndex()).isEqualTo(10);
+  }
+
+  @Test
+  public void testPutDataMap_shouldSetValuesToVariables() {
+    final DataMap dataMap = DataMap.newInstance()
+        .addData(ICHIMOKU_CHIKOU, 100d)
+        .addData(ICHIMOKU_TENKAN, 200d);
+    final BarData barData = BarData.builder().addData(dataMap).build();
 
     assertThat(barData.get(ICHIMOKU_CHIKOU)).isEqualTo(100d);
     assertThat(barData.get(ICHIMOKU_TENKAN)).isEqualTo(200d);
   }
 
   @Test
-  public void testOverwriteDataMap_shouldOvrwriteVariableValues() {
-    DataMap dataMap = new DataMap();
-    dataMap.put(ICHIMOKU_CHIKOU, 100d);
-    dataMap.put(ICHIMOKU_TENKAN, 200d);
-
-    BarData barData = new BarData().put(dataMap);
-
-    DataMap overlayDataMap = new DataMap();
-    overlayDataMap.put(ICHIMOKU_TENKAN, 300d);
-    overlayDataMap.put(ICHIMOKU_KIJUN, 400d);
-
-    barData.put(overlayDataMap);
+  public void testOverwriteDataMap_shouldOverwriteVariableValues() {
+    final DataMap dataMap = DataMap.newInstance()
+        .addData(ICHIMOKU_CHIKOU, 100d)
+        .addData(ICHIMOKU_TENKAN, 200d);
+    final DataMap overlayDataMap = DataMap.newInstance()
+        .addData(ICHIMOKU_TENKAN, 300d)
+        .addData(ICHIMOKU_KIJUN, 400d);
+    final BarData barData = BarData.builder().addData(dataMap).addData(overlayDataMap).build();
 
     assertThat(barData.get(ICHIMOKU_CHIKOU)).isEqualTo(100d);
     assertThat(barData.get(ICHIMOKU_TENKAN)).isEqualTo(300d);

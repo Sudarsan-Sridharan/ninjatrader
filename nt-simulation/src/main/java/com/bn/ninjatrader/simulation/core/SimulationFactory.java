@@ -6,6 +6,7 @@ import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.simulation.account.Account;
 import com.bn.ninjatrader.simulation.broker.Broker;
 import com.bn.ninjatrader.simulation.broker.BrokerFactory;
+import com.bn.ninjatrader.simulation.data.BarDataFactory;
 import com.bn.ninjatrader.simulation.data.DataType;
 import com.bn.ninjatrader.simulation.data.SimulationData;
 import com.bn.ninjatrader.simulation.data.provider.DataProvider;
@@ -32,24 +33,27 @@ public class SimulationFactory {
   private final List<DataProvider> dataFinders;
   private final PriceDao priceDao;
   private final BrokerFactory brokerFactory;
+  private final BarDataFactory barDataFactory;
 
   @Inject
   public SimulationFactory(@AllDataProviders final List<DataProvider> dataFinders,
                            final PriceDao priceDao,
-                           final BrokerFactory brokerFactory) {
+                           final BrokerFactory brokerFactory,
+                           final BarDataFactory barDataFactory) {
     this.dataFinders = dataFinders;
     this.priceDao = priceDao;
     this.brokerFactory = brokerFactory;
+    this.barDataFactory = barDataFactory;
   }
 
   public Simulation create(final SimulationParams params) {
     checkNotNull(params, "SimulationParams must not be null");
+
     final FindRequest findRequest = findSymbol(params.getSymbol()).from(params.getFromDate()).to(params.getToDate());
     final List<Price> priceList = priceDao.find(findRequest);
-
     final Account account = Account.withStartingCash(params.getStartingCash());
     final Broker broker = brokerFactory.createBroker(account);
-    final Simulation simulation = new Simulation(account, broker, params, priceList);
+    final Simulation simulation = new Simulation(account, broker, params, priceList, barDataFactory);
 
     addSimulationData(simulation, priceList.size());
 

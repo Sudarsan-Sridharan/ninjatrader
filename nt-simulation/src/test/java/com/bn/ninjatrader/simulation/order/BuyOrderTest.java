@@ -2,9 +2,9 @@ package com.bn.ninjatrader.simulation.order;
 
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.google.common.collect.Sets;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
 
 import java.time.LocalDate;
 
@@ -45,16 +45,6 @@ public class BuyOrderTest {
     assertThat(order.getNumOfShares()).isEqualTo(1000);
     assertThat(order.getCashAmount()).isEqualTo(20000.0);
     assertThat(order.getTransactionType()).isEqualTo(TransactionType.BUY);
-    assertThat(order.isReadyForProcessing()).isFalse();
-  }
-
-  @Test
-  public void testBuyDaysFromNow_shouldBeReadyForProcessingTheNextDay() {
-    final BuyOrder order = Order.buy().date(now).at(CLOSE).shares(1000).barsFromNow(1).build();
-    assertThat(order.isReadyForProcessing()).isFalse();
-
-    order.decrementBarsFromNow();
-    assertThat(order.isReadyForProcessing()).isTrue();
   }
 
   @Test

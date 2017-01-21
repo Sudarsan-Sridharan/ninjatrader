@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.simulation.order;
 
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.time.LocalDate;
 
@@ -30,15 +30,5 @@ public class SellOrderTest {
     assertThat(order.getMarketTime()).isEqualTo(CLOSE);
     assertThat(order.getNumOfShares()).isEqualTo(1000);
     assertThat(order.getTransactionType()).isEqualTo(TransactionType.SELL);
-    assertThat(order.isReadyForProcessing()).isFalse();
-  }
-
-  @Test
-  public void testReadyForProcessing_shouldBeTrueIfBarsFromNowEqualsZero() {
-    final SellOrder order = Order.sell().date(now).at(CLOSE).shares(1000).barsFromNow(1).build();
-    assertThat(order.isReadyForProcessing()).isFalse();
-
-    order.decrementBarsFromNow();
-    assertThat(order.isReadyForProcessing()).isTrue();
   }
 }

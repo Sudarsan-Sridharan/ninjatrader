@@ -23,7 +23,7 @@ public class SMADataMapAdaptorTest {
     final double value = 100.01;
     final SMADataMapAdaptor adaptor = new SMADataMapAdaptor(period);
     final DataMap dataMap = adaptor.toDataMap(Value.of(now, value));
-    final Variable variable = Variable.of(DataType.SMA).period(period);
+    final Variable variable = Variable.of(DataType.SMA).withPeriod(period);
 
     assertThat(dataMap).hasSize(1).containsOnlyKeys(variable);
     assertThat(dataMap.get(variable)).isEqualTo(value);

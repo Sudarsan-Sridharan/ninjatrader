@@ -4,15 +4,16 @@ import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.simulation.broker.BrokerFactory;
 import com.bn.ninjatrader.simulation.condition.Conditions;
+import com.bn.ninjatrader.simulation.data.BarDataFactory;
 import com.bn.ninjatrader.simulation.data.DataType;
 import com.bn.ninjatrader.simulation.data.provider.DataProvider;
 import com.bn.ninjatrader.simulation.statement.BuyOrderStatement;
 import com.bn.ninjatrader.simulation.statement.ConditionalStatment;
 import com.bn.ninjatrader.simulation.statement.SellOrderStatement;
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -38,12 +39,14 @@ public class SimulationFactoryTest {
   private DataProvider dataProvider;
   private List<DataProvider> dataFinderList;
   private SimulationParams params;
+  private BarDataFactory barDataFactory;
 
-  @BeforeMethod
+  @Before
   public void before() {
     priceDao = mock(PriceDao.class);
     brokerFactory = mock(BrokerFactory.class);
     dataProvider = mock(DataProvider.class);
+    barDataFactory = mock(BarDataFactory.class);
     dataFinderList = Lists.newArrayList(dataProvider);
 
     params = SimulationParams.builder().symbol("MEG").from(from).to(to)
@@ -62,7 +65,7 @@ public class SimulationFactoryTest {
 
   @Test
   public void testCreateWithMatchingDataProvider_shouldAddDataProvidersData() {
-    SimulationFactory factory = new SimulationFactory(dataFinderList, priceDao, brokerFactory);
+    final SimulationFactory factory = new SimulationFactory(dataFinderList, priceDao, brokerFactory, barDataFactory);
     factory.create(params);
 
     // Verify dataProvider data is added to simulation.
@@ -74,7 +77,7 @@ public class SimulationFactoryTest {
     // DataProvider supports different DataType.
     when(dataProvider.getSupportedDataTypes()).thenReturn(Lists.newArrayList(DataType.PRICE_HIGH));
 
-    SimulationFactory factory = new SimulationFactory(dataFinderList, priceDao, brokerFactory);
+    final SimulationFactory factory = new SimulationFactory(dataFinderList, priceDao, brokerFactory, barDataFactory);
     factory.create(params);
 
     // Verify dataProvider data not added to simulation.

@@ -63,7 +63,7 @@ public class PriceDataProviderTest {
     assertThat(simulationData.size()).isEqualTo(1);
 
     // Verify variable values are correct.
-    final DataMap dataMap = simulationData.getDataMap(0);
+    final DataMap dataMap = simulationData.getDataAtIndex(0);
     assertThat(dataMap).isNotNull().hasSize(1);
     assertThat(dataMap.get(PRICE_CLOSE)).isEqualTo(price1.getClose());
   }

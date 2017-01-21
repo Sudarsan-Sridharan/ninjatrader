@@ -42,14 +42,14 @@ public class BarDataHistoryTest {
 
   @Test
   public void testWithHistoryData_shouldReturnHistoryData() {
-    BarDataHistory history = BarDataHistory.withMaxSize(3);
+    final BarDataHistory history = BarDataHistory.withMaxSize(3);
 
-    history.add(BarData.forPrice(price1));
+    history.add(BarData.builder().price(price1).build());
     assertThat(history.getNBarsAgo(0)).isPresent();
     assertThat(history.getNBarsAgo(0).get().getPrice()).isEqualTo(price1);
     assertThat(history.getNBarsAgo(2)).isEmpty();
 
-    history.add(BarData.forPrice(price2));
+    history.add(BarData.builder().price(price2).build());
     assertThat(history.getNBarsAgo(0)).isPresent();
     assertThat(history.getNBarsAgo(0).get().getPrice()).isEqualTo(price2);
     assertThat(history.getNBarsAgo(1)).isPresent();
@@ -58,11 +58,11 @@ public class BarDataHistoryTest {
 
   @Test
   public void testWithHistoryDataExceedingMaxSize_shouldKeepHistoryToMaxSize() {
-    BarDataHistory history = BarDataHistory.withMaxSize(3);
-    history.add(BarData.forPrice(price1));
-    history.add(BarData.forPrice(price2));
-    history.add(BarData.forPrice(price3));
-    history.add(BarData.forPrice(price4));
+    final BarDataHistory history = BarDataHistory.withMaxSize(3);
+    history.add(BarData.builder().price(price1).build());
+    history.add(BarData.builder().price(price2).build());
+    history.add(BarData.builder().price(price3).build());
+    history.add(BarData.builder().price(price4).build());
 
     assertThat(history.getNBarsAgo(0)).isPresent();
     assertThat(history.getNBarsAgo(1)).isPresent();

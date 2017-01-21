@@ -18,7 +18,7 @@ public abstract class Order {
   private final long numOfShares;
   private final TransactionType transactionType;
   private final MarketTime marketTime;
-  private int barsFromNow;
+  private final int barsFromNow;
 
   public static BuyOrder.BuyOrderBuilder buy() {
     return new BuyOrder.BuyOrderBuilder();
@@ -54,14 +54,6 @@ public abstract class Order {
 
   public MarketTime getMarketTime() {
     return marketTime;
-  }
-
-  public void decrementBarsFromNow() {
-    barsFromNow--;
-  }
-
-  public boolean isReadyForProcessing() {
-    return barsFromNow <= 0;
   }
 
   public int getBarsFromNow() {

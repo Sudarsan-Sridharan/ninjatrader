@@ -31,7 +31,7 @@ public class BuyOrderStatementTest {
   private final BuyOrderStatement statement = BuyOrderStatement.builder()
       .marketTime(MarketTime.CLOSE).barsFromNow(1).build();
   private final Price price = Price.builder().date(now).close(1.1).build();
-  private final BarData barData = BarData.forPrice(price);
+  private final BarData barData = BarData.builder().price(price).build();
 
   private final BuyOrderStatement orig = BuyOrderStatement.builder().marketTime(CLOSE).barsFromNow(1).build();
   private final BuyOrderStatement equal = BuyOrderStatement.builder().marketTime(CLOSE).barsFromNow(1).build();
@@ -64,7 +64,7 @@ public class BuyOrderStatementTest {
   @Test
   public void testRunWithNoPendingOrders_shouldSubmitBuyOrder() {
     final ArgumentCaptor<BuyOrder> orderCaptor = ArgumentCaptor.forClass(BuyOrder.class);
-
+    final ArgumentCaptor<BarData> barDataCaptor = ArgumentCaptor.forClass(BarData.class);
 
     // Broker has no pending orders
     when(broker.hasPendingOrder()).thenReturn(Boolean.FALSE);
@@ -72,7 +72,7 @@ public class BuyOrderStatementTest {
     statement.run(simulation, barData);
 
     // Verify order submitted to broker
-    verify(broker).submitOrder(orderCaptor.capture());
+    verify(broker).submitOrder(orderCaptor.capture(), barDataCaptor.capture());
 
     final BuyOrder order = orderCaptor.getValue();
     assertThat(order.getCashAmount()).isEqualTo(100000d);
@@ -80,6 +80,8 @@ public class BuyOrderStatementTest {
     assertThat(order.getOrderDate()).isEqualTo(now);
     assertThat(order.getBarsFromNow()).isEqualTo(1);
     assertThat(order.getTransactionType()).isEqualTo(TransactionType.BUY);
+
+    assertThat(barDataCaptor.getValue()).isEqualTo(barData);
   }
 
   @Test
@@ -90,7 +92,7 @@ public class BuyOrderStatementTest {
     statement.run(simulation, barData);
 
     // Verify order submitted to broker
-    verify(broker, times(0)).submitOrder(any(BuyOrder.class));
+    verify(broker, times(0)).submitOrder(any(BuyOrder.class), any(BarData.class));
   }
 
   @Test

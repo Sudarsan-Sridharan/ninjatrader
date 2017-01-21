@@ -4,6 +4,9 @@ import com.bn.ninjatrader.simulation.condition.Condition;
 import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.operation.Variable;
+import com.google.common.base.MoreObjects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
@@ -13,6 +16,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author bradwee2000@gmail.com
  */
 public class ConditionalStatment implements Statement {
+  private static final Logger LOG = LoggerFactory.getLogger(ConditionalStatment.class);
 
   public static final Builder builder() {
     return new Builder();
@@ -38,6 +42,15 @@ public class ConditionalStatment implements Statement {
     } else {
       elseStatement.run(simulation, barData);
     }
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("condition", condition)
+        .add("then", thenStatement)
+        .add("else", elseStatement)
+        .toString();
   }
 
   @Override

@@ -2,17 +2,20 @@ package com.bn.ninjatrader.simulation.broker;
 
 import com.bn.ninjatrader.simulation.account.Account;
 import com.bn.ninjatrader.simulation.data.BarData;
+import com.bn.ninjatrader.simulation.guice.annotation.OrderExecutors;
 import com.bn.ninjatrader.simulation.order.Order;
-import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
-import com.bn.ninjatrader.simulation.transaction.SellTransaction;
-import com.google.common.collect.Iterables;
+import com.bn.ninjatrader.simulation.order.PendingOrder;
+import com.bn.ninjatrader.simulation.transaction.Transaction;
+import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -23,73 +26,57 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class Broker {
   private static final Logger LOG = LoggerFactory.getLogger(Broker.class);
 
-  private final List<Order> pendingOrders = Lists.newArrayList();
-  private final List<BuyTransaction> fulfilledBuys = Lists.newArrayList();
-  private final List<SellTransaction> fulfilledSells = Lists.newArrayList();
-  private Account account;
+  private final List<PendingOrder> pendingOrders = Lists.newArrayList();
+  private final Map<TransactionType, Transaction> lastTransactions = Maps.newHashMap();
+
+  private final Map<TransactionType, OrderExecutor> orderExecutors;
+  private final Account account;
 
   @Inject
-  private BuyOrderExecutor buyOrderExecutor;
-
-  @Inject
-  private SellOrderExecutor sellOrderExecutor;
-
-  @Inject
-  public Broker(@Assisted final Account account) {
+  public Broker(@Assisted final Account account,
+                @OrderExecutors final Map<TransactionType, OrderExecutor> orderExecutors) {
     checkNotNull(account);
     this.account = account;
+    this.orderExecutors = orderExecutors;
   }
 
-  public void submitOrder(final Order order) {
+  public void submitOrder(final Order order, final BarData barData) {
     checkNotNull(order, "order must not be null.");
-    pendingOrders.add(order);
+    checkNotNull(barData, "barData must not be null.");
+
+    pendingOrders.add(PendingOrder.of(order, barData));
   }
 
   public void processPendingOrders(final BarData barData) {
     checkNotNull(barData, "barData must not be null.");
+
     if (pendingOrders.isEmpty()) {
       return;
     }
 
-    final List<Order> fulfilledOrders = Lists.newArrayList();
-    for (final Order order : pendingOrders) {
-      if (order.isReadyForProcessing()) {
-        fulfillOrder(order, barData);
-        fulfilledOrders.add(order);
+    final List<PendingOrder> fulfilledOrders = Lists.newArrayList();
+    for (final PendingOrder pendingOrder : pendingOrders) {
+      if (pendingOrder.isReadyToProcess(barData)) {
+        fulfillOrder(pendingOrder.getOrder(), barData);
+        fulfilledOrders.add(pendingOrder);
       }
-      order.decrementBarsFromNow();
     }
     pendingOrders.removeAll(fulfilledOrders);
   }
 
   private void fulfillOrder(final Order order, final BarData barData) {
-    switch (order.getTransactionType()) {
-      case BUY:
-        fulfillBuy(order, barData); break;
-      case SELL:
-        fulfillSell(order, barData); break;
-    }
-  }
+    final OrderExecutor orderExecutor = orderExecutors.get(order.getTransactionType());
+    checkNotNull(orderExecutor, "No OrderExecutor found for TransactionType: %s", order.getTransactionType());
 
-  private void fulfillBuy(final Order order, final BarData barData) {
-    final BuyTransaction buyTransaction = buyOrderExecutor.execute(account, order, barData);
-    fulfilledBuys.add(buyTransaction);
-  }
-
-  private void fulfillSell(final Order order, final BarData barData) {
-    final SellTransaction sellTransaction = sellOrderExecutor.execute(account, order, barData);
-    fulfilledSells.add(sellTransaction);
+    final Transaction transaction = orderExecutor.execute(account, order, barData);
+    lastTransactions.put(transaction.getTransactionType(), transaction);
   }
 
   public boolean hasPendingOrder() {
     return !pendingOrders.isEmpty();
   }
 
-  public Optional<BuyTransaction> getLastFulfilledBuy() {
-    return Optional.ofNullable(Iterables.getLast(fulfilledBuys, null));
-  }
-
-  public Optional<SellTransaction> getLastFulfilledSell() {
-    return Optional.ofNullable(Iterables.getLast(fulfilledSells, null));
+  public Optional<Transaction> getLastTransaction(final TransactionType transactionType) {
+    return Optional.ofNullable(lastTransactions.get(transactionType));
   }
 }

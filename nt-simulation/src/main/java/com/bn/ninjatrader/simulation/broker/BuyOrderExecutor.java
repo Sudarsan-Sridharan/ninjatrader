@@ -38,7 +38,7 @@ public class BuyOrderExecutor extends OrderExecutor {
         .date(barData.getPrice().getDate())
         .price(boughtPrice)
         .shares(numOfShares)
-        .barIndex(barData.getBarIndex())
+        .barIndex(barData.getIndex())
         .build();
   }
 

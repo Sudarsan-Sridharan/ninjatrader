@@ -63,7 +63,7 @@ public class IchimokuDataProviderTest {
     assertThat(simulationData.size()).isEqualTo(requiredSize);
 
     // Verify variable values are correct.
-    final DataMap dataMap = simulationData.getDataMap(requiredSize - 1);
+    final DataMap dataMap = simulationData.getDataAtIndex(requiredSize - 1);
     assertThat(dataMap).isNotNull().hasSize(1);
     assertThat(dataMap.get(ICHIMOKU_KIJUN)).isEqualTo(ichimoku.getKijun());
   }

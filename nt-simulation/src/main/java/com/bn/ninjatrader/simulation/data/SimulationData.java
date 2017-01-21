@@ -1,29 +1,34 @@
 package com.bn.ninjatrader.simulation.data;
 
 import com.bn.ninjatrader.simulation.adaptor.DataMapAdaptor;
-import com.google.common.base.Preconditions;
 
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
+ * Holds data per bar.
  * Created by Brad on 8/17/16.
  */
 public class SimulationData<T> {
 
-  private List<T> dataList;
-  private DataMapAdaptor<T> dataAdaptor;
+  private final List<T> dataList;
+  private final DataMapAdaptor<T> dataAdaptor;
 
-  public SimulationData(List<T> dataList, DataMapAdaptor<T> dataAdaptor) {
-    Preconditions.checkNotNull(dataList);
-    Preconditions.checkArgument(!dataList.isEmpty());
-    Preconditions.checkNotNull(dataAdaptor);
+  public SimulationData(final List<T> dataList,
+                        final DataMapAdaptor<T> dataAdaptor) {
+    checkNotNull(dataList, "dataList must not be null.");
+    checkArgument(!dataList.isEmpty(), "dataList must not be empty.");
+    checkNotNull(dataAdaptor, "dataAdaptor must not be null.");
 
     this.dataList = dataList;
     this.dataAdaptor = dataAdaptor;
   }
 
-  public DataMap getDataMap(int index) {
-    return dataAdaptor.toDataMap(dataList.get(index));
+  public DataMap getDataAtIndex(int index) {
+    final T t = dataList.get(index);
+    return dataAdaptor.toDataMap(t);
   }
 
   public int size() {

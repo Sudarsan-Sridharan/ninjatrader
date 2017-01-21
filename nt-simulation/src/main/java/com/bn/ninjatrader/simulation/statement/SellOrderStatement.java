@@ -45,7 +45,7 @@ public class SellOrderStatement implements Statement {
     if (account.hasShares()) {
       final Price price = barData.getPrice();
       final Order order = Order.sell().date(price.getDate()).at(marketTime).barsFromNow(barsFromNow).build();
-      broker.submitOrder(order);
+      broker.submitOrder(order, barData);
     }
   }
 

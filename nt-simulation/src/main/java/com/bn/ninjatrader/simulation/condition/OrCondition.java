@@ -1,10 +1,12 @@
 package com.bn.ninjatrader.simulation.condition;
 
 import com.bn.ninjatrader.simulation.data.BarData;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Created by Brad on 8/5/16.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class OrCondition extends MultiCondition<OrCondition> {
 
   public OrCondition() {
@@ -20,12 +22,12 @@ public class OrCondition extends MultiCondition<OrCondition> {
   }
 
   @Override
-  public boolean isMatch(BarData barData) {
+  public boolean isMatch(final BarData barData) {
     if (getConditions().isEmpty()) {
       return true;
     }
 
-    for (Condition condition : getConditions()) {
+    for (final Condition condition : getConditions()) {
       if (condition.isMatch(barData)) {
         return true;
       }

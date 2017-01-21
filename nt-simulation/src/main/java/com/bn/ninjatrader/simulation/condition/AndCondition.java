@@ -1,10 +1,12 @@
 package com.bn.ninjatrader.simulation.condition;
 
 import com.bn.ninjatrader.simulation.data.BarData;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Created by Brad on 8/5/16.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AndCondition extends MultiCondition<AndCondition> {
 
   public AndCondition() {
