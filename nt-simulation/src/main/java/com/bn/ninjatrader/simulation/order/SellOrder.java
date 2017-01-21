@@ -25,8 +25,7 @@ public class SellOrder extends Order {
 
     @Override
     public SellOrder build() {
-      SellOrder order = new SellOrder(getOrderDate(), getMarketTime(), getDaysFromNow(), getNumOfShares());
-      return order;
+      return new SellOrder(getOrderDate(), getMarketTime(), getDaysFromNow(), getNumOfShares());
     }
   }
 }

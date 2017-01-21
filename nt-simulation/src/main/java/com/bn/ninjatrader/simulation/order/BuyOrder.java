@@ -1,10 +1,8 @@
 package com.bn.ninjatrader.simulation.order;
 
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,9 +30,13 @@ public class BuyOrder extends Order {
   }
 
   public String toString() {
-    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .appendSuper(super.toString())
-        .append("cashAmount", cashAmount)
+    return MoreObjects.toStringHelper(this)
+        .add("marketTime", getMarketTime())
+        .add("barsFromNow", getBarsFromNow())
+        .add("numOfShares", getNumOfShares())
+        .add("orderDate", getOrderDate())
+        .add("transactionType", getTransactionType())
+        .add("cashAmount", cashAmount)
         .toString();
   }
 
@@ -43,19 +45,13 @@ public class BuyOrder extends Order {
     if (obj == null || !(obj instanceof BuyOrder)) { return false; }
     if (obj == this) { return true; }
     final BuyOrder rhs = (BuyOrder) obj;
-
-    return new EqualsBuilder()
-        .appendSuper(super.equals(obj))
-        .append(cashAmount, rhs.cashAmount)
-        .build();
+    return super.equals(obj)
+        && Objects.equal(cashAmount, rhs.cashAmount);
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder()
-        .appendSuper(super.hashCode())
-        .append(cashAmount)
-        .toHashCode();
+    return Objects.hashCode(super.hashCode(), cashAmount);
   }
 
   /**
@@ -76,9 +72,7 @@ public class BuyOrder extends Order {
 
     @Override
     public BuyOrder build() {
-      BuyOrder order = new BuyOrder(getOrderDate(), getMarketTime(), getDaysFromNow(), getNumOfShares(), cashAmount);
-      order.toString();
-      return order;
+      return new BuyOrder(getOrderDate(), getMarketTime(), getDaysFromNow(), getNumOfShares(), cashAmount);
     }
   }
 }
