@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.simulation.data;
 
+import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.simulation.adaptor.PriceDataMapAdaptor;
@@ -54,9 +55,7 @@ public class BarDataFactoryTest {
 
     when(simulationData.getDataAtIndex(0)).thenReturn(dataMap);
 
-    barDataFactory.addSimulationData(simulationData);
-
-    final BarData barData = barDataFactory.createWithPriceAtIndex(price, 0);
+    final BarData barData = barDataFactory.createWithPriceAtIndex(price, 0, Lists.newArrayList(simulationData));
     assertThat(barData.get(SMA.withPeriod(21))).isEqualTo(100.15);
   }
 }

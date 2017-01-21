@@ -11,6 +11,15 @@ import java.util.Set;
  */
 public class TrueCondition implements Condition {
 
+  private static TrueCondition INSTANCE;
+
+  public static final TrueCondition instance() {
+    if (INSTANCE == null) {
+      INSTANCE = new TrueCondition();
+    }
+    return INSTANCE;
+  }
+
   @Override
   public boolean isMatch(BarData barParameters) {
     return true;

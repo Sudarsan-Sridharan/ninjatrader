@@ -10,15 +10,15 @@ import static com.bn.ninjatrader.common.util.FixedList.TrimDirection.RIGHT_TO_LE
 /**
  * Created by Brad on 8/22/16.
  */
-public class BarDataHistory {
+public class History {
 
-  public static BarDataHistory withMaxSize(int maxSize) {
-    return new BarDataHistory(maxSize);
+  public static History withMaxSize(int maxSize) {
+    return new History(maxSize);
   }
 
   private final List<BarData> barDataList;
 
-  private BarDataHistory(final int maxSize) {
+  private History(final int maxSize) {
     this.barDataList = FixedList.withMaxSizeAndTrimDirection(maxSize, RIGHT_TO_LEFT);
   }
 

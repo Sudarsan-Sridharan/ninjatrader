@@ -1,9 +1,11 @@
 package com.bn.ninjatrader.simulation.statement;
 
 import com.bn.ninjatrader.simulation.condition.Condition;
-import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.data.BarData;
+import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.simulation.operation.Variable;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * @author bradwee2000@gmail.com
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ConditionalStatment implements Statement {
   private static final Logger LOG = LoggerFactory.getLogger(ConditionalStatment.class);
 
@@ -22,13 +25,18 @@ public class ConditionalStatment implements Statement {
     return new Builder();
   }
 
+  @JsonProperty("if")
   private final Condition condition;
+
+  @JsonProperty("then")
   private final Statement thenStatement;
+
+  @JsonProperty("else")
   private final Statement elseStatement;
 
-  public ConditionalStatment(final Condition condition,
-                             final Statement thenStatement,
-                             final Statement elseStatement) {
+  public ConditionalStatment(@JsonProperty("if") final Condition condition,
+                             @JsonProperty("then") final Statement thenStatement,
+                             @JsonProperty("else") final Statement elseStatement) {
     checkNotNull(condition, "condition must not be null.");
     this.condition = condition;
     this.thenStatement = thenStatement == null ? EmptyStatement.instance() : thenStatement;
@@ -36,11 +44,11 @@ public class ConditionalStatment implements Statement {
   }
 
   @Override
-  public void run(final Simulation simulation, final BarData barData) {
+  public void run(final World world, final BarData barData) {
     if (condition.isMatch(barData)) {
-      thenStatement.run(simulation, barData);
+      thenStatement.run(world, barData);
     } else {
-      elseStatement.run(simulation, barData);
+      elseStatement.run(world, barData);
     }
   }
 

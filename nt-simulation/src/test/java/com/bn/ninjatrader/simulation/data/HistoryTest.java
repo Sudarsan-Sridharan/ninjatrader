@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created by Brad on 8/22/16.
  */
-public class BarDataHistoryTest {
+public class HistoryTest {
 
   private final LocalDate date1 = LocalDate.of(2016, 1, 1);
   private final LocalDate date2 = LocalDate.of(2016, 1, 2);
@@ -25,7 +25,7 @@ public class BarDataHistoryTest {
 
   @Test
   public void testCreateWithNoHistory_shouldReturnEmpty() {
-    BarDataHistory history = BarDataHistory.withMaxSize(52);
+    History history = History.withMaxSize(52);
 
     Optional<BarData> foundBarData = history.getNBarsAgo(0);
     assertThat(foundBarData).isEmpty();
@@ -42,7 +42,7 @@ public class BarDataHistoryTest {
 
   @Test
   public void testWithHistoryData_shouldReturnHistoryData() {
-    final BarDataHistory history = BarDataHistory.withMaxSize(3);
+    final History history = History.withMaxSize(3);
 
     history.add(BarData.builder().price(price1).build());
     assertThat(history.getNBarsAgo(0)).isPresent();
@@ -58,7 +58,7 @@ public class BarDataHistoryTest {
 
   @Test
   public void testWithHistoryDataExceedingMaxSize_shouldKeepHistoryToMaxSize() {
-    final BarDataHistory history = BarDataHistory.withMaxSize(3);
+    final History history = History.withMaxSize(3);
     history.add(BarData.builder().price(price1).build());
     history.add(BarData.builder().price(price2).build());
     history.add(BarData.builder().price(price3).build());

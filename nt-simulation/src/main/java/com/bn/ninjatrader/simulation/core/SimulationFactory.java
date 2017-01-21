@@ -8,9 +8,11 @@ import com.bn.ninjatrader.simulation.broker.Broker;
 import com.bn.ninjatrader.simulation.broker.BrokerFactory;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
 import com.bn.ninjatrader.simulation.data.DataType;
+import com.bn.ninjatrader.simulation.data.History;
 import com.bn.ninjatrader.simulation.data.SimulationData;
 import com.bn.ninjatrader.simulation.data.provider.DataProvider;
 import com.bn.ninjatrader.simulation.guice.annotation.AllDataProviders;
+import com.bn.ninjatrader.simulation.model.World;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
@@ -53,7 +55,9 @@ public class SimulationFactory {
     final List<Price> priceList = priceDao.find(findRequest);
     final Account account = Account.withStartingCash(params.getStartingCash());
     final Broker broker = brokerFactory.createBroker(account);
-    final Simulation simulation = new Simulation(account, broker, params, priceList, barDataFactory);
+    final History history = History.withMaxSize(52);
+    final World world = World.builder().account(account).broker(broker).history(history).prices(priceList).build();
+    final Simulation simulation = new Simulation(world, params, barDataFactory);
 
     addSimulationData(simulation, priceList.size());
 
@@ -65,7 +69,6 @@ public class SimulationFactory {
     final SimulationParams params = simulation.getSimulationParams();
     final Set<DataType> dataTypes = params.getDataTypes();
     for (final DataProvider dataFinder : dataFinders) {
-
       if (!Collections.disjoint(dataFinder.getSupportedDataTypes(), dataTypes)) {
         final List<SimulationData> dataList = dataFinder.find(params, requiredDataSize);
         simulation.addSimulationData(dataList);

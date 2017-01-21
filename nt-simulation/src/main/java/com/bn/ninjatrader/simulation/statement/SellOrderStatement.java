@@ -3,8 +3,8 @@ package com.bn.ninjatrader.simulation.statement;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.simulation.account.Account;
 import com.bn.ninjatrader.simulation.broker.Broker;
-import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.data.BarData;
+import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.simulation.operation.Variable;
 import com.bn.ninjatrader.simulation.order.MarketTime;
 import com.bn.ninjatrader.simulation.order.Order;
@@ -38,9 +38,9 @@ public class SellOrderStatement implements Statement {
   }
 
   @Override
-  public void run(final Simulation simulation, final BarData barData) {
-    final Broker broker = simulation.getBroker();
-    final Account account = simulation.getAccount();
+  public void run(final World world, final BarData barData) {
+    final Broker broker = world.getBroker();
+    final Account account = world.getAccount();
 
     if (account.hasShares()) {
       final Price price = barData.getPrice();

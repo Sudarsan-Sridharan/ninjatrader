@@ -5,11 +5,13 @@ import com.bn.ninjatrader.simulation.account.Account;
 import com.bn.ninjatrader.simulation.broker.Broker;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
-import com.bn.ninjatrader.simulation.data.BarDataHistory;
+import com.bn.ninjatrader.simulation.data.History;
 import com.bn.ninjatrader.simulation.data.SimulationData;
+import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.statement.Statement;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,28 +28,29 @@ public class Simulation {
 
   private static final Logger LOG = LoggerFactory.getLogger(Simulation.class);
 
-  private final List<Price> priceList;
+  private final List<SimulationData> simulationDataList = Lists.newArrayList();
   private final BarDataFactory barDataFactory;
-  private final BarDataHistory barDataHistory = BarDataHistory.withMaxSize(52);
   private final SimulationParams simulationParams;
 
+  private final World world;
   private final Broker broker;
   private final Account account;
+  private final History history;
+  private final List<Price> priceList;
 
   private final List<Statement> statements;
 
   private int barIndex;
 
-  public Simulation(final Account account,
-                    final Broker broker,
+  public Simulation(final World world,
                     final SimulationParams simulationParams,
-                    final List<Price> priceList,
                     final BarDataFactory barDataFactory) {
-
-    this.account = account;
-    this.broker = broker;
+    this.world = world;
+    this.account = world.getAccount();
+    this.broker = world.getBroker();
+    this.priceList = world.getPrices();
+    this.history = world.getHistory();
     this.simulationParams = simulationParams;
-    this.priceList = priceList;
     this.statements = simulationParams.getStatements();
     this.barDataFactory = barDataFactory;
 
@@ -65,8 +68,8 @@ public class Simulation {
   public SimulationReport play() {
     barIndex = 0;
     for (final Price price : priceList) {
-      final BarData barData = barDataFactory.createWithPriceAtIndex(price, barIndex);
-      barDataHistory.add(barData);
+      final BarData barData = barDataFactory.createWithPriceAtIndex(price, barIndex, simulationDataList);
+      history.add(barData);
       processBar(barData);
       barIndex++;
     }
@@ -76,7 +79,7 @@ public class Simulation {
 
   private void processBar(final BarData barData) {
     for (final Statement statement : statements) {
-      statement.run(this, barData);
+      statement.run(world, barData);
     }
     broker.processPendingOrders(barData);
   }
@@ -90,14 +93,18 @@ public class Simulation {
     if (account.hasShares()) {
       int lastIndex = priceList.size() - 1;
       Price lastPrice = priceList.get(lastIndex);
-      BarData barData = barDataFactory.createWithPriceAtIndex(lastPrice, lastIndex);
+      BarData barData = barDataFactory.createWithPriceAtIndex(lastPrice, lastIndex, simulationDataList);
       broker.submitOrder(Order.sell().date(lastPrice.getDate()).build(), barData);
       broker.processPendingOrders(barData);
     }
   }
 
   public void addSimulationData(final Collection<SimulationData> dataList) {
-    this.barDataFactory.addSimulationData(dataList);
+    this.simulationDataList.addAll(dataList);
+  }
+
+  public void addSimulationData(final SimulationData simulationData) {
+    this.simulationDataList.add(simulationData);
   }
 
   public SimulationReport createSimulationReport() {
@@ -119,9 +126,5 @@ public class Simulation {
 
   public Broker getBroker() {
     return broker;
-  }
-
-  public BarDataHistory getBarDataHistory() {
-    return barDataHistory;
   }
 }

@@ -10,7 +10,15 @@ import java.util.Set;
  * Created by Brad on 8/5/16.
  */
 public class FalseCondition implements Condition {
-  
+  private static FalseCondition INSTANCE;
+
+  public static Condition instance() {
+    if (INSTANCE == null) {
+      INSTANCE = new FalseCondition();
+    }
+    return INSTANCE;
+  }
+
   @Override
   public boolean isMatch(BarData barParameters) {
     return false;

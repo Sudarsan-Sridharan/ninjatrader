@@ -4,9 +4,10 @@ import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.simulation.account.Account;
 import com.bn.ninjatrader.simulation.broker.Broker;
-import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.order.*;
+import com.bn.ninjatrader.simulation.model.World;
+import com.bn.ninjatrader.simulation.order.BuyOrder;
+import com.bn.ninjatrader.simulation.order.MarketTime;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
@@ -40,18 +41,18 @@ public class BuyOrderStatementTest {
   private final BuyOrderStatement diffBarsFromNow = BuyOrderStatement.builder()
       .marketTime(CLOSE).barsFromNow(2).build();
 
-  private Simulation simulation;
+  private World world;
   private Account account;
   private Broker broker;
 
   @Before
   public void before() {
-    simulation = mock(Simulation.class);
+    world = mock(World.class);
     account = mock(Account.class);
     broker = mock(Broker.class);
 
-    when(simulation.getBroker()).thenReturn(broker);
-    when(simulation.getAccount()).thenReturn(account);
+    when(world.getBroker()).thenReturn(broker);
+    when(world.getAccount()).thenReturn(account);
     when(account.getCash()).thenReturn(100000d);
   }
 
@@ -69,7 +70,7 @@ public class BuyOrderStatementTest {
     // Broker has no pending orders
     when(broker.hasPendingOrder()).thenReturn(Boolean.FALSE);
 
-    statement.run(simulation, barData);
+    statement.run(world, barData);
 
     // Verify order submitted to broker
     verify(broker).submitOrder(orderCaptor.capture(), barDataCaptor.capture());
@@ -89,7 +90,7 @@ public class BuyOrderStatementTest {
     // Broker has no pending orders
     when(broker.hasPendingOrder()).thenReturn(Boolean.TRUE);
 
-    statement.run(simulation, barData);
+    statement.run(world, barData);
 
     // Verify order submitted to broker
     verify(broker, times(0)).submitOrder(any(BuyOrder.class), any(BarData.class));
