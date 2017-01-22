@@ -18,11 +18,11 @@ public class ConditionBuilder {
   }
 
   public ConditionBuilder equals(Operation rhsOperation) {
-    return completeCondition(InequalityOperator.EQUALS, rhsOperation);
+    return completeCondition(InequalityOperator.EQ, rhsOperation);
   }
 
   public ConditionBuilder greaterThan(Operation rhsOperation) {
-    this.condition = new BasicCondition(this.lhsOperation, InequalityOperator.GREATER_THAN, rhsOperation);
+    this.condition = new BasicCondition(this.lhsOperation, InequalityOperator.GT, rhsOperation);
     return this;
   }
 
@@ -34,7 +34,7 @@ public class ConditionBuilder {
 
   private ConditionBuilder completeCondition(InequalityOperator operator, Operation rhsOperation) {
     Preconditions.checkNotNull("left-hand-side operation must not be empty.");
-    this.condition = new BasicCondition(this.lhsOperation, InequalityOperator.GREATER_THAN, rhsOperation);
+    this.condition = new BasicCondition(this.lhsOperation, InequalityOperator.GT, rhsOperation);
     this.lhsOperation = null;
     return this;
   }

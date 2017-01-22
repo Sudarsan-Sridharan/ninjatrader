@@ -30,74 +30,74 @@ public class BasicConditionTest {
 
   @Test
   public void testEqualsCondition_shouldReturnTrueIfEqual() {
-    assertThat(isConditionMatch(0, EQUALS, -0)).isTrue();
-    assertThat(isConditionMatch(4.2345, EQUALS, 4.2345)).isTrue();
-    assertThat(isConditionMatch(4.2345, EQUALS, 4.23450)).isTrue();
-    assertThat(isConditionMatch(4.2345, EQUALS, 4.23456)).isFalse();
+    assertThat(isConditionMatch(0, EQ, -0)).isTrue();
+    assertThat(isConditionMatch(4.2345, EQ, 4.2345)).isTrue();
+    assertThat(isConditionMatch(4.2345, EQ, 4.23450)).isTrue();
+    assertThat(isConditionMatch(4.2345, EQ, 4.23456)).isFalse();
   }
 
   @Test
   public void testGreaterThanCondition_shouldReturnTrueIfGreater() {
-    assertThat(isConditionMatch(4.2345, GREATER_THAN, 4.2344)).isTrue();
-    assertThat(isConditionMatch(4.2345, GREATER_THAN, 4.2345)).isFalse();
-    assertThat(isConditionMatch(4.2345, GREATER_THAN, 5.0)).isFalse();
+    assertThat(isConditionMatch(4.2345, GT, 4.2344)).isTrue();
+    assertThat(isConditionMatch(4.2345, GT, 4.2345)).isFalse();
+    assertThat(isConditionMatch(4.2345, GT, 5.0)).isFalse();
   }
 
   @Test
   public void testLessThanCondition_shouldReturnTrueIfLess() {
-    assertThat(isConditionMatch(4.2345, LESS_THAN, 4.2346)).isTrue();
-    assertThat(isConditionMatch(-4.2345, LESS_THAN, -4.2344)).isTrue();
-    assertThat(isConditionMatch(4.2345, LESS_THAN, 4.2345)).isFalse();
-    assertThat(isConditionMatch(4.2345, LESS_THAN, 3.0)).isFalse();
+    assertThat(isConditionMatch(4.2345, LT, 4.2346)).isTrue();
+    assertThat(isConditionMatch(-4.2345, LT, -4.2344)).isTrue();
+    assertThat(isConditionMatch(4.2345, LT, 4.2345)).isFalse();
+    assertThat(isConditionMatch(4.2345, LT, 3.0)).isFalse();
   }
 
   @Test
   public void testGetVariablesOfConstantCondition_shouldReturnZeroVariables() {
-    Condition condition = new BasicCondition(Constant.of(3.0), GREATER_THAN, Constant.of(1.0));
+    Condition condition = new BasicCondition(Constant.of(3.0), GT, Constant.of(1.0));
     assertThat(condition.getVariables()).hasSize(0);
   }
 
   @Test
   public void testGetVariablesOfVariableCondition_shouldReturnAllVariables() {
-    Condition condition = new BasicCondition(PRICE_CLOSE, GREATER_THAN, PRICE_OPEN);
+    Condition condition = new BasicCondition(PRICE_CLOSE, GT, PRICE_OPEN);
     assertThat(condition.getVariables()).containsOnly(PRICE_OPEN, PRICE_CLOSE);
   }
 
   @Test
   public void testEqualsWithSameObjects_shouldReturnEqual() {
-    assertThat(new BasicCondition(PRICE_CLOSE, GREATER_THAN, PRICE_OPEN))
-        .isEqualTo(new BasicCondition(PRICE_CLOSE, GREATER_THAN, PRICE_OPEN));
-    assertThat(new BasicCondition(PRICE_CLOSE, EQUALS, Constant.of(100)))
-        .isEqualTo(new BasicCondition(PRICE_CLOSE, EQUALS, Constant.of(100)));
-    assertThat(new BasicCondition(Constant.of(555), LESS_THAN, Constant.of(100)))
-        .isEqualTo(new BasicCondition(Constant.of(555), LESS_THAN, Constant.of(100)));
+    assertThat(new BasicCondition(PRICE_CLOSE, GT, PRICE_OPEN))
+        .isEqualTo(new BasicCondition(PRICE_CLOSE, GT, PRICE_OPEN));
+    assertThat(new BasicCondition(PRICE_CLOSE, EQ, Constant.of(100)))
+        .isEqualTo(new BasicCondition(PRICE_CLOSE, EQ, Constant.of(100)));
+    assertThat(new BasicCondition(Constant.of(555), LT, Constant.of(100)))
+        .isEqualTo(new BasicCondition(Constant.of(555), LT, Constant.of(100)));
   }
 
   @Test
   public void testEqualsWithDiffObjects_shouldReturnNotEqual() {
-    assertThat(new BasicCondition(PRICE_CLOSE, GREATER_THAN, PRICE_OPEN))
-        .isNotEqualTo(new BasicCondition(PRICE_CLOSE, GREATER_THAN, PRICE_CLOSE));
-    assertThat(new BasicCondition(PRICE_CLOSE, EQUALS, Constant.of(100)))
-        .isNotEqualTo(new BasicCondition(PRICE_CLOSE, EQUALS, Constant.of(101)));
-    assertThat(new BasicCondition(Constant.of(555), LESS_THAN, Constant.of(100)))
-        .isNotEqualTo(new BasicCondition(Constant.of(444), LESS_THAN, Constant.of(100)));
+    assertThat(new BasicCondition(PRICE_CLOSE, GT, PRICE_OPEN))
+        .isNotEqualTo(new BasicCondition(PRICE_CLOSE, GT, PRICE_CLOSE));
+    assertThat(new BasicCondition(PRICE_CLOSE, EQ, Constant.of(100)))
+        .isNotEqualTo(new BasicCondition(PRICE_CLOSE, EQ, Constant.of(101)));
+    assertThat(new BasicCondition(Constant.of(555), LT, Constant.of(100)))
+        .isNotEqualTo(new BasicCondition(Constant.of(444), LT, Constant.of(100)));
   }
 
   @Test
   public void testHashCode_shouldReturnDiffHashCodesForDiffObjects() {
     Set<BasicCondition> set = Sets.newHashSet();
-    set.add(new BasicCondition(PRICE_CLOSE, GREATER_THAN, PRICE_OPEN));
-    set.add(new BasicCondition(PRICE_CLOSE, GREATER_THAN, PRICE_OPEN)); // Add duplicate
-    set.add(new BasicCondition(PRICE_CLOSE, EQUALS, Constant.of(100)));
-    set.add(new BasicCondition(Constant.of(555), LESS_THAN, Constant.of(100)));
-    set.add(new BasicCondition(Constant.of(555), LESS_THAN, Constant.of(100))); // Add duplicate
+    set.add(new BasicCondition(PRICE_CLOSE, GT, PRICE_OPEN));
+    set.add(new BasicCondition(PRICE_CLOSE, GT, PRICE_OPEN)); // Add duplicate
+    set.add(new BasicCondition(PRICE_CLOSE, EQ, Constant.of(100)));
+    set.add(new BasicCondition(Constant.of(555), LT, Constant.of(100)));
+    set.add(new BasicCondition(Constant.of(555), LT, Constant.of(100))); // Add duplicate
 
     assertThat(set).hasSize(3);
   }
 
   @Test
   public void testSerializeDeserialize_shouldReturnSameObject() throws IOException {
-    Condition condition = new BasicCondition(Constant.of(3.0), GREATER_THAN, Constant.of(1.0));
+    Condition condition = new BasicCondition(Constant.of(3.0), GT, Constant.of(1.0));
     String serialized = om.writeValueAsString(condition);
     Condition deserialised = om.readValue(serialized, Condition.class);
     assertThat(deserialised).isEqualTo(condition);

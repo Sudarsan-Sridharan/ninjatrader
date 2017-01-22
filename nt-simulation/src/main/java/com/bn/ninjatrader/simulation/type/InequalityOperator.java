@@ -4,35 +4,35 @@ package com.bn.ninjatrader.simulation.type;
  * Created by Brad on 8/2/16.
  */
 public enum InequalityOperator {
-  EQUALS {
+  EQ {
     @Override
     public boolean isMatch(double lhsValue, double rhsValue) {
       return lhsValue == rhsValue;
     }
   },
 
-  GREATER_THAN {
+  GT {
     @Override
     public boolean isMatch(double lhsValue, double rhsValue) {
       return lhsValue > rhsValue;
     }
   },
 
-  GREATER_THAN_EQUALS {
+  GTE {
     @Override
     public boolean isMatch(double lhsValue, double rhsValue) {
       return lhsValue >= rhsValue;
     }
   },
 
-  LESS_THAN {
+  LT {
     @Override
     public boolean isMatch(double lhsValue, double rhsValue) {
       return lhsValue < rhsValue;
     }
   },
 
-  LESS_THAN_OR_EQUALS {
+  LTE {
     @Override
     public boolean isMatch(double lhsValue, double rhsValue) {
       return lhsValue <= rhsValue;

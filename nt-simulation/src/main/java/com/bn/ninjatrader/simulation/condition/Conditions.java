@@ -33,35 +33,35 @@ public class Conditions {
     return eq(lhs, Operations.of(rhs));
   }
   public static Condition eq(Operation lhs, Operation rhs) {
-    return condition(lhs, InequalityOperator.EQUALS, rhs);
+    return condition(lhs, InequalityOperator.EQ, rhs);
   }
 
   public static Condition gt(Operation lhs, double rhs) {
     return gt(lhs, Operations.of(rhs));
   }
   public static Condition gt(Operation lhs, Operation rhs) {
-    return condition(lhs, InequalityOperator.GREATER_THAN, rhs);
+    return condition(lhs, InequalityOperator.GT, rhs);
   }
 
   public static Condition gte(Operation lhs, double rhs) {
     return gte(lhs, Operations.of(rhs));
   }
   public static Condition gte(Operation lhs, Operation rhs) {
-    return condition(lhs, InequalityOperator.GREATER_THAN_EQUALS, rhs);
+    return condition(lhs, InequalityOperator.GTE, rhs);
   }
 
   public static Condition lt(Operation lhs, double rhs) {
     return lt(lhs, Operations.of(rhs));
   }
   public static Condition lt(Operation lhs, Operation rhs) {
-    return condition(lhs, InequalityOperator.LESS_THAN, rhs);
+    return condition(lhs, InequalityOperator.LT, rhs);
   }
 
   public static Condition lte(Operation lhs, double rhs) {
     return lte(lhs, Constant.of(rhs));
   }
   public static Condition lte(Operation lhs, Operation rhs) {
-    return condition(lhs, InequalityOperator.LESS_THAN_OR_EQUALS, rhs);
+    return condition(lhs, InequalityOperator.LTE, rhs);
   }
 
   private static Condition condition(Operation lhs, InequalityOperator operator, Operation rhs) {
