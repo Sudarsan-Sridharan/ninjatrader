@@ -4,6 +4,7 @@ import com.bn.ninjatrader.simulation.condition.Condition;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.simulation.operation.Variable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
@@ -61,6 +62,7 @@ public class ConditionalStatment implements Statement {
         .toString();
   }
 
+  @JsonIgnore
   @Override
   public Set<Variable> getVariables() {
     return condition.getVariables();

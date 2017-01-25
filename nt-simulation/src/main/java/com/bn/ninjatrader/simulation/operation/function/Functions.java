@@ -1,6 +1,5 @@
 package com.bn.ninjatrader.simulation.operation.function;
 
-import com.bn.ninjatrader.simulation.data.History;
 import com.bn.ninjatrader.simulation.operation.Operation;
 
 /**
@@ -10,9 +9,8 @@ public class Functions {
 
   private Functions() {}
 
-  public static HistoryFunction barsAgo(final History history,
-                                        final Operation operation,
+  public static HistoryFunction barsAgo(final Operation operation,
                                         final int numOfBarsAgo) {
-    return new HistoryFunction(history, operation, numOfBarsAgo);
+    return new HistoryFunction(operation, numOfBarsAgo);
   }
 }

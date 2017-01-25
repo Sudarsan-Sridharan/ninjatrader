@@ -13,21 +13,21 @@ public class AndCondition extends MultiCondition<AndCondition> {
     super();
   }
 
-  public AndCondition(Condition condition1, Condition condition2) {
+  public AndCondition(final Condition condition1, final Condition condition2) {
     super(condition1, condition2);
   }
 
-  public AndCondition(Condition condition1, Condition condition2, Condition ... moreConditions) {
+  public AndCondition(final Condition condition1, final Condition condition2, final Condition ... moreConditions) {
     super(condition1, condition2, moreConditions);
   }
 
   @Override
-  public boolean isMatch(BarData barData) {
+  public boolean isMatch(final BarData barData) {
     if (getConditions().isEmpty()) {
       return true;
     }
 
-    for (Condition condition : getConditions()) {
+    for (final Condition condition : getConditions()) {
       if (!condition.isMatch(barData)) {
         return false;
       }

@@ -29,7 +29,7 @@ public class PendingOrder {
 
   /**
    * Orders are ready to process if today >= submitted day + barsFromNow
-   * @param todaysBarData BarData of today.
+   * @param todaysBarData BarData withNBarsAgo today.
    * @return true if Order is ready for processing.
    */
   public boolean isReadyToProcess(final BarData todaysBarData) {

@@ -5,10 +5,8 @@ import com.bn.ninjatrader.simulation.operation.Operation;
 import com.bn.ninjatrader.simulation.operation.Variable;
 import com.bn.ninjatrader.simulation.type.InequalityOperator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import java.util.Set;
 
@@ -41,66 +39,37 @@ public class BasicCondition implements Condition {
   }
 
   @Override
-  public boolean isMatch(BarData barParameters) {
-    double lhsValue = lhsOperation.getValue(barParameters);
-    double rhsValue = rhsOperation.getValue(barParameters);
+  public boolean isMatch(final BarData barData) {
+    double lhsValue = lhsOperation.getValue(barData);
+    double rhsValue = rhsOperation.getValue(barData);
     return operator.isMatch(lhsValue, rhsValue);
   }
 
   @Override
   public Set<Variable> getVariables() {
-    Set<Variable> variables = lhsOperation.getVariables();
+    final Set<Variable> variables = lhsOperation.getVariables();
     variables.addAll(rhsOperation.getVariables());
     return variables;
   }
 
-  public Operation getLhsOperation() {
-    return lhsOperation;
-  }
-
-  public Operation getRhsOperation() {
-    return rhsOperation;
-  }
-
-  public InequalityOperator getOperator() {
-    return operator;
-  }
-
   @Override
   public String toString() {
-    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .append("lhs", lhsOperation)
-        .append("operator", operator)
-        .append("rhs", rhsOperation)
+    return MoreObjects.toStringHelper(this).add("lhs", lhsOperation).add("operator", operator).add("rhs", rhsOperation)
         .toString();
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (obj == null) { return false; }
-    if (!(obj instanceof BasicCondition)) {
-      return false;
-    }
+  public boolean equals(final Object obj) {
+    if (obj == null || !(obj instanceof BasicCondition)) { return false; }
     if (obj == this) { return true; }
-    if (obj.getClass() != getClass()) {
-      return false;
-    }
-
-    BasicCondition rhs = (BasicCondition) obj;
-
-    return new EqualsBuilder()
-        .append(lhsOperation, rhs.lhsOperation)
-        .append(rhsOperation, rhs.rhsOperation)
-        .append(operator, rhs.operator)
-        .isEquals();
+    final BasicCondition rhs = (BasicCondition) obj;
+    return Objects.equal(lhsOperation, rhs.lhsOperation)
+        && Objects.equal(rhsOperation, rhs.rhsOperation)
+        && Objects.equal(operator, rhs.operator);
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder()
-        .append(lhsOperation)
-        .append(rhsOperation)
-        .append(operator)
-        .toHashCode();
+    return Objects.hashCode(lhsOperation, rhsOperation, operator);
   }
 }

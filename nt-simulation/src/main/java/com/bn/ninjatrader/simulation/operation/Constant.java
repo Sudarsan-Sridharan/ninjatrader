@@ -2,10 +2,8 @@ package com.bn.ninjatrader.simulation.operation;
 
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import java.util.Collections;
 import java.util.Set;
@@ -42,33 +40,19 @@ public class Constant implements Operation {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .append("value", value)
-        .build();
+    return MoreObjects.toStringHelper(this).add("value", value).toString();
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder()
-        .append(value)
-        .build();
+    return Objects.hashCode(value);
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (obj == null) { return false; }
-    if (!(obj instanceof Constant)) {
-      return false;
-    }
+  public boolean equals(final Object obj) {
+    if (obj == null || !(obj instanceof Constant)) { return false; }
     if (obj == this) { return true; }
-    if (obj.getClass() != getClass()) {
-      return false;
-    }
-
-    Constant rhs = (Constant) obj;
-
-    return new EqualsBuilder()
-        .append(value, rhs.value)
-        .build();
+    final Constant rhs = (Constant) obj;
+    return Objects.equal(value, rhs.value);
   }
 }

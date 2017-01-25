@@ -13,11 +13,11 @@ public class OrCondition extends MultiCondition<OrCondition> {
     super();
   }
 
-  public OrCondition(Condition condition1, Condition condition2) {
+  public OrCondition(final Condition condition1, final Condition condition2) {
     super(condition1, condition2);
   }
 
-  public OrCondition(Condition condition1, Condition condition2, Condition ... moreConditions) {
+  public OrCondition(final Condition condition1, final Condition condition2, final Condition ... moreConditions) {
     super(condition1, condition2, moreConditions);
   }
 
@@ -32,7 +32,6 @@ public class OrCondition extends MultiCondition<OrCondition> {
         return true;
       }
     }
-
     return false;
   }
 

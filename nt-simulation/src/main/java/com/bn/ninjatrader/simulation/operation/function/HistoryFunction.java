@@ -1,7 +1,6 @@
 package com.bn.ninjatrader.simulation.operation.function;
 
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.data.History;
 import com.bn.ninjatrader.simulation.operation.Operation;
 import com.bn.ninjatrader.simulation.operation.Variable;
 
@@ -13,25 +12,26 @@ import java.util.Set;
  */
 public class HistoryFunction implements Operation {
 
-  private final History history;
+  public static final HistoryFunction withNBarsAgo(final Operation operation, final int numOfBarsAgo) {
+    return new HistoryFunction(operation, numOfBarsAgo);
+  }
+
   private final int numOfBarsAgo;
   private final Operation operation;
 
-  public HistoryFunction(final History history,
-                         final Operation operation,
+  public HistoryFunction(final Operation operation,
                          final int numOfBarsAgo) {
-    this.history = history;
     this.numOfBarsAgo = numOfBarsAgo;
     this.operation = operation;
   }
 
   @Override
   public double getValue(final BarData barData) {
-    final Optional<BarData> pastBarData = history.getNBarsAgo(numOfBarsAgo);
+    final Optional<BarData> pastBarData = barData.getHistory().getNBarsAgo(numOfBarsAgo);
     if (pastBarData.isPresent()) {
       return operation.getValue(pastBarData.get());
     }
-    return 0;
+    return Double.NaN;
   }
 
   @Override

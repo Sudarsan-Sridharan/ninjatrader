@@ -8,6 +8,7 @@ import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.simulation.operation.Variable;
 import com.bn.ninjatrader.simulation.order.MarketTime;
 import com.bn.ninjatrader.simulation.order.Order;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
@@ -54,6 +55,7 @@ public class BuyOrderStatement implements Statement {
     }
   }
 
+  @JsonIgnore
   @Override
   public Set<Variable> getVariables() {
     return Collections.emptySet();

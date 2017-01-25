@@ -12,30 +12,30 @@ import org.slf4j.LoggerFactory;
 public enum Operator {
   PLUS {
     @Override
-    public double exec(Operation lhs, Operation rhs, BarData barData) {
+    public double exec(final Operation lhs, final Operation rhs, final BarData barData) {
       return NumUtil.plus(lhs.getValue(barData), rhs.getValue(barData));
     }
   },
   MINUS {
     @Override
-    public double exec(Operation lhs, Operation rhs, BarData barData) {
+    public double exec(final Operation lhs, final Operation rhs, final BarData barData) {
       return NumUtil.minus(lhs.getValue(barData), rhs.getValue(barData));
     }
   },
   MULTIPLY {
     @Override
-    public double exec(Operation lhs, Operation rhs, BarData barData) {
+    public double exec(final Operation lhs, final Operation rhs, final BarData barData) {
       return NumUtil.multiply(lhs.getValue(barData), rhs.getValue(barData));
     }
   },
   DIVIDE {
     @Override
-    public double exec(Operation lhs, Operation rhs, BarData barData) {
+    public double exec(final Operation lhs, final Operation rhs, final BarData barData) {
       return NumUtil.divide(lhs.getValue(barData), rhs.getValue(barData));
     }
   };
 
   private static final Logger log = LoggerFactory.getLogger(Operator.class);
 
-  public abstract double exec(Operation lhs, Operation rhs, BarData barData);
+  public abstract double exec(final Operation lhs, final Operation rhs, final BarData barData);
 }

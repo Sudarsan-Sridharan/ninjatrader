@@ -19,7 +19,7 @@ import java.util.Set;
 @JsonSubTypes({
     @JsonSubTypes.Type(value = BuyOrderStatement.class, name = "buy"),
     @JsonSubTypes.Type(value = SellOrderStatement.class, name = "sell"),
-    @JsonSubTypes.Type(value = ConditionalStatment.class, name = "condition"),
+    @JsonSubTypes.Type(value = ConditionalStatment.class, name = "cond"),
     @JsonSubTypes.Type(value = EmptyStatement.class, name = "empty")
 })
 public interface Statement {

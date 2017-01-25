@@ -17,17 +17,17 @@ public class ArithmeticOperation implements Operation {
 
   private Operation operation;
 
-  public ArithmeticOperation(Operation lhs) {
+  public ArithmeticOperation(final Operation lhs) {
     this.operation = lhs;
   }
 
-  public ArithmeticOperation(double constant) {
+  public ArithmeticOperation(final double constant) {
     operation = Constant.of(constant);
   }
 
   @Override
-  public double getValue(BarData barParameters) {
-    return operation.getValue(barParameters);
+  public double getValue(final BarData barData) {
+    return operation.getValue(barData);
   }
 
   @Override
@@ -35,35 +35,35 @@ public class ArithmeticOperation implements Operation {
     return operation.getVariables();
   }
 
-  public ArithmeticOperation plus(Operation rhs) {
+  public ArithmeticOperation plus(final Operation rhs) {
     return basicOperation(PLUS, rhs);
   }
 
-  public ArithmeticOperation plus(double rhs) {
+  public ArithmeticOperation plus(final double rhs) {
     return basicOperation(PLUS, Constant.of(rhs));
   }
 
-  public ArithmeticOperation minus(Operation rhs) {
+  public ArithmeticOperation minus(final Operation rhs) {
     return basicOperation(MINUS, rhs);
   }
 
-  public ArithmeticOperation minus(double rhs) {
+  public ArithmeticOperation minus(final double rhs) {
     return basicOperation(MINUS, Constant.of(rhs));
   }
 
-  public ArithmeticOperation mult(Operation rhs) {
+  public ArithmeticOperation mult(final Operation rhs) {
     return basicOperation(MULTIPLY, rhs);
   }
 
-  public ArithmeticOperation mult(double rhs) {
+  public ArithmeticOperation mult(final double rhs) {
     return basicOperation(MULTIPLY, Constant.of(rhs));
   }
 
-  public ArithmeticOperation div(Operation rhs) {
+  public ArithmeticOperation div(final Operation rhs) {
     return basicOperation(DIVIDE, rhs);
   }
 
-  public ArithmeticOperation div(double rhs) {
+  public ArithmeticOperation div(final double rhs) {
     return basicOperation(DIVIDE, Constant.of(rhs));
   }
 

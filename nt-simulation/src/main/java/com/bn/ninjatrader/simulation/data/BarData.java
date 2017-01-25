@@ -15,14 +15,16 @@ public class BarData {
     return new Builder();
   }
 
-  private int index;
-  private final DataMap dataMap = new DataMap();
-  private Price price;
+  private final int index;
+  private final DataMap dataMap;
+  private final Price price;
+  private final History history;
 
-  private BarData(final int index, final Price price, final DataMap dataMap) {
+  private BarData(final int index, final Price price, final DataMap dataMap, final History history) {
     this.index = index;
     this.price = price;
-    this.dataMap.putAll(dataMap);
+    this.dataMap = dataMap;
+    this.history = history;
   }
 
   public Double get(final Variable variable) {
@@ -37,12 +39,13 @@ public class BarData {
     return price;
   }
 
+  public History getHistory() {
+    return history;
+  }
+
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("index", index)
-        .add("price", price)
-        .add("dataMap", dataMap)
+    return MoreObjects.toStringHelper(this).add("index", index).add("price", price).add("dataMap", dataMap)
         .toString();
   }
 
@@ -53,6 +56,7 @@ public class BarData {
     private int index;
     private DataMap dataMap = new DataMap();
     private Price price;
+    private History history;
 
     public Builder index(final int index) {
       this.index = index;
@@ -70,8 +74,12 @@ public class BarData {
       this.dataMap.put(variable, value);
       return this;
     }
+    public Builder history(final History history) {
+      this.history = history;
+      return this;
+    }
     public BarData build() {
-      return new BarData(index, price, dataMap);
+      return new BarData(index, price, dataMap, history);
     }
   }
 }
