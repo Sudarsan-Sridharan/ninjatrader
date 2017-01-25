@@ -3,6 +3,9 @@ package com.bn.ninjatrader.simulation.operation.function;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.operation.Operation;
 import com.bn.ninjatrader.simulation.operation.Variable;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import java.util.Optional;
 import java.util.Set;
@@ -16,11 +19,14 @@ public class HistoryFunction implements Operation {
     return new HistoryFunction(operation, numOfBarsAgo);
   }
 
-  private final int numOfBarsAgo;
+  @JsonProperty("operation")
   private final Operation operation;
 
-  public HistoryFunction(final Operation operation,
-                         final int numOfBarsAgo) {
+  @JsonProperty("numOfBarsAgo")
+  private final int numOfBarsAgo;
+
+  public HistoryFunction(@JsonProperty("operation") final Operation operation,
+                         @JsonProperty("numOfBarsAgo") final int numOfBarsAgo) {
     this.numOfBarsAgo = numOfBarsAgo;
     this.operation = operation;
   }
@@ -37,5 +43,28 @@ public class HistoryFunction implements Operation {
   @Override
   public Set<Variable> getVariables() {
     return operation.getVariables();
+  }
+
+  @Override
+  public boolean equals(final Object obj) {
+    if (obj == null || !(obj instanceof HistoryFunction)) {
+      return false;
+    }
+    if (obj == this) {
+      return true;
+    }
+    final HistoryFunction rhs = (HistoryFunction) obj;
+    return Objects.equal(operation, rhs.operation)
+        && Objects.equal(numOfBarsAgo, rhs.numOfBarsAgo);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(operation, numOfBarsAgo);
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this).add("operation", operation).add("numOfBarsAgo", numOfBarsAgo).toString();
   }
 }
