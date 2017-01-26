@@ -2,8 +2,7 @@ package com.bn.ninjatrader.simulation.core;
 
 import com.bn.ninjatrader.common.util.NtLocalDateDeserializer;
 import com.bn.ninjatrader.common.util.NtLocalDateSerializer;
-import com.bn.ninjatrader.simulation.data.DataType;
-import com.bn.ninjatrader.simulation.operation.Variable;
+import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.statement.Statement;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -56,7 +55,7 @@ public class SimulationParams {
   private final Set<Variable> variables = Sets.newHashSet();
 
   @JsonIgnore
-  private final Set<DataType> dataTypes = Sets.newHashSet();
+  private final Set<String> dataTypes = Sets.newHashSet();
 
   public SimulationParams() {}
 
@@ -154,7 +153,7 @@ public class SimulationParams {
   }
 
   @JsonIgnore
-  public Set<DataType> getDataTypes() {
+  public Set<String> getDataTypes() {
     return dataTypes;
   }
 

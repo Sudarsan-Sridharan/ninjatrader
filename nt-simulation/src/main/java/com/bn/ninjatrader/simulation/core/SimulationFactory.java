@@ -7,7 +7,7 @@ import com.bn.ninjatrader.simulation.account.Account;
 import com.bn.ninjatrader.simulation.broker.Broker;
 import com.bn.ninjatrader.simulation.broker.BrokerFactory;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
-import com.bn.ninjatrader.simulation.data.DataType;
+import com.bn.ninjatrader.simulation.model.DataType;
 import com.bn.ninjatrader.simulation.data.History;
 import com.bn.ninjatrader.simulation.data.SimulationData;
 import com.bn.ninjatrader.simulation.data.provider.DataProvider;
@@ -67,7 +67,7 @@ public class SimulationFactory {
   private void addSimulationData(final Simulation simulation,
                                  final int requiredDataSize) {
     final SimulationParams params = simulation.getSimulationParams();
-    final Set<DataType> dataTypes = params.getDataTypes();
+    final Set<String> dataTypes = params.getDataTypes();
     for (final DataProvider dataFinder : dataFinders) {
       if (!Collections.disjoint(dataFinder.getSupportedDataTypes(), dataTypes)) {
         final List<SimulationData> dataList = dataFinder.find(params, requiredDataSize);

@@ -2,7 +2,7 @@ package com.bn.ninjatrader.simulation.statement;
 
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.World;
-import com.bn.ninjatrader.simulation.operation.Variable;
+import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.base.MoreObjects;

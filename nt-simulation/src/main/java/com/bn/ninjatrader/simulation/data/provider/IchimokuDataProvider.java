@@ -6,7 +6,6 @@ import com.bn.ninjatrader.model.dao.IchimokuDao;
 import com.bn.ninjatrader.simulation.adaptor.IchimokuDataMapAdaptor;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
 import com.bn.ninjatrader.simulation.data.SimulationData;
-import com.bn.ninjatrader.simulation.data.DataType;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -15,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.bn.ninjatrader.model.request.FindRequest.findSymbol;
-import static com.bn.ninjatrader.simulation.data.DataType.*;
+import static com.bn.ninjatrader.simulation.model.DataType.*;
 
 /**
  * Created by Brad on 8/20/16.
@@ -23,7 +22,7 @@ import static com.bn.ninjatrader.simulation.data.DataType.*;
 @Singleton
 public class IchimokuDataProvider implements DataProvider<Ichimoku> {
 
-  private static final List<DataType> SUPPORTED_DATA_TYPES = Collections.unmodifiableList(
+  private static final List<String> SUPPORTED_DATA_TYPES = Collections.unmodifiableList(
       Lists.newArrayList(CHIKOU, TENKAN, KIJUN, SENKOU_A, SENKOU_B));
 
   private final IchimokuDao ichimokuDao;
@@ -46,7 +45,7 @@ public class IchimokuDataProvider implements DataProvider<Ichimoku> {
   }
 
   @Override
-  public List<DataType> getSupportedDataTypes() {
+  public List<String> getSupportedDataTypes() {
     return SUPPORTED_DATA_TYPES;
   }
 }

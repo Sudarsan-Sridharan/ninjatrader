@@ -2,8 +2,8 @@ package com.bn.ninjatrader.simulation.adaptor;
 
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.simulation.data.DataMap;
-import com.bn.ninjatrader.simulation.data.DataType;
-import com.bn.ninjatrader.simulation.operation.Variable;
+import com.bn.ninjatrader.simulation.model.DataType;
+import com.bn.ninjatrader.logical.expression.operation.Variable;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
@@ -34,7 +34,7 @@ public class AbstractPeriodDataMapAdaptorTest {
     }
 
     @Override
-    public DataType getDataType() {
+    public String getDataType() {
       return DataType.PRICE_CLOSE;
     }
   }

@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.adaptor;
 
-import com.bn.ninjatrader.simulation.data.DataType;
+import com.bn.ninjatrader.simulation.model.DataType;
 
 /**
  * Created by Brad on 8/17/16.
@@ -16,7 +16,7 @@ public class RSIDataMapAdaptor extends AbstractPeriodDataMapAdaptor {
   }
 
   @Override
-  public DataType getDataType() {
+  public String getDataType() {
     return DataType.RSI;
   }
 }

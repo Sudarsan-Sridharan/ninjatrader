@@ -8,17 +8,18 @@
     <version>1.0-SNAPSHOT</version>
 
     <modules>
-        <module>nt-simulation</module>
+        <module>nt-batch</module>
         <module>nt-calculator</module>
         <module>nt-common</module>
         <module>nt-data-import</module>
+        <module>nt-logical-expression</module>
         <module>nt-model</module>
         <module>nt-server</module>
         <module>nt-process</module>
         <module>nt-service</module>
+        <module>nt-simulation</module>
         <module>nt-thirdparty</module>
-    <module>nt-batch</module>
-  </modules>
+    </modules>
 
     <properties>
         <bom.version>1.0-SNAPSHOT</bom.version>
@@ -46,6 +47,11 @@
             <dependency>
                 <groupId>com.beachninja</groupId>
                 <artifactId>nt-data-import</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.beachninja</groupId>
+                <artifactId>nt-logical-expression</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.data;
 
-import com.bn.ninjatrader.simulation.operation.Variable;
+import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;

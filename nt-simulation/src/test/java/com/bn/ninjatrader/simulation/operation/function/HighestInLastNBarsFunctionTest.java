@@ -4,7 +4,7 @@ import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.History;
-import com.bn.ninjatrader.simulation.operation.Operation;
+import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;

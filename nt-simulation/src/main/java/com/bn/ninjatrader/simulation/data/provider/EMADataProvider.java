@@ -6,9 +6,9 @@ import com.bn.ninjatrader.model.dao.EMADao;
 import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.simulation.adaptor.EMADataMapAdaptor;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
-import com.bn.ninjatrader.simulation.data.DataType;
+import com.bn.ninjatrader.simulation.model.DataType;
 import com.bn.ninjatrader.simulation.data.SimulationData;
-import com.bn.ninjatrader.simulation.operation.Variable;
+import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -30,7 +30,7 @@ public class EMADataProvider implements DataProvider<Value> {
 
   private static final Logger LOG = LoggerFactory.getLogger(EMADataProvider.class);
 
-  private static final List<DataType> SUPPORTED_DATA_TYPES = Lists.newArrayList(DataType.EMA);
+  private static final List<String> SUPPORTED_DATA_TYPES = Lists.newArrayList(DataType.EMA);
 
   @Inject
   private EMADao emaDao;
@@ -54,7 +54,7 @@ public class EMADataProvider implements DataProvider<Value> {
   }
 
   @Override
-  public List<DataType> getSupportedDataTypes() {
+  public List<String> getSupportedDataTypes() {
     return SUPPORTED_DATA_TYPES;
   }
 

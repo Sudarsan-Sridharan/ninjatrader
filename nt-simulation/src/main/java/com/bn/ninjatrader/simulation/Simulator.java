@@ -4,7 +4,7 @@ import com.bn.ninjatrader.calculator.guice.NtCalculatorModule;
 import com.bn.ninjatrader.common.data.Report;
 import com.bn.ninjatrader.model.dao.ReportDao;
 import com.bn.ninjatrader.model.guice.NtModelModule;
-import com.bn.ninjatrader.simulation.condition.Conditions;
+import com.bn.ninjatrader.logical.expression.condition.Conditions;
 import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
@@ -12,7 +12,7 @@ import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
 import com.bn.ninjatrader.simulation.order.MarketTime;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.statement.BuyOrderStatement;
-import com.bn.ninjatrader.simulation.statement.ConditionalStatment;
+import com.bn.ninjatrader.simulation.statement.ConditionalStatement;
 import com.bn.ninjatrader.simulation.statement.SellOrderStatement;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -23,8 +23,8 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 
-import static com.bn.ninjatrader.simulation.condition.Conditions.gt;
-import static com.bn.ninjatrader.simulation.condition.Conditions.lt;
+import static com.bn.ninjatrader.logical.expression.condition.Conditions.gt;
+import static com.bn.ninjatrader.logical.expression.condition.Conditions.lt;
 import static com.bn.ninjatrader.simulation.operation.Variables.EMA;
 import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_CLOSE;
 
@@ -74,7 +74,7 @@ public class Simulator {
         .startingCash(100000)
 
         // Buy Condition
-        .addStatement(ConditionalStatment.builder()
+        .addStatement(ConditionalStatement.builder()
             .condition(Conditions.create()
                 .add(gt(PRICE_CLOSE, EMA.withPeriod(18)))
                 .add(gt(EMA.withPeriod(18), EMA.withPeriod(50)))
@@ -84,7 +84,7 @@ public class Simulator {
             .build())
 
         // Sell Condition
-        .addStatement(ConditionalStatment.builder()
+        .addStatement(ConditionalStatement.builder()
             .condition(Conditions.create()
                 .add(lt(PRICE_CLOSE, EMA.withPeriod(18)))
                 .add(lt(EMA.withPeriod(18), EMA.withPeriod(50))))

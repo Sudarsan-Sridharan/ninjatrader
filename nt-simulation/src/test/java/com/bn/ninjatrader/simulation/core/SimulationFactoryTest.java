@@ -3,12 +3,12 @@ package com.bn.ninjatrader.simulation.core;
 import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.simulation.broker.BrokerFactory;
-import com.bn.ninjatrader.simulation.condition.Conditions;
+import com.bn.ninjatrader.logical.expression.condition.Conditions;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
-import com.bn.ninjatrader.simulation.data.DataType;
+import com.bn.ninjatrader.simulation.model.DataType;
 import com.bn.ninjatrader.simulation.data.provider.DataProvider;
 import com.bn.ninjatrader.simulation.statement.BuyOrderStatement;
-import com.bn.ninjatrader.simulation.statement.ConditionalStatment;
+import com.bn.ninjatrader.simulation.statement.ConditionalStatement;
 import com.bn.ninjatrader.simulation.statement.SellOrderStatement;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,10 +51,10 @@ public class SimulationFactoryTest {
 
     params = SimulationParams.builder().symbol("MEG").from(from).to(to)
         .startingCash(100000)
-        .addStatement(ConditionalStatment.builder()
+        .addStatement(ConditionalStatement.builder()
             .condition(Conditions.gt(PRICE_CLOSE, 30))
             .then(BuyOrderStatement.builder().build()).build())
-        .addStatement(ConditionalStatment.builder()
+        .addStatement(ConditionalStatement.builder()
             .condition(Conditions.gt(PRICE_CLOSE, 50))
             .then(SellOrderStatement.builder().build()).build())
         .build();

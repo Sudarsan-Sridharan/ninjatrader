@@ -1,24 +1,18 @@
 package com.bn.ninjatrader.simulation.statement;
 
-import com.bn.ninjatrader.simulation.condition.FalseCondition;
-import com.bn.ninjatrader.simulation.condition.TrueCondition;
+import com.bn.ninjatrader.logical.expression.condition.FalseCondition;
+import com.bn.ninjatrader.logical.expression.condition.TrueCondition;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.World;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * @author bradwee2000@gmail.com
  */
 public class ConditionalStatementTest {
-
-  private final ConditionalStatment trueStatement = ConditionalStatment.builder()
-      .condition(TrueCondition.instance())
-      .then(EmptyStatement.instance()).otherwise(EmptyStatement.instance()).build();
 
   private World world;
   private BarData barData;
@@ -35,7 +29,7 @@ public class ConditionalStatementTest {
 
   @Test
   public void testRunWithTrueCondition_shouldRunThenStatement() {
-    final ConditionalStatment trueStatement = ConditionalStatment.builder()
+    final ConditionalStatement trueStatement = ConditionalStatement.builder()
         .condition(TrueCondition.instance())
         .then(thenStatement).otherwise(elseStatement).build();
 
@@ -47,7 +41,7 @@ public class ConditionalStatementTest {
 
   @Test
   public void testRunWithFalseCondition_shouldRunElseStatement() {
-    final ConditionalStatment trueStatement = ConditionalStatment.builder()
+    final ConditionalStatement trueStatement = ConditionalStatement.builder()
         .condition(FalseCondition.instance())
         .then(thenStatement).otherwise(elseStatement).build();
 

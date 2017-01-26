@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.simulation.data;
 
 import com.beust.jcommander.internal.Maps;
-import com.bn.ninjatrader.simulation.operation.Variable;
+import com.bn.ninjatrader.logical.expression.operation.Variable;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

@@ -1,7 +1,8 @@
 package com.bn.ninjatrader.simulation.data;
 
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.simulation.operation.Variable;
+import com.bn.ninjatrader.logical.expression.model.Data;
+import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.google.common.base.MoreObjects;
 
 /**
@@ -10,7 +11,7 @@ import com.google.common.base.MoreObjects;
  *
  * Created by Brad on 8/2/16.
  */
-public class BarData {
+public class BarData implements Data {
   public static final Builder builder() {
     return new Builder();
   }

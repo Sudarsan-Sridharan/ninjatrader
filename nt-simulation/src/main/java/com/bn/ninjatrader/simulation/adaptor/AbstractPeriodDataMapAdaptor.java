@@ -1,9 +1,8 @@
 package com.bn.ninjatrader.simulation.adaptor;
 
 import com.bn.ninjatrader.common.data.Value;
-import com.bn.ninjatrader.simulation.operation.Variable;
+import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.data.DataMap;
-import com.bn.ninjatrader.simulation.data.DataType;
 
 /**
  * Created by Brad on 8/17/16.
@@ -23,5 +22,5 @@ public abstract class AbstractPeriodDataMapAdaptor implements DataMapAdaptor<Val
     return dataMap;
   }
 
-  public abstract DataType getDataType();
+  public abstract String getDataType();
 }

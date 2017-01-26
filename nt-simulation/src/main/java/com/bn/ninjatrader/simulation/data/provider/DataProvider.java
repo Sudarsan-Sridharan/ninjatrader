@@ -1,8 +1,7 @@
 package com.bn.ninjatrader.simulation.data.provider;
 
-import com.bn.ninjatrader.simulation.data.SimulationData;
-import com.bn.ninjatrader.simulation.data.DataType;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
+import com.bn.ninjatrader.simulation.data.SimulationData;
 
 import java.util.List;
 
@@ -11,7 +10,7 @@ import java.util.List;
  */
 public interface DataProvider<T> {
 
-  List<SimulationData<T>> find(SimulationParams params, int requiredDataSize);
+  List<SimulationData<T>> find(final SimulationParams params, final int requiredDataSize);
 
-  List<DataType> getSupportedDataTypes();
+  List<String> getSupportedDataTypes();
 }

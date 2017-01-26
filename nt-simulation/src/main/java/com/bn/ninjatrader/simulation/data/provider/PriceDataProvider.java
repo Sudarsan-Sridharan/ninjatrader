@@ -2,10 +2,9 @@ package com.bn.ninjatrader.simulation.data.provider;
 
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.simulation.adaptor.PriceDataMapAdaptor;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
 import com.bn.ninjatrader.simulation.data.SimulationData;
-import com.bn.ninjatrader.simulation.adaptor.PriceDataMapAdaptor;
-import com.bn.ninjatrader.simulation.data.DataType;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -14,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.bn.ninjatrader.model.request.FindRequest.findSymbol;
-import static com.bn.ninjatrader.simulation.data.DataType.*;
+import static com.bn.ninjatrader.simulation.model.DataType.*;
 
 /**
  * Created by Brad on 8/20/16.
@@ -22,7 +21,7 @@ import static com.bn.ninjatrader.simulation.data.DataType.*;
 @Singleton
 public class PriceDataProvider implements DataProvider<Price> {
 
-  private static final List<DataType> SUPPORTED_DATA_TYPES = Collections.unmodifiableList(
+  private static final List<String> SUPPORTED_DATA_TYPES = Collections.unmodifiableList(
       Lists.newArrayList(PRICE_OPEN, PRICE_HIGH, PRICE_LOW, PRICE_CLOSE, VOLUME));
 
   private final PriceDao priceDao;
@@ -44,7 +43,7 @@ public class PriceDataProvider implements DataProvider<Price> {
   }
 
   @Override
-  public List<DataType> getSupportedDataTypes() {
+  public List<String> getSupportedDataTypes() {
     return SUPPORTED_DATA_TYPES;
   }
 }
