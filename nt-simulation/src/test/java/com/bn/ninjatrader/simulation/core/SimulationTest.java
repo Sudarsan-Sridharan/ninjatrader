@@ -60,7 +60,8 @@ public class SimulationTest {
 
     when(account.getBookkeeper()).thenReturn(bookkeeper);
     when(account.getCash()).thenReturn(100000d);
-    when(barDataFactory.createWithPriceAtIndex(any(Price.class), anyInt(), anyList())).thenReturn(bar1, bar2);
+    when(barDataFactory.createWithPriceAtIndex(any(Price.class), anyInt(), anyList(), any(History.class)))
+        .thenReturn(bar1, bar2);
 
     final World world = World.builder().account(account).broker(broker).prices(prices).history(history).build();
 
@@ -73,8 +74,8 @@ public class SimulationTest {
     simulation.play();
 
     // Should create bar data twice. One for each price.
-    verify(barDataFactory).createWithPriceAtIndex(price1, 0, Lists.newArrayList(simulationData));
-    verify(barDataFactory).createWithPriceAtIndex(price2, 1, Lists.newArrayList(simulationData));
+    verify(barDataFactory).createWithPriceAtIndex(price1, 0, Lists.newArrayList(simulationData), history);
+    verify(barDataFactory).createWithPriceAtIndex(price2, 1, Lists.newArrayList(simulationData), history);
   }
 
   @Test

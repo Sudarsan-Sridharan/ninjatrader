@@ -1,9 +1,9 @@
 package com.bn.ninjatrader.simulation.operation.function;
 
 import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.History;
-import com.bn.ninjatrader.simulation.operation.BarOperation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by Brad on 8/29/16.
  */
-public class HighestFunctionTest {
+public class HighestValueTest {
 
   private History history;
 
@@ -41,23 +41,23 @@ public class HighestFunctionTest {
 
   @Test
   public void testGetValue_shouldReturnHighestValueAmongNBars() {
-    assertThat(HighestFunction.of(PRICE_CLOSE, 1).getValue(bar1)).isEqualTo(1.0);
-    assertThat(HighestFunction.of(PRICE_CLOSE, 2).getValue(bar1)).isEqualTo(1.00001);
-    assertThat(HighestFunction.of(PRICE_CLOSE, 3).getValue(bar1)).isEqualTo(3);
+    assertThat(HighestValue.of(PRICE_CLOSE, 1).getValue(bar1)).isEqualTo(1.0);
+    assertThat(HighestValue.of(PRICE_CLOSE, 2).getValue(bar1)).isEqualTo(1.00001);
+    assertThat(HighestValue.of(PRICE_CLOSE, 3).getValue(bar1)).isEqualTo(3);
   }
 
   @Test
   public void testChangeNumOfBarsAgo_shoulrReturnNewObject() {
-    final HighestFunction function = HighestFunction.of(PRICE_CLOSE);
-    assertThat(function.withinNumOfBarsAgo(3)).isNotEqualTo(function);
-    assertThat(function.withinNumOfBarsAgo(10)).isEqualTo(HighestFunction.of(PRICE_CLOSE, 10));
+    final HighestValue function = HighestValue.of(PRICE_CLOSE);
+    assertThat(function.inNumOfBarsAgo(3)).isNotEqualTo(function);
+    assertThat(function.inNumOfBarsAgo(10)).isEqualTo(HighestValue.of(PRICE_CLOSE, 10));
   }
 
   @Test
   public void testSerializeDeserialize_shouldReturnSameObject() throws IOException {
     final ObjectMapper om = TestUtil.objectMapper();
-    final HighestFunction function = new HighestFunction(PRICE_CLOSE, 1);
+    final HighestValue function = new HighestValue(PRICE_CLOSE, 1);
     final String serialized = om.writeValueAsString(function);
-    assertThat(om.readValue(serialized, BarOperation.class)).isEqualTo(function);
+    assertThat(om.readValue(serialized, Operation.class)).isEqualTo(function);
   }
 }

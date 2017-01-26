@@ -148,13 +148,15 @@
         font-size: 14px;
     }
 
+    .ninjaChart .simulation path {
+        stroke-width:1px;
+        opacity:0.3
+    }
     .ninjaChart .simulation .sell {
         stroke:red;
-        stroke-width:1px;
     }
     .ninjaChart .simulation .buy {
         stroke:green;
-        stroke-width:1px;
     }
 </style>
 #end

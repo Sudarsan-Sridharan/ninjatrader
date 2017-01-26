@@ -67,7 +67,7 @@ public class Simulation {
   public SimulationReport play() {
     barIndex = 0;
     for (final Price price : priceList) {
-      final BarData barData = barDataFactory.createWithPriceAtIndex(price, barIndex, simulationDataList);
+      final BarData barData = barDataFactory.createWithPriceAtIndex(price, barIndex, simulationDataList, history);
       history.add(barData);
       processBar(barData);
       barIndex++;
@@ -92,7 +92,7 @@ public class Simulation {
     if (account.hasShares()) {
       int lastIndex = priceList.size() - 1;
       Price lastPrice = priceList.get(lastIndex);
-      BarData barData = barDataFactory.createWithPriceAtIndex(lastPrice, lastIndex, simulationDataList);
+      BarData barData = barDataFactory.createWithPriceAtIndex(lastPrice, lastIndex, simulationDataList, history);
       broker.submitOrder(Order.sell().date(lastPrice.getDate()).build(), barData);
       broker.processPendingOrders(barData);
     }

@@ -4,6 +4,7 @@ import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.simulation.adaptor.PriceDataMapAdaptor;
 import com.bn.ninjatrader.simulation.core.SimulationData;
+import com.bn.ninjatrader.simulation.model.History;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,10 +28,12 @@ public class BarDataFactoryTest {
 
   private PriceDataMapAdaptor priceDataMapAdaptor;
   private BarDataFactory barDataFactory;
+  private History history;
 
   @Before
   public void setup() {
     priceDataMapAdaptor = mock(PriceDataMapAdaptor.class);
+    history = mock(History.class);
 
     when(priceDataMapAdaptor.toDataMap(any(Price.class))).thenReturn(dataMap);
 
@@ -56,7 +59,8 @@ public class BarDataFactoryTest {
 
     when(simulationData.getDataAtIndex(0)).thenReturn(dataMap);
 
-    final BarData barData = barDataFactory.createWithPriceAtIndex(price, 0, Lists.newArrayList(simulationData));
+    final BarData barData =
+        barDataFactory.createWithPriceAtIndex(price, 0, Lists.newArrayList(simulationData), history);
     assertThat(barData.get(SMA.withPeriod(21))).isEqualTo(100.15);
   }
 }
