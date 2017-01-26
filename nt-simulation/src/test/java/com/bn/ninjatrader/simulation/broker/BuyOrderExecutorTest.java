@@ -9,26 +9,22 @@ import com.bn.ninjatrader.simulation.order.MarketTime;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Tested;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.time.LocalDate;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Brad on 8/18/16.
  */
 public class BuyOrderExecutorTest {
 
-  @Injectable
   private BoardLotTable boardLotTable;
-
-  @Tested
   private BuyOrderExecutor executor;
 
   private Account account;
@@ -38,14 +34,14 @@ public class BuyOrderExecutorTest {
   private final BoardLot boardLot = BoardLot.newLot().lot(1000).tick(0.1).build();
   private final Order order = Order.buy().cashAmount(100000).at(MarketTime.OPEN).build();
 
-  @BeforeMethod
+  @Before
   public void setup() {
     account = Account.withStartingCash(100000);
+    boardLotTable = mock(BoardLotTable.class);
+    
+    when(boardLotTable.getBoardLot(anyDouble())).thenReturn(boardLot);
 
-    new Expectations() {{
-      boardLotTable.getBoardLot(anyDouble);
-      result = boardLot;
-    }};
+    executor = new BuyOrderExecutor(boardLotTable);
   }
 
   @Test
@@ -57,16 +53,16 @@ public class BuyOrderExecutorTest {
   }
 
   private void assertValidTransaction(BuyTransaction transaction) {
-    assertNotNull(transaction);
-    assertEquals(transaction.getDate(), now);
-    assertEquals(transaction.getNumOfShares(), 100000);
-    assertEquals(transaction.getTransactionType(), TransactionType.BUY);
-    assertEquals(transaction.getValue(), 100000.0);
+    assertThat(transaction).isNotNull();
+    assertThat(transaction.getDate()).isEqualTo(now);
+    assertThat(transaction.getNumOfShares()).isEqualTo(100000);
+    assertThat(transaction.getTransactionType()).isEqualTo(TransactionType.BUY);
+    assertThat(transaction.getValue()).isEqualTo(100000.0);
   }
 
   private void assertBuyAddedToAccount() {
-    assertEquals(account.getCash(), 0d);
-    assertEquals(account.getNumOfShares(), 100000);
-    assertEquals(account.getAvgPrice(), 1.0);
+    assertThat(account.getCash()).isEqualTo(0d);
+    assertThat(account.getNumOfShares()).isEqualTo(100000);
+    assertThat(account.getAvgPrice()).isEqualTo(1.0);
   }
 }

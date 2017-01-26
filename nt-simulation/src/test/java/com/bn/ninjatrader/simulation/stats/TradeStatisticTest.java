@@ -2,10 +2,11 @@ package com.bn.ninjatrader.simulation.stats;
 
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.testng.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 /**
  * Created by Brad on 8/19/16.
@@ -17,46 +18,46 @@ public class TradeStatisticTest {
   private SellTransaction winningTrade = Transaction.sell().profit(100).build();
   private SellTransaction losingTrade = Transaction.sell().profit(-100).build();
 
-  @BeforeMethod
+  @Before
   public void setup() {
     tradeStatistic = new TradeStatistic();
   }
 
   @Test
   public void testOnCreate() {
-    assertEquals(tradeStatistic.getNumOfTrades(), 0);
-    assertEquals(tradeStatistic.getNumOfWins(), 0);
-    assertEquals(tradeStatistic.getNumOfLosses(), 0);
-    assertEquals(tradeStatistic.getWinPcnt(), Double.NaN);
-    assertEquals(tradeStatistic.getLossPcnt(), Double.NaN);
-    assertEquals(tradeStatistic.getWinLoseRatio(), Double.NaN);
-    assertEquals(tradeStatistic.getProfitPerTrade(), Double.NaN);
+    assertThat(tradeStatistic.getNumOfTrades()).isEqualTo(0);
+    assertThat(tradeStatistic.getNumOfWins()).isEqualTo(0);
+    assertThat(tradeStatistic.getNumOfLosses()).isEqualTo(0);
+    assertThat(tradeStatistic.getWinPcnt()).isEqualTo(Double.NaN);
+    assertThat(tradeStatistic.getLossPcnt()).isEqualTo(Double.NaN);
+    assertThat(tradeStatistic.getWinLoseRatio()).isEqualTo(Double.NaN);
+    assertThat(tradeStatistic.getProfitPerTrade()).isEqualTo(Double.NaN);
   }
 
   @Test
   public void testWinStats() {
     tradeStatistic.collectStats(winningTrade);
 
-    assertEquals(tradeStatistic.getNumOfTrades(), 1);
-    assertEquals(tradeStatistic.getNumOfWins(), 1);
-    assertEquals(tradeStatistic.getNumOfLosses(), 0);
-    assertEquals(tradeStatistic.getWinPcnt(), 100.0);
-    assertEquals(tradeStatistic.getLossPcnt(), 0.0);
-    assertEquals(tradeStatistic.getWinLoseRatio(), Double.POSITIVE_INFINITY);
-    assertEquals(tradeStatistic.getProfitPerTrade(), 100.0);
+    assertThat(tradeStatistic.getNumOfTrades()).isEqualTo(1);
+    assertThat(tradeStatistic.getNumOfWins()).isEqualTo(1);
+    assertThat(tradeStatistic.getNumOfLosses()).isEqualTo(0);
+    assertThat(tradeStatistic.getWinPcnt()).isEqualTo(100.0);
+    assertThat(tradeStatistic.getLossPcnt()).isEqualTo(0.0);
+    assertThat(tradeStatistic.getWinLoseRatio()).isEqualTo(Double.POSITIVE_INFINITY);
+    assertThat(tradeStatistic.getProfitPerTrade()).isEqualTo(100.0);
   }
 
   @Test
   public void testLossStats() {
     tradeStatistic.collectStats(losingTrade);
 
-    assertEquals(tradeStatistic.getNumOfTrades(), 1);
-    assertEquals(tradeStatistic.getNumOfWins(), 0);
-    assertEquals(tradeStatistic.getNumOfLosses(), 1);
-    assertEquals(tradeStatistic.getWinPcnt(), 0.0);
-    assertEquals(tradeStatistic.getLossPcnt(), 100.0);
-    assertEquals(tradeStatistic.getWinLoseRatio(), 0.0);
-    assertEquals(tradeStatistic.getProfitPerTrade(), -100.0);
+    assertThat(tradeStatistic.getNumOfTrades()).isEqualTo(1);
+    assertThat(tradeStatistic.getNumOfWins()).isEqualTo(0);
+    assertThat(tradeStatistic.getNumOfLosses()).isEqualTo(1);
+    assertThat(tradeStatistic.getWinPcnt()).isEqualTo(0.0);
+    assertThat(tradeStatistic.getLossPcnt()).isEqualTo(100.0);
+    assertThat(tradeStatistic.getWinLoseRatio()).isEqualTo(0.0);
+    assertThat(tradeStatistic.getProfitPerTrade()).isEqualTo(-100.0);
   }
 
   @Test
@@ -67,12 +68,12 @@ public class TradeStatisticTest {
     tradeStatistic.collectStats(losingTrade);
     tradeStatistic.collectStats(winningTrade);
 
-    assertEquals(tradeStatistic.getNumOfTrades(), 5);
-    assertEquals(tradeStatistic.getNumOfWins(), 3);
-    assertEquals(tradeStatistic.getNumOfLosses(), 2);
-    assertEquals(tradeStatistic.getWinPcnt(), 60.0);
-    assertEquals(tradeStatistic.getLossPcnt(), 40.0);
-    assertEquals(tradeStatistic.getWinLoseRatio(), 1.5);
-    assertEquals(tradeStatistic.getProfitPerTrade(), 20.0);
+    assertThat(tradeStatistic.getNumOfTrades()).isEqualTo(5);
+    assertThat(tradeStatistic.getNumOfWins()).isEqualTo(3);
+    assertThat(tradeStatistic.getNumOfLosses()).isEqualTo(2);
+    assertThat(tradeStatistic.getWinPcnt()).isEqualTo(60.0);
+    assertThat(tradeStatistic.getLossPcnt()).isEqualTo(40.0);
+    assertThat(tradeStatistic.getWinLoseRatio()).isEqualTo(1.5);
+    assertThat(tradeStatistic.getProfitPerTrade()).isEqualTo(20.0);
   }
 }

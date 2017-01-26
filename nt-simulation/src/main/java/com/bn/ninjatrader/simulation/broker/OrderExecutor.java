@@ -8,19 +8,19 @@ import com.bn.ninjatrader.simulation.account.Account;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by Brad on 8/13/16.
  */
-@Singleton
 public abstract class OrderExecutor {
 
-  @Inject
   private BoardLotTable boardLotTable;
+
+  public OrderExecutor(final BoardLotTable boardLotTable) {
+    this.boardLotTable = boardLotTable;
+  }
 
   public abstract Transaction execute(Account account, Order order, BarData barData);
 

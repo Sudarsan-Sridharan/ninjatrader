@@ -3,7 +3,7 @@ package com.bn.ninjatrader.logical.expression.operation;
 import com.bn.ninjatrader.logical.expression.model.Data;
 import org.junit.Test;
 
-import static com.bn.ninjatrader.logical.expression.model.Operator.*;
+import static com.bn.ninjatrader.logical.expression.operator.Operator.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

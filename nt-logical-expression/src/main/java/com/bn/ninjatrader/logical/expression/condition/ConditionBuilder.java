@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.logical.expression.condition;
 
-import com.bn.ninjatrader.logical.expression.model.InequalityOperator;
+import com.bn.ninjatrader.logical.expression.operator.InequalityOperator;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 
 import static com.google.common.base.Preconditions.checkNotNull;

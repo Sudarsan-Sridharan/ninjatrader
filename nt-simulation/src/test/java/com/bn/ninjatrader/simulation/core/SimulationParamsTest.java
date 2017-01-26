@@ -6,9 +6,9 @@ import com.bn.ninjatrader.simulation.model.DataType;
 import com.bn.ninjatrader.simulation.operation.Variables;
 import com.bn.ninjatrader.simulation.statement.ConditionalStatement;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
 
 import java.io.IOException;
 

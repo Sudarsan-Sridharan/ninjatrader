@@ -1,14 +1,14 @@
 package com.bn.ninjatrader.simulation.data.provider;
 
-import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.common.data.Ichimoku;
 import com.bn.ninjatrader.model.dao.IchimokuDao;
 import com.bn.ninjatrader.simulation.adaptor.IchimokuDataMapAdaptor;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
 import com.bn.ninjatrader.simulation.data.DataMap;
 import com.bn.ninjatrader.simulation.data.SimulationData;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import com.google.common.collect.Lists;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -34,7 +34,7 @@ public class IchimokuDataProviderTest {
   private IchimokuDao ichimokuDao;
   private IchimokuDataMapAdaptor dataMapAdaptor;
 
-  @BeforeMethod
+  @Before
   public void setup() {
     ichimokuDao = mock(IchimokuDao.class);
     dataMapAdaptor = mock(IchimokuDataMapAdaptor.class);

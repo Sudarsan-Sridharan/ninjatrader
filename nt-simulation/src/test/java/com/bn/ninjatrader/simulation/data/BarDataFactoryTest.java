@@ -1,9 +1,9 @@
 package com.bn.ninjatrader.simulation.data;
 
-import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.simulation.adaptor.PriceDataMapAdaptor;
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 

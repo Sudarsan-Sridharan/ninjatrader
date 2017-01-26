@@ -1,10 +1,9 @@
 package com.bn.ninjatrader.simulation.operation.function;
 
-import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.History;
-import com.bn.ninjatrader.logical.expression.operation.Operation;
+import com.bn.ninjatrader.simulation.operation.BarOperation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,11 +20,6 @@ import static org.mockito.Mockito.when;
  * Created by Brad on 8/29/16.
  */
 public class HighestInLastNBarsFunctionTest {
-
-  private final ObjectMapper om = TestUtil.objectMapper();
-  private final Price price1 = new Price(null, 1.1, 1.2, 1.3, 1.4, 10000);
-  private final Price price2 = new Price(null, 2.1, 2.2, 2.3, 2.4, 20000);
-  private final Price price3 = new Price(null, 3.1, 3.2, 3.3, 3.4, 30000);
 
   private History history;
 
@@ -61,8 +55,9 @@ public class HighestInLastNBarsFunctionTest {
 
   @Test
   public void testSerializeDeserialize_shouldReturnSameObject() throws IOException {
+    final ObjectMapper om = TestUtil.objectMapper();
     final HighestInNBarsFunction function = new HighestInNBarsFunction(PRICE_CLOSE, 1);
     final String serialized = om.writeValueAsString(function);
-    assertThat(om.readValue(serialized, Operation.class)).isEqualTo(function);
+    assertThat(om.readValue(serialized, BarOperation.class)).isEqualTo(function);
   }
 }

@@ -1,11 +1,13 @@
 package com.bn.ninjatrader.simulation.broker;
 
+import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.simulation.account.Account;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.order.BuyOrder;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,11 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class BuyOrderExecutor extends OrderExecutor {
   private static final Logger LOG = LoggerFactory.getLogger(BuyOrderExecutor.class);
+
+  @Inject
+  public BuyOrderExecutor(final BoardLotTable boardLotTable) {
+    super(boardLotTable);
+  }
 
   @Override
   public BuyTransaction execute(final Account account, final Order order, final BarData barData) {

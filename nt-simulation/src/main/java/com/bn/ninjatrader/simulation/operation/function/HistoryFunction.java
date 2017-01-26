@@ -3,6 +3,7 @@ package com.bn.ninjatrader.simulation.operation.function;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.bn.ninjatrader.simulation.operation.BarOperation;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
@@ -13,7 +14,7 @@ import java.util.Set;
 /**
  * Created by Brad on 8/29/16.
  */
-public class HistoryFunction implements Operation<BarData> {
+public class HistoryFunction implements BarOperation {
 
   public static final HistoryFunction withNBarsAgo(final Operation operation, final int numOfBarsAgo) {
     return new HistoryFunction(operation, numOfBarsAgo);

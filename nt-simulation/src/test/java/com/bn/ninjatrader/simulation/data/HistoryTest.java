@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.simulation.data;
 
 import com.bn.ninjatrader.common.data.Price;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.time.LocalDate;
 import java.util.Optional;

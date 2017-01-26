@@ -3,7 +3,7 @@ package com.bn.ninjatrader.simulation.operation.function;
 import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.History;
-import com.bn.ninjatrader.logical.expression.operation.Operation;
+import com.bn.ninjatrader.simulation.operation.BarOperation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.junit.Before;
@@ -12,9 +12,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Optional;
 
-import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_CLOSE;
-import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_HIGH;
-import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_OPEN;
+import static com.bn.ninjatrader.simulation.operation.Variables.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -59,7 +57,7 @@ public class HistoryFunctionTest {
     final ObjectMapper om = TestUtil.objectMapper();
     final HistoryFunction historyFunction = HistoryFunction.withNBarsAgo(PRICE_CLOSE, 100);
     final String json = om.writeValueAsString(historyFunction);
-    assertThat(om.readValue(json, Operation.class)).isEqualTo(historyFunction);
+    assertThat(om.readValue(json, BarOperation.class)).isEqualTo(historyFunction);
   }
 
   @Test

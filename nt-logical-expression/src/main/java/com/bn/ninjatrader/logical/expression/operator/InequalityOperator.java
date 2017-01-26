@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.logical.expression.model;
+package com.bn.ninjatrader.logical.expression.operator;
 
 /**
  * Created by Brad on 8/2/16.

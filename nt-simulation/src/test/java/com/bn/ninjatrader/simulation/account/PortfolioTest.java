@@ -2,12 +2,10 @@ package com.bn.ninjatrader.simulation.account;
 
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Brad on 8/23/16.
@@ -20,7 +18,7 @@ public class PortfolioTest {
 
   private Portfolio portfolio;
 
-  @BeforeMethod
+  @Before
   public void setup() {
     portfolio = new Portfolio();
   }
@@ -33,31 +31,31 @@ public class PortfolioTest {
   @Test
   public void testAdd() {
     portfolio.add(buy1);
-    assertFalse(portfolio.isEmpty());
+    assertThat(portfolio.isEmpty()).isFalse();
   }
 
   @Test
   public void testAvgPrice() {
     portfolio.add(buy1);
-    assertEquals(portfolio.getAvgPrice(), 1.0);
+    assertThat(portfolio.getAvgPrice()).isEqualTo(1.0);
 
     portfolio.add(buy2);
-    assertEquals(portfolio.getAvgPrice(), 1.5);
+    assertThat(portfolio.getAvgPrice()).isEqualTo(1.5);
 
     portfolio.add(buy3);
-    assertEquals(portfolio.getAvgPrice(), 1.571429);
+    assertThat(portfolio.getAvgPrice()).isEqualTo(1.571429);
   }
 
   @Test
   public void testNumOfShares() {
     portfolio.add(buy1);
-    assertEquals(portfolio.getTotalShares(), 10000);
+    assertThat(portfolio.getTotalShares()).isEqualTo(10000);
 
     portfolio.add(buy2);
-    assertEquals(portfolio.getTotalShares(), 20000);
+    assertThat(portfolio.getTotalShares()).isEqualTo(20000);
 
     portfolio.add(buy3);
-    assertEquals(portfolio.getTotalShares(), 21000);
+    assertThat(portfolio.getTotalShares()).isEqualTo(21000);
   }
 
   @Test
@@ -68,8 +66,8 @@ public class PortfolioTest {
   }
 
   private void assertPortfolioIsEmpty() {
-    assertTrue(portfolio.isEmpty());
-    assertEquals(portfolio.getAvgPrice(), 0.0);
-    assertEquals(portfolio.getTotalShares(), 0);
+    assertThat(portfolio.isEmpty()).isTrue();
+    assertThat(portfolio.getAvgPrice()).isEqualTo(0.0);
+    assertThat(portfolio.getTotalShares()).isEqualTo(0);
   }
 }

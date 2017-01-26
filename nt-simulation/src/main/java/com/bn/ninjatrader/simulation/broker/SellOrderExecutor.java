@@ -1,10 +1,12 @@
 package com.bn.ninjatrader.simulation.broker;
 
+import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.simulation.account.Account;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
@@ -12,6 +14,11 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class SellOrderExecutor extends OrderExecutor {
+
+  @Inject
+  public SellOrderExecutor(final BoardLotTable boardLotTable) {
+    super(boardLotTable);
+  }
 
   public SellTransaction execute(Account account, Order order, BarData barData) {
     checkConditions(account, order, barData);

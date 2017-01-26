@@ -3,9 +3,9 @@ package com.bn.ninjatrader.simulation.transaction;
 import com.bn.ninjatrader.common.util.TestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -33,7 +33,7 @@ public class SellTransactionTest {
 
   @Test
   public void testCreateEmpty_shouldHaveDefaultValuesSet() {
-    SellTransaction transaction = Transaction.sell().build();
+    final SellTransaction transaction = Transaction.sell().build();
 
     assertThat(transaction.getDate()).isNull();
     assertThat(transaction.getPrice()).isEqualTo(0.0);
@@ -44,7 +44,7 @@ public class SellTransactionTest {
 
   @Test
   public void testGettersSetters_shouldHaveCorrectValuesSet() {
-    SellTransaction transaction = Transaction.sell().date(now).price(100).shares(1000).profit(5000).build();
+    final SellTransaction transaction = Transaction.sell().date(now).price(100).shares(1000).profit(5000).build();
 
     assertThat(transaction.getDate()).isEqualTo(now);
     assertThat(transaction.getPrice()).isEqualTo(100.0);
@@ -64,22 +64,13 @@ public class SellTransactionTest {
 
   @Test
   public void testHashCode_shouldBeDiffForDiffObjects() {
-    Set<SellTransaction> set = Sets.newHashSet();
-    set.add(orig);
-    set.add(same);
-    set.add(diff1);
-    set.add(diff2);
-    set.add(diff3);
-    set.add(diff4);
-    set.add(diff5);
+    final Set<SellTransaction> set = Sets.newHashSet(orig, same, diff1, diff2, diff3, diff4, diff5);
     assertThat(set).hasSize(6).containsOnly(orig, diff1, diff2, diff3, diff4, diff5);
   }
 
   @Test
   public void testEquals_shouldBeEqualForObjectsWithSameValues() {
-    assertThat(orig)
-        .isEqualTo(orig)
-        .isEqualTo(same)
+    assertThat(orig).isEqualTo(orig).isEqualTo(same)
         .isNotEqualTo(new Object())
         .isNotEqualTo(null)
         .isNotEqualTo(diff1)
@@ -92,9 +83,9 @@ public class SellTransactionTest {
 
   @Test
   public void testSerializeDeserialize_shouldReturnEqualObject() throws IOException {
-    SellTransaction transaction = Transaction.sell().date(now).price(100).shares(1000).build();
-    String serialized = om.writeValueAsString(transaction);
-    Transaction deserialized = om.readValue(serialized, Transaction.class);
+    final SellTransaction transaction = Transaction.sell().date(now).price(100).shares(1000).build();
+    final String serialized = om.writeValueAsString(transaction);
+    final Transaction deserialized = om.readValue(serialized, Transaction.class);
     assertThat(deserialized).isInstanceOf(SellTransaction.class).isEqualTo(transaction);
   }
 }

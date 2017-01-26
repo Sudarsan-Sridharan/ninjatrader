@@ -1,6 +1,5 @@
 package com.bn.ninjatrader.simulation.core;
 
-import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.simulation.account.Account;
 import com.bn.ninjatrader.simulation.broker.Broker;
@@ -10,6 +9,7 @@ import com.bn.ninjatrader.simulation.data.History;
 import com.bn.ninjatrader.simulation.data.SimulationData;
 import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.simulation.transaction.Bookkeeper;
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;

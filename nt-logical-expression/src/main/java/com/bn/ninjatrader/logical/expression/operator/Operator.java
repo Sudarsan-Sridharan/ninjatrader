@@ -1,6 +1,7 @@
-package com.bn.ninjatrader.logical.expression.model;
+package com.bn.ninjatrader.logical.expression.operator;
 
 import com.bn.ninjatrader.common.util.NumUtil;
+import com.bn.ninjatrader.logical.expression.model.Data;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

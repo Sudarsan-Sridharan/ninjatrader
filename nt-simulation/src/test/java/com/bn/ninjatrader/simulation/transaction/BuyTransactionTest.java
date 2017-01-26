@@ -3,9 +3,9 @@ package com.bn.ninjatrader.simulation.transaction;
 import com.bn.ninjatrader.common.util.TestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.time.LocalDate;

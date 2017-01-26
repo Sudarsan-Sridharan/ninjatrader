@@ -3,8 +3,8 @@ package com.bn.ninjatrader.simulation.adaptor;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.simulation.data.DataMap;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import static com.bn.ninjatrader.simulation.operation.Variables.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,7 +16,7 @@ public class PriceDataMapAdaptorTest {
 
   private PriceDataMapAdaptor adaptor;
 
-  @BeforeMethod
+  @Before
   public void setup() {
     adaptor = new PriceDataMapAdaptor();
   }

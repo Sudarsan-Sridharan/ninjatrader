@@ -1,9 +1,9 @@
 package com.bn.ninjatrader.simulation.data;
 
-import com.beust.jcommander.internal.Maps;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import com.google.common.collect.Maps;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Map;
 
@@ -19,7 +19,7 @@ public class DataMapTest {
 
   private DataMap dataMap;
 
-  @BeforeMethod
+  @Before
   public void setup() {
     dataMap = new DataMap();
   }
@@ -42,7 +42,7 @@ public class DataMapTest {
 
   @Test
   public void testPutHashMapOfValues_shouldAssignValuesToVariables() {
-    Map<Variable, Double> map = Maps.newHashMap();
+    final Map<Variable, Double> map = Maps.newHashMap();
     map.put(PRICE_OPEN, 10d);
     map.put(PRICE_CLOSE, 20d);
 
@@ -54,7 +54,7 @@ public class DataMapTest {
 
   @Test
   public void testPutAnotherDataMap_shouldAssignValuesToVariables() {
-    DataMap subDataMap = new DataMap();
+    final DataMap subDataMap = new DataMap();
     subDataMap.put(PRICE_OPEN, 10d);
     subDataMap.put(PRICE_CLOSE, 20d);
 

@@ -1,6 +1,5 @@
 package com.bn.ninjatrader.simulation.data.provider;
 
-import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
@@ -8,8 +7,9 @@ import com.bn.ninjatrader.simulation.adaptor.PriceDataMapAdaptor;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
 import com.bn.ninjatrader.simulation.data.DataMap;
 import com.bn.ninjatrader.simulation.data.SimulationData;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import com.google.common.collect.Lists;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,7 +35,7 @@ public class PriceDataProviderTest {
   private DataMap dataMap;
   private PriceDataProvider dataFinder;
 
-  @BeforeMethod
+  @Before
   public void setup() {
     priceDao = mock(PriceDao.class);
     dataMapAdaptor = mock(PriceDataMapAdaptor.class);

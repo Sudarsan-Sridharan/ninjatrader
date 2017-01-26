@@ -2,12 +2,10 @@ package com.bn.ninjatrader.simulation.account;
 
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Brad on 8/23/16.
@@ -19,46 +17,46 @@ public class AccountTest {
 
   private Account account;
 
-  @BeforeMethod
+  @Before
   public void setup() {
     account = Account.withStartingCash(100000);
   }
 
   @Test
-  public void testOnCreate() {
-    assertEquals(account.getCash(), 100000.0);
-    assertEquals(account.getAvgPrice(), 0.0);
-    assertEquals(account.getNumOfShares(), 0);
-    assertEquals(account.getProfit(), 0.0);
-    assertFalse(account.hasShares());
+  public void testOnCreate_shouldSetDefaults() {
+    assertThat(account.getCash()).isEqualTo(100000.0);
+    assertThat(account.getAvgPrice()).isEqualTo(0.0);
+    assertThat(account.getNumOfShares()).isEqualTo(0);
+    assertThat(account.getProfit()).isEqualTo(0.0);
+    assertThat(account.hasShares()).isFalse();
   }
 
   @Test
-  public void testAddToPortfolio() {
+  public void testAddToPortfolio_shouldAddSharesToPortfolio() {
     account.addToPortfolio(buy1);
-    assertEquals(account.getCash(), 100000.0);
-    assertEquals(account.getAvgPrice(), 1.0);
-    assertEquals(account.getNumOfShares(), 10000);
-    assertEquals(account.getProfit(), 0.0);
-    assertTrue(account.hasShares());
+    assertThat(account.getCash()).isEqualTo(100000.0);
+    assertThat(account.getAvgPrice()).isEqualTo(1.0);
+    assertThat(account.getNumOfShares()).isEqualTo(10000);
+    assertThat(account.getProfit()).isEqualTo(0.0);
+    assertThat(account.hasShares()).isTrue();
 
     account.addToPortfolio(buy2);
-    assertEquals(account.getCash(), 100000.0);
-    assertEquals(account.getAvgPrice(), 1.090909);
-    assertEquals(account.getNumOfShares(), 11000);
-    assertEquals(account.getProfit(), 0.0);
-    assertTrue(account.hasShares());
+    assertThat(account.getCash()).isEqualTo(100000.0);
+    assertThat(account.getAvgPrice()).isEqualTo(1.090909);
+    assertThat(account.getNumOfShares()).isEqualTo(11000);
+    assertThat(account.getProfit()).isEqualTo(0.0);
+    assertThat(account.hasShares()).isTrue();
   }
 
   @Test
-  public void testAddCash() {
+  public void testAddCash_shouldAddCash() {
     account.addCash(1000);
-    assertEquals(account.getProfit(), 1000.0);
-    assertEquals(account.getCash(), 101000.0);
+    assertThat(account.getProfit()).isEqualTo(1000.0);
+    assertThat(account.getCash()).isEqualTo(101000.0);
 
     account.addCash(-2000);
-    assertEquals(account.getProfit(), -1000.0);
-    assertEquals(account.getCash(), 99000.0);
+    assertThat(account.getProfit()).isEqualTo(-1000.0);
+    assertThat(account.getCash()).isEqualTo(99000.0);
   }
 
   @Test
@@ -67,6 +65,6 @@ public class AccountTest {
     account.addToPortfolio(buy2);
     account.clearPortfolio();
 
-    assertFalse(account.hasShares());
+    assertThat(account.hasShares()).isFalse();
   }
 }

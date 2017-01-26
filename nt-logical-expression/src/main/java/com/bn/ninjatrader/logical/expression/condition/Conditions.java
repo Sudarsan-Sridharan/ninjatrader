@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.logical.expression.condition;
 
 import com.bn.ninjatrader.logical.expression.model.Data;
-import com.bn.ninjatrader.logical.expression.model.InequalityOperator;
+import com.bn.ninjatrader.logical.expression.operator.InequalityOperator;
 import com.bn.ninjatrader.logical.expression.operation.Constant;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.bn.ninjatrader.logical.expression.operation.Operations;

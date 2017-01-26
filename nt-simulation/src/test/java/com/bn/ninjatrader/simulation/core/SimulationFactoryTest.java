@@ -1,15 +1,15 @@
 package com.bn.ninjatrader.simulation.core;
 
-import com.beust.jcommander.internal.Lists;
+import com.bn.ninjatrader.logical.expression.condition.Conditions;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.simulation.broker.BrokerFactory;
-import com.bn.ninjatrader.logical.expression.condition.Conditions;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
-import com.bn.ninjatrader.simulation.model.DataType;
 import com.bn.ninjatrader.simulation.data.provider.DataProvider;
+import com.bn.ninjatrader.simulation.model.DataType;
 import com.bn.ninjatrader.simulation.statement.BuyOrderStatement;
 import com.bn.ninjatrader.simulation.statement.ConditionalStatement;
 import com.bn.ninjatrader.simulation.statement.SellOrderStatement;
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;

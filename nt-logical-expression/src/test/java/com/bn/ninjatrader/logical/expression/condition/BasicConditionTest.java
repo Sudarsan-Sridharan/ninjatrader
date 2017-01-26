@@ -2,7 +2,7 @@ package com.bn.ninjatrader.logical.expression.condition;
 
 import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.logical.expression.model.Data;
-import com.bn.ninjatrader.logical.expression.model.InequalityOperator;
+import com.bn.ninjatrader.logical.expression.operator.InequalityOperator;
 import com.bn.ninjatrader.logical.expression.operation.Constant;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Set;
 
-import static com.bn.ninjatrader.logical.expression.model.InequalityOperator.*;
+import static com.bn.ninjatrader.logical.expression.operator.InequalityOperator.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
