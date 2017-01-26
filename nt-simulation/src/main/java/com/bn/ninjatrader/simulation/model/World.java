@@ -16,6 +16,7 @@ public class World {
   private final Broker broker;
   private final History history;
   private final List<Price> prices;
+  private final LocalProperties properties;
 
   private World(final Account account,
                 final Broker broker,
@@ -25,6 +26,7 @@ public class World {
     this.broker = broker;
     this.history = history;
     this.prices = prices;
+    properties = new LocalProperties();
   }
 
   public Account getAccount() {
@@ -41,6 +43,10 @@ public class World {
 
   public List<Price> getPrices() {
     return prices;
+  }
+
+  public LocalProperties getProperties() {
+    return properties;
   }
 
   /**
