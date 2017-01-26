@@ -6,7 +6,7 @@ import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.simulation.adaptor.PriceDataMapAdaptor;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
 import com.bn.ninjatrader.simulation.data.DataMap;
-import com.bn.ninjatrader.simulation.data.SimulationData;
+import com.bn.ninjatrader.simulation.core.SimulationData;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;

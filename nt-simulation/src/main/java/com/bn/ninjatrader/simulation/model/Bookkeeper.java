@@ -1,5 +1,6 @@
-package com.bn.ninjatrader.simulation.transaction;
+package com.bn.ninjatrader.simulation.model;
 
+import com.bn.ninjatrader.simulation.transaction.Transaction;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,7 @@ public class Bookkeeper {
 
   private List<Transaction> transactions = Lists.newArrayList();
 
-  public void keep(Transaction log) {
+  public void keep(final Transaction log) {
     transactions.add(log);
   }
 
@@ -28,7 +29,7 @@ public class Bookkeeper {
   }
 
   public void print() {
-    for (Transaction transaction : transactions) {
+    for (final Transaction transaction : transactions) {
       log.info("{}", transaction.toString());
     }
   }

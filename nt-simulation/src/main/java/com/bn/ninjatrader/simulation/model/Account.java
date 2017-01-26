@@ -1,10 +1,8 @@
-package com.bn.ninjatrader.simulation.account;
+package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.common.util.NumUtil;
-import com.bn.ninjatrader.simulation.stats.TradeStatistic;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
-import com.bn.ninjatrader.simulation.transaction.Bookkeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

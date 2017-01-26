@@ -1,6 +1,7 @@
-package com.bn.ninjatrader.simulation.data;
+package com.bn.ninjatrader.simulation.core;
 
 import com.bn.ninjatrader.simulation.adaptor.DataMapAdaptor;
+import com.bn.ninjatrader.simulation.data.DataMap;
 import com.google.common.collect.Lists;
 import org.junit.Test;
 
@@ -28,7 +29,6 @@ public class SimulationDataTest {
     final List<Double> values = Lists.newArrayList(1d, 2d, 3d);
     final SimulationData<Double> data = new SimulationData<>(values, adaptor);
     assertThat(data.size()).isEqualTo(3);
-
     assertThat(data.getDataAtIndex(0)).isNotNull();
     assertThat(data.getDataAtIndex(0).get(PRICE_CLOSE)).isEqualTo(1d);
     assertThat(data.getDataAtIndex(1).get(PRICE_CLOSE)).isEqualTo(2d);

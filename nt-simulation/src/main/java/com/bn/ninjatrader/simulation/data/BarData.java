@@ -3,6 +3,7 @@ package com.bn.ninjatrader.simulation.data;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.logical.expression.model.Data;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.bn.ninjatrader.simulation.model.History;
 import com.google.common.base.MoreObjects;
 
 /**

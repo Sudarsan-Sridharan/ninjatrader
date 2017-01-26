@@ -3,6 +3,7 @@ package com.bn.ninjatrader.simulation.data;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.simulation.adaptor.PriceDataMapAdaptor;
+import com.bn.ninjatrader.simulation.core.SimulationData;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;

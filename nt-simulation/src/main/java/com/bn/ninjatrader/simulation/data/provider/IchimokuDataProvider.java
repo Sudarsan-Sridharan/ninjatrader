@@ -5,7 +5,7 @@ import com.bn.ninjatrader.common.util.ListUtil;
 import com.bn.ninjatrader.model.dao.IchimokuDao;
 import com.bn.ninjatrader.simulation.adaptor.IchimokuDataMapAdaptor;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
-import com.bn.ninjatrader.simulation.data.SimulationData;
+import com.bn.ninjatrader.simulation.core.SimulationData;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.bn.ninjatrader.model.request.FindRequest.findSymbol;
-import static com.bn.ninjatrader.simulation.model.DataType.*;
+import static com.bn.ninjatrader.simulation.data.DataType.*;
 
 /**
  * Created by Brad on 8/20/16.

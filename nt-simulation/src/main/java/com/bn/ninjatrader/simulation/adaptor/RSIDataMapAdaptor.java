@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.adaptor;
 
-import com.bn.ninjatrader.simulation.model.DataType;
+import com.bn.ninjatrader.simulation.data.DataType;
 
 /**
  * Created by Brad on 8/17/16.

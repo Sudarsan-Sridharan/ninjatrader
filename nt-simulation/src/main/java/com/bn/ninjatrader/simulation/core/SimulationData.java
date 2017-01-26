@@ -1,6 +1,7 @@
-package com.bn.ninjatrader.simulation.data;
+package com.bn.ninjatrader.simulation.core;
 
 import com.bn.ninjatrader.simulation.adaptor.DataMapAdaptor;
+import com.bn.ninjatrader.simulation.data.DataMap;
 
 import java.util.List;
 

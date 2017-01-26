@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.simulation.report;
 
 import com.bn.ninjatrader.simulation.core.SimulationParams;
-import com.bn.ninjatrader.simulation.stats.TradeStatistic;
+import com.bn.ninjatrader.simulation.model.TradeStatistic;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

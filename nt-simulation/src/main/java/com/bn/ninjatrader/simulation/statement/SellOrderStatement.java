@@ -1,12 +1,12 @@
 package com.bn.ninjatrader.simulation.statement;
 
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.simulation.account.Account;
-import com.bn.ninjatrader.simulation.broker.Broker;
+import com.bn.ninjatrader.simulation.model.Account;
+import com.bn.ninjatrader.simulation.model.Broker;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
-import com.bn.ninjatrader.simulation.order.MarketTime;
+import com.bn.ninjatrader.simulation.model.MarketTime;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

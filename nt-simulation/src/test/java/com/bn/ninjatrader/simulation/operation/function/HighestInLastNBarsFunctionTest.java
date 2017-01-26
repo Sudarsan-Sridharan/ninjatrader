@@ -2,7 +2,7 @@ package com.bn.ninjatrader.simulation.operation.function;
 
 import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.data.History;
+import com.bn.ninjatrader.simulation.model.History;
 import com.bn.ninjatrader.simulation.operation.BarOperation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;

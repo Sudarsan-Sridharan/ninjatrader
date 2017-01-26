@@ -1,12 +1,11 @@
 package com.bn.ninjatrader.simulation.core;
 
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.simulation.account.Account;
-import com.bn.ninjatrader.simulation.broker.Broker;
+import com.bn.ninjatrader.simulation.model.Account;
+import com.bn.ninjatrader.simulation.model.Broker;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
-import com.bn.ninjatrader.simulation.data.History;
-import com.bn.ninjatrader.simulation.data.SimulationData;
+import com.bn.ninjatrader.simulation.model.History;
 import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.report.SimulationReport;

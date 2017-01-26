@@ -1,9 +1,6 @@
 package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.simulation.account.Account;
-import com.bn.ninjatrader.simulation.broker.Broker;
-import com.bn.ninjatrader.simulation.data.History;
 
 import java.util.List;
 

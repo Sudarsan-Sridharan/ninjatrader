@@ -1,12 +1,12 @@
 package com.bn.ninjatrader.simulation.guice;
 
-import com.bn.ninjatrader.simulation.broker.BrokerFactory;
-import com.bn.ninjatrader.simulation.broker.BuyOrderExecutor;
-import com.bn.ninjatrader.simulation.broker.OrderExecutor;
-import com.bn.ninjatrader.simulation.broker.SellOrderExecutor;
+import com.bn.ninjatrader.simulation.model.BrokerFactory;
+import com.bn.ninjatrader.simulation.order.executor.BuyOrderExecutor;
+import com.bn.ninjatrader.simulation.order.executor.OrderExecutor;
+import com.bn.ninjatrader.simulation.order.executor.SellOrderExecutor;
 import com.bn.ninjatrader.simulation.data.provider.*;
-import com.bn.ninjatrader.simulation.guice.annotation.AllDataProviders;
-import com.bn.ninjatrader.simulation.guice.annotation.OrderExecutors;
+import com.bn.ninjatrader.simulation.annotation.AllDataProviders;
+import com.bn.ninjatrader.simulation.annotation.OrderExecutors;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

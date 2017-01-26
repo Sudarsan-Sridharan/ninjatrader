@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.simulation.order;
 
+import com.bn.ninjatrader.simulation.model.MarketTime;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;

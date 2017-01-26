@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.simulation.order;
 
+import com.bn.ninjatrader.simulation.model.MarketTime;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.google.common.collect.Sets;
 import org.junit.Test;
@@ -8,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 
-import static com.bn.ninjatrader.simulation.order.MarketTime.CLOSE;
+import static com.bn.ninjatrader.simulation.model.MarketTime.CLOSE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

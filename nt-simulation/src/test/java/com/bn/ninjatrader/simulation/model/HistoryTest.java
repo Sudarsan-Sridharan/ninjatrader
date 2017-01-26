@@ -1,6 +1,7 @@
-package com.bn.ninjatrader.simulation.data;
+package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.simulation.data.BarData;
 import org.junit.Test;
 
 import java.time.LocalDate;

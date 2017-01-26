@@ -3,7 +3,7 @@ package com.bn.ninjatrader.simulation.adaptor;
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.data.DataMap;
-import com.bn.ninjatrader.simulation.model.DataType;
+import com.bn.ninjatrader.simulation.data.DataType;
 import org.junit.Test;
 
 import java.time.LocalDate;

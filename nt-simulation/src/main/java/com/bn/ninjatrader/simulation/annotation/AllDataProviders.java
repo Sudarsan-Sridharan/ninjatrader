@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.simulation.guice.annotation;
+package com.bn.ninjatrader.simulation.annotation;
 
 import com.google.inject.BindingAnnotation;
 
@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
 @BindingAnnotation
-public @interface OrderExecutors {
+public @interface AllDataProviders {
 
 }

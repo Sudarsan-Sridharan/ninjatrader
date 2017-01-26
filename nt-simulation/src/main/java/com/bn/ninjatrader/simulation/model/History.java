@@ -1,6 +1,7 @@
-package com.bn.ninjatrader.simulation.data;
+package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.common.util.FixedList;
+import com.bn.ninjatrader.simulation.data.BarData;
 
 import java.util.List;
 import java.util.Optional;

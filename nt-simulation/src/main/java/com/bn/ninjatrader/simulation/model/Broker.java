@@ -1,8 +1,8 @@
-package com.bn.ninjatrader.simulation.broker;
+package com.bn.ninjatrader.simulation.model;
 
-import com.bn.ninjatrader.simulation.account.Account;
+import com.bn.ninjatrader.simulation.order.executor.OrderExecutor;
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.guice.annotation.OrderExecutors;
+import com.bn.ninjatrader.simulation.annotation.OrderExecutors;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
 import com.bn.ninjatrader.simulation.transaction.Transaction;

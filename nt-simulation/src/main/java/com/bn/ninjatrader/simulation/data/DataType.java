@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.simulation.model;
+package com.bn.ninjatrader.simulation.data;
 
 /**
  * Created by Brad on 8/2/16.

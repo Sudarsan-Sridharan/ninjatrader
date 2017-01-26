@@ -2,12 +2,12 @@ package com.bn.ninjatrader.simulation.statement;
 
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.util.TestUtil;
-import com.bn.ninjatrader.simulation.account.Account;
-import com.bn.ninjatrader.simulation.broker.Broker;
+import com.bn.ninjatrader.simulation.model.Account;
+import com.bn.ninjatrader.simulation.model.Broker;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.simulation.order.BuyOrder;
-import com.bn.ninjatrader.simulation.order.MarketTime;
+import com.bn.ninjatrader.simulation.model.MarketTime;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
@@ -18,8 +18,8 @@ import org.mockito.ArgumentCaptor;
 import java.io.IOException;
 import java.time.LocalDate;
 
-import static com.bn.ninjatrader.simulation.order.MarketTime.CLOSE;
-import static com.bn.ninjatrader.simulation.order.MarketTime.OPEN;
+import static com.bn.ninjatrader.simulation.model.MarketTime.CLOSE;
+import static com.bn.ninjatrader.simulation.model.MarketTime.OPEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 

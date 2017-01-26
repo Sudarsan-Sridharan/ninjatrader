@@ -2,7 +2,7 @@ package com.bn.ninjatrader.simulation.core;
 
 import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.logical.expression.condition.Conditions;
-import com.bn.ninjatrader.simulation.model.DataType;
+import com.bn.ninjatrader.simulation.data.DataType;
 import com.bn.ninjatrader.simulation.operation.Variables;
 import com.bn.ninjatrader.simulation.statement.ConditionalStatement;
 import com.fasterxml.jackson.databind.ObjectMapper;

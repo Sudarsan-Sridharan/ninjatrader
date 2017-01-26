@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.simulation.stats;
+package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
 import com.bn.ninjatrader.simulation.transaction.Transaction;

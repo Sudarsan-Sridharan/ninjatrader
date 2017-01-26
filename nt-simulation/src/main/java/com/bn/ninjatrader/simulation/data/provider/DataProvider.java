@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.simulation.data.provider;
 
 import com.bn.ninjatrader.simulation.core.SimulationParams;
-import com.bn.ninjatrader.simulation.data.SimulationData;
+import com.bn.ninjatrader.simulation.core.SimulationData;
 
 import java.util.List;
 

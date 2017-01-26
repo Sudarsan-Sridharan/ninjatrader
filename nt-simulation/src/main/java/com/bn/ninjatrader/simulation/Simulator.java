@@ -9,7 +9,7 @@ import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
 import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
-import com.bn.ninjatrader.simulation.order.MarketTime;
+import com.bn.ninjatrader.simulation.model.MarketTime;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.statement.BuyOrderStatement;
 import com.bn.ninjatrader.simulation.statement.ConditionalStatement;

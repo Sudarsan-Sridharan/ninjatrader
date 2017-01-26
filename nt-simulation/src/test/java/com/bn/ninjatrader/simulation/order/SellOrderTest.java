@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import java.time.LocalDate;
 
-import static com.bn.ninjatrader.simulation.order.MarketTime.CLOSE;
+import static com.bn.ninjatrader.simulation.model.MarketTime.CLOSE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

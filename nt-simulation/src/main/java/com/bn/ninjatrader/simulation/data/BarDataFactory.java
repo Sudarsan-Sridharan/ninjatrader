@@ -2,6 +2,7 @@ package com.bn.ninjatrader.simulation.data;
 
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.simulation.adaptor.PriceDataMapAdaptor;
+import com.bn.ninjatrader.simulation.core.SimulationData;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

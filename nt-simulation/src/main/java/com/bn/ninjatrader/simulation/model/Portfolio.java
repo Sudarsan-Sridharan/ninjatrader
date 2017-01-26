@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.simulation.account;
+package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;

@@ -1,10 +1,11 @@
-package com.bn.ninjatrader.simulation.broker;
+package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.simulation.account.Account;
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.order.BuyOrder;
-import com.bn.ninjatrader.simulation.order.Order;
+import com.bn.ninjatrader.simulation.order.*;
+import com.bn.ninjatrader.simulation.order.executor.BuyOrderExecutor;
+import com.bn.ninjatrader.simulation.order.executor.OrderExecutor;
+import com.bn.ninjatrader.simulation.order.executor.SellOrderExecutor;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;

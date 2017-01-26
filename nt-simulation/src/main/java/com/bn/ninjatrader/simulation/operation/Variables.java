@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.simulation.operation;
 
 import com.bn.ninjatrader.logical.expression.operation.Variable;
-import com.bn.ninjatrader.simulation.model.DataType;
+import com.bn.ninjatrader.simulation.data.DataType;
 
 /**
  * @author bradwee2000@gmail.com

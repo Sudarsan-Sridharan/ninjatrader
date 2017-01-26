@@ -2,10 +2,10 @@ package com.bn.ninjatrader.simulation.core;
 
 import com.bn.ninjatrader.logical.expression.condition.Conditions;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.simulation.broker.BrokerFactory;
+import com.bn.ninjatrader.simulation.model.BrokerFactory;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
 import com.bn.ninjatrader.simulation.data.provider.DataProvider;
-import com.bn.ninjatrader.simulation.model.DataType;
+import com.bn.ninjatrader.simulation.data.DataType;
 import com.bn.ninjatrader.simulation.statement.BuyOrderStatement;
 import com.bn.ninjatrader.simulation.statement.ConditionalStatement;
 import com.bn.ninjatrader.simulation.statement.SellOrderStatement;

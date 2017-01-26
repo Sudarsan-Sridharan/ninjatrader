@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.simulation.order;
+package com.bn.ninjatrader.simulation.model;
 
 /**
  * Created by Brad on 8/13/16.
