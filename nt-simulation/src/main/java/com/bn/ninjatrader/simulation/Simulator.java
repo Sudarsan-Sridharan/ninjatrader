@@ -2,9 +2,9 @@ package com.bn.ninjatrader.simulation;
 
 import com.bn.ninjatrader.calculator.guice.NtCalculatorModule;
 import com.bn.ninjatrader.common.data.Report;
+import com.bn.ninjatrader.logical.expression.condition.Conditions;
 import com.bn.ninjatrader.model.dao.ReportDao;
 import com.bn.ninjatrader.model.guice.NtModelModule;
-import com.bn.ninjatrader.logical.expression.condition.Conditions;
 import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
@@ -90,6 +90,7 @@ public class Simulator {
                 .add(lt(EMA.withPeriod(18), EMA.withPeriod(50))))
             .then(SellOrderStatement.builder().marketTime(MarketTime.CLOSE).barsFromNow(0).build())
             .build())
+
         .build();
 
     simulator.play(params);

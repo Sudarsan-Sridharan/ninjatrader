@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by Brad on 8/29/16.
  */
-public class HighestInLastNBarsFunctionTest {
+public class HighestFunctionTest {
 
   private History history;
 
@@ -41,22 +41,22 @@ public class HighestInLastNBarsFunctionTest {
 
   @Test
   public void testGetValue_shouldReturnHighestValueAmongNBars() {
-    assertThat(HighestInNBarsFunction.of(PRICE_CLOSE, 1).getValue(bar1)).isEqualTo(1.0);
-    assertThat(HighestInNBarsFunction.of(PRICE_CLOSE, 2).getValue(bar1)).isEqualTo(1.00001);
-    assertThat(HighestInNBarsFunction.of(PRICE_CLOSE, 3).getValue(bar1)).isEqualTo(3);
+    assertThat(HighestFunction.of(PRICE_CLOSE, 1).getValue(bar1)).isEqualTo(1.0);
+    assertThat(HighestFunction.of(PRICE_CLOSE, 2).getValue(bar1)).isEqualTo(1.00001);
+    assertThat(HighestFunction.of(PRICE_CLOSE, 3).getValue(bar1)).isEqualTo(3);
   }
 
   @Test
   public void testChangeNumOfBarsAgo_shoulrReturnNewObject() {
-    final HighestInNBarsFunction function = HighestInNBarsFunction.of(PRICE_CLOSE);
+    final HighestFunction function = HighestFunction.of(PRICE_CLOSE);
     assertThat(function.withinNumOfBarsAgo(3)).isNotEqualTo(function);
-    assertThat(function.withinNumOfBarsAgo(10)).isEqualTo(HighestInNBarsFunction.of(PRICE_CLOSE, 10));
+    assertThat(function.withinNumOfBarsAgo(10)).isEqualTo(HighestFunction.of(PRICE_CLOSE, 10));
   }
 
   @Test
   public void testSerializeDeserialize_shouldReturnSameObject() throws IOException {
     final ObjectMapper om = TestUtil.objectMapper();
-    final HighestInNBarsFunction function = new HighestInNBarsFunction(PRICE_CLOSE, 1);
+    final HighestFunction function = new HighestFunction(PRICE_CLOSE, 1);
     final String serialized = om.writeValueAsString(function);
     assertThat(om.readValue(serialized, BarOperation.class)).isEqualTo(function);
   }
