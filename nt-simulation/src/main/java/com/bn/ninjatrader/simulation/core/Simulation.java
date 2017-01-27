@@ -91,8 +91,8 @@ public class Simulation {
   private void sellAll() {
     if (account.hasShares()) {
       int lastIndex = priceList.size() - 1;
-      Price lastPrice = priceList.get(lastIndex);
-      BarData barData = barDataFactory.createWithPriceAtIndex(lastPrice, lastIndex, simulationDataList, history);
+      final Price lastPrice = priceList.get(lastIndex);
+      final BarData barData = barDataFactory.createWithPriceAtIndex(lastPrice, lastIndex, simulationDataList, history);
       broker.submitOrder(Order.sell().date(lastPrice.getDate()).build(), barData);
       broker.processPendingOrders(barData);
     }

@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.common.data.Price;
+import com.google.common.base.MoreObjects;
 
 import java.util.List;
 
@@ -47,6 +48,17 @@ public class World {
 
   public LocalProperties getProperties() {
     return properties;
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("account", account)
+        .add("broker", broker)
+        .add("history", history)
+        .add("priceSize", prices.size())
+        .add("properties", properties)
+        .toString();
   }
 
   /**

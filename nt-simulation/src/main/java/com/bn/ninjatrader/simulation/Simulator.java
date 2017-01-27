@@ -95,9 +95,8 @@ public class Simulator {
         // Pullback Condition
         .addStatement(ConditionalStatement.builder()
             .condition(Conditions.create()
-                .add(eq(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(2), LowestValue.of(PRICE_LOW).inNumOfBarsAgo(15)))
-                .add(lt(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(1), PRICE_LOW)))
-            .then(BuyOrderStatement.builder().marketTime(MarketTime.CLOSE).barsFromNow(1).build())
+                .add(eq(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(3), LowestValue.of(PRICE_LOW).inNumOfBarsAgo(15))))
+            .then(BuyOrderStatement.builder().marketTime(MarketTime.CLOSE).barsFromNow(0).build())
             .build()
         )
 

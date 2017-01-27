@@ -6,6 +6,7 @@ import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import java.util.Collections;
 import java.util.Set;
@@ -24,6 +25,22 @@ public class EmptyStatement implements Statement {
   @Override
   public void run(final World world, final BarData barData) {
     return;// Do nothing
+  }
+
+  @Override
+  public boolean equals(final Object obj) {
+    if (obj == null || !(obj instanceof EmptyStatement)) {
+      return false;
+    }
+    if (obj == this) {
+      return true;
+    }
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(this);
   }
 
   @Override
