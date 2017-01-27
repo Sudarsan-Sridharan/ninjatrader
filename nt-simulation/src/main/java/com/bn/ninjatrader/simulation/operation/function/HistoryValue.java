@@ -2,6 +2,7 @@ package com.bn.ninjatrader.simulation.operation.function;
 
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.bn.ninjatrader.simulation.data.BarData;
+import com.bn.ninjatrader.simulation.model.History;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Optional;
@@ -30,7 +31,8 @@ public class HistoryValue extends AbstractFunctionWithNumOfBars {
 
   @Override
   public double getValue(final BarData barData) {
-    final Optional<BarData> pastBarData = barData.getHistory().getNBarsAgo(getNumOfBarsAgo());
+    final History history = barData.getWorld().getHistory();
+    final Optional<BarData> pastBarData = history.getNBarsAgo(getNumOfBarsAgo());
     if (pastBarData.isPresent()) {
       return getOperation().getValue(pastBarData.get());
     }

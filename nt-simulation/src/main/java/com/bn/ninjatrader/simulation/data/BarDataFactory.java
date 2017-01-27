@@ -3,12 +3,11 @@ package com.bn.ninjatrader.simulation.data;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.simulation.adaptor.PriceDataMapAdaptor;
 import com.bn.ninjatrader.simulation.core.SimulationData;
-import com.bn.ninjatrader.simulation.model.History;
+import com.bn.ninjatrader.simulation.model.World;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.util.Collection;
-import java.util.Collections;
 
 import static com.bn.ninjatrader.simulation.operation.Variables.BAR_INDEX;
 
@@ -24,18 +23,14 @@ public class BarDataFactory {
     this.priceDataMapAdaptor = priceDataMapAdaptor;
   }
 
-  public BarData createWithPriceAtIndex(final Price price, final int barIndex) {
-    return createWithPriceAtIndex(price, barIndex, Collections.emptyList(), null);
-  }
-
-  public BarData createWithPriceAtIndex(final Price price,
-                                        final int barIndex,
-                                        final Collection<SimulationData> dataCollection,
-                                        final History history) {
+  public BarData create(final Price price,
+                        final int barIndex,
+                        final Collection<SimulationData> dataCollection,
+                        final World world) {
     final BarData.Builder barDataBuilder = BarData.builder()
         .index(barIndex)
         .price(price)
-        .history(history)
+        .world(world)
         .addData(priceDataMapAdaptor.toDataMap(price))
         .addData(BAR_INDEX, barIndex);
 

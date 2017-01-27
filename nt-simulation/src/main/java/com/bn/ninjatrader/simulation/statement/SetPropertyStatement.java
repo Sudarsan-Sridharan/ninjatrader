@@ -11,6 +11,8 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +24,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SetPropertyStatement implements Statement {
+  private static final Logger LOG = LoggerFactory.getLogger(SetPropertyStatement.class);
 
   public static final Builder builder() {
     return new Builder();
@@ -47,6 +50,7 @@ public class SetPropertyStatement implements Statement {
       final Operation<BarData> operation = entry.getValue();
       world.getProperties().put(entry.getKey(), operation.getValue(barData));
     }
+    LOG.info("{}", world.getProperties());
   }
 
   public LocalProperties getProperties() {

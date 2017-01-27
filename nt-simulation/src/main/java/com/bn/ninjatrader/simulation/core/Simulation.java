@@ -1,12 +1,9 @@
 package com.bn.ninjatrader.simulation.core;
 
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.simulation.model.Account;
-import com.bn.ninjatrader.simulation.model.Broker;
+import com.bn.ninjatrader.simulation.model.*;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
-import com.bn.ninjatrader.simulation.model.History;
-import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.statement.Statement;
@@ -35,6 +32,7 @@ public class Simulation {
   private final Broker broker;
   private final Account account;
   private final History history;
+  private final LocalProperties properties;
   private final List<Price> priceList;
 
   private final List<Statement> statements;
@@ -49,6 +47,7 @@ public class Simulation {
     this.broker = world.getBroker();
     this.priceList = world.getPrices();
     this.history = world.getHistory();
+    this.properties = world.getProperties();
     this.simulationParams = simulationParams;
     this.statements = simulationParams.getStatements();
     this.barDataFactory = barDataFactory;
@@ -67,7 +66,8 @@ public class Simulation {
   public SimulationReport play() {
     barIndex = 0;
     for (final Price price : priceList) {
-      final BarData barData = barDataFactory.createWithPriceAtIndex(price, barIndex, simulationDataList, history);
+      final BarData barData =
+          barDataFactory.create(price, barIndex, simulationDataList, world);
       history.add(barData);
       processBar(barData);
       barIndex++;
@@ -92,7 +92,8 @@ public class Simulation {
     if (account.hasShares()) {
       int lastIndex = priceList.size() - 1;
       final Price lastPrice = priceList.get(lastIndex);
-      final BarData barData = barDataFactory.createWithPriceAtIndex(lastPrice, lastIndex, simulationDataList, history);
+      final BarData barData =
+          barDataFactory.create(lastPrice, lastIndex, simulationDataList, world);
       broker.submitOrder(Order.sell().date(lastPrice.getDate()).build(), barData);
       broker.processPendingOrders(barData);
     }

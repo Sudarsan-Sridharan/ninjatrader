@@ -13,9 +13,7 @@ import com.bn.ninjatrader.simulation.model.MarketTime;
 import com.bn.ninjatrader.simulation.operation.function.HistoryValue;
 import com.bn.ninjatrader.simulation.operation.function.LowestValue;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
-import com.bn.ninjatrader.simulation.statement.BuyOrderStatement;
-import com.bn.ninjatrader.simulation.statement.ConditionalStatement;
-import com.bn.ninjatrader.simulation.statement.SellOrderStatement;
+import com.bn.ninjatrader.simulation.statement.*;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -87,6 +85,7 @@ public class Simulator {
         // Sell Condition
         .addStatement(ConditionalStatement.builder()
             .condition(Conditions.create()
+//                .add(lt(PRICE_CLOSE, ))
                 .add(lt(PRICE_CLOSE, EMA.withPeriod(18)))
                 .add(lt(EMA.withPeriod(18), EMA.withPeriod(50))))
             .then(SellOrderStatement.builder().marketTime(MarketTime.CLOSE).barsFromNow(0).build())
@@ -95,10 +94,16 @@ public class Simulator {
         // Pullback Condition
         .addStatement(ConditionalStatement.builder()
             .condition(Conditions.create()
-                .add(eq(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(3), LowestValue.of(PRICE_LOW).inNumOfBarsAgo(15))))
-            .then(BuyOrderStatement.builder().marketTime(MarketTime.CLOSE).barsFromNow(0).build())
+                .add(eq(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(4), LowestValue.of(PRICE_LOW).inNumOfBarsAgo(15))))
+            .then(MultiStatement.builder()
+                .add(SetPropertyStatement.builder()
+                    .add("LAST_PULLBACK", HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(4))
+                    .build())
+                .add(BuyOrderStatement.builder().marketTime(MarketTime.CLOSE).barsFromNow(0).build())
+                .build())
             .build()
         )
+
 
         .build();
 

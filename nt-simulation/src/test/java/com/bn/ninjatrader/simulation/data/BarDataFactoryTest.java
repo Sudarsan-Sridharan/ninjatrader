@@ -4,12 +4,13 @@ import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.simulation.adaptor.PriceDataMapAdaptor;
 import com.bn.ninjatrader.simulation.core.SimulationData;
-import com.bn.ninjatrader.simulation.model.History;
+import com.bn.ninjatrader.simulation.model.World;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.util.Collections;
 
 import static com.bn.ninjatrader.simulation.operation.Variables.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,12 +29,13 @@ public class BarDataFactoryTest {
 
   private PriceDataMapAdaptor priceDataMapAdaptor;
   private BarDataFactory barDataFactory;
-  private History history;
+  private World world;
+
 
   @Before
   public void setup() {
     priceDataMapAdaptor = mock(PriceDataMapAdaptor.class);
-    history = mock(History.class);
+    world = mock(World.class);
 
     when(priceDataMapAdaptor.toDataMap(any(Price.class))).thenReturn(dataMap);
 
@@ -42,7 +44,7 @@ public class BarDataFactoryTest {
 
   @Test
   public void testCreateBarData_shouldSetProperties() {
-    final BarData barData = barDataFactory.createWithPriceAtIndex(price, 1);
+    final BarData barData = barDataFactory.create(price, 1, Collections.emptyList(), null);
 
     assertThat(barData).isNotNull();
     assertThat(barData.getPrice()).isEqualTo(price);
@@ -60,7 +62,8 @@ public class BarDataFactoryTest {
     when(simulationData.getDataAtIndex(0)).thenReturn(dataMap);
 
     final BarData barData =
-        barDataFactory.createWithPriceAtIndex(price, 0, Lists.newArrayList(simulationData), history);
+        barDataFactory.create(price, 0, Lists.newArrayList(simulationData), world);
     assertThat(barData.get(SMA.withPeriod(21))).isEqualTo(100.15);
+    assertThat(barData.getWorld()).isEqualTo(world);
   }
 }

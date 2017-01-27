@@ -4,6 +4,7 @@ import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.History;
+import com.bn.ninjatrader.simulation.model.World;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,6 +23,7 @@ import static org.mockito.Mockito.when;
 public class HighestValueTest {
 
   private History history;
+  private World world;
 
   private BarData bar1;
   private BarData bar2;
@@ -30,9 +32,13 @@ public class HighestValueTest {
   @Before
   public void setup() {
     history = mock(History.class);
-    bar1 = BarData.builder().history(history).addData(PRICE_CLOSE, 1).build();
-    bar2 = BarData.builder().history(history).addData(PRICE_CLOSE, 1.00001).build();
-    bar3 = BarData.builder().history(history).addData(PRICE_CLOSE, 3).build();
+    world = mock(World.class);
+
+    bar1 = BarData.builder().world(world).addData(PRICE_CLOSE, 1).build();
+    bar2 = BarData.builder().world(world).addData(PRICE_CLOSE, 1.00001).build();
+    bar3 = BarData.builder().world(world).addData(PRICE_CLOSE, 3).build();
+
+    when(world.getHistory()).thenReturn(history);
 
     when(history.getNBarsAgo(1)).thenReturn(Optional.of(bar1));
     when(history.getNBarsAgo(2)).thenReturn(Optional.of(bar2));

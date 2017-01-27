@@ -4,6 +4,7 @@ import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.History;
+import com.bn.ninjatrader.simulation.model.World;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.junit.Before;
@@ -26,14 +27,18 @@ public class HistoryValueTest {
   private BarData barData3;
 
   private History history;
+  private World world;
 
   @Before
   public void before() {
+    world = mock(World.class);
     history = mock(History.class);
 
-    barData1 = BarData.builder().addData(PRICE_CLOSE, 1.4).history(history).build();
-    barData2 = BarData.builder().addData(PRICE_CLOSE, 2.4).history(history).build();
-    barData3 = BarData.builder().addData(PRICE_CLOSE, 3.4).history(history).build();
+    barData1 = BarData.builder().addData(PRICE_CLOSE, 1.4).world(world).build();
+    barData2 = BarData.builder().addData(PRICE_CLOSE, 2.4).world(world).build();
+    barData3 = BarData.builder().addData(PRICE_CLOSE, 3.4).world(world).build();
+
+    when(world.getHistory()).thenReturn(history);
 
     when(history.getNBarsAgo(1)).thenReturn(Optional.of(barData1));
     when(history.getNBarsAgo(2)).thenReturn(Optional.of(barData2));
