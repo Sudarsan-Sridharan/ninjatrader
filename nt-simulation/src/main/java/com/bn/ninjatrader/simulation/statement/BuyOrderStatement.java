@@ -8,6 +8,7 @@ import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.order.type.OrderType;
 import com.bn.ninjatrader.simulation.order.Order;
+import com.bn.ninjatrader.simulation.order.type.OrderTypes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -36,15 +37,10 @@ public class BuyOrderStatement implements Statement {
   @JsonProperty("barsFromNow")
   private final int barsFromNow;
 
-  @JsonProperty("buyPrice")
-  private final Double buyPrice;
-
   public BuyOrderStatement(@JsonProperty("orderType") final OrderType orderType,
-                           @JsonProperty("barsFromNow") final int barsFromNow,
-                           @JsonProperty("buyPrice") final Double buyPrice) {
+                           @JsonProperty("barsFromNow") final int barsFromNow) {
     this.orderType = orderType;
     this.barsFromNow = barsFromNow;
-    this.buyPrice = buyPrice;
   }
 
   @Override
@@ -74,10 +70,6 @@ public class BuyOrderStatement implements Statement {
     return barsFromNow;
   }
 
-  public double getBuyPrice() {
-    return buyPrice;
-  }
-
   @Override
   public boolean equals(Object obj) {
     if (obj == null || !(obj instanceof  BuyOrderStatement)) {
@@ -105,9 +97,8 @@ public class BuyOrderStatement implements Statement {
    * Builder class
    */
   public static final class Builder {
-    private OrderType orderType;
+    private OrderType orderType = OrderTypes.marketClose();
     private int barsFromNow;
-    private Double buyPrice;
 
     public Builder orderType(final OrderType orderType) {
       this.orderType = orderType;
@@ -119,13 +110,8 @@ public class BuyOrderStatement implements Statement {
       return this;
     }
 
-    public Builder buyPrice(final double buyPrice) {
-      this.buyPrice = buyPrice;
-      return this;
-    }
-
     public BuyOrderStatement build() {
-      return new BuyOrderStatement(orderType, barsFromNow, buyPrice);
+      return new BuyOrderStatement(orderType, barsFromNow);
     }
   }
 }

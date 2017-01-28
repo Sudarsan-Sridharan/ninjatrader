@@ -30,10 +30,11 @@ public class BuyOrderStatementTest {
   private final BuyOrderStatement statement = BuyOrderStatement.builder()
       .orderType(OrderTypes.marketClose()).barsFromNow(1).build();
   private final Price price = Price.builder().date(now).close(1.1).build();
-  private final BarData barData = BarData.builder().price(price).build();
 
-  private final BuyOrderStatement orig = BuyOrderStatement.builder().orderType(OrderTypes.marketClose()).barsFromNow(1).build();
-  private final BuyOrderStatement equal = BuyOrderStatement.builder().orderType(OrderTypes.marketClose()).barsFromNow(1).build();
+  private final BuyOrderStatement orig = BuyOrderStatement.builder()
+      .orderType(OrderTypes.marketClose()).barsFromNow(1).build();
+  private final BuyOrderStatement equal = BuyOrderStatement.builder()
+      .orderType(OrderTypes.marketClose()).barsFromNow(1).build();
   private final BuyOrderStatement diffMarketTime = BuyOrderStatement.builder()
       .orderType(OrderTypes.marketOpen()).barsFromNow(1).build();
   private final BuyOrderStatement diffBarsFromNow = BuyOrderStatement.builder()
@@ -42,13 +43,17 @@ public class BuyOrderStatementTest {
   private World world;
   private Account account;
   private Broker broker;
+  private BarData barData;
 
   @Before
   public void before() {
     world = mock(World.class);
     account = mock(Account.class);
     broker = mock(Broker.class);
+    barData = mock(BarData.class);
 
+    when(barData.getWorld()).thenReturn(world);
+    when(barData.getPrice()).thenReturn(price);
     when(world.getBroker()).thenReturn(broker);
     when(world.getAccount()).thenReturn(account);
     when(account.getCash()).thenReturn(100000d);
