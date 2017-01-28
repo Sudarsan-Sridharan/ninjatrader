@@ -3,11 +3,10 @@ package com.bn.ninjatrader.simulation.order.executor;
 import com.bn.ninjatrader.common.boardlot.BoardLot;
 import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.model.MarketTime;
+import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.order.Order;
-import com.bn.ninjatrader.simulation.order.executor.BuyOrderExecutor;
+import com.bn.ninjatrader.simulation.order.type.OrderTypes;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import org.junit.Before;
@@ -33,7 +32,7 @@ public class BuyOrderExecutorTest {
   private final Price price = Price.builder().date(now).open(1).high(2).low(3).close(4).volume(1000).build();
   private final BarData barData = BarData.builder().price(price).build();
   private final BoardLot boardLot = BoardLot.newLot().lot(1000).tick(0.1).build();
-  private final Order order = Order.buy().cashAmount(100000).at(MarketTime.OPEN).build();
+  private final Order order = Order.buy().cashAmount(100000).at(OrderTypes.marketOpen()).build();
 
   @Before
   public void setup() {

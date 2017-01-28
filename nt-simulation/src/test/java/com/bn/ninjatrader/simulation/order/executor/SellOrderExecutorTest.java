@@ -4,8 +4,8 @@ import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
-import com.bn.ninjatrader.simulation.model.MarketTime;
 import com.bn.ninjatrader.simulation.order.Order;
+import com.bn.ninjatrader.simulation.order.type.OrderTypes;
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
@@ -25,7 +25,7 @@ public class SellOrderExecutorTest {
   private final LocalDate now = LocalDate.of(2016, 1, 1);
   private final Price price = Price.builder().date(now).open(1).high(2).low(3).close(4).volume(1000).build();
   private final BarData barData = BarData.builder().price(price).build();
-  private final Order order = Order.buy().cashAmount(100000).at(MarketTime.OPEN).build();
+  private final Order order = Order.buy().cashAmount(100000).at(OrderTypes.marketOpen()).build();
 
   private Account account;
   private BoardLotTable boardLotTable;

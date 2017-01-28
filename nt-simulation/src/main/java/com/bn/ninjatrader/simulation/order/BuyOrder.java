@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.order;
 
-import com.bn.ninjatrader.simulation.model.MarketTime;
+import com.bn.ninjatrader.simulation.order.type.OrderType;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
@@ -17,12 +17,13 @@ public class BuyOrder extends Order {
 
   private final double cashAmount;
 
+
   private BuyOrder(final LocalDate orderDate,
-                   final MarketTime marketTime,
+                   final OrderType orderType,
                    final int barsFromNow,
                    final long numOfShares,
                    final double cashAmount) {
-    super(orderDate, TransactionType.BUY, marketTime, barsFromNow, numOfShares);
+    super(orderDate, TransactionType.BUY, orderType, barsFromNow, numOfShares);
     this.cashAmount = cashAmount;
   }
 
@@ -32,7 +33,7 @@ public class BuyOrder extends Order {
 
   public String toString() {
     return MoreObjects.toStringHelper(this)
-        .add("marketTime", getMarketTime())
+        .add("orderType", getOrderType())
         .add("barsFromNow", getBarsFromNow())
         .add("numOfShares", getNumOfShares())
         .add("orderDate", getOrderDate())
@@ -73,7 +74,7 @@ public class BuyOrder extends Order {
 
     @Override
     public BuyOrder build() {
-      return new BuyOrder(getOrderDate(), getMarketTime(), getDaysFromNow(), getNumOfShares(), cashAmount);
+      return new BuyOrder(getOrderDate(), getOrderType(), getDaysFromNow(), getNumOfShares(), cashAmount);
     }
   }
 }

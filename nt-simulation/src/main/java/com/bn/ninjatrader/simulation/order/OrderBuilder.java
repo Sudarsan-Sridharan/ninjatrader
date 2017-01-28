@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.simulation.order;
 
-import com.bn.ninjatrader.simulation.model.MarketTime;
+import com.bn.ninjatrader.simulation.order.type.OrderType;
+import com.bn.ninjatrader.simulation.order.type.OrderTypes;
 
 import java.time.LocalDate;
 
@@ -11,7 +12,8 @@ abstract class OrderBuilder<T extends OrderBuilder> {
   private long numOfShares;
   private int daysFromNow = 0;
   private LocalDate orderDate;
-  private MarketTime marketTime = MarketTime.CLOSE;
+  private OrderType orderType = OrderTypes.marketClose();
+  private Double transactAtPrice;
 
   public T date(LocalDate orderDate) {
     this.orderDate = orderDate;
@@ -28,8 +30,8 @@ abstract class OrderBuilder<T extends OrderBuilder> {
     return getThis();
   }
 
-  public T at(MarketTime marketTime) {
-    this.marketTime = marketTime;
+  public T at(OrderType orderType) {
+    this.orderType = orderType;
     return getThis();
   }
 
@@ -45,8 +47,8 @@ abstract class OrderBuilder<T extends OrderBuilder> {
     return daysFromNow;
   }
 
-  public MarketTime getMarketTime() {
-    return marketTime;
+  public OrderType getOrderType() {
+    return orderType;
   }
 
   abstract T getThis();

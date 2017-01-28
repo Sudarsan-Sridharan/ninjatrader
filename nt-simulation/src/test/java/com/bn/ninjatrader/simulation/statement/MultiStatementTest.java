@@ -81,6 +81,6 @@ public class MultiStatementTest {
     final MultiStatement statement = MultiStatement.builder().add(EmptyStatement.instance()).build();
     final ObjectMapper om = TestUtil.objectMapper();
     final String json = om.writeValueAsString(statement);
-    assertThat(om.readValue(json, MultiStatement.class)).isEqualTo(statement);
+    assertThat(om.readValue(json, Statement.class)).isEqualTo(statement);
   }
 }

@@ -2,10 +2,9 @@ package com.bn.ninjatrader.simulation.order.executor;
 
 import com.bn.ninjatrader.common.boardlot.BoardLot;
 import com.bn.ninjatrader.common.boardlot.BoardLotTable;
-import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.util.NumUtil;
-import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.data.BarData;
+import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 
@@ -28,14 +27,6 @@ public abstract class OrderExecutor {
     checkNotNull(account, "account must not be null.");
     checkNotNull(order, "order must not be null.");
     checkNotNull(barData, "barData must not be null.");
-  }
-
-  public double getFulfilledPrice(Order order, BarData barData) {
-    Price currentPrice = barData.getPrice();
-    switch (order.getMarketTime()) {
-      case OPEN: return currentPrice.getOpen();
-      default: return currentPrice.getClose();
-    }
   }
 
   public double calculateProfit(Account account, double sellPrice) {

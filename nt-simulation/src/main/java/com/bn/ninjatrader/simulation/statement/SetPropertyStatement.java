@@ -45,12 +45,12 @@ public class SetPropertyStatement implements Statement {
 
   @Override
   public void run(final World world, final BarData barData) {
-    world.getProperties().putAll(properties);
+    final LocalProperties properties = barData.getWorld().getProperties();
+    properties.putAll(this.properties);
     for (Map.Entry<String, Operation<BarData>> entry : opProperties.entrySet()) {
       final Operation<BarData> operation = entry.getValue();
       world.getProperties().put(entry.getKey(), operation.getValue(barData));
     }
-    LOG.info("{}", world.getProperties());
   }
 
   public LocalProperties getProperties() {

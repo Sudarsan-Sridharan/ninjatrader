@@ -3,11 +3,9 @@ package com.bn.ninjatrader.simulation.order.executor;
 import com.bn.ninjatrader.common.boardlot.BoardLot;
 import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.model.MarketTime;
+import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.order.Order;
-import com.bn.ninjatrader.simulation.order.executor.OrderExecutor;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,12 +23,8 @@ import static org.mockito.Mockito.when;
 public class OrderExecutorTest {
   private final LocalDate now = LocalDate.of(2016, 1, 1);
   private final Price price = Price.builder().date(now).open(1).high(2).low(3).close(4).volume(1000).build();
-  private final BarData barData = BarData.builder().price(price).build();
   private final BoardLot boardLot1 = BoardLot.newLot().lot(1000).tick(0.1).build();
   private final BoardLot boardLot2 = BoardLot.newLot().lot(100).tick(0.1).build();
-
-  private final Order orderForMarketOpen = Order.buy().cashAmount(100000).at(MarketTime.OPEN).build();
-  private final Order orderForMarketClose = Order.buy().cashAmount(100000).at(MarketTime.CLOSE).build();
 
   private BoardLotTable boardLotTable;
   private Account account;
@@ -53,15 +47,6 @@ public class OrderExecutorTest {
         return null;
       }
     };
-  }
-
-  @Test
-  public void testGetFulfilledPrice() {
-    double fulfilledPrice = executor.getFulfilledPrice(orderForMarketOpen, barData);
-    assertThat(fulfilledPrice).isEqualTo(1.0);
-
-    fulfilledPrice = executor.getFulfilledPrice(orderForMarketClose, barData);
-    assertThat(fulfilledPrice).isEqualTo(4.0);
   }
 
   @Test

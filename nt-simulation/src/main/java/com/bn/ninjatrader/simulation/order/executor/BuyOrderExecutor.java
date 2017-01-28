@@ -1,10 +1,11 @@
 package com.bn.ninjatrader.simulation.order.executor;
 
 import com.bn.ninjatrader.common.boardlot.BoardLotTable;
-import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.data.BarData;
+import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.order.BuyOrder;
 import com.bn.ninjatrader.simulation.order.Order;
+import com.bn.ninjatrader.simulation.order.type.OrderType;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 import com.google.inject.Inject;
@@ -38,7 +39,8 @@ public class BuyOrderExecutor extends OrderExecutor {
   private BuyTransaction fulfillBuyOrder(final Order order, final BarData barData) {
     final BuyOrder buyOrder = (BuyOrder) order;
 
-    final double boughtPrice = getFulfilledPrice(order, barData);
+    final OrderType orderType = order.getOrderType();
+    final double boughtPrice = orderType.getFulfilledPrice(barData);
     final long numOfShares = getNumOfSharesCanBuyWithAmount(buyOrder.getCashAmount(), boughtPrice);
 
     return Transaction.buy()

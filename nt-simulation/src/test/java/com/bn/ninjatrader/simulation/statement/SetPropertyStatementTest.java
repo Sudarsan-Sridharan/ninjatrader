@@ -47,6 +47,7 @@ public class SetPropertyStatementTest {
     properties = new LocalProperties();
 
     when(world.getProperties()).thenReturn(properties);
+    when(barData.getWorld()).thenReturn(world);
     when(barData.get(var)).thenReturn(20d);
   }
 
@@ -92,6 +93,6 @@ public class SetPropertyStatementTest {
   public void testSerializeDeserialize_shouldProduceEqualObject() throws IOException {
     final ObjectMapper om = TestUtil.objectMapper();
     final String json = om.writeValueAsString(orig);
-    assertThat(om.readValue(json, SetPropertyStatement.class)).isEqualTo(orig);
+    assertThat(om.readValue(json, Statement.class)).isEqualTo(orig);
   }
 }

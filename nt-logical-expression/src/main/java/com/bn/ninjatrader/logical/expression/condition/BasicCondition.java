@@ -7,6 +7,7 @@ import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.google.common.collect.Sets;
 
 import java.util.Set;
 
@@ -53,7 +54,7 @@ public class BasicCondition<T extends Data> implements Condition<T> {
 
   @Override
   public Set<Variable> getVariables() {
-    final Set<Variable> variables = lhs.getVariables();
+    final Set<Variable> variables = Sets.newHashSet(lhs.getVariables());
     variables.addAll(rhs.getVariables());
     return variables;
   }

@@ -11,7 +11,6 @@ import java.util.Set;
  */
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.CLASS,
-//    include = JsonTypeInfo.As.WRAPPER_OBJECT
     property = "_class"
 )
 public interface Operation<T extends Data> {

@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.order;
 
-import com.bn.ninjatrader.simulation.model.MarketTime;
+import com.bn.ninjatrader.simulation.order.type.OrderType;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
@@ -18,8 +18,10 @@ public abstract class Order {
   private final LocalDate orderDate;
   private final long numOfShares;
   private final TransactionType transactionType;
-  private final MarketTime marketTime;
+  private final OrderType orderType;
   private final int barsFromNow;
+
+  //TODO BUY/SELL AT PRICE
 
   public static BuyOrder.BuyOrderBuilder buy() {
     return new BuyOrder.BuyOrderBuilder();
@@ -31,12 +33,12 @@ public abstract class Order {
 
   protected Order(final LocalDate orderDate,
                   final TransactionType transactionType,
-                  final MarketTime marketTime,
+                  final OrderType orderType,
                   final int barsFromNow,
                   final long numOfShares) {
     this.orderDate = orderDate;
     this.transactionType = transactionType;
-    this.marketTime = marketTime;
+    this.orderType = orderType;
     this.barsFromNow = barsFromNow;
     this.numOfShares = numOfShares;
   }
@@ -53,8 +55,8 @@ public abstract class Order {
     return transactionType;
   }
 
-  public MarketTime getMarketTime() {
-    return marketTime;
+  public OrderType getOrderType() {
+    return orderType;
   }
 
   public int getBarsFromNow() {
@@ -67,7 +69,7 @@ public abstract class Order {
         .add("orderDate", orderDate)
         .add("numOfShares", numOfShares)
         .add("transactionType", transactionType)
-        .add("marketTime", marketTime)
+        .add("orderType", orderType)
         .add("barsFromNow", barsFromNow)
         .toString();
   }
@@ -80,12 +82,12 @@ public abstract class Order {
     return Objects.equal(orderDate, rhs.orderDate)
         && Objects.equal(transactionType, rhs.transactionType)
         && Objects.equal(numOfShares, rhs.numOfShares)
-        && Objects.equal(marketTime, rhs.marketTime)
+        && Objects.equal(orderType, rhs.orderType)
         && Objects.equal(barsFromNow, rhs.barsFromNow);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(orderDate, transactionType, numOfShares, marketTime, barsFromNow);
+    return Objects.hashCode(orderDate, transactionType, numOfShares, orderType, barsFromNow);
   }
 }

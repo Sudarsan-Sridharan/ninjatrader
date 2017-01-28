@@ -9,9 +9,9 @@ import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
 import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
-import com.bn.ninjatrader.simulation.model.MarketTime;
 import com.bn.ninjatrader.simulation.operation.function.HistoryValue;
 import com.bn.ninjatrader.simulation.operation.function.LowestValue;
+import com.bn.ninjatrader.simulation.operation.function.PropertyValue;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.statement.*;
 import com.google.inject.Guice;
@@ -23,9 +23,9 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 
-import static com.bn.ninjatrader.logical.expression.condition.Conditions.eq;
-import static com.bn.ninjatrader.logical.expression.condition.Conditions.lt;
+import static com.bn.ninjatrader.logical.expression.condition.Conditions.*;
 import static com.bn.ninjatrader.simulation.operation.Variables.*;
+import static com.bn.ninjatrader.simulation.order.type.OrderTypes.marketClose;
 
 /**
  * Created by Brad on 8/3/16.
@@ -72,38 +72,67 @@ public class Simulator {
         .to(LocalDate.now())
         .startingCash(100000)
 
-        // Buy Condition
-//        .addStatement(ConditionalStatement.builder()
-//            .condition(Conditions.create()
-//                .add(gt(PRICE_CLOSE, EMA.withPeriod(18)))
-//                .add(gt(EMA.withPeriod(18), EMA.withPeriod(50)))
-//                .add(gt(EMA.withPeriod(50), EMA.withPeriod(100)))
-//                .add(gt(EMA.withPeriod(100), EMA.withPeriod(200))))
-//            .then(BuyOrderStatement.builder().marketTime(MarketTime.CLOSE).barsFromNow(1).build())
-//            .build())
+        // Buy Condition -- EMA fan continuation
+        .addStatement(ConditionalStatement.builder()
+            .condition(Conditions.create()
+                .add(gt(PRICE_CLOSE, EMA.withPeriod(18)))
+                .add(gt(EMA.withPeriod(18), EMA.withPeriod(50)))
+                .add(gt(EMA.withPeriod(50), EMA.withPeriod(100)))
+                .add(gt(EMA.withPeriod(100), EMA.withPeriod(200)))
+                .add(lt(HistoryValue.of(EMA.withPeriod(18)).inNumOfBarsAgo(2), HistoryValue.of(EMA.withPeriod(50)).inNumOfBarsAgo(2)))
+            )
+            .then(BuyOrderStatement.builder().orderType(marketClose()).barsFromNow(0).build())
+            .build())
+
+        // Buy Condition -- EMA bounce
+        .addStatement(ConditionalStatement.builder()
+            .condition(Conditions.create()
+                .add(gt(PRICE_CLOSE, EMA.withPeriod(18)))
+                .add(gt(EMA.withPeriod(18), EMA.withPeriod(50)))
+                .add(gt(EMA.withPeriod(50), EMA.withPeriod(100)))
+                .add(gt(EMA.withPeriod(100), EMA.withPeriod(200)))
+                .add(Conditions.or(
+                    lt(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(1), EMA.withPeriod(50)),
+                    lt(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(2), EMA.withPeriod(50)),
+                    lt(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(3), EMA.withPeriod(50))
+                ))
+            )
+            .then(BuyOrderStatement.builder().orderType(marketClose()).barsFromNow(0).build())
+            .build())
 
         // Sell Condition
         .addStatement(ConditionalStatement.builder()
             .condition(Conditions.create()
-//                .add(lt(PRICE_CLOSE, ))
-                .add(lt(PRICE_CLOSE, EMA.withPeriod(18)))
-                .add(lt(EMA.withPeriod(18), EMA.withPeriod(50))))
-            .then(SellOrderStatement.builder().marketTime(MarketTime.CLOSE).barsFromNow(0).build())
+                .add(lt(PRICE_LOW, PropertyValue.of("LAST_PULLBACK"))))
+//                .add(lt(PRICE_CLOSE, EMA.withPeriod(18)))
+//                .add(lt(EMA.withPeriod(18), EMA.withPeriod(50))))
+            .then(MultiStatement.builder()
+                .add(SetPropertyStatement.builder().add("LAST_PULLBACK", 0).build())
+                .add(SellOrderStatement.builder().orderType(marketClose()).barsFromNow(0).build())
+                .build())
             .build())
+
+        // Initialize
+        .addStatement(ConditionalStatement.builder()
+            .condition(eq(BAR_INDEX, 1))
+            .then(SetPropertyStatement.builder().add("LAST_PULLBACK", 0).build())
+            .build()
+        )
 
         // Pullback Condition
         .addStatement(ConditionalStatement.builder()
             .condition(Conditions.create()
-                .add(eq(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(4), LowestValue.of(PRICE_LOW).inNumOfBarsAgo(15))))
+                .add(eq(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(4), LowestValue.of(PRICE_LOW).inNumOfBarsAgo(10)))
+                .add(lt(PropertyValue.of("LAST_PULLBACK"), HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(4)))
+            )
             .then(MultiStatement.builder()
                 .add(SetPropertyStatement.builder()
                     .add("LAST_PULLBACK", HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(4))
                     .build())
-                .add(BuyOrderStatement.builder().marketTime(MarketTime.CLOSE).barsFromNow(0).build())
+//                .add(BuyOrderStatement.builder().orderType(MarketTime.CLOSE).barsFromNow(0).build())
                 .build())
             .build()
         )
-
 
         .build();
 

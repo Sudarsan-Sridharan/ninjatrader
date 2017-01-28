@@ -1,13 +1,14 @@
 package com.bn.ninjatrader.simulation.statement;
 
 import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.model.Broker;
-import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.World;
-import com.bn.ninjatrader.logical.expression.operation.Variable;
-import com.bn.ninjatrader.simulation.model.MarketTime;
 import com.bn.ninjatrader.simulation.order.Order;
+import com.bn.ninjatrader.simulation.order.type.OrderType;
+import com.bn.ninjatrader.simulation.order.type.OrderTypes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -26,15 +27,15 @@ public class SellOrderStatement implements Statement {
     return new Builder();
   }
 
-  @JsonProperty("marketTime")
-  private final MarketTime marketTime;
+  @JsonProperty("orderType")
+  private final OrderType orderType;
 
   @JsonProperty("barsFromNow")
   private final int barsFromNow;
 
-  public SellOrderStatement(@JsonProperty("marketTime") final MarketTime marketTime,
+  public SellOrderStatement(@JsonProperty("orderType") final OrderType orderType,
                             @JsonProperty("barsFromNow") final int barsFromNow) {
-    this.marketTime = marketTime;
+    this.orderType = orderType;
     this.barsFromNow = barsFromNow;
   }
 
@@ -45,13 +46,13 @@ public class SellOrderStatement implements Statement {
 
     if (account.hasShares()) {
       final Price price = barData.getPrice();
-      final Order order = Order.sell().date(price.getDate()).at(marketTime).barsFromNow(barsFromNow).build();
+      final Order order = Order.sell().date(price.getDate()).at(orderType).barsFromNow(barsFromNow).build();
       broker.submitOrder(order, barData);
     }
   }
 
-  public MarketTime getMarketTime() {
-    return marketTime;
+  public OrderType getOrderType() {
+    return orderType;
   }
 
   public int getBarsFromNow() {
@@ -73,29 +74,29 @@ public class SellOrderStatement implements Statement {
       return true;
     }
     final SellOrderStatement rhs = (SellOrderStatement) obj;
-    return Objects.equal(marketTime, rhs.marketTime)
+    return Objects.equal(orderType, rhs.orderType)
         && Objects.equal(barsFromNow, rhs.barsFromNow);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(marketTime, barsFromNow);
+    return Objects.hashCode(orderType, barsFromNow);
   }
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this).add("marketTime", marketTime).add("barsFromNow", barsFromNow).toString();
+    return MoreObjects.toStringHelper(this).add("orderType", orderType).add("barsFromNow", barsFromNow).toString();
   }
 
   /**
    * Builder class
    */
   public static final class Builder {
-    private MarketTime marketTime = MarketTime.CLOSE;
+    private OrderType orderType = OrderTypes.marketClose();
     private int barsFromNow;
 
-    public Builder marketTime(final MarketTime marketTime) {
-      this.marketTime = marketTime;
+    public Builder orderType(final OrderType orderType) {
+      this.orderType = orderType;
       return this;
     }
 
@@ -104,7 +105,7 @@ public class SellOrderStatement implements Statement {
       return this;
     }
     public SellOrderStatement build() {
-      return new SellOrderStatement(marketTime, barsFromNow);
+      return new SellOrderStatement(orderType, barsFromNow);
     }
   }
 }

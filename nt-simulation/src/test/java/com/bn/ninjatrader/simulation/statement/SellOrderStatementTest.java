@@ -2,12 +2,12 @@ package com.bn.ninjatrader.simulation.statement;
 
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.model.Broker;
-import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.World;
-import com.bn.ninjatrader.simulation.model.MarketTime;
 import com.bn.ninjatrader.simulation.order.SellOrder;
+import com.bn.ninjatrader.simulation.order.type.OrderTypes;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
@@ -18,8 +18,6 @@ import org.mockito.ArgumentCaptor;
 import java.io.IOException;
 import java.time.LocalDate;
 
-import static com.bn.ninjatrader.simulation.model.MarketTime.CLOSE;
-import static com.bn.ninjatrader.simulation.model.MarketTime.OPEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -32,12 +30,14 @@ public class SellOrderStatementTest {
   private final Price price = Price.builder().date(now).close(1.1).build();
   private final BarData barData = BarData.builder().price(price).build();
 
-  private final SellOrderStatement orig = SellOrderStatement.builder().marketTime(CLOSE).barsFromNow(1).build();
-  private final SellOrderStatement equal = SellOrderStatement.builder().marketTime(CLOSE).barsFromNow(1).build();
+  private final SellOrderStatement orig = SellOrderStatement.builder()
+      .orderType(OrderTypes.marketClose()).barsFromNow(1).build();
+  private final SellOrderStatement equal = SellOrderStatement.builder()
+      .orderType(OrderTypes.marketClose()).barsFromNow(1).build();
   private final SellOrderStatement diffMarketTime = SellOrderStatement.builder()
-      .marketTime(OPEN).barsFromNow(1).build();
+      .orderType(OrderTypes.marketOpen()).barsFromNow(1).build();
   private final SellOrderStatement diffBarsFromNow = SellOrderStatement.builder()
-      .marketTime(CLOSE).barsFromNow(2).build();
+      .orderType(OrderTypes.marketClose()).barsFromNow(2).build();
 
   private World world;
   private Account account;
@@ -56,7 +56,7 @@ public class SellOrderStatementTest {
 
   @Test
   public void testBuild_shouldSetProperties() {
-    assertThat(orig.getMarketTime()).isEqualTo(MarketTime.CLOSE);
+    assertThat(orig.getOrderType()).isEqualTo(OrderTypes.marketClose());
     assertThat(orig.getBarsFromNow()).isEqualTo(1);
   }
 
@@ -65,7 +65,7 @@ public class SellOrderStatementTest {
     final ArgumentCaptor<SellOrder> orderCaptor = ArgumentCaptor.forClass(SellOrder.class);
     final ArgumentCaptor<BarData> barDataCaptor = ArgumentCaptor.forClass(BarData.class);
     final SellOrderStatement statement = SellOrderStatement.builder()
-        .marketTime(MarketTime.OPEN).barsFromNow(1).build();
+        .orderType(OrderTypes.marketOpen()).barsFromNow(1).build();
 
     // Account has shares to sell
     when(account.hasShares()).thenReturn(true);
@@ -77,7 +77,7 @@ public class SellOrderStatementTest {
     verify(broker).submitOrder(orderCaptor.capture(), barDataCaptor.capture());
 
     final SellOrder order = orderCaptor.getValue();
-    assertThat(order.getMarketTime()).isEqualTo(MarketTime.OPEN);
+    assertThat(order.getOrderType()).isEqualTo(OrderTypes.marketOpen());
     assertThat(order.getOrderDate()).isEqualTo(now);
     assertThat(order.getBarsFromNow()).isEqualTo(1);
     assertThat(order.getTransactionType()).isEqualTo(TransactionType.SELL);
@@ -88,7 +88,7 @@ public class SellOrderStatementTest {
   @Test
   public void testRunPendingOrders_shouldNotSubmitBuyOrder() {
     final SellOrderStatement statement = SellOrderStatement.builder()
-        .marketTime(MarketTime.OPEN).barsFromNow(1).build();
+        .orderType(OrderTypes.marketOpen()).barsFromNow(1).build();
 
     // Broker has no pending orders
     when(broker.hasPendingOrder()).thenReturn(Boolean.TRUE);

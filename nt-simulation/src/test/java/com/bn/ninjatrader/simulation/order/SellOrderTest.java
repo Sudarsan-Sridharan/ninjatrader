@@ -1,11 +1,11 @@
 package com.bn.ninjatrader.simulation.order;
 
+import com.bn.ninjatrader.simulation.order.type.OrderTypes;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import org.junit.Test;
 
 import java.time.LocalDate;
 
-import static com.bn.ninjatrader.simulation.model.MarketTime.CLOSE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -25,9 +25,9 @@ public class SellOrderTest {
 
   @Test
   public void testCreate_shouldSetProperties() {
-    final SellOrder order = Order.sell().date(now).at(CLOSE).shares(1000).barsFromNow(5).build();
+    final SellOrder order = Order.sell().date(now).at(OrderTypes.marketClose()).shares(1000).barsFromNow(5).build();
     assertThat(order.getOrderDate()).isEqualTo(now);
-    assertThat(order.getMarketTime()).isEqualTo(CLOSE);
+    assertThat(order.getOrderType()).isEqualTo(OrderTypes.marketClose());
     assertThat(order.getNumOfShares()).isEqualTo(1000);
     assertThat(order.getTransactionType()).isEqualTo(TransactionType.SELL);
   }
