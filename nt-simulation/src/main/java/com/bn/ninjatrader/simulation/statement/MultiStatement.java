@@ -2,7 +2,6 @@ package com.bn.ninjatrader.simulation.statement;
 
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.model.World;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
@@ -32,9 +31,9 @@ public class MultiStatement implements Statement {
   }
 
   @Override
-  public void run(final World world, final BarData barData) {
+  public void run(final BarData barData) {
     for (final Statement statement : statementList) {
-      statement.run(world, barData);
+      statement.run(barData);
     }
   }
 

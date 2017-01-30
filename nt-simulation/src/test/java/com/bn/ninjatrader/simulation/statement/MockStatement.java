@@ -2,7 +2,6 @@ package com.bn.ninjatrader.simulation.statement;
 
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.model.World;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -21,7 +20,7 @@ public class MockStatement implements Statement {
   private Set<Variable> variables = Sets.newHashSet();
 
   @Override
-  public void run(final World world, final BarData barData) {
+  public void run(final BarData barData) {
     runCount++;
   }
 

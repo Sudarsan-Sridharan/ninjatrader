@@ -1,7 +1,12 @@
 package com.bn.ninjatrader.logical.expression.operation;
 
+import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.logical.expression.model.Data;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Sets;
 import org.junit.Test;
+
+import java.io.IOException;
 
 import static com.bn.ninjatrader.logical.expression.operator.Operator.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,6 +21,13 @@ public class BinaryOperationTest {
   private final Variable var3 = Variable.of("DataType3");
   private final Variable var4 = Variable.of("DataType4");
   private final Variable var5 = Variable.of("DataType5");
+
+  private final BinaryOperation orig = BinaryOperation.of(var1, PLUS, var2);
+  private final BinaryOperation equal = BinaryOperation.of(var1, PLUS, var2);
+  private final BinaryOperation diffLhs = BinaryOperation.of(var3, PLUS, var2);
+  private final BinaryOperation diffRhs = BinaryOperation.of(var1, PLUS, var3);
+  private final BinaryOperation diffOperator = BinaryOperation.of(var1, MINUS, var2);
+
 
   private final Data data = new Data() {
     @Override
@@ -74,5 +86,31 @@ public class BinaryOperationTest {
     operation = BinaryOperation.of(operation, MULTIPLY, var2);
 
     assertThat(operation.getVariables()).containsExactlyInAnyOrder(var1, var4, var2);
+  }
+
+  @Test
+  public void testEquals_shouldBeEqualIfAllPropertiesAreEqual() {
+    assertThat(equal).isEqualTo(orig);
+    assertThat(orig).isEqualTo(orig).isEqualTo(equal)
+        .isNotEqualTo(null)
+        .isNotEqualTo("")
+        .isNotEqualTo(diffLhs)
+        .isNotEqualTo(diffRhs)
+        .isNotEqualTo(diffOperator);
+  }
+
+  @Test
+  public void testHashCode_shouldHaveEqualHashcodeIfAllPropertiesAreEqual() {
+    assertThat(Sets.newHashSet(orig, equal, diffLhs, diffRhs, diffOperator))
+        .containsExactlyInAnyOrder(orig, diffLhs, diffRhs, diffOperator);
+  }
+
+  @Test
+  public void testSerializeDeserialize_shouldReturnEqualObject() throws IOException {
+    final ObjectMapper om = TestUtil.objectMapper();
+    final BinaryOperation operation = BinaryOperation.of(var1, PLUS, BinaryOperation.of(3, PLUS, var2));
+    final String json = om.writeValueAsString(operation);
+    final Operation deserialized = om.readValue(json, Operation.class);
+    assertThat(deserialized).isEqualTo(operation);
   }
 }

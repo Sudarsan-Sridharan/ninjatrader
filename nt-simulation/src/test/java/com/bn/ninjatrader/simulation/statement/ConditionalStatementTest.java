@@ -33,10 +33,10 @@ public class ConditionalStatementTest {
         .condition(TrueCondition.instance())
         .then(thenStatement).otherwise(elseStatement).build();
 
-    trueStatement.run(world, barData);
+    trueStatement.run(barData);
 
-    verify(thenStatement).run(world, barData);
-    verify(elseStatement, times(0)).run(world, barData);
+    verify(thenStatement).run(barData);
+    verify(elseStatement, times(0)).run(barData);
   }
 
   @Test
@@ -45,9 +45,9 @@ public class ConditionalStatementTest {
         .condition(FalseCondition.instance())
         .then(thenStatement).otherwise(elseStatement).build();
 
-    trueStatement.run(world, barData);
+    trueStatement.run(barData);
 
-    verify(elseStatement).run(world, barData);
-    verify(thenStatement, times(0)).run(world, barData);
+    verify(elseStatement).run(barData);
+    verify(thenStatement, times(0)).run(barData);
   }
 }

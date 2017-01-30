@@ -47,7 +47,7 @@ public class MultiStatementTest {
   public void testRun_shouldRunAllStatements() {
     final Statement multi = MultiStatement.builder().addAll(mockStatement1, mockStatement2).build();
 
-    multi.run(world, barData);
+    multi.run(barData);
 
     assertThat(mockStatement1.isRun()).isTrue();
     assertThat(mockStatement2.isRun()).isTrue();

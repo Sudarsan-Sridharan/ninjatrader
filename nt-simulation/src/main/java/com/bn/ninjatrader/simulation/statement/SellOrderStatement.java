@@ -15,7 +15,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
-import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -40,7 +39,8 @@ public class SellOrderStatement implements Statement {
   }
 
   @Override
-  public void run(final World world, final BarData barData) {
+  public void run(final BarData barData) {
+    final World world = barData.getWorld();
     final Broker broker = world.getBroker();
     final Account account = world.getAccount();
 
@@ -62,7 +62,7 @@ public class SellOrderStatement implements Statement {
   @JsonIgnore
   @Override
   public Set<Variable> getVariables() {
-    return Collections.emptySet();
+    return orderType.getVariables();
   }
 
   @Override

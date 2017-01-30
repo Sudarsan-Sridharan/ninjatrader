@@ -23,8 +23,6 @@ public class NtLocalDateTimeDeserializer extends LocalDateTimeDeserializer {
       return null;
     }
 
-    System.out.println("SHITAKE MUSHROOMS: " + string);
-
     return LocalDateTime.parse(string, DateFormats.DB_DATE_TIME_FORMAT);
   }
 

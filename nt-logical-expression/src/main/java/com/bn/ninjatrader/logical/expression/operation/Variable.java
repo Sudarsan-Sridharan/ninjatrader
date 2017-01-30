@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.logical.expression.operation;
 
 import com.bn.ninjatrader.logical.expression.model.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
@@ -13,6 +14,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * @author bradwee2000@gmail.com
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Variable<T extends Data> implements Operation<T> {
 
   public static final Variable of(final String dataType) {

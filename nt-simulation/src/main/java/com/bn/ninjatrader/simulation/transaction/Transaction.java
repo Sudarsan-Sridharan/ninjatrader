@@ -9,10 +9,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import java.time.LocalDate;
 
@@ -104,48 +102,32 @@ public abstract class Transaction {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .append("symbol", symbol)
-        .append("date", date)
-        .append("action", transactionType)
-        .append("shares", numOfShares)
-        .append("price", price)
-        .append("barIndex", barIndex)
+    return MoreObjects.toStringHelper(this)
+        .add("symbol", symbol)
+        .add("date", date)
+        .add("action", transactionType)
+        .add("shares", numOfShares)
+        .add("price", price)
+        .add("barIndex", barIndex)
         .toString();
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder()
-        .append(symbol)
-        .append(barIndex)
-        .append(date)
-        .append(transactionType)
-        .append(price)
-        .append(numOfShares)
-        .toHashCode();
+    return Objects.hashCode(symbol, barIndex, date, transactionType, price, numOfShares);
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (obj == null) { return false; }
-    if (!(obj instanceof Transaction)) {
-      return false;
-    }
+  public boolean equals(final Object obj) {
+    if (obj == null || !(obj instanceof Transaction)) { return false; }
     if (obj == this) { return true; }
-    if (obj.getClass() != getClass()) {
-      return false;
-    }
-
-    Transaction rhs = (Transaction) obj;
-    return new EqualsBuilder()
-        .append(symbol, rhs.symbol)
-        .append(barIndex, rhs.barIndex)
-        .append(date, rhs.date)
-        .append(transactionType, rhs.transactionType)
-        .append(price, rhs.price)
-        .append(numOfShares, rhs.numOfShares)
-        .isEquals();
+    final Transaction rhs = (Transaction) obj;
+    return Objects.equal(symbol, rhs.symbol)
+        && Objects.equal(barIndex, rhs.barIndex)
+        && Objects.equal(date, rhs.date)
+        && Objects.equal(transactionType, rhs.transactionType)
+        && Objects.equal(price, rhs.price)
+        && Objects.equal(numOfShares, rhs.numOfShares);
   }
 
   /**

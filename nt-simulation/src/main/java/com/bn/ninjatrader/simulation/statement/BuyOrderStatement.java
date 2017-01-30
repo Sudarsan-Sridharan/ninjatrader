@@ -44,9 +44,10 @@ public class BuyOrderStatement implements Statement {
   }
 
   @Override
-  public void run(final World world, final BarData barData) {
-    final Broker broker = barData.getWorld().getBroker();
-    final Account account = barData.getWorld().getAccount();
+  public void run(final BarData barData) {
+    final World world = barData.getWorld();
+    final Broker broker = world.getBroker();
+    final Account account = world.getAccount();
 
     if (!account.hasShares() && !broker.hasPendingOrder()) {
       final Price price = barData.getPrice();

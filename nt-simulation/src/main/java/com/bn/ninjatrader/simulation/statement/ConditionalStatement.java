@@ -2,7 +2,6 @@ package com.bn.ninjatrader.simulation.statement;
 
 import com.bn.ninjatrader.logical.expression.condition.Condition;
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -45,11 +44,11 @@ public class ConditionalStatement implements Statement {
   }
 
   @Override
-  public void run(final World world, final BarData barData) {
+  public void run(final BarData barData) {
     if (condition.isMatch(barData)) {
-      thenStatement.run(world, barData);
+      thenStatement.run(barData);
     } else {
-      elseStatement.run(world, barData);
+      elseStatement.run(barData);
     }
   }
 

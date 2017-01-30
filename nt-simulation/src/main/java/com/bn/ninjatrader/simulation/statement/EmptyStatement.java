@@ -1,7 +1,6 @@
 package com.bn.ninjatrader.simulation.statement;
 
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -23,7 +22,7 @@ public class EmptyStatement implements Statement {
   }
 
   @Override
-  public void run(final World world, final BarData barData) {
+  public void run(final BarData barData) {
     return;// Do nothing
   }
 

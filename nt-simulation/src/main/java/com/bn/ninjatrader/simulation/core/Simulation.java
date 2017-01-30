@@ -78,7 +78,7 @@ public class Simulation {
 
   private void processBar(final BarData barData) {
     for (final Statement statement : statements) {
-      statement.run(world, barData);
+      statement.run(barData);
     }
     broker.processPendingOrders(barData);
   }

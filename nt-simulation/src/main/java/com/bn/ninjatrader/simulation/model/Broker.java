@@ -44,6 +44,8 @@ public class Broker {
     checkNotNull(order, "order must not be null.");
     checkNotNull(barData, "barData must not be null.");
 
+    LOG.info("Submitted order {}", order);
+
     pendingOrders.add(PendingOrder.of(order, barData));
   }
 

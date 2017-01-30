@@ -36,6 +36,7 @@ public class PendingOrder {
    * @return true if Order is ready for processing.
    */
   public boolean isReadyToProcess(final BarData currentBarData) {
-    return order.getBarsFromNow() + submittedBarData.getIndex() <= currentBarData.getIndex();
+    return order.getOrderType().isFulfillable(currentBarData)
+        && order.getBarsFromNow() + submittedBarData.getIndex() <= currentBarData.getIndex();
   }
 }

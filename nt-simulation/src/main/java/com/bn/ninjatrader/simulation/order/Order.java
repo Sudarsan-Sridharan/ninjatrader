@@ -21,8 +21,6 @@ public abstract class Order {
   private final OrderType orderType;
   private final int barsFromNow;
 
-  //TODO BUY/SELL AT PRICE
-
   public static BuyOrder.BuyOrderBuilder buy() {
     return new BuyOrder.BuyOrderBuilder();
   }

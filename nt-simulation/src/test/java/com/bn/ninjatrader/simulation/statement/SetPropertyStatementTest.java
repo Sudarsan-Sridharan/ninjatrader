@@ -64,7 +64,7 @@ public class SetPropertyStatementTest {
 
   @Test
   public void testRun_shouldSetWorldProperties() {
-    orig.run(world, barData);
+    orig.run(barData);
 
     assertThat(properties).containsOnlyKeys("KEY1", "KEY2", "KEY3");
     assertThat(properties.get("KEY1").getValue()).isEqualTo(20d);

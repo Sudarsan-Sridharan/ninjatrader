@@ -28,7 +28,6 @@ public class SellOrderStatementTest {
 
   private final LocalDate now = LocalDate.of(2016, 2, 1);
   private final Price price = Price.builder().date(now).close(1.1).build();
-  private final BarData barData = BarData.builder().price(price).build();
 
   private final SellOrderStatement orig = SellOrderStatement.builder()
       .orderType(OrderTypes.marketClose()).barsFromNow(1).build();
@@ -42,13 +41,17 @@ public class SellOrderStatementTest {
   private World world;
   private Account account;
   private Broker broker;
+  private BarData barData;
 
   @Before
   public void before() {
     world = mock(World.class);
     broker = mock(Broker.class);
     account = mock(Account.class);
+    barData = mock(BarData.class);
 
+    when(barData.getWorld()).thenReturn(world);
+    when(barData.getPrice()).thenReturn(price);
     when(world.getBroker()).thenReturn(broker);
     when(world.getAccount()).thenReturn(account);
     when(account.getCash()).thenReturn(100000d);
@@ -71,7 +74,7 @@ public class SellOrderStatementTest {
     when(account.hasShares()).thenReturn(true);
     when(account.getNumOfShares()).thenReturn(100000l);
 
-    statement.run(world, barData);
+    statement.run(barData);
 
     // Verify order submitted to broker
     verify(broker).submitOrder(orderCaptor.capture(), barDataCaptor.capture());
@@ -93,7 +96,7 @@ public class SellOrderStatementTest {
     // Broker has no pending orders
     when(broker.hasPendingOrder()).thenReturn(Boolean.TRUE);
 
-    statement.run(world, barData);
+    statement.run(barData);
 
     // Verify order submitted to broker
     verify(broker, times(0)).submitOrder(any(SellOrder.class), any(BarData.class));

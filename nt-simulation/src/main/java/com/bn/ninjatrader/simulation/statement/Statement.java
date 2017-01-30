@@ -1,7 +1,6 @@
 package com.bn.ninjatrader.simulation.statement;
 
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -26,7 +25,7 @@ import java.util.Set;
 })
 public interface Statement {
 
-  void run(final World world, final BarData barData);
+  void run(final BarData barData);
 
   Set<Variable> getVariables();
 }

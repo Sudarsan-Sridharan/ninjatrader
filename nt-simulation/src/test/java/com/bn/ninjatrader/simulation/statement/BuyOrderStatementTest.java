@@ -73,7 +73,7 @@ public class BuyOrderStatementTest {
     // Broker has no pending orders
     when(broker.hasPendingOrder()).thenReturn(Boolean.FALSE);
 
-    statement.run(world, barData);
+    statement.run(barData);
 
     // Verify order submitted to broker
     verify(broker).submitOrder(orderCaptor.capture(), barDataCaptor.capture());
@@ -93,7 +93,7 @@ public class BuyOrderStatementTest {
     // Broker has no pending orders
     when(broker.hasPendingOrder()).thenReturn(Boolean.TRUE);
 
-    statement.run(world, barData);
+    statement.run(barData);
 
     // Verify order submitted to broker
     verify(broker, times(0)).submitOrder(any(BuyOrder.class), any(BarData.class));

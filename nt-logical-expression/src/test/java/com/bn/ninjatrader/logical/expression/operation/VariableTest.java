@@ -22,8 +22,6 @@ public class VariableTest {
   private final Variable diffDataType = Variable.of("DataType2").withPeriod(10);
   private final Variable diffPeriod = Variable.of("DataType3").withPeriod(20);
 
-  private final ObjectMapper om = TestUtil.objectMapper();
-
   @Test
   public void testEquals_shouldBeEqualIfAllPropertiesAreEqual() {
     assertThat(equal).isEqualTo(orig);
@@ -42,6 +40,7 @@ public class VariableTest {
 
   @Test
   public void testSerializeDeserialize_shouldReturnEqualObject() throws IOException {
+    final ObjectMapper om = TestUtil.objectMapper();
     final Variable variable = Variable.of("DataType1").withPeriod(200);
     final String json = om.writeValueAsString(variable);
     final Operation deserialized = om.readValue(json, Operation.class);
