@@ -76,31 +76,32 @@ public class CalcTask extends Task {
     LOG.debug("Executing task with arguments", args);
 
     try {
-      final Collection<String> processNames = args.get(ARG_PROCESS_NAME);
-      final Collection<String> symbols = args.get(ARG_SYMBOL);
+      final Collection<String> inputProcessNames = args.get(ARG_PROCESS_NAME);
+      final Collection<String> inputSymbols = args.get(ARG_SYMBOL);
       final LocalDate from = getDateFromArgs(args, ARG_FROM_DATE).orElse(LocalDate.now(clock));
       final LocalDate to = getDateFromArgs(args, ARG_TO_DATE).orElse(LocalDate.now(clock));
 
       // Create list of processes to run.
       final List<CalcProcess> calcProcesses = Lists.newArrayList();
-      if (processNames.isEmpty() || processNames.contains("all")) {
+      if (inputProcessNames.isEmpty() || inputProcessNames.contains("all")) {
         calcProcesses.addAll(allCalcProcesses);
       } else {
-        for (final String processName : processNames) {
+        for (final String processName : inputProcessNames) {
           final CalcProcess calcProcess = processMap.get(processName);
           checkNotNull(calcProcess, "calcProcess with name [%s] is not found", processName);
           calcProcesses.add(calcProcess);
         }
       }
 
-      for (final CalcProcess calcProcess : calcProcesses) {
-        LOG.info("Executing {} process: {}", calcProcess.getProcessName(), calcProcess);
-        if (symbols == null || symbols.isEmpty()) {
-          calcForAllSymbols(calcProcess, from, to);
-        } else {
-          calcForSymbols(calcProcess, symbols, from, to);
-        }
+      // Create list of symbols to calc.
+      final List<String> symbols = Lists.newArrayList();
+      if (inputSymbols == null || inputSymbols.isEmpty()) {
+        symbols.addAll(priceDao.findAllSymbols());
+      } else {
+        symbols.addAll(inputSymbols);
       }
+
+      runEachCalcProcessForEachSymbol(calcProcesses, symbols, from, to);
 
       printWriter.append(MSG_SUCCESS).append("\n");
     } catch (final Exception e) {
@@ -109,25 +110,22 @@ public class CalcTask extends Task {
     }
   }
 
-
-  private Optional<LocalDate> getDateFromArgs(ImmutableMultimap<String, String> args, String name) {
+  private Optional<LocalDate> getDateFromArgs(final ImmutableMultimap<String, String> args, final String name) {
     if (args.containsKey(name)) {
       return Optional.of(LocalDate.parse(args.get(name).asList().get(0), DateFormats.DB_DATE_FORMAT));
     }
     return Optional.empty();
   }
 
-  private void calcForAllSymbols(final CalcProcess calcProcess, final LocalDate fromDate, final LocalDate toDate) {
-    calcForSymbols(calcProcess, priceDao.findAllSymbols(), fromDate, toDate);
-  }
-
-  private void calcForSymbols(final CalcProcess calcProcess,
-                              final Collection<String> symbols,
-                              final LocalDate fromDate,
-                              final LocalDate toDate) {
-    for (final String symbol : symbols) {
-      LOG.info("calc for {} -- symbol: {} from: {} to: {}", calcProcess.getProcessName(), symbol, fromDate, toDate);
-      calcProcess.process(calcSymbol(symbol).from(fromDate).to(toDate));
+  private void runEachCalcProcessForEachSymbol(final Collection<CalcProcess> calcProcesses,
+                                               final Collection<String> symbols,
+                                               final LocalDate fromDate,
+                                               final LocalDate toDate) {
+    for (final CalcProcess calcProcess : calcProcesses) {
+      for (final String symbol : symbols) {
+        LOG.info("Calc [{}] for symbol [{}] from [{}] to [{}]", calcProcess.getProcessName(), symbol, fromDate, toDate);
+        calcProcess.process(calcSymbol(symbol).from(fromDate).to(toDate));
+      }
     }
   }
 }

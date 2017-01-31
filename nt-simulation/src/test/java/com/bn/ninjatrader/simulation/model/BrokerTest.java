@@ -82,4 +82,15 @@ public class BrokerTest {
     final Transaction buy = broker.getLastTransaction(TransactionType.BUY).get();
     assertThat(buy).isEqualTo(buyTransaction);
   }
+
+  @Test
+  public void testRemovePendingOrder_shouldRemovePendingOrders() {
+    broker.submitOrder(buyOrder, barData);
+    broker.submitOrder(buyOrder, barData);
+    assertThat(broker.getPendingOrders()).hasSize(2);
+
+    broker.removePendingOrders(broker.getPendingOrders());
+
+    assertThat(broker.getPendingOrders()).isEmpty();
+  }
 }

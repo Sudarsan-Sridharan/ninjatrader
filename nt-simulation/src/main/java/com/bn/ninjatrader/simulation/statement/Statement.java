@@ -18,6 +18,7 @@ import java.util.Set;
 @JsonSubTypes({
     @JsonSubTypes.Type(value = BuyOrderStatement.class, name = "buy"),
     @JsonSubTypes.Type(value = SellOrderStatement.class, name = "sell"),
+    @JsonSubTypes.Type(value = CancelOrderStatement.class, name = "cancel"),
     @JsonSubTypes.Type(value = ConditionalStatement.class, name = "cond"),
     @JsonSubTypes.Type(value = SetPropertyStatement.class, name = "prop"),
     @JsonSubTypes.Type(value = MultiStatement.class, name = "multi"),

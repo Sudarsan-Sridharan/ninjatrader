@@ -1,10 +1,10 @@
 package com.bn.ninjatrader.simulation.model;
 
-import com.bn.ninjatrader.simulation.order.executor.OrderExecutor;
-import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.annotation.OrderExecutors;
+import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
+import com.bn.ninjatrader.simulation.order.executor.OrderExecutor;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.google.common.collect.Lists;
@@ -14,6 +14,7 @@ import com.google.inject.assistedinject.Assisted;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -69,7 +70,6 @@ public class Broker {
         fulfilledOrders.add(pendingOrder);
       }
     }
-
     pendingOrders.removeAll(fulfilledOrders);
   }
 
@@ -84,6 +84,18 @@ public class Broker {
 
   public boolean hasPendingOrder() {
     return !pendingOrders.isEmpty();
+  }
+
+  public List<PendingOrder> getPendingOrders() {
+    return Lists.newArrayList(pendingOrders);
+  }
+
+  public void removePendingOrder(final PendingOrder pendingOrder) {
+    pendingOrders.remove(pendingOrder);
+  }
+
+  public void removePendingOrders(final Collection<PendingOrder> pendingOrders) {
+    this.pendingOrders.removeAll(pendingOrders);
   }
 
   public Optional<Transaction> getLastTransaction(final TransactionType transactionType) {
