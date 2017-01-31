@@ -86,6 +86,6 @@ public class SellTransactionTest {
     final SellTransaction transaction = Transaction.sell().date(now).price(100).shares(1000).build();
     final String serialized = om.writeValueAsString(transaction);
     final Transaction deserialized = om.readValue(serialized, Transaction.class);
-    assertThat(deserialized).isInstanceOf(SellTransaction.class).isEqualTo(transaction);
+    assertThat(deserialized).isInstanceOf(Transaction.class).isEqualTo(transaction);
   }
 }

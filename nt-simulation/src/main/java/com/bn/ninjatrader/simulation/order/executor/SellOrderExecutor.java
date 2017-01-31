@@ -1,9 +1,11 @@
 package com.bn.ninjatrader.simulation.order.executor;
 
 import com.bn.ninjatrader.common.boardlot.BoardLotTable;
+import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.order.Order;
+import com.bn.ninjatrader.simulation.model.Portfolio;
+import com.bn.ninjatrader.simulation.order.PendingOrder;
 import com.bn.ninjatrader.simulation.order.type.OrderType;
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
@@ -21,20 +23,24 @@ public class SellOrderExecutor extends OrderExecutor {
     super(boardLotTable);
   }
 
-  public SellTransaction execute(final Account account, final Order order, final BarData barData) {
-    checkConditions(account, order, barData);
+  public SellTransaction execute(final Account account, final PendingOrder pendingOrder, final BarData currentBarData) {
+    checkConditions(account, pendingOrder, currentBarData);
 
-    final OrderType orderType = order.getOrderType();
-    final double soldPrice = orderType.getFulfilledPrice(barData);
-    final long numOfShares = account.getNumOfShares();
+    final OrderType orderType = pendingOrder.getOrder().getOrderType();
+    final BarData submittedBarData = pendingOrder.getSubmittedBarData();
+    final Portfolio portfolio = account.getPortfolio();
+    final double soldPrice = orderType.getFulfilledPrice(submittedBarData, currentBarData);
+    final long numOfShares = portfolio.getTotalShares();
     final double profit = calculateProfit(account, soldPrice);
+    final double profitPcnt = NumUtil.divide(profit, portfolio.getEquityValue());
 
     final SellTransaction sellTransaction = Transaction.sell()
-        .date(barData.getPrice().getDate())
+        .date(currentBarData.getPrice().getDate())
         .price(soldPrice)
         .shares(numOfShares)
         .profit(profit)
-        .barIndex(barData.getIndex())
+        .profitPcnt(profitPcnt)
+        .barIndex(currentBarData.getIndex())
         .build();
 
     updateAccount(account, sellTransaction);

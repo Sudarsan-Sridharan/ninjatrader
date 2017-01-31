@@ -12,9 +12,10 @@ public class SellOrder extends Order {
 
   private SellOrder(final LocalDate orderDate,
                     final OrderType orderType,
+                    final OrderConfig orderConfig,
                     final int daysFromNow,
                     final long numOfShares) {
-    super(orderDate, TransactionType.SELL, orderType, daysFromNow, numOfShares);
+    super(orderDate, TransactionType.SELL, orderType, orderConfig, daysFromNow, numOfShares);
   }
 
   public static class SellOrderBuilder extends OrderBuilder<SellOrderBuilder> {
@@ -26,7 +27,7 @@ public class SellOrder extends Order {
 
     @Override
     public SellOrder build() {
-      return new SellOrder(getOrderDate(), getOrderType(), getDaysFromNow(), getNumOfShares());
+      return new SellOrder(getOrderDate(), getOrderType(), getOrderConfig(), getDaysFromNow(), getNumOfShares());
     }
   }
 }

@@ -6,8 +6,8 @@ import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.model.Broker;
 import com.bn.ninjatrader.simulation.model.World;
+import com.bn.ninjatrader.simulation.order.OrderConfig;
 import com.bn.ninjatrader.simulation.order.SellOrder;
-import com.bn.ninjatrader.simulation.order.type.OrderTypes;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
@@ -18,6 +18,8 @@ import org.mockito.ArgumentCaptor;
 import java.io.IOException;
 import java.time.LocalDate;
 
+import static com.bn.ninjatrader.simulation.order.type.OrderTypes.marketClose;
+import static com.bn.ninjatrader.simulation.order.type.OrderTypes.marketOpen;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -29,14 +31,11 @@ public class SellOrderStatementTest {
   private final LocalDate now = LocalDate.of(2016, 2, 1);
   private final Price price = Price.builder().date(now).close(1.1).build();
 
-  private final SellOrderStatement orig = SellOrderStatement.builder()
-      .orderType(OrderTypes.marketClose()).barsFromNow(1).build();
-  private final SellOrderStatement equal = SellOrderStatement.builder()
-      .orderType(OrderTypes.marketClose()).barsFromNow(1).build();
-  private final SellOrderStatement diffMarketTime = SellOrderStatement.builder()
-      .orderType(OrderTypes.marketOpen()).barsFromNow(1).build();
-  private final SellOrderStatement diffBarsFromNow = SellOrderStatement.builder()
-      .orderType(OrderTypes.marketClose()).barsFromNow(2).build();
+  private final SellOrderStatement orig = SellOrderStatement.builder().build();
+  private final SellOrderStatement equal = SellOrderStatement.builder().orderType(marketClose()).build();
+  private final SellOrderStatement diffMarketTime = SellOrderStatement.builder().orderType(marketOpen()).build();
+  private final SellOrderStatement diffConfig = SellOrderStatement.builder()
+      .orderType(marketClose()).orderConfig(OrderConfig.defaults().barsFromNow(1)).build();
 
   private World world;
   private Account account;
@@ -54,13 +53,14 @@ public class SellOrderStatementTest {
     when(barData.getPrice()).thenReturn(price);
     when(world.getBroker()).thenReturn(broker);
     when(world.getAccount()).thenReturn(account);
-    when(account.getCash()).thenReturn(100000d);
+    when(account.getLiquidCash()).thenReturn(100000d);
   }
 
   @Test
   public void testBuild_shouldSetProperties() {
-    assertThat(orig.getOrderType()).isEqualTo(OrderTypes.marketClose());
-    assertThat(orig.getBarsFromNow()).isEqualTo(1);
+    assertThat(orig.getOrderType()).isEqualTo(marketClose());
+    assertThat(orig.getOrderConfig()).isEqualTo(OrderConfig.defaults());
+    assertThat(diffConfig.getOrderConfig()).isEqualTo(OrderConfig.defaults().barsFromNow(1));
   }
 
   @Test
@@ -68,7 +68,7 @@ public class SellOrderStatementTest {
     final ArgumentCaptor<SellOrder> orderCaptor = ArgumentCaptor.forClass(SellOrder.class);
     final ArgumentCaptor<BarData> barDataCaptor = ArgumentCaptor.forClass(BarData.class);
     final SellOrderStatement statement = SellOrderStatement.builder()
-        .orderType(OrderTypes.marketOpen()).barsFromNow(1).build();
+        .orderType(marketOpen()).orderConfig(OrderConfig.withBarsFromNow(1)).build();
 
     // Account has shares to sell
     when(account.hasShares()).thenReturn(true);
@@ -80,9 +80,9 @@ public class SellOrderStatementTest {
     verify(broker).submitOrder(orderCaptor.capture(), barDataCaptor.capture());
 
     final SellOrder order = orderCaptor.getValue();
-    assertThat(order.getOrderType()).isEqualTo(OrderTypes.marketOpen());
+    assertThat(order.getOrderType()).isEqualTo(marketOpen());
     assertThat(order.getOrderDate()).isEqualTo(now);
-    assertThat(order.getBarsFromNow()).isEqualTo(1);
+    assertThat(order.getOrderConfig().getBarsFromNow()).isEqualTo(1);
     assertThat(order.getTransactionType()).isEqualTo(TransactionType.SELL);
 
     assertThat(barDataCaptor.getValue()).isEqualTo(barData);
@@ -91,7 +91,7 @@ public class SellOrderStatementTest {
   @Test
   public void testRunPendingOrders_shouldNotSubmitBuyOrder() {
     final SellOrderStatement statement = SellOrderStatement.builder()
-        .orderType(OrderTypes.marketOpen()).barsFromNow(1).build();
+        .orderType(marketOpen()).orderConfig(OrderConfig.withBarsFromNow(1)).build();
 
     // Broker has no pending orders
     when(broker.hasPendingOrder()).thenReturn(Boolean.TRUE);
@@ -109,13 +109,13 @@ public class SellOrderStatementTest {
         .isNotEqualTo(null)
         .isNotEqualTo("")
         .isNotEqualTo(diffMarketTime)
-        .isNotEqualTo(diffBarsFromNow);
+        .isNotEqualTo(diffConfig);
   }
 
   @Test
   public void testHashcode_shouldHaveEqualHashcodeIfAllPropertiesAreEqual() {
-    assertThat(Sets.newHashSet(orig, equal, diffBarsFromNow, diffMarketTime))
-        .containsExactlyInAnyOrder(orig, diffBarsFromNow, diffMarketTime);
+    assertThat(Sets.newHashSet(orig, equal, diffConfig, diffMarketTime))
+        .containsExactlyInAnyOrder(orig, diffConfig, diffMarketTime);
   }
 
   @Test

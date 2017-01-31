@@ -5,8 +5,7 @@ import com.bn.ninjatrader.common.util.NtLocalDateSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.google.common.base.MoreObjects;
 
 import java.time.LocalDate;
 
@@ -31,8 +30,13 @@ public class BuyTransaction extends Transaction {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .appendSuper(super.toString())
+    return MoreObjects.toStringHelper(this)
+        .add("symbol", getSymbol())
+        .add("date", getDate())
+        .add("transactionType", getTransactionType())
+        .add("shares", getNumOfShares())
+        .add("price", getPrice())
+        .add("barIndex", getBarIndex())
         .toString();
   }
 

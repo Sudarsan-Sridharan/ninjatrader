@@ -7,6 +7,7 @@ import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.model.Broker;
 import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.simulation.order.BuyOrder;
+import com.bn.ninjatrader.simulation.order.OrderConfig;
 import com.bn.ninjatrader.simulation.order.type.OrderTypes;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,18 +28,17 @@ import static org.mockito.Mockito.*;
 public class BuyOrderStatementTest {
 
   private final LocalDate now = LocalDate.of(2016, 2, 1);
-  private final BuyOrderStatement statement = BuyOrderStatement.builder()
-      .orderType(OrderTypes.marketClose()).barsFromNow(1).build();
+
   private final Price price = Price.builder().date(now).close(1.1).build();
 
   private final BuyOrderStatement orig = BuyOrderStatement.builder()
-      .orderType(OrderTypes.marketClose()).barsFromNow(1).build();
+      .orderType(OrderTypes.marketClose()).build();
   private final BuyOrderStatement equal = BuyOrderStatement.builder()
-      .orderType(OrderTypes.marketClose()).barsFromNow(1).build();
+      .orderType(OrderTypes.marketClose()).build();
   private final BuyOrderStatement diffMarketTime = BuyOrderStatement.builder()
-      .orderType(OrderTypes.marketOpen()).barsFromNow(1).build();
-  private final BuyOrderStatement diffBarsFromNow = BuyOrderStatement.builder()
-      .orderType(OrderTypes.marketClose()).barsFromNow(2).build();
+      .orderType(OrderTypes.marketOpen()).build();
+  private final BuyOrderStatement diffConfig = BuyOrderStatement.builder()
+      .orderType(OrderTypes.marketClose()).orderConfig(OrderConfig.defaults().barsFromNow(1)).build();
 
   private World world;
   private Account account;
@@ -56,13 +56,14 @@ public class BuyOrderStatementTest {
     when(barData.getPrice()).thenReturn(price);
     when(world.getBroker()).thenReturn(broker);
     when(world.getAccount()).thenReturn(account);
-    when(account.getCash()).thenReturn(100000d);
+    when(account.getLiquidCash()).thenReturn(100000d);
   }
 
   @Test
   public void testBuild_shouldSetProperties() {
     assertThat(orig.getOrderType()).isEqualTo(OrderTypes.marketClose());
-    assertThat(orig.getBarsFromNow()).isEqualTo(1);
+    assertThat(orig.getOrderConfig()).isEqualTo(OrderConfig.defaults());
+    assertThat(diffConfig.getOrderConfig()).isEqualTo(OrderConfig.defaults().barsFromNow(1));
   }
 
   @Test
@@ -73,7 +74,7 @@ public class BuyOrderStatementTest {
     // Broker has no pending orders
     when(broker.hasPendingOrder()).thenReturn(Boolean.FALSE);
 
-    statement.run(barData);
+    orig.run(barData);
 
     // Verify order submitted to broker
     verify(broker).submitOrder(orderCaptor.capture(), barDataCaptor.capture());
@@ -82,7 +83,7 @@ public class BuyOrderStatementTest {
     assertThat(order.getCashAmount()).isEqualTo(100000d);
     assertThat(order.getOrderType()).isEqualTo(OrderTypes.marketClose());
     assertThat(order.getOrderDate()).isEqualTo(now);
-    assertThat(order.getBarsFromNow()).isEqualTo(1);
+    assertThat(order.getOrderConfig()).isEqualTo(OrderConfig.defaults());
     assertThat(order.getTransactionType()).isEqualTo(TransactionType.BUY);
 
     assertThat(barDataCaptor.getValue()).isEqualTo(barData);
@@ -93,7 +94,7 @@ public class BuyOrderStatementTest {
     // Broker has no pending orders
     when(broker.hasPendingOrder()).thenReturn(Boolean.TRUE);
 
-    statement.run(barData);
+    orig.run(barData);
 
     // Verify order submitted to broker
     verify(broker, times(0)).submitOrder(any(BuyOrder.class), any(BarData.class));
@@ -106,13 +107,13 @@ public class BuyOrderStatementTest {
         .isNotEqualTo(null)
         .isNotEqualTo("")
         .isNotEqualTo(diffMarketTime)
-        .isNotEqualTo(diffBarsFromNow);
+        .isNotEqualTo(diffConfig);
   }
 
   @Test
   public void testHashcode_shouldHaveEqualHashcodeIfAllPropertiesAreEqual() {
-    assertThat(Sets.newHashSet(orig, equal, diffBarsFromNow, diffMarketTime))
-        .containsExactlyInAnyOrder(orig, diffBarsFromNow, diffMarketTime);
+    assertThat(Sets.newHashSet(orig, equal, diffConfig, diffMarketTime))
+        .containsExactlyInAnyOrder(orig, diffConfig, diffMarketTime);
   }
 
   @Test

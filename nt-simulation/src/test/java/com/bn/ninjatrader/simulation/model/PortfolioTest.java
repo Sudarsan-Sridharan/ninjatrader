@@ -12,9 +12,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class PortfolioTest {
 
-  private BuyTransaction buy1 = Transaction.buy().price(1).shares(10000).build();
-  private BuyTransaction buy2 = Transaction.buy().price(2).shares(10000).build();
-  private BuyTransaction buy3 = Transaction.buy().price(3).shares(1000).build();
+  private final BuyTransaction buy1 = Transaction.buy().price(1).shares(10000).build();
+  private final BuyTransaction buy2 = Transaction.buy().price(2).shares(10000).build();
+  private final BuyTransaction buy3 = Transaction.buy().price(3).shares(1000).build();
 
   private Portfolio portfolio;
 
@@ -29,13 +29,13 @@ public class PortfolioTest {
   }
 
   @Test
-  public void testAdd() {
+  public void testAdd_shouldAddTransactionToPortfolio() {
     portfolio.add(buy1);
     assertThat(portfolio.isEmpty()).isFalse();
   }
 
   @Test
-  public void testAvgPrice() {
+  public void testAvgPrice_shouldReturnAveragePriceOfAllInPortfolio() {
     portfolio.add(buy1);
     assertThat(portfolio.getAvgPrice()).isEqualTo(1.0);
 
@@ -47,7 +47,7 @@ public class PortfolioTest {
   }
 
   @Test
-  public void testNumOfShares() {
+  public void testNumOfShares_shouldReturnTotalSharesInPortfolio() {
     portfolio.add(buy1);
     assertThat(portfolio.getTotalShares()).isEqualTo(10000);
 
@@ -59,7 +59,19 @@ public class PortfolioTest {
   }
 
   @Test
-  public void testClear() {
+  public void testGetEquityValue_shouldReturnTotalEquitValue() {
+    portfolio.add(buy1);
+    assertThat(portfolio.getEquityValue()).isEqualTo(10000);
+
+    portfolio.add(buy2);
+    assertThat(portfolio.getEquityValue()).isEqualTo(30000);
+
+    portfolio.add(buy3);
+    assertThat(portfolio.getEquityValue()).isEqualTo(33000);
+  }
+
+  @Test
+  public void testClear_shouldRemoveAllSharesFromPortfolio() {
     portfolio.add(buy1);
     portfolio.clear();
     assertPortfolioIsEmpty();

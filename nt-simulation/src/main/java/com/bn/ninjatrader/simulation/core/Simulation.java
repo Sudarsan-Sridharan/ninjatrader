@@ -112,7 +112,7 @@ public class Simulation {
     report.setSimulationParams(simulationParams);
     report.setTradeStatistic(account.getTradeStatistic());
     report.setTransactions(account.getBookkeeper().getTransactions());
-    report.setEndingCash(account.getCash());
+    report.setEndingCash(account.getLiquidCash());
     return report;
   }
 

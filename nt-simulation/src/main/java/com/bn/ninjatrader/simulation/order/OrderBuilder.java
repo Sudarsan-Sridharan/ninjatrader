@@ -13,25 +13,30 @@ abstract class OrderBuilder<T extends OrderBuilder> {
   private int daysFromNow = 0;
   private LocalDate orderDate;
   private OrderType orderType = OrderTypes.marketClose();
-  private Double transactAtPrice;
+  private OrderConfig orderConfig = OrderConfig.defaults();
 
-  public T date(LocalDate orderDate) {
+  public T date(final LocalDate orderDate) {
     this.orderDate = orderDate;
     return getThis();
   }
 
-  public T shares(long numOfShares) {
+  public T shares(final long numOfShares) {
     this.numOfShares = numOfShares;
     return getThis();
   }
 
-  public T barsFromNow(int daysFromNow) {
+  public T barsFromNow(final int daysFromNow) {
     this.daysFromNow = daysFromNow;
     return getThis();
   }
 
-  public T at(OrderType orderType) {
+  public T type(final OrderType orderType) {
     this.orderType = orderType;
+    return getThis();
+  }
+
+  public T config(final OrderConfig orderConfig) {
+    this.orderConfig = orderConfig;
     return getThis();
   }
 
@@ -49,6 +54,10 @@ abstract class OrderBuilder<T extends OrderBuilder> {
 
   public OrderType getOrderType() {
     return orderType;
+  }
+
+  public OrderConfig getOrderConfig() {
+    return orderConfig;
   }
 
   abstract T getThis();

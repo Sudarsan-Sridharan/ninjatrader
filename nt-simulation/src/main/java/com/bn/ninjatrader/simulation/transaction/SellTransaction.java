@@ -5,10 +5,8 @@ import com.bn.ninjatrader.common.util.NtLocalDateSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import java.time.LocalDate;
 
@@ -19,6 +17,9 @@ public class SellTransaction extends Transaction {
 
   @JsonProperty("profit")
   private final double profit;
+
+  @JsonProperty("profitPcnt")
+  private final double profitPcnt;
 
   static SellTransactionBuilder create() {
     return new SellTransactionBuilder();
@@ -31,61 +32,78 @@ public class SellTransaction extends Transaction {
                          @JsonProperty("price") final double price,
                          @JsonProperty("shares") final long numOfShares,
                          @JsonProperty("index") final int barIndex,
-                         @JsonProperty("profit") final double profit) {
+                         @JsonProperty("profit") final double profit,
+                         @JsonProperty("profitPcnt") final double profitPcnt) {
     super(symbol, date, TransactionType.SELL, price, numOfShares, barIndex);
     this.profit = profit;
+    this.profitPcnt = profitPcnt;
   }
 
   public double getProfit() {
     return profit;
   }
 
-  @Override
-  public int hashCode() {
-    return new HashCodeBuilder()
-        .appendSuper(super.hashCode())
-        .append(profit)
-        .hashCode();
+  public double getProfitPcnt() {
+    return profitPcnt;
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public int hashCode() {
+    return Objects.hashCode(super.hashCode(), profit, profitPcnt);
+  }
+
+  @Override
+  public boolean equals(final Object obj) {
     if (obj == null || !(obj instanceof SellTransaction)) { return false; }
     if (obj == this) { return true; }
     final SellTransaction rhs = (SellTransaction) obj;
-    return new EqualsBuilder()
-        .appendSuper(super.equals(obj))
-        .append(profit, rhs.profit)
-        .isEquals();
+    return super.equals(obj)
+        && Objects.equal(profit, rhs.profit)
+        && Objects.equal(profitPcnt, rhs.profitPcnt);
   }
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .appendSuper(super.toString())
-        .append("profit", getProfit())
-        .build();
+    return MoreObjects.toStringHelper(this)
+        .add("symbol", getSymbol())
+        .add("date", getDate())
+        .add("transactionType", getTransactionType())
+        .add("shares", getNumOfShares())
+        .add("price", getPrice())
+        .add("barIndex", getBarIndex())
+        .add("profit", profit)
+        .add("profitPcnt", profitPcnt)
+        .toString();
   }
 
   /**
    * Builder for SellTransaction.
    */
   public static class SellTransactionBuilder extends AbstractTransactionLogBuilder<SellTransactionBuilder> {
-    double profit;
+    private double profit;
+    private double profitPcnt;
 
-    public SellTransactionBuilder profit(double profit) {
+    public SellTransactionBuilder profit(final double profit) {
       this.profit = profit;
+      return this;
+    }
+
+    public SellTransactionBuilder profitPcnt(double profitPcnt) {
+      this.profitPcnt = profitPcnt;
       return this;
     }
 
     @Override
     public SellTransaction build() {
-      return new SellTransaction(getSymbol(), getDate(), getPrice(), getNumOfShares(), getBarIndex(), profit);
+      return new SellTransaction(getSymbol(), getDate(), getPrice(), getNumOfShares(),
+          getBarIndex(), profit, profitPcnt);
     }
 
     @Override
     public SellTransactionBuilder getThis() {
       return this;
     }
+
+
   }
 }

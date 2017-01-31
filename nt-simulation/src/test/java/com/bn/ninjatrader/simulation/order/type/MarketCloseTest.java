@@ -22,23 +22,25 @@ public class MarketCloseTest {
   private final Price price = Price.builder().open(1).high(2).low(3).close(4.4).build();
   private final MarketClose marketClose = new MarketClose();
 
-  private BarData barData;
+  private BarData submittedBarData;
+  private BarData currentBarData;
 
   @Before
   public void before() {
-    barData = mock(BarData.class);
+    submittedBarData = mock(BarData.class);
+    currentBarData = mock(BarData.class);
 
-    when(barData.getPrice()).thenReturn(price);
+    when(currentBarData.getPrice()).thenReturn(price);
   }
 
   @Test
   public void testIsFulfillable_shouldAlwaysReturnTrue() {
-    assertThat(marketClose.isFulfillable(barData)).isTrue();
+    assertThat(marketClose.isFulfillable(submittedBarData, currentBarData)).isTrue();
   }
 
   @Test
   public void testGetFulfilledPrice_shouldReturnPriceAtClose() {
-    assertThat(marketClose.getFulfilledPrice(barData)).isEqualTo(4.4);
+    assertThat(marketClose.getFulfilledPrice(submittedBarData, currentBarData)).isEqualTo(4.4);
   }
 
   @Test

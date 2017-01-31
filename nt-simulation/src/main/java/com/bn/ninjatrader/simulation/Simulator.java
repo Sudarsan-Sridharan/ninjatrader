@@ -13,6 +13,7 @@ import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
 import com.bn.ninjatrader.simulation.operation.function.HistoryValue;
 import com.bn.ninjatrader.simulation.operation.function.LowestValue;
 import com.bn.ninjatrader.simulation.operation.function.PropertyValue;
+import com.bn.ninjatrader.simulation.order.OrderConfig;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.statement.*;
 import com.google.inject.Guice;
@@ -69,27 +70,27 @@ public class Simulator {
     final Simulator simulator = injector.getInstance(Simulator.class);
 
     final SimulationParams params = SimulationParams.builder()
-        .symbol("MEG")
+        .symbol("ALI")
         .from(LocalDate.now().minusYears(10))
         .to(LocalDate.now())
         .startingCash(100000)
 
-        //TODO FIX BARS FROM NOW NOT WORKING!!
         //TODO Sell at price
         //TODO show % profit loss
 
         // Buy Condition -- EMA fan continuation
         .addStatement(ConditionalStatement.builder()
             .condition(Conditions.create()
-                .add(gt(PRICE_CLOSE, EMA.withPeriod(18)))
+                .add(gte(PRICE_CLOSE, EMA.withPeriod(18)))
                 .add(gt(EMA.withPeriod(18), EMA.withPeriod(50)))
                 .add(gt(EMA.withPeriod(50), EMA.withPeriod(100)))
                 .add(gt(EMA.withPeriod(100), EMA.withPeriod(200)))
-                .add(lt(HistoryValue.of(EMA.withPeriod(18)).inNumOfBarsAgo(2), HistoryValue.of(EMA.withPeriod(50)).inNumOfBarsAgo(2)))
+                .add(lt(HistoryValue.of(EMA.withPeriod(18)).inNumOfBarsAgo(2),
+                    HistoryValue.of(EMA.withPeriod(50)).inNumOfBarsAgo(2)))
             )
             .then(BuyOrderStatement.builder()
-                .orderType(atPrice(Operations.create(PRICE_HIGH).mult(1)))
-                .barsFromNow(1)
+                .orderType(atPrice(Operations.create(PRICE_HIGH).plus(0.02)))
+                .orderConfig(OrderConfig.defaults().barsFromNow(1).expireAfterNumOfBars(5))
                 .build())
             .build())
 
@@ -117,7 +118,7 @@ public class Simulator {
 //                .add(lt(EMA.withPeriod(18), EMA.withPeriod(50))))
             .then(MultiStatement.builder()
                 .add(SetPropertyStatement.builder().add("LAST_PULLBACK", 0).build())
-                .add(SellOrderStatement.builder().orderType(marketClose()).barsFromNow(0).build())
+                .add(SellOrderStatement.builder().orderType(marketClose()).build())
                 .build())
             .build())
 

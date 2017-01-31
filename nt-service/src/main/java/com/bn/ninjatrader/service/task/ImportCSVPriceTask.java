@@ -13,7 +13,7 @@ import java.io.PrintWriter;
 
 /**
  * To execute multiple processes:
- * curl -X POST localhost:8081/tasks/import-price"
+ * curl -X POST localhost:8081/tasks/import-csv-price
  *
  * @author bradwee2000@gmail.com
  */

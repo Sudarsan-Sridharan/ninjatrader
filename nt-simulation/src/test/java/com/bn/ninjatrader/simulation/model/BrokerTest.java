@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -68,7 +69,8 @@ public class BrokerTest {
 
   @Test
   public void testProcessPendingOrder_shouldProcessPendingOrders() {
-    when(buyOrderExecutor.execute(account, buyOrder, barData)).thenReturn(buyTransaction);
+    when(buyOrderExecutor.execute(any(Account.class), any(PendingOrder.class), any(BarData.class)))
+        .thenReturn(buyTransaction);
 
     broker.submitOrder(buyOrder, barData);
     broker.processPendingOrders(barData);

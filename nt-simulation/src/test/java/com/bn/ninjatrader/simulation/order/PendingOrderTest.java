@@ -17,6 +17,7 @@ public class PendingOrderTest {
 
   private Order order;
   private OrderType orderType;
+  private OrderConfig orderConfig;
   private BarData currentBarData;
   private BarData boughtAtBarData;
 
@@ -24,10 +25,12 @@ public class PendingOrderTest {
   public void before() {
     order = mock(Order.class);
     orderType = mock(OrderType.class);
+    orderConfig = mock(OrderConfig.class);
     currentBarData = mock(BarData.class);
     boughtAtBarData = mock(BarData.class);
 
     when(order.getOrderType()).thenReturn(orderType);
+    when(order.getOrderConfig()).thenReturn(orderConfig);
     when(boughtAtBarData.getIndex()).thenReturn(1);
     when(currentBarData.getIndex()).thenReturn(1);
   }
@@ -35,14 +38,14 @@ public class PendingOrderTest {
   @Test
   public void testCreate_shouldSetProperties() {
     final PendingOrder pendingOrder = PendingOrder.of(order, boughtAtBarData);
-    assertThat(pendingOrder.getBarData()).isEqualTo(boughtAtBarData);
+    assertThat(pendingOrder.getSubmittedBarData()).isEqualTo(boughtAtBarData);
     assertThat(pendingOrder.getOrder()).isEqualTo(order);
   }
 
   @Test
   public void testIsReadyForProcessingWithBarsFromNow_shouldReturnTrueIfBarsFromNowIsMatched() {
-    when(order.getBarsFromNow()).thenReturn(5);
-    when(orderType.isFulfillable(any(BarData.class))).thenReturn(true);
+    when(orderConfig.getBarsFromNow()).thenReturn(5);
+    when(orderType.isFulfillable(any(BarData.class), any(BarData.class))).thenReturn(true);
     when(boughtAtBarData.getIndex()).thenReturn(1);
     when(currentBarData.getIndex()).thenReturn(5);
 
@@ -55,12 +58,33 @@ public class PendingOrderTest {
 
   @Test
   public void testIsReadyForProcessingWithOrderType_shouldReturnTrueIfOrderTypeConditionIsMatched() {
-    when(orderType.isFulfillable(any(BarData.class))).thenReturn(false);
+    when(orderType.isFulfillable(any(BarData.class), any(BarData.class))).thenReturn(false);
 
     assertThat(PendingOrder.of(order, boughtAtBarData).isReadyToProcess(currentBarData)).isFalse();
 
-    when(orderType.isFulfillable(any(BarData.class))).thenReturn(true);
+    when(orderType.isFulfillable(any(BarData.class), any(BarData.class))).thenReturn(true);
 
     assertThat(PendingOrder.of(order, boughtAtBarData).isReadyToProcess(currentBarData)).isTrue();
+  }
+
+  @Test
+  public void testIsExpired_shouldReturnTrueIfCurrentBarIndexIsAfterExpiry() {
+    // 10 <= 2 + MAX_VALUE = not expired
+    when(orderConfig.getExpireAfterNumOfBars()).thenReturn(Integer.MAX_VALUE);
+    when(boughtAtBarData.getIndex()).thenReturn(2);
+    when(currentBarData.getIndex()).thenReturn(10);
+    assertThat(PendingOrder.of(order, boughtAtBarData).isExpired(currentBarData)).isFalse();
+
+    // 11 <= 1 + 10 = not expired
+    when(orderConfig.getExpireAfterNumOfBars()).thenReturn(10);
+    when(boughtAtBarData.getIndex()).thenReturn(1);
+    when(currentBarData.getIndex()).thenReturn(11);
+    assertThat(PendingOrder.of(order, boughtAtBarData).isExpired(currentBarData)).isFalse();
+
+    // 12 < 1 + 10 = false, expired
+    when(orderConfig.getExpireAfterNumOfBars()).thenReturn(10);
+    when(boughtAtBarData.getIndex()).thenReturn(1);
+    when(currentBarData.getIndex()).thenReturn(12);
+    assertThat(PendingOrder.of(order, boughtAtBarData).isExpired(currentBarData)).isTrue();
   }
 }

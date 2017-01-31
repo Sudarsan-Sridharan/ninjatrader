@@ -22,13 +22,13 @@ public class MarketClose implements OrderType {
   }
 
   @Override
-  public boolean isFulfillable(final BarData barData) {
+  public boolean isFulfillable(final BarData onSubmitBarData, final BarData currentBarData) {
     return true;
   }
 
   @Override
-  public double getFulfilledPrice(final BarData barData) {
-    final Price price = barData.getPrice();
+  public double getFulfilledPrice(final BarData onSubmitBarData, final BarData currentBarData) {
+    final Price price = currentBarData.getPrice();
     return price.getClose();
   }
 

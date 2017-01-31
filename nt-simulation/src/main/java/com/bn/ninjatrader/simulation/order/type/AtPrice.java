@@ -43,18 +43,18 @@ public class AtPrice implements OrderType {
   }
 
   @Override
-  public boolean isFulfillable(final BarData barData) {
-    final Price barPrice = barData.getPrice();
-    final double priceValue = price.getValue(barData);
-    return priceValue >= barPrice.getLow() && priceValue <= barPrice.getHigh();
+  public boolean isFulfillable(final BarData onSubmitBarData, final BarData currentBarData) {
+    final Price currentPrice = currentBarData.getPrice();
+    final double expectedPrice = price.getValue(onSubmitBarData);
+    return expectedPrice >= currentPrice.getLow() && expectedPrice <= currentPrice.getHigh();
   }
 
   @Override
-  public double getFulfilledPrice(final BarData barData) {
-    if (isFulfillable(barData)) {
-      return price.getValue(barData);
+  public double getFulfilledPrice(final BarData onSubmitBarData, final BarData currentBarData) {
+    if (isFulfillable(onSubmitBarData, currentBarData)) {
+      return price.getValue(onSubmitBarData);
     }
-    throw new OrderUnfulfillableException(this, barData);
+    throw new OrderUnfulfillableException(this, currentBarData);
   }
 
   @Override

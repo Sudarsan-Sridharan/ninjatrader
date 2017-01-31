@@ -6,6 +6,7 @@ import com.bn.ninjatrader.simulation.model.Broker;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.bn.ninjatrader.simulation.order.OrderConfig;
 import com.bn.ninjatrader.simulation.order.type.OrderType;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.order.type.OrderTypes;
@@ -34,13 +35,13 @@ public class BuyOrderStatement implements Statement {
   @JsonProperty("orderType")
   private final OrderType orderType;
 
-  @JsonProperty("barsFromNow")
-  private final int barsFromNow;
+  @JsonProperty("config")
+  private final OrderConfig orderConfig;
 
   public BuyOrderStatement(@JsonProperty("orderType") final OrderType orderType,
-                           @JsonProperty("barsFromNow") final int barsFromNow) {
+                           @JsonProperty("config") final OrderConfig orderConfig) {
     this.orderType = orderType;
-    this.barsFromNow = barsFromNow;
+    this.orderConfig = orderConfig;
   }
 
   @Override
@@ -52,7 +53,8 @@ public class BuyOrderStatement implements Statement {
     if (!account.hasShares() && !broker.hasPendingOrder()) {
       final Price price = barData.getPrice();
       final Order order = Order.buy()
-          .date(price.getDate()).cashAmount(account.getCash()).at(orderType).barsFromNow(barsFromNow).build();
+          .date(price.getDate()).cashAmount(account.getLiquidCash()).type(orderType)
+          .config(orderConfig).build();
       broker.submitOrder(order, barData);
     }
   }
@@ -67,12 +69,12 @@ public class BuyOrderStatement implements Statement {
     return orderType;
   }
 
-  public int getBarsFromNow() {
-    return barsFromNow;
+  public OrderConfig getOrderConfig() {
+    return orderConfig;
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(final Object obj) {
     if (obj == null || !(obj instanceof  BuyOrderStatement)) {
       return false;
     }
@@ -81,17 +83,17 @@ public class BuyOrderStatement implements Statement {
     }
     final BuyOrderStatement rhs = (BuyOrderStatement) obj;
     return Objects.equal(orderType, rhs.orderType)
-        && Objects.equal(barsFromNow, rhs.barsFromNow);
+        && Objects.equal(orderConfig, rhs.orderConfig);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(orderType, barsFromNow);
+    return Objects.hashCode(orderType, orderConfig);
   }
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this).add("orderType", orderType).add("barsFromNow", barsFromNow).toString();
+    return MoreObjects.toStringHelper(this).add("type", orderType).add("orderConfig", orderConfig).toString();
   }
 
   /**
@@ -99,20 +101,20 @@ public class BuyOrderStatement implements Statement {
    */
   public static final class Builder {
     private OrderType orderType = OrderTypes.marketClose();
-    private int barsFromNow;
+    private OrderConfig orderConfig = OrderConfig.defaults();
 
     public Builder orderType(final OrderType orderType) {
       this.orderType = orderType;
       return this;
     }
 
-    public Builder barsFromNow(final int barsFromNow) {
-      this.barsFromNow = barsFromNow;
+    public Builder orderConfig(final OrderConfig orderConfig) {
+      this.orderConfig = orderConfig;
       return this;
     }
 
     public BuyOrderStatement build() {
-      return new BuyOrderStatement(orderType, barsFromNow);
+      return new BuyOrderStatement(orderType, orderConfig);
     }
   }
 }

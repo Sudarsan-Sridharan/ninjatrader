@@ -5,7 +5,7 @@ import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
-import com.bn.ninjatrader.simulation.order.Order;
+import com.bn.ninjatrader.simulation.order.PendingOrder;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public class OrderExecutorTest {
 
     executor = new OrderExecutor(boardLotTable) {
       @Override
-      public Transaction execute(Account account, Order order, BarData barData) {
+      public Transaction execute(Account account, PendingOrder order, BarData barData) {
         return null;
       }
     };

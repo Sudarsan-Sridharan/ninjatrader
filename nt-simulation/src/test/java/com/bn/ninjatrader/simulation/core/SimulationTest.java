@@ -60,7 +60,7 @@ public class SimulationTest {
     simulationData = mock(SimulationData.class);
 
     when(account.getBookkeeper()).thenReturn(bookkeeper);
-    when(account.getCash()).thenReturn(100000d);
+    when(account.getLiquidCash()).thenReturn(100000d);
     when(barDataFactory.create(any(Price.class), anyInt(), anyList(), any(World.class)))
         .thenReturn(bar1, bar2);
 

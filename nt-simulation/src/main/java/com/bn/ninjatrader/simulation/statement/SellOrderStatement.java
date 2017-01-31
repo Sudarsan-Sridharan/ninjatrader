@@ -7,6 +7,7 @@ import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.model.Broker;
 import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.simulation.order.Order;
+import com.bn.ninjatrader.simulation.order.OrderConfig;
 import com.bn.ninjatrader.simulation.order.type.OrderType;
 import com.bn.ninjatrader.simulation.order.type.OrderTypes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -29,13 +30,13 @@ public class SellOrderStatement implements Statement {
   @JsonProperty("orderType")
   private final OrderType orderType;
 
-  @JsonProperty("barsFromNow")
-  private final int barsFromNow;
+  @JsonProperty("config")
+  private final OrderConfig orderConfig;
 
   public SellOrderStatement(@JsonProperty("orderType") final OrderType orderType,
-                            @JsonProperty("barsFromNow") final int barsFromNow) {
+                            @JsonProperty("config") final OrderConfig orderConfig) {
     this.orderType = orderType;
-    this.barsFromNow = barsFromNow;
+    this.orderConfig = orderConfig;
   }
 
   @Override
@@ -46,7 +47,9 @@ public class SellOrderStatement implements Statement {
 
     if (account.hasShares()) {
       final Price price = barData.getPrice();
-      final Order order = Order.sell().date(price.getDate()).at(orderType).barsFromNow(barsFromNow).build();
+      final Order order = Order.sell().date(price.getDate()).type(orderType)
+          .config(orderConfig)
+          .build();
       broker.submitOrder(order, barData);
     }
   }
@@ -55,8 +58,8 @@ public class SellOrderStatement implements Statement {
     return orderType;
   }
 
-  public int getBarsFromNow() {
-    return barsFromNow;
+  public OrderConfig getOrderConfig() {
+    return orderConfig;
   }
 
   @JsonIgnore
@@ -75,17 +78,17 @@ public class SellOrderStatement implements Statement {
     }
     final SellOrderStatement rhs = (SellOrderStatement) obj;
     return Objects.equal(orderType, rhs.orderType)
-        && Objects.equal(barsFromNow, rhs.barsFromNow);
+        && Objects.equal(orderConfig, rhs.orderConfig);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(orderType, barsFromNow);
+    return Objects.hashCode(orderType, orderConfig);
   }
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this).add("orderType", orderType).add("barsFromNow", barsFromNow).toString();
+    return MoreObjects.toStringHelper(this).add("orderType", orderType).add("orderConfig", orderConfig).toString();
   }
 
   /**
@@ -93,19 +96,19 @@ public class SellOrderStatement implements Statement {
    */
   public static final class Builder {
     private OrderType orderType = OrderTypes.marketClose();
-    private int barsFromNow;
+    private OrderConfig orderConfig = OrderConfig.defaults();
 
     public Builder orderType(final OrderType orderType) {
       this.orderType = orderType;
       return this;
     }
 
-    public Builder barsFromNow(final int barsFromNow) {
-      this.barsFromNow = barsFromNow;
+    public Builder orderConfig(final OrderConfig orderConfig) {
+      this.orderConfig = orderConfig;
       return this;
     }
     public SellOrderStatement build() {
-      return new SellOrderStatement(orderType, barsFromNow);
+      return new SellOrderStatement(orderType, orderConfig);
     }
   }
 }

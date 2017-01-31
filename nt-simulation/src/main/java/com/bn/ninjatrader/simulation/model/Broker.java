@@ -44,7 +44,7 @@ public class Broker {
     checkNotNull(order, "order must not be null.");
     checkNotNull(barData, "barData must not be null.");
 
-    LOG.info("Submitted order {}", order);
+    LOG.info("Submitted {} order on {}", order.getTransactionType(), order.getOrderDate());
 
     pendingOrders.add(PendingOrder.of(order, barData));
   }
@@ -59,18 +59,26 @@ public class Broker {
     final List<PendingOrder> fulfilledOrders = Lists.newArrayList();
     for (final PendingOrder pendingOrder : pendingOrders) {
       if (pendingOrder.isReadyToProcess(barData)) {
-        fulfillOrder(pendingOrder.getOrder(), barData);
+        LOG.info("Processed on: {}", barData.getPrice().getDate());
+        fulfillOrder(pendingOrder, barData);
+        fulfilledOrders.add(pendingOrder);
+      } else if (pendingOrder.isExpired(barData)) {
+        LOG.info("Expired Order: submitted on {}. Current date is {}",
+            pendingOrder.getSubmittedBarData().getPrice().getDate(),
+            barData.getPrice().getDate());
         fulfilledOrders.add(pendingOrder);
       }
     }
+
     pendingOrders.removeAll(fulfilledOrders);
   }
 
-  private void fulfillOrder(final Order order, final BarData barData) {
-    final OrderExecutor orderExecutor = orderExecutors.get(order.getTransactionType());
-    checkNotNull(orderExecutor, "No OrderExecutor found for TransactionType: %s", order.getTransactionType());
+  private void fulfillOrder(final PendingOrder pendingOrder, final BarData barData) {
+    final OrderExecutor orderExecutor = orderExecutors.get(pendingOrder.getOrder().getTransactionType());
+    checkNotNull(orderExecutor, "No OrderExecutor found for TransactionType: %s",
+        pendingOrder.getOrder().getTransactionType());
 
-    final Transaction transaction = orderExecutor.execute(account, order, barData);
+    final Transaction transaction = orderExecutor.execute(account, pendingOrder, barData);
     lastTransactions.put(transaction.getTransactionType(), transaction);
   }
 

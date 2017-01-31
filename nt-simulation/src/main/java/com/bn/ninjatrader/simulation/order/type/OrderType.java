@@ -21,9 +21,9 @@ import java.util.Set;
 })
 public interface OrderType {
 
-  boolean isFulfillable(final BarData barData);
+  boolean isFulfillable(final BarData onSubmitBarData, final BarData currentBarData);
 
-  double getFulfilledPrice(final BarData barData);
+  double getFulfilledPrice(final BarData onSubmitBarData, final BarData currentBarData);
 
   Set<Variable> getVariables();
 }

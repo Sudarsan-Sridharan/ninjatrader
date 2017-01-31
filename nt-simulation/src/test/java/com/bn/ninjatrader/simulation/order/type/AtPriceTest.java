@@ -25,35 +25,37 @@ public class AtPriceTest {
   private final Price price = Price.builder().open(3).high(5).low(2).close(4).build();
   private final AtPrice atPrice = new AtPrice(5);
 
-  private BarData barData;
+  private BarData submittedBarData;
+  private BarData currentBarData;
 
   @Before
   public void before() {
-    barData = mock(BarData.class);
+    submittedBarData = mock(BarData.class);
+    currentBarData = mock(BarData.class);
 
-    when(barData.getPrice()).thenReturn(price);
+    when(currentBarData.getPrice()).thenReturn(price);
   }
 
   @Test
   public void testIsFulfillable_shouldReturnTrueIfPriceBetweenHighAndLow() {
-    assertThat(AtPrice.of(1.999).isFulfillable(barData)).isFalse();
-    assertThat(AtPrice.of(5.00001).isFulfillable(barData)).isFalse();
-    assertThat(AtPrice.of(5).isFulfillable(barData)).isTrue();
-    assertThat(AtPrice.of(2).isFulfillable(barData)).isTrue();
-    assertThat(AtPrice.of(3.333).isFulfillable(barData)).isTrue();
+    assertThat(AtPrice.of(1.999).isFulfillable(submittedBarData, currentBarData)).isFalse();
+    assertThat(AtPrice.of(5.00001).isFulfillable(submittedBarData, currentBarData)).isFalse();
+    assertThat(AtPrice.of(5).isFulfillable(submittedBarData, currentBarData)).isTrue();
+    assertThat(AtPrice.of(2).isFulfillable(submittedBarData, currentBarData)).isTrue();
+    assertThat(AtPrice.of(3.333).isFulfillable(submittedBarData, currentBarData)).isTrue();
   }
 
   @Test
   public void testGetFulfilledPrice_shouldReturnSetPriceIfFulfillable() {
-    assertThat(AtPrice.of(5).getFulfilledPrice(barData)).isEqualTo(5);
-    assertThat(AtPrice.of(2).getFulfilledPrice(barData)).isEqualTo(2);
-    assertThat(AtPrice.of(3.00001).getFulfilledPrice(barData)).isEqualTo(3.00001);
+    assertThat(AtPrice.of(5).getFulfilledPrice(submittedBarData, currentBarData)).isEqualTo(5);
+    assertThat(AtPrice.of(2).getFulfilledPrice(submittedBarData, currentBarData)).isEqualTo(2);
+    assertThat(AtPrice.of(3.00001).getFulfilledPrice(submittedBarData, currentBarData)).isEqualTo(3.00001);
   }
 
   @Test
   public void testGetFulfilledPriceWithUnfulfillableCondition_shouldThrowException() {
     assertThatThrownBy(()->{
-      AtPrice.of(1.9999).getFulfilledPrice(barData);
+      AtPrice.of(1.9999).getFulfilledPrice(submittedBarData, currentBarData);
     }).isInstanceOf(OrderUnfulfillableException.class);
   }
 

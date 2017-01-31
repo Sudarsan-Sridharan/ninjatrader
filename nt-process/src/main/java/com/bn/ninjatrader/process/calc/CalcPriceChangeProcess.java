@@ -39,15 +39,15 @@ public class CalcPriceChangeProcess extends AbstractCalcProcess implements CalcP
 
   @Override
   public void process(final CalcRequest calcRequest) {
-    for (String symbol : calcRequest.getAllSymbols()) { // For each symbol
-      for (TimeFrame timeFrame : calcRequest.getTimeFrames()) { // and for each time frame
+    for (final String symbol : calcRequest.getAllSymbols()) { // For each symbol
+      for (final TimeFrame timeFrame : calcRequest.getTimeFrames()) { // and for each time frame
 
-        LocalDate fromDate = getFromDateToHaveEnoughBars(FindBeforeDateRequest.builder()
+        final LocalDate fromDate = getFromDateToHaveEnoughBars(FindBeforeDateRequest.builder()
             .symbol(symbol).timeFrame(timeFrame)
             .beforeDate(calcRequest.getFromDate())
             .numOfValues(REQUIRED_NUM_OF_PAST_BARS)
             .build());
-        LocalDate toDate = calcRequest.getToDate();
+        final LocalDate toDate = calcRequest.getToDate();
 
         List<Price> priceList = priceDao.find(findSymbol(symbol).timeframe(timeFrame).from(fromDate).to(toDate));
         priceList = calculator.calc(priceList);

@@ -94,6 +94,6 @@ public class BuyTransactionTest {
     BuyTransaction transaction = Transaction.buy().date(now).price(100).shares(1000).build();
     String serialized = om.writeValueAsString(transaction);
     Transaction deserialized = om.readValue(serialized, Transaction.class);
-    assertThat(deserialized).isInstanceOf(BuyTransaction.class).isEqualTo(transaction);
+    assertThat(deserialized).isInstanceOf(Transaction.class).isEqualTo(transaction);
   }
 }

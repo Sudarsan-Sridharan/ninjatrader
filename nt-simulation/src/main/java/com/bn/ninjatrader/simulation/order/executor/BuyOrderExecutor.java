@@ -4,7 +4,7 @@ import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.order.BuyOrder;
-import com.bn.ninjatrader.simulation.order.Order;
+import com.bn.ninjatrader.simulation.order.PendingOrder;
 import com.bn.ninjatrader.simulation.order.type.OrderType;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
@@ -26,7 +26,7 @@ public class BuyOrderExecutor extends OrderExecutor {
   }
 
   @Override
-  public BuyTransaction execute(final Account account, final Order order, final BarData barData) {
+  public BuyTransaction execute(final Account account, final PendingOrder order, final BarData barData) {
     checkConditions(account, order, barData);
 
     final BuyTransaction buyTransaction = fulfillBuyOrder(order, barData);
@@ -36,11 +36,11 @@ public class BuyOrderExecutor extends OrderExecutor {
     return buyTransaction;
   }
 
-  private BuyTransaction fulfillBuyOrder(final Order order, final BarData barData) {
-    final BuyOrder buyOrder = (BuyOrder) order;
-
-    final OrderType orderType = order.getOrderType();
-    final double boughtPrice = orderType.getFulfilledPrice(barData);
+  private BuyTransaction fulfillBuyOrder(final PendingOrder pendingOrder, final BarData barData) {
+    final BuyOrder buyOrder = (BuyOrder) pendingOrder.getOrder();
+    final BarData submittedBarData = pendingOrder.getSubmittedBarData();
+    final OrderType orderType = buyOrder.getOrderType();
+    final double boughtPrice = orderType.getFulfilledPrice(submittedBarData, barData);
     final long numOfShares = getNumOfSharesCanBuyWithAmount(buyOrder.getCashAmount(), boughtPrice);
 
     return Transaction.buy()

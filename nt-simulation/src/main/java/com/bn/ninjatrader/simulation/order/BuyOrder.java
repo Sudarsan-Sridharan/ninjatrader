@@ -17,13 +17,13 @@ public class BuyOrder extends Order {
 
   private final double cashAmount;
 
-
   private BuyOrder(final LocalDate orderDate,
                    final OrderType orderType,
+                   final OrderConfig orderConfig,
                    final int barsFromNow,
                    final long numOfShares,
                    final double cashAmount) {
-    super(orderDate, TransactionType.BUY, orderType, barsFromNow, numOfShares);
+    super(orderDate, TransactionType.BUY, orderType, orderConfig, barsFromNow, numOfShares);
     this.cashAmount = cashAmount;
   }
 
@@ -74,7 +74,7 @@ public class BuyOrder extends Order {
 
     @Override
     public BuyOrder build() {
-      return new BuyOrder(getOrderDate(), getOrderType(), getDaysFromNow(), getNumOfShares(), cashAmount);
+      return new BuyOrder(getOrderDate(), getOrderType(), getOrderConfig(), getDaysFromNow(), getNumOfShares(), cashAmount);
     }
   }
 }

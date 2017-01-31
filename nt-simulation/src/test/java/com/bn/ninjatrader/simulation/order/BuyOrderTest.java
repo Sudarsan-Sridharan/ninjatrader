@@ -18,15 +18,15 @@ public class BuyOrderTest {
   private static final Logger LOG = LoggerFactory.getLogger(BuyOrderTest.class);
 
   private LocalDate now = LocalDate.of(2016, 1, 1);
-  private BuyOrder orig = BuyOrder.buy().date(now).cashAmount(100).at(OrderTypes.marketClose()).barsFromNow(2).build();
-  private BuyOrder equal = BuyOrder.buy().date(now).cashAmount(100).at(OrderTypes.marketClose()).barsFromNow(2).build();
-  private BuyOrder diffCashAmt = BuyOrder.buy().date(now).cashAmount(90).at(OrderTypes.marketClose()).barsFromNow(2).build();
-  private BuyOrder diffMarketTime = BuyOrder.buy()
-      .date(now).cashAmount(100).at(OrderTypes.marketOpen()).barsFromNow(2).build();
-  private BuyOrder diffBarsFromNow = BuyOrder.buy()
-      .date(now).cashAmount(100).at(OrderTypes.marketClose()).barsFromNow(9).build();
+  private BuyOrder orig = BuyOrder.buy().date(now).cashAmount(100).type(OrderTypes.marketClose()).build();
+  private BuyOrder equal = BuyOrder.buy().date(now).cashAmount(100).type(OrderTypes.marketClose()).build();
+  private BuyOrder diffCashAmt = BuyOrder.buy().date(now).cashAmount(90).type(OrderTypes.marketClose()).build();
+  private BuyOrder diffMarketTime = BuyOrder.buy().date(now).cashAmount(100).type(OrderTypes.marketOpen()).build();
+  private BuyOrder diffConfig = BuyOrder.buy()
+      .date(now).cashAmount(100).type(OrderTypes.marketClose())
+      .config(OrderConfig.defaults().barsFromNow(1)).build();
   private BuyOrder diffNumOfShares = BuyOrder.buy().date(now)
-      .cashAmount(100).at(OrderTypes.marketClose()).barsFromNow(2).shares(100).build();
+      .cashAmount(100).type(OrderTypes.marketClose()).shares(100).build();
 
   @Test
   public void testCreateEmpty_shouldCreateWithDefaultValues() {
@@ -39,12 +39,14 @@ public class BuyOrderTest {
 
   @Test
   public void testCreate_shouldHavePropertiesSet() {
-    final BuyOrder order = Order.buy().date(now).at(OrderTypes.marketClose()).shares(1000).cashAmount(20000).barsFromNow(5).build();
+    final BuyOrder order = Order.buy().date(now).type(OrderTypes.marketClose()).shares(1000).cashAmount(20000)
+        .config(OrderConfig.defaults()).build();
     assertThat(order.getOrderDate()).isEqualTo(now);
     assertThat(order.getOrderType()).isEqualTo(OrderTypes.marketClose());
     assertThat(order.getNumOfShares()).isEqualTo(1000);
     assertThat(order.getCashAmount()).isEqualTo(20000.0);
     assertThat(order.getTransactionType()).isEqualTo(TransactionType.BUY);
+    assertThat(order.getOrderConfig()).isEqualTo(OrderConfig.defaults());
   }
 
   @Test
@@ -55,13 +57,13 @@ public class BuyOrderTest {
         .isNotEqualTo("")
         .isNotEqualTo(diffCashAmt)
         .isNotEqualTo(diffMarketTime)
-        .isNotEqualTo(diffBarsFromNow)
+        .isNotEqualTo(diffConfig)
         .isNotEqualTo(diffNumOfShares);
   }
 
   @Test
   public void testHashcode_shouldHaveEqualHashcodeIfAllPropertiesAreEqual() {
-    assertThat(Sets.newHashSet(orig, equal, diffBarsFromNow, diffCashAmt, diffMarketTime, diffNumOfShares))
-        .containsExactlyInAnyOrder(orig, diffBarsFromNow, diffCashAmt, diffMarketTime, diffNumOfShares);
+    assertThat(Sets.newHashSet(orig, equal, diffConfig, diffCashAmt, diffMarketTime, diffNumOfShares))
+        .containsExactlyInAnyOrder(orig, diffConfig, diffCashAmt, diffMarketTime, diffNumOfShares);
   }
 }

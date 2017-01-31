@@ -19,7 +19,8 @@ public abstract class Order {
   private final long numOfShares;
   private final TransactionType transactionType;
   private final OrderType orderType;
-  private final int barsFromNow;
+  private final OrderConfig orderConfig;
+  private final int barsFromNow; // wait for number of bars before attempting to fulfill order.
 
   public static BuyOrder.BuyOrderBuilder buy() {
     return new BuyOrder.BuyOrderBuilder();
@@ -32,12 +33,14 @@ public abstract class Order {
   protected Order(final LocalDate orderDate,
                   final TransactionType transactionType,
                   final OrderType orderType,
+                  final OrderConfig orderConfig,
                   final int barsFromNow,
                   final long numOfShares) {
     this.orderDate = orderDate;
     this.transactionType = transactionType;
     this.orderType = orderType;
     this.barsFromNow = barsFromNow;
+    this.orderConfig = orderConfig;
     this.numOfShares = numOfShares;
   }
 
@@ -61,6 +64,10 @@ public abstract class Order {
     return barsFromNow;
   }
 
+  public OrderConfig getOrderConfig() {
+    return orderConfig;
+  }
+
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
@@ -68,7 +75,7 @@ public abstract class Order {
         .add("numOfShares", numOfShares)
         .add("transactionType", transactionType)
         .add("orderType", orderType)
-        .add("barsFromNow", barsFromNow)
+        .add("orderConfig", orderConfig)
         .toString();
   }
 
@@ -81,11 +88,11 @@ public abstract class Order {
         && Objects.equal(transactionType, rhs.transactionType)
         && Objects.equal(numOfShares, rhs.numOfShares)
         && Objects.equal(orderType, rhs.orderType)
-        && Objects.equal(barsFromNow, rhs.barsFromNow);
+        && Objects.equal(orderConfig, rhs.orderConfig);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(orderDate, transactionType, numOfShares, orderType, barsFromNow);
+    return Objects.hashCode(orderDate, transactionType, numOfShares, orderType, orderConfig);
   }
 }

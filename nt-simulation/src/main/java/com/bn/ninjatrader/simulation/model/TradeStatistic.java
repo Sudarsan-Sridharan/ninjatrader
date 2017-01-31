@@ -106,9 +106,9 @@ public class TradeStatistic {
   }
 
   public void print() {
-    log.info("Number withNBarsAgo Trades: {}", numOfTrades);
-    log.info("Number withNBarsAgo Wins: {} ({}%)", numOfWins, getWinPcnt());
-    log.info("Number withNBarsAgo Losses: {} ({}%)", numOfLosses, getLossPcnt());
+    log.info("# of Trades: {}", numOfTrades);
+    log.info("# of Wins: {} ({}%)", numOfWins, getWinPcnt());
+    log.info("# of Losses: {} ({}%)", numOfLosses, getLossPcnt());
     log.info("Win / Loss Ratio: {}", getWinLoseRatio());
     log.info("Biggest Gain: {}", biggestGain);
     log.info("Biggest Loss: {}", biggestLoss);

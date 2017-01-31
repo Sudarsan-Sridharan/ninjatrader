@@ -24,7 +24,7 @@ public class AccountTest {
 
   @Test
   public void testOnCreate_shouldSetDefaults() {
-    assertThat(account.getCash()).isEqualTo(100000.0);
+    assertThat(account.getLiquidCash()).isEqualTo(100000.0);
     assertThat(account.getAvgPrice()).isEqualTo(0.0);
     assertThat(account.getNumOfShares()).isEqualTo(0);
     assertThat(account.getProfit()).isEqualTo(0.0);
@@ -34,14 +34,14 @@ public class AccountTest {
   @Test
   public void testAddToPortfolio_shouldAddSharesToPortfolio() {
     account.addToPortfolio(buy1);
-    assertThat(account.getCash()).isEqualTo(100000.0);
+    assertThat(account.getLiquidCash()).isEqualTo(100000.0);
     assertThat(account.getAvgPrice()).isEqualTo(1.0);
     assertThat(account.getNumOfShares()).isEqualTo(10000);
     assertThat(account.getProfit()).isEqualTo(0.0);
     assertThat(account.hasShares()).isTrue();
 
     account.addToPortfolio(buy2);
-    assertThat(account.getCash()).isEqualTo(100000.0);
+    assertThat(account.getLiquidCash()).isEqualTo(100000.0);
     assertThat(account.getAvgPrice()).isEqualTo(1.090909);
     assertThat(account.getNumOfShares()).isEqualTo(11000);
     assertThat(account.getProfit()).isEqualTo(0.0);
@@ -52,11 +52,11 @@ public class AccountTest {
   public void testAddCash_shouldAddCash() {
     account.addCash(1000);
     assertThat(account.getProfit()).isEqualTo(1000.0);
-    assertThat(account.getCash()).isEqualTo(101000.0);
+    assertThat(account.getLiquidCash()).isEqualTo(101000.0);
 
     account.addCash(-2000);
     assertThat(account.getProfit()).isEqualTo(-1000.0);
-    assertThat(account.getCash()).isEqualTo(99000.0);
+    assertThat(account.getLiquidCash()).isEqualTo(99000.0);
   }
 
   @Test

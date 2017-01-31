@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Brad on 4/30/16.
@@ -20,7 +20,7 @@ public class NtProcessModule extends AbstractModule {
 
   @Provides
   @AllCalcProcess
-  private Collection<CalcProcess> provideCalcAllProcess(
+  private List<CalcProcess> provideCalcAllProcess(
       CalcWeeklyPriceProcess calcWeeklyPriceProcess,
       CalcPriceChangeProcess calcPriceChangeProcess,
       CalcMeanProcess calcMeanProcess,
