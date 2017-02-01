@@ -74,9 +74,6 @@ public class Simulator {
         .to(LocalDate.now())
         .startingCash(100000)
 
-        //TODO Sell at price
-        //TODO show % profit loss
-
         // Buy Condition -- EMA fan continuation
 //        .addStatement(ConditionalStatement.builder()
 //            .condition(Conditions.create()

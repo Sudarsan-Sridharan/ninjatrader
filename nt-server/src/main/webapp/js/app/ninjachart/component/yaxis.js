@@ -19,7 +19,7 @@ define(["d3"], function(d3) {
             .attr("height", 18);
         this.currentValueLabel = this.currentValue.append("text")
             .attr("x", 9)
-            .attr("dy", "-200" );
+            .attr("dy", "-200");
 
         this.coords = [0, -100];
         this.lastYScaleDomain = [0, 0];

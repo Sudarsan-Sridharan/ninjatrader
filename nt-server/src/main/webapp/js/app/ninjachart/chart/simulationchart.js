@@ -1,6 +1,7 @@
-define(["d3", "require", "./abstractchart"], function(d3, require) {
+define(["d3", "require", "./abstractchart", "../component/simulationmeta"], function(d3, require) {
 
     var AbstractChart = require("./abstractchart");
+    var SimulationMeta = require("../component/simulationmeta");
 
     function SimulationChart(config, panel) {
         AbstractChart.call(this, config, panel, "/simulation/report", "simulation");
@@ -8,8 +9,13 @@ define(["d3", "require", "./abstractchart"], function(d3, require) {
         this._getClass = function(tnx) { return tnx.type };
         this._getPath = function(tnx) {
             var x = config.xByDate(tnx.dt) + config.columnWidth / 2;
-            return "M" + x +",0V" + config.chartHeight;
+            var y = panel.yScale(tnx.price);
+            var vLine = "M" + x + ",0V" + config.chartHeight;
+            var hLine = "M" + (x - config.columnWidth/2) + "," + y + "h" + (config.columnWidth);
+            return vLine + hLine;
         };
+        this._meta = new SimulationMeta(config);
+        panel.meta.addMeta(this._meta);
     }
 
     SimulationChart.prototype = Object.create(AbstractChart.prototype);
@@ -18,7 +24,7 @@ define(["d3", "require", "./abstractchart"], function(d3, require) {
     SimulationChart.prototype.show = function() {
         if (!this.data) return;
         this.main.style("visibility", "visible");
-        
+
         var transactions = this.getViewportValues();
         this._printBuySell(transactions);
     };
@@ -46,7 +52,7 @@ define(["d3", "require", "./abstractchart"], function(d3, require) {
     };
 
     SimulationChart.prototype.getViewportValues = function() {
-        var viewportIndexRange = this.config.viewportIndexRange;
+        var viewportIndexRange = this.config.viewportIndexRange; // array of [from, to]
         var transactions = this.data.transactions;
         var fromIndex = 0;
         var toIndex = 0;
@@ -63,6 +69,10 @@ define(["d3", "require", "./abstractchart"], function(d3, require) {
             }
         }
         return transactions.slice(fromIndex, transactions.length);
+    };
+
+    SimulationChart.prototype.onDataLoad = function(data) {
+        this._meta.setData(data);
     };
 
     SimulationChart.prototype.getDataDomain = function() {
