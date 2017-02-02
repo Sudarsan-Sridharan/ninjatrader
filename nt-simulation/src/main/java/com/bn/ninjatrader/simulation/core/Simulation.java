@@ -64,7 +64,6 @@ public class Simulation {
   }
 
   public SimulationReport play() {
-    LOG.info("{}", priceList.size());
     barIndex = 0;
     for (final Price price : priceList) {
       final BarData barData =

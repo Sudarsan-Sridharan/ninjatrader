@@ -21,6 +21,7 @@ import java.util.Set;
     @JsonSubTypes.Type(value = CancelOrderStatement.class, name = "cancel"),
     @JsonSubTypes.Type(value = ConditionalStatement.class, name = "cond"),
     @JsonSubTypes.Type(value = SetPropertyStatement.class, name = "prop"),
+    @JsonSubTypes.Type(value = MarkStatement.class, name = "mark"),
     @JsonSubTypes.Type(value = MultiStatement.class, name = "multi"),
     @JsonSubTypes.Type(value = EmptyStatement.class, name = "empty")
 })

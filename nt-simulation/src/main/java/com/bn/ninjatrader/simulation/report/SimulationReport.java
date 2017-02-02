@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.simulation.report;
 
 import com.bn.ninjatrader.simulation.core.SimulationParams;
+import com.bn.ninjatrader.simulation.model.Mark;
 import com.bn.ninjatrader.simulation.model.TradeStatistic;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -28,6 +29,9 @@ public class SimulationReport {
 
   @JsonProperty("stats")
   private TradeStatistic tradeStatistic;
+
+  @JsonProperty("marks")
+  private List<Mark> marks;
 
   public SimulationParams getSimulationParams() {
     return simulationParams;
@@ -63,6 +67,10 @@ public class SimulationReport {
 
   public TradeStatistic getTradeStatistic() {
     return tradeStatistic;
+  }
+
+  public List<Mark> getMarks() {
+    return marks;
   }
 
   public void setTradeStatistic(TradeStatistic tradeStatistic) {

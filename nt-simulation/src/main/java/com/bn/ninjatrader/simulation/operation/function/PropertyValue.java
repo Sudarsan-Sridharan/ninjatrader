@@ -6,6 +6,7 @@ import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.LocalProperties;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,4 +61,8 @@ public class PropertyValue implements Operation<BarData> {
     return Objects.hashCode(key);
   }
 
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this).add("key", key).toString();
+  }
 }

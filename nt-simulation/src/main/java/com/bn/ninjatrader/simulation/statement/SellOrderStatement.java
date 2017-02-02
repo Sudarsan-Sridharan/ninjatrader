@@ -15,6 +15,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
@@ -23,6 +25,8 @@ import java.util.Set;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SellOrderStatement implements Statement {
+  private static final Logger LOG = LoggerFactory.getLogger(SellOrderStatement.class);
+
   public static final Builder builder() {
     return new Builder();
   }
@@ -47,9 +51,10 @@ public class SellOrderStatement implements Statement {
 
     if (account.hasShares()) {
       final Price price = barData.getPrice();
-      final Order order = Order.sell().date(price.getDate()).type(orderType)
-          .config(orderConfig)
-          .build();
+      final Order order = Order.sell().date(price.getDate()).type(orderType).config(orderConfig).build();
+
+      LOG.info("Sell order: {} - {}", order, barData);
+
       broker.submitOrder(order, barData);
     }
   }

@@ -2,6 +2,7 @@ package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.common.data.Price;
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.Lists;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class World {
   private final History history;
   private final List<Price> prices;
   private final LocalProperties properties;
+  private final List<Mark> chartMarks = Lists.newArrayList();
 
   private World(final Account account,
                 final Broker broker,
@@ -50,6 +52,10 @@ public class World {
     return properties;
   }
 
+  public List<Mark> getChartMarks() {
+    return chartMarks;
+  }
+
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
@@ -58,6 +64,7 @@ public class World {
         .add("history", history)
         .add("priceSize", prices.size())
         .add("properties", properties)
+        .add("chartMarks", chartMarks)
         .toString();
   }
 

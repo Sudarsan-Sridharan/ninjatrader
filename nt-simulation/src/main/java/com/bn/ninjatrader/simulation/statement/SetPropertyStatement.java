@@ -50,6 +50,7 @@ public class SetPropertyStatement implements Statement {
     properties.putAll(this.properties);
     for (Map.Entry<String, Operation<BarData>> entry : opProperties.entrySet()) {
       final Operation<BarData> operation = entry.getValue();
+      LOG.info("{} {}={}", barData.getPrice().getDate(), entry.getKey(), operation.getValue(barData));
       world.getProperties().put(entry.getKey(), operation.getValue(barData));
     }
   }

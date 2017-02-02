@@ -14,6 +14,7 @@ import com.bn.ninjatrader.simulation.operation.function.HistoryValue;
 import com.bn.ninjatrader.simulation.operation.function.LowestValue;
 import com.bn.ninjatrader.simulation.operation.function.PropertyValue;
 import com.bn.ninjatrader.simulation.order.OrderConfig;
+import com.bn.ninjatrader.simulation.order.type.AtPrice;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.statement.*;
 import com.google.inject.Guice;
@@ -98,6 +99,7 @@ public class Simulator {
                 .add(gt(EMA.withPeriod(18), EMA.withPeriod(50)))
                 .add(gt(EMA.withPeriod(50), EMA.withPeriod(100)))
                 .add(gt(EMA.withPeriod(18), EMA.withPeriod(200)))
+                .add(lte(Operations.create(PRICE_CLOSE).minus(EMA.withPeriod(18)).div(PRICE_CLOSE), 0.02)) // Price must not deviate over 5%
                 .add(Conditions.or(
                     lte(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(1), EMA.withPeriod(50)),
                     lte(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(2), EMA.withPeriod(50)),
@@ -116,7 +118,9 @@ public class Simulator {
                 .add(lt(PRICE_LOW, Operations.create(PropertyValue.of("LAST_PULLBACK")).mult(0.98))))
             .then(MultiStatement.builder()
                 .add(SetPropertyStatement.builder().add("LAST_PULLBACK", 0).build())
-                .add(SellOrderStatement.builder().orderType(marketClose()).build())
+                .add(SellOrderStatement.builder()
+                    .orderType(AtPrice.of(Operations.create(PropertyValue.of("LAST_PULLBACK")).mult(0.98)))
+                    .build())
                 .build())
             .build())
 
@@ -130,12 +134,12 @@ public class Simulator {
         // Pullback Condition
         .addStatement(ConditionalStatement.builder()
             .condition(Conditions.create()
-                .add(eq(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(4), LowestValue.of(PRICE_LOW).inNumOfBarsAgo(10)))
-                .add(lt(PropertyValue.of("LAST_PULLBACK"), HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(4)))
+                .add(eq(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(3), LowestValue.of(PRICE_LOW).inNumOfBarsAgo(7)))
+//                .add(lt(PropertyValue.of("LAST_PULLBACK"), HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(4)))
             )
             .then(MultiStatement.builder()
                 .add(SetPropertyStatement.builder()
-                    .add("LAST_PULLBACK", HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(4))
+                    .add("LAST_PULLBACK", HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(3))
                     .build())
 //                .add(BuyOrderStatement.builder().orderType(MarketTime.CLOSE).barsFromNow(0).build())
                 .build())

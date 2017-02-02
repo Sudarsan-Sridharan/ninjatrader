@@ -1,7 +1,11 @@
 package com.bn.ninjatrader.simulation.model;
 
+import com.bn.ninjatrader.common.util.TestUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.junit.Test;
+
+import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -51,5 +55,12 @@ public class PropertyTest {
   public void testHashcode_shouldHaveEqualHashcodeIfAllPropertiesAreEqual() {
     assertThat(Sets.newHashSet(orig, equal, diffKey, diffValue, diffValueType))
         .containsExactlyInAnyOrder(orig, diffKey, diffValue, diffValueType);
+  }
+
+  @Test
+  public void testSerializeDeserialize_shouldProduceEqualObject() throws IOException {
+    final ObjectMapper om = TestUtil.objectMapper();
+    final String json = om.writeValueAsString(orig);
+    assertThat(om.readValue(json, Property.class)).isEqualTo(orig);
   }
 }
