@@ -4,6 +4,7 @@ import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
+import com.bn.ninjatrader.simulation.order.BuyOrder;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
 import com.bn.ninjatrader.simulation.order.type.OrderTypes;
@@ -27,7 +28,7 @@ public class SellOrderExecutorTest {
   private final Price price = Price.builder().date(now).open(1).high(2).low(3).close(4).volume(1000).build();
   private final BarData barData = BarData.builder().price(price).build();
   private final BarData submittedBarData = BarData.builder().price(price).build();
-  private final Order order = Order.buy().cashAmount(100000).type(OrderTypes.marketOpen()).build();
+  private final Order order = BuyOrder.builder().cashAmount(100000).type(OrderTypes.marketOpen()).build();
   private final PendingOrder pendingOrder = PendingOrder.of(order, submittedBarData);
 
   private Account account;

@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
  */
 public class PendingOrderTest {
 
-  private Order order;
+  private AbstractOrder order;
   private OrderType orderType;
   private OrderConfig orderConfig;
   private BarData currentBarData;
@@ -23,7 +23,7 @@ public class PendingOrderTest {
 
   @Before
   public void before() {
-    order = mock(Order.class);
+    order = mock(AbstractOrder.class);
     orderType = mock(OrderType.class);
     orderConfig = mock(OrderConfig.class);
     currentBarData = mock(BarData.class);

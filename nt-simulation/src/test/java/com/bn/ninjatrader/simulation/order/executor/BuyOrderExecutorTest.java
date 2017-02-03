@@ -5,6 +5,7 @@ import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
+import com.bn.ninjatrader.simulation.order.BuyOrder;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
 import com.bn.ninjatrader.simulation.order.type.OrderTypes;
@@ -34,7 +35,7 @@ public class BuyOrderExecutorTest {
   private final BarData barData = BarData.builder().price(price).build();
   private final BarData submittedBarData = BarData.builder().price(price).build();
   private final BoardLot boardLot = BoardLot.newLot().lot(1000).tick(0.1).build();
-  private final Order order = Order.buy().cashAmount(100000).type(OrderTypes.marketOpen()).build();
+  private final Order order = BuyOrder.builder().cashAmount(100000).type(OrderTypes.marketOpen()).build();
   private final PendingOrder pendingOrder = PendingOrder.of(order, submittedBarData);
 
   @Before

@@ -1,10 +1,10 @@
 package com.bn.ninjatrader.simulation.core;
 
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.simulation.model.*;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
-import com.bn.ninjatrader.simulation.order.Order;
+import com.bn.ninjatrader.simulation.model.*;
+import com.bn.ninjatrader.simulation.order.SellOrder;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.statement.Statement;
 import com.google.common.collect.Lists;
@@ -94,7 +94,7 @@ public class Simulation {
       final Price lastPrice = priceList.get(lastIndex);
       final BarData barData =
           barDataFactory.create(lastPrice, lastIndex, simulationDataList, world);
-      broker.submitOrder(Order.sell().date(lastPrice.getDate()).build(), barData);
+      broker.submitOrder(SellOrder.builder().date(lastPrice.getDate()).build(), barData);
       broker.processPendingOrders(barData);
     }
   }
@@ -113,6 +113,7 @@ public class Simulation {
     report.setTradeStatistic(account.getTradeStatistic());
     report.setTransactions(account.getBookkeeper().getTransactions());
     report.setEndingCash(account.getLiquidCash());
+    report.setMarks(world.getChartMarks());
     return report;
   }
 

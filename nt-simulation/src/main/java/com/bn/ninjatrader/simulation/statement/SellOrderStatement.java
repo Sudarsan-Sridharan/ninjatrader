@@ -8,6 +8,7 @@ import com.bn.ninjatrader.simulation.model.Broker;
 import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.order.OrderConfig;
+import com.bn.ninjatrader.simulation.order.SellOrder;
 import com.bn.ninjatrader.simulation.order.type.OrderType;
 import com.bn.ninjatrader.simulation.order.type.OrderTypes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -51,10 +52,7 @@ public class SellOrderStatement implements Statement {
 
     if (account.hasShares()) {
       final Price price = barData.getPrice();
-      final Order order = Order.sell().date(price.getDate()).type(orderType).config(orderConfig).build();
-
-      LOG.info("Sell order: {} - {}", order, barData);
-
+      final Order order = SellOrder.builder().date(price.getDate()).type(orderType).config(orderConfig).build();
       broker.submitOrder(order, barData);
     }
   }

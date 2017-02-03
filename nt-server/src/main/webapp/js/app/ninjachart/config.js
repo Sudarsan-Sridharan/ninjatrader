@@ -68,6 +68,10 @@ define(["d3", "require", "./util/date", "./util/color"], function(d3, require) {
         return this.xByIndex(index);
     };
 
+    Config.prototype.indexByDate = function(date) {
+        return this.dateIndexMap[date];
+    };
+
     Config.prototype.updateViewport = function(pixelsFrom, pixelsTo) {
         var indexFrom = Math.floor(this.xByIndex.invert(pixelsFrom));
         var indexTo = Math.floor(this.xByIndex.invert(pixelsTo));

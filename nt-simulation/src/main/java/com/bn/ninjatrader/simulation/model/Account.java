@@ -3,6 +3,7 @@ package com.bn.ninjatrader.simulation.model;
 import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
+import com.google.common.base.MoreObjects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,5 +94,10 @@ public class Account {
     LOG.info("Starting Cash: {}", startingCash);
     LOG.info("Ending Cash: {}", (long) liquidCash);
     LOG.info("% Gain: {}%", NumUtil.toPercent(profit / startingCash));
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this).add("liquidCash", liquidCash).toString();
   }
 }

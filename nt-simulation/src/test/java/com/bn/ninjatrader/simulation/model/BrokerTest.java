@@ -30,7 +30,7 @@ public class BrokerTest {
   private final Price price = new Price(now, 1, 2, 3, 4, 1000);
   private final BarData barData = BarData.builder().price(price).build();
   private final BuyTransaction buyTransaction = Transaction.buy().price(4).shares(1000).date(now).build();
-  private final BuyOrder buyOrder = Order.buy().cashAmount(100000).build();
+  private final BuyOrder buyOrder = BuyOrder.builder().cashAmount(100000).build();
 
   private Broker broker;
   private Account account;
@@ -86,7 +86,8 @@ public class BrokerTest {
   @Test
   public void testRemovePendingOrder_shouldRemovePendingOrders() {
     broker.submitOrder(buyOrder, barData);
-    broker.submitOrder(buyOrder, barData);
+    broker.submitOrder(BuyOrder.builder().cashAmount(1000).build(), barData);
+
     assertThat(broker.getPendingOrders()).hasSize(2);
 
     broker.removePendingOrders(broker.getPendingOrders());

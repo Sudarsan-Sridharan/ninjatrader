@@ -70,7 +70,7 @@ public class Simulator {
     final Simulator simulator = injector.getInstance(Simulator.class);
 
     final SimulationParams params = SimulationParams.builder()
-        .symbol("ALI")
+        .symbol("MEG")
         .from(LocalDate.now().minusYears(10))
         .to(LocalDate.now())
         .startingCash(100000)
@@ -117,7 +117,6 @@ public class Simulator {
             .condition(Conditions.create()
                 .add(lt(PRICE_LOW, Operations.create(PropertyValue.of("LAST_PULLBACK")).mult(0.98))))
             .then(MultiStatement.builder()
-                .add(SetPropertyStatement.builder().add("LAST_PULLBACK", 0).build())
                 .add(SellOrderStatement.builder()
                     .orderType(AtPrice.of(Operations.create(PropertyValue.of("LAST_PULLBACK")).mult(0.98)))
                     .build())
@@ -134,18 +133,17 @@ public class Simulator {
         // Pullback Condition
         .addStatement(ConditionalStatement.builder()
             .condition(Conditions.create()
-                .add(eq(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(3), LowestValue.of(PRICE_LOW).inNumOfBarsAgo(7)))
+                .add(eq(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(3), LowestValue.of(PRICE_LOW).inNumOfBarsAgo(6)))
 //                .add(lt(PropertyValue.of("LAST_PULLBACK"), HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(4)))
             )
             .then(MultiStatement.builder()
                 .add(SetPropertyStatement.builder()
                     .add("LAST_PULLBACK", HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(3))
                     .build())
-//                .add(BuyOrderStatement.builder().orderType(MarketTime.CLOSE).barsFromNow(0).build())
+                .add(MarkStatement.builder().numOfBarsAgo(3).build())
                 .build())
             .build()
         )
-
         .build();
 
     simulator.play(params);

@@ -1,14 +1,15 @@
 package com.bn.ninjatrader.simulation.statement;
 
 import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.model.Broker;
-import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.World;
-import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.bn.ninjatrader.simulation.order.BuyOrder;
+import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.order.OrderConfig;
 import com.bn.ninjatrader.simulation.order.type.OrderType;
-import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.order.type.OrderTypes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -52,9 +53,8 @@ public class BuyOrderStatement implements Statement {
 
     if (!account.hasShares() && !broker.hasPendingOrder()) {
       final Price price = barData.getPrice();
-      final Order order = Order.buy()
-          .date(price.getDate()).cashAmount(account.getLiquidCash()).type(orderType)
-          .config(orderConfig).build();
+      final Order order = BuyOrder.builder()
+          .date(price.getDate()).cashAmount(account.getLiquidCash()).type(orderType).config(orderConfig).build();
       broker.submitOrder(order, barData);
     }
   }

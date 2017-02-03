@@ -8,26 +8,31 @@ import java.time.LocalDate;
 /**
  * Created by Brad on 8/12/16.
  */
-public class SellOrder extends Order {
+public class SellOrder extends AbstractOrder {
+
+  public static final Builder builder() {
+    return new Builder();
+  }
 
   private SellOrder(final LocalDate orderDate,
                     final OrderType orderType,
                     final OrderConfig orderConfig,
-                    final int daysFromNow,
                     final long numOfShares) {
-    super(orderDate, TransactionType.SELL, orderType, orderConfig, daysFromNow, numOfShares);
+    super(orderDate, TransactionType.SELL, orderType, orderConfig, numOfShares);
   }
 
-  public static class SellOrderBuilder extends OrderBuilder<SellOrderBuilder> {
-
+  /**
+   * Builder class.
+   */
+  public static class Builder extends OrderBuilder<Builder> {
     @Override
-    SellOrderBuilder getThis() {
+    Builder getThis() {
       return this;
     }
 
     @Override
     public SellOrder build() {
-      return new SellOrder(getOrderDate(), getOrderType(), getOrderConfig(), getDaysFromNow(), getNumOfShares());
+      return new SellOrder(getOrderDate(), getOrderType(), getOrderConfig(), getNumOfShares());
     }
   }
 }

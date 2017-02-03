@@ -3,6 +3,7 @@ package com.bn.ninjatrader.simulation.statement;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.data.BarData;
+import com.bn.ninjatrader.simulation.model.History;
 import com.bn.ninjatrader.simulation.model.Mark;
 import com.bn.ninjatrader.simulation.model.World;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -13,8 +14,8 @@ import com.google.common.base.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -31,16 +32,24 @@ public class MarkStatement implements Statement {
   @JsonProperty("color")
   private final String color;
 
-  public MarkStatement(@JsonProperty("color") final String color) {
+  @JsonProperty("numOfBarsAgo")
+  private final int numOfBarsAgo;
+
+  public MarkStatement(@JsonProperty("color") final String color,
+                       @JsonProperty("numOfBarsAgo") final int numOfBarsAgo) {
     this.color = color;
+    this.numOfBarsAgo = numOfBarsAgo;
   }
 
   @Override
   public void run(final BarData barData) {
     final World world = barData.getWorld();
-    final Price price = barData.getPrice();
-    final LocalDate date = price.getDate();
-    world.getChartMarks().add(Mark.onDate(date).withColor(color));
+    final History history = world.getHistory();
+    final Optional<BarData> historyBarData = history.getNBarsAgo(numOfBarsAgo);
+    if (historyBarData.isPresent()) {
+      final Price price = historyBarData.get().getPrice();
+      world.getChartMarks().add(Mark.onDate(price.getDate()).withColor(color));
+    }
   }
 
   @JsonIgnore
@@ -53,6 +62,10 @@ public class MarkStatement implements Statement {
     return color;
   }
 
+  public int getNumOfBarsAgo() {
+    return numOfBarsAgo;
+  }
+
   @Override
   public boolean equals(final Object obj) {
     if (obj == null || !(obj instanceof MarkStatement)) {
@@ -62,12 +75,13 @@ public class MarkStatement implements Statement {
       return true;
     }
     final MarkStatement rhs = (MarkStatement) obj;
-    return Objects.equal(color, rhs.color);
+    return Objects.equal(color, rhs.color)
+        && Objects.equal(numOfBarsAgo, rhs.numOfBarsAgo);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(color);
+    return Objects.hashCode(color, numOfBarsAgo);
   }
 
   @Override
@@ -80,14 +94,20 @@ public class MarkStatement implements Statement {
    */
   public static final class Builder {
     private String color = "blue";
+    private int numOfBarsAgo;
 
     public Builder color(final String color) {
       this.color = color;
       return this;
     }
 
+    public Builder numOfBarsAgo(final int numOfBarsAgo) {
+      this.numOfBarsAgo = numOfBarsAgo;
+      return this;
+    }
+
     public MarkStatement build() {
-      return new MarkStatement(color);
+      return new MarkStatement(color, numOfBarsAgo);
     }
   }
 }

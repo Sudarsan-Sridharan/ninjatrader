@@ -2,6 +2,7 @@ package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.common.util.FixedList;
 import com.bn.ninjatrader.simulation.data.BarData;
+import com.google.common.base.MoreObjects;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,5 +34,10 @@ public class History {
     } catch (IndexOutOfBoundsException e) {
       return Optional.empty();
     }
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this).toString();
   }
 }

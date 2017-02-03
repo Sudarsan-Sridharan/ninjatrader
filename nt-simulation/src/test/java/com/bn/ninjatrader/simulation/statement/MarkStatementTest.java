@@ -3,6 +3,7 @@ package com.bn.ninjatrader.simulation.statement;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.simulation.data.BarData;
+import com.bn.ninjatrader.simulation.model.History;
 import com.bn.ninjatrader.simulation.model.Mark;
 import com.bn.ninjatrader.simulation.model.World;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,9 +15,12 @@ import org.junit.Test;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author bradwee2000@gmail.com
@@ -28,8 +32,10 @@ public class MarkStatementTest {
   private final MarkStatement orig = MarkStatement.builder().color("yellow").build();
   private final MarkStatement equal = MarkStatement.builder().color("yellow").build();
   private final MarkStatement diffColor = MarkStatement.builder().color("red").build();
+  private final MarkStatement diffNumOfBarsAgo = MarkStatement.builder().color("yellow").numOfBarsAgo(5).build();
 
   private World world;
+  private History history;
   private Price price;
   private BarData barData;
   private List<Mark> marks;
@@ -37,6 +43,7 @@ public class MarkStatementTest {
   @Before
   public void before() {
     world = mock(World.class);
+    history = mock(History.class);
     price = mock(Price.class);
     barData = mock(BarData.class);
 
@@ -46,12 +53,16 @@ public class MarkStatementTest {
     when(barData.getPrice()).thenReturn(price);
     when(price.getDate()).thenReturn(now);
     when(world.getChartMarks()).thenReturn(marks);
+    when(world.getHistory()).thenReturn(history);
+    when(history.getNBarsAgo(anyInt())).thenReturn(Optional.of(barData));
   }
 
   @Test
   public void testBuild_shouldSetProperties() {
     assertThat(orig.getColor()).isEqualTo("yellow");
+    assertThat(orig.getNumOfBarsAgo()).isEqualTo(0);
     assertThat(diffColor.getColor()).isEqualTo("red");
+    assertThat(diffNumOfBarsAgo.getNumOfBarsAgo()).isEqualTo(5);
   }
 
   @Test
@@ -67,13 +78,14 @@ public class MarkStatementTest {
     assertThat(orig).isEqualTo(orig).isEqualTo(equal)
         .isNotEqualTo(null)
         .isNotEqualTo("")
-        .isNotEqualTo(diffColor);
+        .isNotEqualTo(diffColor)
+        .isNotEqualTo(diffNumOfBarsAgo);
   }
 
   @Test
   public void testHashcode_shouldHaveEqualHashcodeIfAllPropertiesAreEqual() {
-    assertThat(Sets.newHashSet(orig, equal, diffColor))
-        .containsExactlyInAnyOrder(orig, diffColor);
+    assertThat(Sets.newHashSet(orig, equal, diffColor, diffNumOfBarsAgo))
+        .containsExactlyInAnyOrder(orig, diffColor, diffNumOfBarsAgo);
   }
 
   @Test

@@ -18,19 +18,19 @@ public class BuyOrderTest {
   private static final Logger LOG = LoggerFactory.getLogger(BuyOrderTest.class);
 
   private LocalDate now = LocalDate.of(2016, 1, 1);
-  private BuyOrder orig = BuyOrder.buy().date(now).cashAmount(100).type(OrderTypes.marketClose()).build();
-  private BuyOrder equal = BuyOrder.buy().date(now).cashAmount(100).type(OrderTypes.marketClose()).build();
-  private BuyOrder diffCashAmt = BuyOrder.buy().date(now).cashAmount(90).type(OrderTypes.marketClose()).build();
-  private BuyOrder diffMarketTime = BuyOrder.buy().date(now).cashAmount(100).type(OrderTypes.marketOpen()).build();
-  private BuyOrder diffConfig = BuyOrder.buy()
+  private BuyOrder orig = BuyOrder.builder().date(now).cashAmount(100).type(OrderTypes.marketClose()).build();
+  private BuyOrder equal = BuyOrder.builder().date(now).cashAmount(100).type(OrderTypes.marketClose()).build();
+  private BuyOrder diffCashAmt = BuyOrder.builder().date(now).cashAmount(90).type(OrderTypes.marketClose()).build();
+  private BuyOrder diffMarketTime = BuyOrder.builder().date(now).cashAmount(100).type(OrderTypes.marketOpen()).build();
+  private BuyOrder diffConfig = BuyOrder.builder()
       .date(now).cashAmount(100).type(OrderTypes.marketClose())
       .config(OrderConfig.defaults().barsFromNow(1)).build();
-  private BuyOrder diffNumOfShares = BuyOrder.buy().date(now)
+  private BuyOrder diffNumOfShares = BuyOrder.builder().date(now)
       .cashAmount(100).type(OrderTypes.marketClose()).shares(100).build();
 
   @Test
   public void testCreateEmpty_shouldCreateWithDefaultValues() {
-    final BuyOrder order = Order.buy().build();
+    final BuyOrder order = BuyOrder.builder().build();
     assertThat(order.getOrderDate()).isNull();
     assertThat(order.getCashAmount()).isEqualTo(0.0);
     assertThat(order.getNumOfShares()).isEqualTo(0);
@@ -39,7 +39,7 @@ public class BuyOrderTest {
 
   @Test
   public void testCreate_shouldHavePropertiesSet() {
-    final BuyOrder order = Order.buy().date(now).type(OrderTypes.marketClose()).shares(1000).cashAmount(20000)
+    final BuyOrder order = BuyOrder.builder().date(now).type(OrderTypes.marketClose()).shares(1000).cashAmount(20000)
         .config(OrderConfig.defaults()).build();
     assertThat(order.getOrderDate()).isEqualTo(now);
     assertThat(order.getOrderType()).isEqualTo(OrderTypes.marketClose());

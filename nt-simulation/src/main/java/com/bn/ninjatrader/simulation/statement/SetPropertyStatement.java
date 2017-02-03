@@ -48,9 +48,8 @@ public class SetPropertyStatement implements Statement {
     final World world = barData.getWorld();
     final LocalProperties properties = world.getProperties();
     properties.putAll(this.properties);
-    for (Map.Entry<String, Operation<BarData>> entry : opProperties.entrySet()) {
+    for (final Map.Entry<String, Operation<BarData>> entry : opProperties.entrySet()) {
       final Operation<BarData> operation = entry.getValue();
-      LOG.info("{} {}={}", barData.getPrice().getDate(), entry.getKey(), operation.getValue(barData));
       world.getProperties().put(entry.getKey(), operation.getValue(barData));
     }
   }

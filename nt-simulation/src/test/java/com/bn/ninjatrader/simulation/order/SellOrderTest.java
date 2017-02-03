@@ -17,7 +17,7 @@ public class SellOrderTest {
 
   @Test
   public void testCreateEmpty_shouldSetDefaultValuesToProperties() {
-    final SellOrder order = Order.sell().build();
+    final SellOrder order = SellOrder.builder().build();
     assertThat(order.getOrderDate()).isNull();
     assertThat(order.getNumOfShares()).isEqualTo(0);
     assertThat(order.getTransactionType()).isEqualTo(TransactionType.SELL);
@@ -25,7 +25,7 @@ public class SellOrderTest {
 
   @Test
   public void testCreate_shouldSetProperties() {
-    final SellOrder order = Order.sell().date(now).type(OrderTypes.marketClose()).shares(1000).build();
+    final SellOrder order = SellOrder.builder().date(now).type(OrderTypes.marketClose()).shares(1000).build();
     assertThat(order.getOrderDate()).isEqualTo(now);
     assertThat(order.getOrderType()).isEqualTo(OrderTypes.marketClose());
     assertThat(order.getNumOfShares()).isEqualTo(1000);

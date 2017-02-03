@@ -73,6 +73,10 @@ public class SimulationReport {
     return marks;
   }
 
+  public void setMarks(List<Mark> marks) {
+    this.marks = marks;
+  }
+
   public void setTradeStatistic(TradeStatistic tradeStatistic) {
     this.tradeStatistic = tradeStatistic;
   }

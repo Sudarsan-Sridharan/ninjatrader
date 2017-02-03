@@ -4,7 +4,6 @@ import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.exception.OrderUnfulfillableException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.junit.Before;
@@ -13,7 +12,6 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -50,13 +48,6 @@ public class AtPriceTest {
     assertThat(AtPrice.of(5).getFulfilledPrice(submittedBarData, currentBarData)).isEqualTo(5);
     assertThat(AtPrice.of(2).getFulfilledPrice(submittedBarData, currentBarData)).isEqualTo(2);
     assertThat(AtPrice.of(3.00001).getFulfilledPrice(submittedBarData, currentBarData)).isEqualTo(3.00001);
-  }
-
-  @Test
-  public void testGetFulfilledPriceWithUnfulfillableCondition_shouldThrowException() {
-    assertThatThrownBy(()->{
-      AtPrice.of(1.9999).getFulfilledPrice(submittedBarData, currentBarData);
-    }).isInstanceOf(OrderUnfulfillableException.class);
   }
 
   @Test

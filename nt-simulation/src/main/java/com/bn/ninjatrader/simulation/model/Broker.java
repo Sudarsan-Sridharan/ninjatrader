@@ -5,8 +5,10 @@ import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
 import com.bn.ninjatrader.simulation.order.executor.OrderExecutor;
+import com.bn.ninjatrader.simulation.order.type.OrderType;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -45,7 +47,15 @@ public class Broker {
     checkNotNull(order, "order must not be null.");
     checkNotNull(barData, "barData must not be null.");
 
-    LOG.info("Submitted {} order on {}", order.getTransactionType(), order.getOrderDate());
+    LOG.info("{} - Submit {} order at price [{}].", order.getOrderDate(), order.getTransactionType(),
+        order.getOrderType().getFulfilledPrice(barData, barData));
+
+    //TODO
+//    if (!pendingOrders.isEmpty()) {
+//      for (final PendingOrder pendingOrder : pendingOrders) {
+//        LOG.info("  -- Pending: {}", pendingOrder.getOrder().)
+//      }
+//    }
 
     pendingOrders.add(PendingOrder.of(order, barData));
   }
@@ -60,7 +70,6 @@ public class Broker {
     final List<PendingOrder> fulfilledOrders = Lists.newArrayList();
     for (final PendingOrder pendingOrder : pendingOrders) {
       if (pendingOrder.isReadyToProcess(barData)) {
-        LOG.info("Processed on: {}", barData.getPrice().getDate());
         fulfillOrder(pendingOrder, barData);
         fulfilledOrders.add(pendingOrder);
       } else if (pendingOrder.isExpired(barData)) {
@@ -78,8 +87,15 @@ public class Broker {
     checkNotNull(orderExecutor, "No OrderExecutor found for TransactionType: %s",
         pendingOrder.getOrder().getTransactionType());
 
+    final Order order = pendingOrder.getOrder();
+    final TransactionType tnxType = order.getTransactionType();
+    final OrderType orderType = order.getOrderType();
+
     final Transaction transaction = orderExecutor.execute(account, pendingOrder, barData);
     lastTransactions.put(transaction.getTransactionType(), transaction);
+
+    LOG.info("{} - Processed {} order at price [{}].", barData.getPrice().getDate(), tnxType,
+        orderType.getFulfilledPrice(pendingOrder.getSubmittedBarData(), barData));
   }
 
   public boolean hasPendingOrder() {
@@ -100,5 +116,10 @@ public class Broker {
 
   public Optional<Transaction> getLastTransaction(final TransactionType transactionType) {
     return Optional.ofNullable(lastTransactions.get(transactionType));
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this).toString();
   }
 }

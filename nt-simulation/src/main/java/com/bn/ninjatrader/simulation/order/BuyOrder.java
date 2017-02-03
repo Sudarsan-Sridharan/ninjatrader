@@ -12,18 +12,21 @@ import java.time.LocalDate;
 /**
  * Created by Brad on 8/12/16.
  */
-public class BuyOrder extends Order {
+public class BuyOrder extends AbstractOrder {
   private static final Logger LOG = LoggerFactory.getLogger(BuyOrder.class);
+
+  public static final Builder builder() {
+    return new Builder();
+  }
 
   private final double cashAmount;
 
   private BuyOrder(final LocalDate orderDate,
                    final OrderType orderType,
                    final OrderConfig orderConfig,
-                   final int barsFromNow,
                    final long numOfShares,
                    final double cashAmount) {
-    super(orderDate, TransactionType.BUY, orderType, orderConfig, barsFromNow, numOfShares);
+    super(orderDate, TransactionType.BUY, orderType, orderConfig, numOfShares);
     this.cashAmount = cashAmount;
   }
 
@@ -34,7 +37,6 @@ public class BuyOrder extends Order {
   public String toString() {
     return MoreObjects.toStringHelper(this)
         .add("orderType", getOrderType())
-        .add("barsFromNow", getBarsFromNow())
         .add("numOfShares", getNumOfShares())
         .add("orderDate", getOrderDate())
         .add("transactionType", getTransactionType())
@@ -43,7 +45,7 @@ public class BuyOrder extends Order {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(final Object obj) {
     if (obj == null || !(obj instanceof BuyOrder)) { return false; }
     if (obj == this) { return true; }
     final BuyOrder rhs = (BuyOrder) obj;
@@ -59,22 +61,22 @@ public class BuyOrder extends Order {
   /**
    * Builder class for BuyOrder.
    */
-  public static class BuyOrderBuilder extends OrderBuilder<BuyOrderBuilder> {
+  public static class Builder extends OrderBuilder<Builder> {
     private double cashAmount;
 
-    public BuyOrderBuilder cashAmount(double cashAmount) {
+    public Builder cashAmount(double cashAmount) {
       this.cashAmount = cashAmount;
       return this;
     }
 
     @Override
-    BuyOrderBuilder getThis() {
+    Builder getThis() {
       return this;
     }
 
     @Override
     public BuyOrder build() {
-      return new BuyOrder(getOrderDate(), getOrderType(), getOrderConfig(), getDaysFromNow(), getNumOfShares(), cashAmount);
+      return new BuyOrder(getOrderDate(), getOrderType(), getOrderConfig(), getNumOfShares(), cashAmount);
     }
   }
 }
