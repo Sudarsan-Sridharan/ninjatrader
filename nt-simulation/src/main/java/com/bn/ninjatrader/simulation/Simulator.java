@@ -10,6 +10,7 @@ import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
 import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
+import com.bn.ninjatrader.simulation.operation.function.HighestValue;
 import com.bn.ninjatrader.simulation.operation.function.HistoryValue;
 import com.bn.ninjatrader.simulation.operation.function.LowestValue;
 import com.bn.ninjatrader.simulation.operation.function.PropertyValue;
@@ -75,6 +76,44 @@ public class Simulator {
         .to(LocalDate.now())
         .startingCash(100000)
 
+        // Initialize
+        .addStatement(ConditionalStatement.builder()
+            .condition(eq(BAR_INDEX, 1))
+            .then(SetPropertyStatement.builder()
+                .add("LAST_PULLBACK", 0)
+                .add("LAST_TOP", 0)
+                .build())
+            .build()
+        )
+
+        // Pullback Condition
+        .addStatement(ConditionalStatement.builder()
+            .condition(Conditions.create()
+                .add(eq(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(3), LowestValue.of(PRICE_LOW).inNumOfBarsAgo(6)))
+            )
+            .then(MultiStatement.builder()
+                .add(SetPropertyStatement.builder()
+                    .add("LAST_PULLBACK", HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(3))
+                    .build())
+//                .add(MarkStatement.builder().numOfBarsAgo(3).build())
+                .build())
+            .build()
+        )
+
+        // Tops Condition
+        .addStatement(ConditionalStatement.builder()
+            .condition(Conditions.create()
+                .add(eq(HistoryValue.of(PRICE_HIGH).inNumOfBarsAgo(3), HighestValue.of(PRICE_HIGH).inNumOfBarsAgo(6)))
+            )
+            .then(MultiStatement.builder()
+                .add(SetPropertyStatement.builder()
+                    .add("LAST_TOP", HistoryValue.of(PRICE_HIGH).inNumOfBarsAgo(3))
+                    .build())
+//                .add(MarkStatement.builder().numOfBarsAgo(3).color("red").build())
+                .build())
+            .build()
+        )
+
         // Buy Condition -- EMA fan continuation
 //        .addStatement(ConditionalStatement.builder()
 //            .condition(Conditions.create()
@@ -92,7 +131,7 @@ public class Simulator {
 //                .build())
 //            .build())
 
-        // Buy Condition -- EMA bounce
+        // Buy Condition -- EMA bounce (price bounce from EMA 50)
         .addStatement(ConditionalStatement.builder()
             .condition(Conditions.create()
                 .add(gt(PRICE_CLOSE, EMA.withPeriod(18)))
@@ -123,27 +162,6 @@ public class Simulator {
                 .build())
             .build())
 
-        // Initialize
-        .addStatement(ConditionalStatement.builder()
-            .condition(eq(BAR_INDEX, 1))
-            .then(SetPropertyStatement.builder().add("LAST_PULLBACK", 0).build())
-            .build()
-        )
-
-        // Pullback Condition
-        .addStatement(ConditionalStatement.builder()
-            .condition(Conditions.create()
-                .add(eq(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(3), LowestValue.of(PRICE_LOW).inNumOfBarsAgo(6)))
-//                .add(lt(PropertyValue.of("LAST_PULLBACK"), HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(4)))
-            )
-            .then(MultiStatement.builder()
-                .add(SetPropertyStatement.builder()
-                    .add("LAST_PULLBACK", HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(3))
-                    .build())
-                .add(MarkStatement.builder().numOfBarsAgo(3).build())
-                .build())
-            .build()
-        )
         .build();
 
     simulator.play(params);

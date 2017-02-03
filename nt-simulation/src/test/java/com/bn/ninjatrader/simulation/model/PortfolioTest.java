@@ -81,5 +81,6 @@ public class PortfolioTest {
     assertThat(portfolio.isEmpty()).isTrue();
     assertThat(portfolio.getAvgPrice()).isEqualTo(0.0);
     assertThat(portfolio.getTotalShares()).isEqualTo(0);
+    assertThat(portfolio.getEquityValue()).isEqualTo(0);
   }
 }

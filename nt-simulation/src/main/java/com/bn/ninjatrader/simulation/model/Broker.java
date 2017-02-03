@@ -50,13 +50,6 @@ public class Broker {
     LOG.info("{} - Submit {} order at price [{}]", order.getOrderDate(), order.getTransactionType(),
         order.getOrderType().getFulfilledPrice(barData, barData));
 
-    //TODO
-//    if (!pendingOrders.isEmpty()) {
-//      for (final PendingOrder pendingOrder : pendingOrders) {
-//        LOG.info("  -- Pending: {}", pendingOrder.getOrder().)
-//      }
-//    }
-
     pendingOrders.add(PendingOrder.of(order, barData));
   }
 
