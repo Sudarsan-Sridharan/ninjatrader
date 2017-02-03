@@ -47,7 +47,7 @@ public class Broker {
     checkNotNull(order, "order must not be null.");
     checkNotNull(barData, "barData must not be null.");
 
-    LOG.info("{} - Submit {} order at price [{}].", order.getOrderDate(), order.getTransactionType(),
+    LOG.info("{} - Submit {} order at price [{}]", order.getOrderDate(), order.getTransactionType(),
         order.getOrderType().getFulfilledPrice(barData, barData));
 
     //TODO
@@ -94,7 +94,7 @@ public class Broker {
     final Transaction transaction = orderExecutor.execute(account, pendingOrder, barData);
     lastTransactions.put(transaction.getTransactionType(), transaction);
 
-    LOG.info("{} - Processed {} order at price [{}].", barData.getPrice().getDate(), tnxType,
+    LOG.info("{} - Processed {} order at price [{}]", barData.getPrice().getDate(), tnxType,
         orderType.getFulfilledPrice(pendingOrder.getSubmittedBarData(), barData));
   }
 

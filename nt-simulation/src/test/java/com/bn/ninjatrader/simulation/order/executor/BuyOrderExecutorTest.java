@@ -26,10 +26,7 @@ import static org.mockito.Mockito.when;
  */
 public class BuyOrderExecutorTest {
 
-  private BoardLotTable boardLotTable;
-  private BuyOrderExecutor executor;
 
-  private Account account;
   private final LocalDate now = LocalDate.of(2016, 1, 1);
   private final Price price = Price.builder().date(now).open(1).high(2).low(3).close(4).volume(1000).build();
   private final BarData barData = BarData.builder().price(price).build();
@@ -38,11 +35,16 @@ public class BuyOrderExecutorTest {
   private final Order order = BuyOrder.builder().cashAmount(100000).type(OrderTypes.marketOpen()).build();
   private final PendingOrder pendingOrder = PendingOrder.of(order, submittedBarData);
 
+  private BoardLotTable boardLotTable;
+  private Account account;
+
+  private BuyOrderExecutor executor;
+
   @Before
   public void setup() {
     account = Account.withStartingCash(100000);
     boardLotTable = mock(BoardLotTable.class);
-    
+
     when(boardLotTable.getBoardLot(anyDouble())).thenReturn(boardLot);
 
     executor = new BuyOrderExecutor(boardLotTable);
@@ -66,7 +68,7 @@ public class BuyOrderExecutorTest {
 
   private void assertBuyAddedToAccount() {
     assertThat(account.getLiquidCash()).isEqualTo(0d);
-    assertThat(account.getNumOfShares()).isEqualTo(100000);
-    assertThat(account.getAvgPrice()).isEqualTo(1.0);
+    assertThat(account.getPortfolio().getTotalShares()).isEqualTo(100000);
+    assertThat(account.getPortfolio().getAvgPrice()).isEqualTo(1.0);
   }
 }

@@ -63,7 +63,7 @@ public class SellOrderExecutorTest {
 
   private void assertAccountPortfolioSold() {
     assertThat(account.getLiquidCash()).isEqualTo(100000.0);
-    assertThat(account.getNumOfShares()).isEqualTo(0);
-    assertThat(account.getAvgPrice()).isEqualTo(0.0);
+    assertThat(account.getPortfolio().getTotalShares()).isEqualTo(0);
+    assertThat(account.getPortfolio().getAvgPrice()).isEqualTo(0.0);
   }
 }

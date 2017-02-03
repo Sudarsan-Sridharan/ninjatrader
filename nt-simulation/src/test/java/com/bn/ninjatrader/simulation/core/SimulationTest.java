@@ -64,7 +64,7 @@ public class SimulationTest {
     when(barDataFactory.create(any(Price.class), anyInt(), anyList(), any(World.class)))
         .thenReturn(bar1, bar2);
 
-    world = World.builder().account(account).broker(broker).prices(prices).history(history).build();
+    world = World.builder().account(account).broker(broker).pricesForSymbol("MEG", prices).history(history).build();
 
     simulation = new Simulation(world, params, barDataFactory);
     simulation.addSimulationData(simulationData);

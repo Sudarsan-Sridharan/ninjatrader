@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -33,7 +34,7 @@ public class Simulation {
   private final Account account;
   private final History history;
   private final LocalProperties properties;
-  private final List<Price> priceList;
+  private final Map<String, List<Price>> priceDatastore;
 
   private final List<Statement> statements;
 
@@ -45,7 +46,7 @@ public class Simulation {
     this.world = world;
     this.account = world.getAccount();
     this.broker = world.getBroker();
-    this.priceList = world.getPrices();
+    this.priceDatastore = world.getPrices();
     this.history = world.getHistory();
     this.properties = world.getProperties();
     this.simulationParams = simulationParams;
@@ -59,18 +60,22 @@ public class Simulation {
     checkNotNull(simulationParams, "SimulationParams must not be null.");
     checkNotNull(account, "Account must not be null.");
     checkArgument(simulationParams.getStartingCash() > 0, "Starting cash must be > 0.");
-    checkNotNull(priceList);
-    checkArgument(priceList.size() > 0, "Price list must not be empty.");
+    checkNotNull(priceDatastore);
+    checkArgument(priceDatastore.size() > 0, "Price list must not be empty.");
   }
 
   public SimulationReport play() {
     barIndex = 0;
-    for (final Price price : priceList) {
-      final BarData barData =
-          barDataFactory.create(price, barIndex, simulationDataList, world);
-      history.add(barData);
-      processBar(barData);
-      barIndex++;
+    for (final Map.Entry<String, List<Price>> entry : priceDatastore.entrySet()) {
+      final String symbol = entry.getKey();
+      for (final Price price : entry.getValue()) {
+        final BarData barData =
+            barDataFactory.create(price, barIndex, simulationDataList, world);
+        history.add(barData);
+        processBar(barData);
+        barIndex++;
+      }
+      sellAll(symbol);
     }
     onSimulationEnd();
     return createSimulationReport();
@@ -84,13 +89,13 @@ public class Simulation {
   }
 
   private void onSimulationEnd() {
-    sellAll();
     account.print();
   }
 
-  private void sellAll() {
+  private void sellAll(final String symbol) {
     if (account.hasShares()) {
-      int lastIndex = priceList.size() - 1;
+      final List<Price> priceList = priceDatastore.get(symbol);
+      int lastIndex = priceDatastore.size() - 1;
       final Price lastPrice = priceList.get(lastIndex);
       final BarData barData =
           barDataFactory.create(lastPrice, lastIndex, simulationDataList, world);

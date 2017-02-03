@@ -43,7 +43,7 @@ public class PortfolioTest {
     assertThat(portfolio.getAvgPrice()).isEqualTo(1.5);
 
     portfolio.add(buy3);
-    assertThat(portfolio.getAvgPrice()).isEqualTo(1.571429);
+    assertThat(portfolio.getAvgPrice()).isEqualTo(1.5714285714285714);
   }
 
   @Test

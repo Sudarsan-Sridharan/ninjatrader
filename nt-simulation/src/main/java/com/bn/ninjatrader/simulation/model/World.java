@@ -3,8 +3,10 @@ package com.bn.ninjatrader.simulation.model;
 import com.bn.ninjatrader.common.data.Price;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author bradwee2000@gmail.com
@@ -17,14 +19,14 @@ public class World {
   private final Account account;
   private final Broker broker;
   private final History history;
-  private final List<Price> prices;
+  private final Map<String, List<Price>> prices;
   private final LocalProperties properties;
   private final List<Mark> chartMarks = Lists.newArrayList();
 
   private World(final Account account,
                 final Broker broker,
                 final History history,
-                final List<Price> prices) {
+                final Map<String, List<Price>> prices) {
     this.account = account;
     this.broker = broker;
     this.history = history;
@@ -44,7 +46,7 @@ public class World {
     return history;
   }
 
-  public List<Price> getPrices() {
+  public Map<String, List<Price>> getPrices() {
     return prices;
   }
 
@@ -75,7 +77,7 @@ public class World {
     private Account account;
     private Broker broker;
     private History history;
-    private List<Price> prices;
+    private Map<String, List<Price>> prices = Maps.newHashMap();
 
     public Builder account(final Account account) {
       this.account = account;
@@ -89,8 +91,8 @@ public class World {
       this.history = history;
       return this;
     }
-    public Builder prices(final List<Price> prices) {
-      this.prices = prices;
+    public Builder pricesForSymbol(final String symbol, final List<Price> prices) {
+      this.prices.put(symbol, prices);
       return this;
     }
     public World build() {

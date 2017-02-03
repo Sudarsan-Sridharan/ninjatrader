@@ -54,7 +54,8 @@ public class SimulationFactory {
     final Account account = Account.withStartingCash(params.getStartingCash());
     final Broker broker = brokerFactory.createBroker(account);
     final History history = History.withMaxSize(52);
-    final World world = World.builder().account(account).broker(broker).history(history).prices(priceList).build();
+    final World world = World.builder().account(account).broker(broker).history(history)
+        .pricesForSymbol(params.getSymbol(), priceList).build();
     final Simulation simulation = new Simulation(world, params, barDataFactory);
 
     addSimulationData(simulation, priceList.size());
