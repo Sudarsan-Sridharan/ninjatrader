@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrCondition<T extends Data> extends MultiCondition<OrCondition<T>, T> {
+  private static final String OR = "OR";
 
   public OrCondition() {
     super();
@@ -37,5 +38,18 @@ public class OrCondition<T extends Data> extends MultiCondition<OrCondition<T>, 
   @Override
   OrCondition<T> getThis() {
     return this;
+  }
+
+  @Override
+  public String toString(final T t) {
+    final StringBuilder sb = new StringBuilder("(");
+    for (final Condition condition : getConditions()) {
+      if (sb.length() != 1) {
+        sb.append(" ").append(OR).append(" ");
+      }
+      sb.append(condition.toString(t));
+    }
+    sb.append(")");
+    return sb.toString();
   }
 }

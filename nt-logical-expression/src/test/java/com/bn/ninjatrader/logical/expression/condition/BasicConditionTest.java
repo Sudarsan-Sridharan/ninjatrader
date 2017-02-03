@@ -17,6 +17,8 @@ import java.util.Set;
 
 import static com.bn.ninjatrader.logical.expression.operator.InequalityOperator.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Brad on 8/2/16.
@@ -99,9 +101,16 @@ public class BasicConditionTest {
   public void testSerializeDeserialize_shouldProduceEqualObject() throws IOException {
     final ObjectMapper om = TestUtil.objectMapper();
     final Condition condition = new BasicCondition(Constant.of(3.0), GT, Constant.of(1.0));
-    final String serialized = om.writeValueAsString(condition);
-    final Condition deserialised = om.readValue(serialized, Condition.class);
-    assertThat(deserialised).isEqualTo(condition);
+    final String json = om.writeValueAsString(condition);
+    assertThat(om.readValue(json, Condition.class)).isEqualTo(condition);
+  }
+
+  @Test
+  public void testToString_shouldConvertVariablesToConstants() {
+    final Data data = mock(Data.class);
+    when(data.get(var1)).thenReturn(10d);
+    when(data.get(var2)).thenReturn(20d);
+    assertThat(BasicCondition.of(var1, LT, var2).toString(data)).isEqualTo("10.0 < 20.0");
   }
 
   /**

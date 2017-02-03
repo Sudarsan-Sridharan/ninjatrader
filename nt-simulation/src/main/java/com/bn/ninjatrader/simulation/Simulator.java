@@ -29,7 +29,6 @@ import java.time.LocalDate;
 
 import static com.bn.ninjatrader.logical.expression.condition.Conditions.*;
 import static com.bn.ninjatrader.simulation.operation.Variables.*;
-import static com.bn.ninjatrader.simulation.order.type.OrderTypes.marketClose;
 
 /**
  * Created by Brad on 8/3/16.
@@ -77,7 +76,7 @@ public class Simulator {
         .startingCash(100000)
 
         // Initialize
-        .addStatement(ConditionalStatement.builder()
+        .addStatement(ConditionalStatement.builder().name("Initialize")
             .condition(eq(BAR_INDEX, 1))
             .then(SetPropertyStatement.builder()
                 .add("LAST_PULLBACK", 0)
@@ -87,7 +86,7 @@ public class Simulator {
         )
 
         // Pullback Condition
-        .addStatement(ConditionalStatement.builder()
+        .addStatement(ConditionalStatement.builder().name("Pullback")
             .condition(Conditions.create()
                 .add(eq(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(3), LowestValue.of(PRICE_LOW).inNumOfBarsAgo(6)))
             )
@@ -101,7 +100,7 @@ public class Simulator {
         )
 
         // Tops Condition
-        .addStatement(ConditionalStatement.builder()
+        .addStatement(ConditionalStatement.builder().name("Tops")
             .condition(Conditions.create()
                 .add(eq(HistoryValue.of(PRICE_HIGH).inNumOfBarsAgo(3), HighestValue.of(PRICE_HIGH).inNumOfBarsAgo(6)))
             )
@@ -132,7 +131,7 @@ public class Simulator {
 //            .build())
 
         // Buy Condition -- EMA bounce (price bounce from EMA 50)
-        .addStatement(ConditionalStatement.builder()
+        .addStatement(ConditionalStatement.builder().name("Bounce from EMA 50")
             .condition(Conditions.create()
                 .add(gt(PRICE_CLOSE, EMA.withPeriod(18)))
                 .add(gt(EMA.withPeriod(18), EMA.withPeriod(50)))
@@ -146,8 +145,8 @@ public class Simulator {
                 ))
             )
             .then(BuyOrderStatement.builder()
-                .orderType(marketClose())
-                .orderConfig(OrderConfig.withBarsFromNow(1))
+                .orderType(AtPrice.of(Operations.create(PRICE_HIGH).mult(1.005)))
+                .orderConfig(OrderConfig.withBarsFromNow(1).expireAfterNumOfBars(1))
                 .build())
             .build())
 

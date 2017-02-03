@@ -9,12 +9,22 @@ public enum InequalityOperator {
     public boolean isMatch(double lhsValue, double rhsValue) {
       return lhsValue == rhsValue;
     }
+
+    @Override
+    public String toString() {
+      return "=";
+    }
   },
 
   GT {
     @Override
     public boolean isMatch(double lhsValue, double rhsValue) {
       return lhsValue > rhsValue;
+    }
+
+    @Override
+    public String toString() {
+      return ">";
     }
   },
 
@@ -23,6 +33,11 @@ public enum InequalityOperator {
     public boolean isMatch(double lhsValue, double rhsValue) {
       return lhsValue >= rhsValue;
     }
+
+    @Override
+    public String toString() {
+      return ">=";
+    }
   },
 
   LT {
@@ -30,12 +45,22 @@ public enum InequalityOperator {
     public boolean isMatch(double lhsValue, double rhsValue) {
       return lhsValue < rhsValue;
     }
+
+    @Override
+    public String toString() {
+      return "<";
+    }
   },
 
   LTE {
     @Override
     public boolean isMatch(double lhsValue, double rhsValue) {
       return lhsValue <= rhsValue;
+    }
+
+    @Override
+    public String toString() {
+      return "<=";
     }
   };
 

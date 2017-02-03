@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.simulation.operation.function;
 
+import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.data.BarData;
@@ -20,6 +21,7 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PropertyValue implements Operation<BarData> {
   private static final Logger LOG = LoggerFactory.getLogger(PropertyValue.class);
+  private static final String TO_STRING_FORMAT = "propertyOf(%s)";
 
   public static final PropertyValue of(final String key) {
     return new PropertyValue(key);
@@ -64,5 +66,10 @@ public class PropertyValue implements Operation<BarData> {
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this).add("key", key).toString();
+  }
+
+  @Override
+  public String toString(final BarData barData) {
+    return String.format(TO_STRING_FORMAT, NumUtil.trim(getValue(barData), 4));
   }
 }

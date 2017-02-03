@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.logical.expression.operation;
 
 import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.logical.expression.model.Data;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.junit.Test;
@@ -10,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author bradwee2000@gmail.com
@@ -45,5 +48,12 @@ public class VariableTest {
     final String json = om.writeValueAsString(variable);
     final Operation deserialized = om.readValue(json, Operation.class);
     assertThat(deserialized).isEqualTo(variable);
+  }
+
+  @Test
+  public void testToString_shouldConvertVariableToConstant() {
+    final Data data = mock(Data.class);
+    when(data.get(orig)).thenReturn(1.234);
+    assertThat(orig.toString(data)).isEqualTo("1.234");
   }
 }

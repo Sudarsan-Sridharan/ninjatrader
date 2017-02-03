@@ -66,9 +66,10 @@ public class Broker {
         fulfillOrder(pendingOrder, barData);
         fulfilledOrders.add(pendingOrder);
       } else if (pendingOrder.isExpired(barData)) {
-        LOG.info("Expired Order: submitted on {}. Current date is {}",
-            pendingOrder.getSubmittedBarData().getPrice().getDate(),
-            barData.getPrice().getDate());
+        LOG.info("{} - Expired {} order submitted on {}",
+            barData.getPrice().getDate(),
+            pendingOrder.getOrder().getTransactionType(),
+            pendingOrder.getSubmittedBarData().getPrice().getDate());
         fulfilledOrders.add(pendingOrder);
       }
     }

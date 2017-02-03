@@ -11,6 +11,7 @@ import java.util.Set;
  */
 public class FalseCondition<T extends Data> implements Condition<T> {
   private static FalseCondition INSTANCE;
+  private static final String FALSE = "false";
 
   public static Condition instance() {
     if (INSTANCE == null) {
@@ -27,5 +28,10 @@ public class FalseCondition<T extends Data> implements Condition<T> {
   @Override
   public Set<Variable> getVariables() {
     return Collections.emptySet();
+  }
+
+  @Override
+  public String toString(final T t) {
+    return FALSE;
   }
 }

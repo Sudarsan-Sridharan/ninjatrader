@@ -10,7 +10,7 @@ import java.util.Set;
  * Created by Brad on 8/5/16.
  */
 public class TrueCondition<T extends Data> implements Condition<T> {
-
+  private static final String TRUE = "true";
   private static TrueCondition INSTANCE;
 
   public static final TrueCondition instance() {
@@ -28,5 +28,10 @@ public class TrueCondition<T extends Data> implements Condition<T> {
   @Override
   public Set<Variable> getVariables() {
     return Collections.emptySet();
+  }
+
+  @Override
+  public String toString(final T t) {
+    return TRUE;
   }
 }

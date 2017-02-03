@@ -60,12 +60,6 @@ public class BasicCondition<T extends Data> implements Condition<T> {
   }
 
   @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this).add("lhs", lhs).add("operator", operator).add("rhs", rhs)
-        .toString();
-  }
-
-  @Override
   public boolean equals(final Object obj) {
     if (obj == null || !(obj instanceof BasicCondition)) { return false; }
     if (obj == this) { return true; }
@@ -78,5 +72,16 @@ public class BasicCondition<T extends Data> implements Condition<T> {
   @Override
   public int hashCode() {
     return Objects.hashCode(lhs, rhs, operator);
+  }
+
+  @Override
+  public String toString(final T t) {
+    return String.format("%s %s %s", lhs.toString(t), operator, rhs.toString(t));
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this).add("lhs", lhs).add("operator", operator).add("rhs", rhs)
+        .toString();
   }
 }

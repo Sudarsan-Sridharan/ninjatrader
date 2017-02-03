@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.simulation.operation.function;
 
+import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.History;
@@ -11,6 +12,7 @@ import java.util.Optional;
  * Created by Brad on 8/29/16.
  */
 public class HistoryValue extends AbstractFunctionWithNumOfBars {
+  private static final String TO_STRING_FORMAT = "historyOf%sBarsAgo(%s)";
 
   public static final HistoryValue of(final Operation<BarData> operation, final int numOfBarsAgo) {
     return new HistoryValue(operation, numOfBarsAgo);
@@ -37,5 +39,10 @@ public class HistoryValue extends AbstractFunctionWithNumOfBars {
       return getOperation().getValue(pastBarData.get());
     }
     return Double.NaN;
+  }
+
+  @Override
+  public String toString(final BarData barData) {
+    return String.format(TO_STRING_FORMAT, getNumOfBarsAgo(), NumUtil.trim(getValue(barData), 4));
   }
 }

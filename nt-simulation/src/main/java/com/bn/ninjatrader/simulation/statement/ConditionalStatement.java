@@ -34,13 +34,18 @@ public class ConditionalStatement implements Statement {
   @JsonProperty("else")
   private final Statement elseStatement;
 
+  @JsonProperty("name")
+  private final String name;
+
   public ConditionalStatement(@JsonProperty("if") final Condition<BarData> condition,
                               @JsonProperty("then") final Statement thenStatement,
-                              @JsonProperty("else") final Statement elseStatement) {
+                              @JsonProperty("else") final Statement elseStatement,
+                              @JsonProperty("name") final String name) {
     checkNotNull(condition, "condition must not be null.");
     this.condition = condition;
     this.thenStatement = thenStatement == null ? EmptyStatement.instance() : thenStatement;
     this.elseStatement = elseStatement == null? EmptyStatement.instance() : elseStatement;
+    this.name = name;
   }
 
   @Override
@@ -55,6 +60,7 @@ public class ConditionalStatement implements Statement {
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
+        .add("name", name)
         .add("condition", condition)
         .add("then", thenStatement)
         .add("else", elseStatement)
@@ -67,6 +73,10 @@ public class ConditionalStatement implements Statement {
     return condition.getVariables();
   }
 
+  public String getName() {
+    return name;
+  }
+
   /**
    * Builder class
    */
@@ -74,21 +84,30 @@ public class ConditionalStatement implements Statement {
     private Condition condition;
     private Statement thenStatement;
     private Statement elseStatement;
+    private String name;
 
     public Builder condition(final Condition condition) {
       this.condition = condition;
       return this;
     }
+
     public Builder then(final Statement thenStatement) {
       this.thenStatement = thenStatement;
       return this;
     }
+
     public Builder otherwise(final Statement elseStatement) {
       this.elseStatement = elseStatement;
       return this;
     }
+
+    public Builder name(final String name) {
+      this.name = name;
+      return this;
+    }
+
     public ConditionalStatement build() {
-      return new ConditionalStatement(condition, thenStatement, elseStatement);
+      return new ConditionalStatement(condition, thenStatement, elseStatement, name);
     }
   }
 }

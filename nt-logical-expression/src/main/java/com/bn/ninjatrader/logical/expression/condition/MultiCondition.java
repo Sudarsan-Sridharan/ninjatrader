@@ -24,27 +24,27 @@ public abstract class MultiCondition<T, S extends Data> implements Condition<S> 
     conditions = Lists.newArrayList();
   }
 
-  public MultiCondition(Condition<S> condition1, Condition<S> condition2) {
+  public MultiCondition(final Condition<S> condition1, final Condition<S> condition2) {
     this();
     conditions.add(condition1);
     conditions.add(condition2);
   }
 
-  public MultiCondition(Condition<S> condition1, Condition<S> condition2, Condition<S> ... moreConditions) {
+  public MultiCondition(final Condition<S> condition1, final Condition<S> condition2, final Condition<S> ... more) {
     this(condition1, condition2);
-    conditions.addAll(Arrays.asList(moreConditions));
+    conditions.addAll(Arrays.asList(more));
   }
 
   @Override
   public Set<Variable> getVariables() {
-    Set<Variable> variables = Sets.newHashSet();
-    for (Condition condition : conditions) {
+    final Set<Variable> variables = Sets.newHashSet();
+    for (final Condition condition : conditions) {
       variables.addAll(condition.getVariables());
     }
     return variables;
   }
 
-  public T add(Condition condition) {
+  public T add(final Condition condition) {
     if (condition != null) {
       conditions.add(condition);
     }
@@ -58,12 +58,7 @@ public abstract class MultiCondition<T, S extends Data> implements Condition<S> 
   }
 
   @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this).add("conditions", conditions).toString();
-  }
-
-  @Override
-  public boolean equals(Object obj) {
+  public boolean equals(final Object obj) {
     if (obj == null || !(obj instanceof MultiCondition)) { return false; }
     if (obj == this) { return true; }
     final MultiCondition rhs = (MultiCondition) obj;
@@ -73,5 +68,10 @@ public abstract class MultiCondition<T, S extends Data> implements Condition<S> 
   @Override
   public int hashCode() {
     return Objects.hashCode(conditions);
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this).add("conditions", conditions).toString();
   }
 }

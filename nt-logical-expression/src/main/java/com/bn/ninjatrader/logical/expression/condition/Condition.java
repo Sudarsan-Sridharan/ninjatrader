@@ -26,4 +26,6 @@ public interface Condition<T extends Data> {
 
   @JsonIgnore
   Set<Variable> getVariables();
+
+  String toString(final T t);
 }

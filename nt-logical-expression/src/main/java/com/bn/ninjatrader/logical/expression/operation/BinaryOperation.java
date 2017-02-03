@@ -17,6 +17,7 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BinaryOperation<T extends Data> implements Operation<T> {
   private static final Logger LOG = LoggerFactory.getLogger(BinaryOperation.class);
+  private static final String TO_STRING_FORMAT = "(%s %s %s)";
 
   public static final BinaryOperation of(final Operation lhs, final Operator operator, final Operation rhs) {
     return new BinaryOperation(lhs, operator, rhs);
@@ -77,6 +78,11 @@ public class BinaryOperation<T extends Data> implements Operation<T> {
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this).add("lhs", lhs).add("operator", operator).add("rhs", rhs).toString();
+    return MoreObjects.toStringHelper(this).addValue(String.format(TO_STRING_FORMAT, lhs, operator, rhs)).toString();
+  }
+
+  @Override
+  public String toString(T t) {
+    return String.format(TO_STRING_FORMAT, lhs.toString(t), operator, rhs.toString(t));
   }
 }

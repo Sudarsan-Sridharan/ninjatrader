@@ -102,4 +102,9 @@ public class ArithmeticOperation<T extends Data> implements Operation<T> {
   public String toString() {
     return MoreObjects.toStringHelper(this).addValue(operation).toString();
   }
+
+  @Override
+  public String toString(final T t) {
+    return operation.toString(t);
+  }
 }

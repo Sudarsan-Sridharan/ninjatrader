@@ -15,11 +15,21 @@ public enum Operator {
     public double exec(final Operation lhs, final Operation rhs, final Data data) {
       return NumUtil.plus(lhs.getValue(data), rhs.getValue(data));
     }
+
+    @Override
+    public String toString() {
+      return "+";
+    }
   },
   MINUS {
     @Override
     public double exec(final Operation lhs, final Operation rhs, final Data data) {
       return NumUtil.minus(lhs.getValue(data), rhs.getValue(data));
+    }
+
+    @Override
+    public String toString() {
+      return "-";
     }
   },
   MULTIPLY {
@@ -27,15 +37,25 @@ public enum Operator {
     public double exec(final Operation lhs, final Operation rhs, final Data data) {
       return NumUtil.multiply(lhs.getValue(data), rhs.getValue(data));
     }
+
+    @Override
+    public String toString() {
+      return "*";
+    }
   },
   DIVIDE {
     @Override
     public double exec(final Operation lhs, final Operation rhs, final Data data) {
       return NumUtil.divide(lhs.getValue(data), rhs.getValue(data));
     }
+
+    @Override
+    public String toString() {
+      return "/";
+    }
   };
 
-  private static final Logger log = LoggerFactory.getLogger(Operator.class);
+  private static final Logger LOG = LoggerFactory.getLogger(Operator.class);
 
   public abstract double exec(final Operation lhs, final Operation rhs, final Data data);
 }

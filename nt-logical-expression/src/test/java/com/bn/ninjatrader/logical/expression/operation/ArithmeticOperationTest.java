@@ -4,6 +4,8 @@ import com.bn.ninjatrader.common.util.TestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -13,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author bradwee2000@gmail.com
  */
 public class ArithmeticOperationTest {
+  private static final Logger LOG = LoggerFactory.getLogger(ArithmeticOperationTest.class);
 
   private final Variable var1 = Variable.of("var1");
   private final Variable var2 = Variable.of("var2");

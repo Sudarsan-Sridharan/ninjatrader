@@ -91,8 +91,13 @@ public class MultiConditionTest {
     }
 
     @Override
-    public boolean isMatch(Data data) {
+    public boolean isMatch(final Data data) {
       return false;
+    }
+
+    @Override
+    public String toString(final T t) {
+      return "";
     }
   }
 }

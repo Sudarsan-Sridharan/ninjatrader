@@ -64,5 +64,10 @@ public class AbstractFunctionWithNumOfBarsTest {
     public double getValue(final BarData barData) {
       return 0;
     }
+
+    @Override
+    public String toString(BarData barData) {
+      return "";
+    }
   }
 }

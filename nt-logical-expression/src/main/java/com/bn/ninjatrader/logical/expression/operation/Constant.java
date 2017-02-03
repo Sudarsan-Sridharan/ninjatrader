@@ -1,8 +1,8 @@
 package com.bn.ninjatrader.logical.expression.operation;
 
+import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.logical.expression.model.Data;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import java.util.Collections;
@@ -39,11 +39,6 @@ public class Constant<T extends Data> implements Operation<T> {
   }
 
   @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this).add("value", value).toString();
-  }
-
-  @Override
   public int hashCode() {
     return Objects.hashCode(value);
   }
@@ -54,5 +49,15 @@ public class Constant<T extends Data> implements Operation<T> {
     if (obj == this) { return true; }
     final Constant rhs = (Constant) obj;
     return Objects.equal(value, rhs.value);
+  }
+
+  @Override
+  public String toString() {
+    return String.valueOf(NumUtil.trim(value, 4));
+  }
+
+  @Override
+  public String toString(T t) {
+    return toString();
   }
 }

@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.logical.expression.operation;
 
+import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.logical.expression.model.Data;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -51,8 +52,13 @@ public class Variable<T extends Data> implements Operation<T> {
   }
 
   @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this).add("dataType", dataType).add("period", period).toString();
+  public double getValue(final T t) {
+    return t.get(this);
+  }
+
+  @Override
+  public Set<Variable> getVariables() {
+    return Sets.newHashSet(this);
   }
 
   @Override
@@ -70,12 +76,12 @@ public class Variable<T extends Data> implements Operation<T> {
   }
 
   @Override
-  public double getValue(final T t) {
-    return t.get(this);
+  public String toString() {
+    return MoreObjects.toStringHelper(this).add("dataType", dataType).add("period", period).toString();
   }
 
   @Override
-  public Set<Variable> getVariables() {
-    return Sets.newHashSet(this);
+  public String toString(final T t) {
+    return String.valueOf(NumUtil.trim(getValue(t), 4));
   }
 }

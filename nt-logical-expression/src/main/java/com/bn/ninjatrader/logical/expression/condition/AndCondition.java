@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AndCondition<T extends Data> extends MultiCondition<AndCondition<T>, T> {
+  private static final String AND = "AND";
 
   public AndCondition() {
     super();
@@ -37,5 +38,18 @@ public class AndCondition<T extends Data> extends MultiCondition<AndCondition<T>
   @Override
   AndCondition<T> getThis() {
     return this;
+  }
+
+  @Override
+  public String toString(final T t) {
+    final StringBuilder sb = new StringBuilder("(");
+    for (final Condition condition : getConditions()) {
+      if (sb.length() != 1) {
+        sb.append(" ").append(AND).append(" ");
+      }
+      sb.append(condition.toString(t));
+    }
+    sb.append(")");
+    return sb.toString();
   }
 }

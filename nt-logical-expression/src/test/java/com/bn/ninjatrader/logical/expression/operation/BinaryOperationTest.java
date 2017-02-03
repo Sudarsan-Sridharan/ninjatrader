@@ -5,16 +5,21 @@ import com.bn.ninjatrader.logical.expression.model.Data;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 import static com.bn.ninjatrader.logical.expression.operator.Operator.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Brad on 8/2/16.
  */
 public class BinaryOperationTest {
+  private static final Logger LOG = LoggerFactory.getLogger(BinaryOperationTest.class);
 
   private final Variable var1 = Variable.of("DataType1");
   private final Variable var2 = Variable.of("DataType2");
@@ -112,5 +117,14 @@ public class BinaryOperationTest {
     final String json = om.writeValueAsString(operation);
     final Operation deserialized = om.readValue(json, Operation.class);
     assertThat(deserialized).isEqualTo(operation);
+  }
+
+  @Test
+  public void testToString_shouldConvertVariablesToConstant() {
+    final Data data = mock(Data.class);
+    when(data.get(var1)).thenReturn(20d);
+    when(data.get(var2)).thenReturn(100.03);
+
+    assertThat(orig.toString(data)).isEqualTo("(20.0 + 100.03)");
   }
 }
