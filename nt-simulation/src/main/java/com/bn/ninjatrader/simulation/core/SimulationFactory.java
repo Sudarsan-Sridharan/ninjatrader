@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.simulation.core;
 
+import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.request.FindRequest;
@@ -34,16 +35,19 @@ public class SimulationFactory {
   private final PriceDao priceDao;
   private final BrokerFactory brokerFactory;
   private final BarDataFactory barDataFactory;
+  private final BoardLotTable boardLotTable;
 
   @Inject
   public SimulationFactory(@AllDataProviders final List<DataProvider> dataFinders,
                            final PriceDao priceDao,
                            final BrokerFactory brokerFactory,
-                           final BarDataFactory barDataFactory) {
+                           final BarDataFactory barDataFactory,
+                           final BoardLotTable boardLotTable) {
     this.dataFinders = dataFinders;
     this.priceDao = priceDao;
     this.brokerFactory = brokerFactory;
     this.barDataFactory = barDataFactory;
+    this.boardLotTable = boardLotTable;
   }
 
   public Simulation create(final SimulationParams params) {
@@ -54,7 +58,7 @@ public class SimulationFactory {
     final Account account = Account.withStartingCash(params.getStartingCash());
     final Broker broker = brokerFactory.createBroker(account);
     final History history = History.withMaxSize(52);
-    final World world = World.builder().account(account).broker(broker).history(history)
+    final World world = World.builder().account(account).broker(broker).boardLotTable(boardLotTable).history(history)
         .pricesForSymbol(params.getSymbol(), priceList).build();
     final Simulation simulation = new Simulation(world, params, barDataFactory);
 

@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.simulation.model;
 
+import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.common.data.Price;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
@@ -18,6 +19,7 @@ public class World {
 
   private final Account account;
   private final Broker broker;
+  private final BoardLotTable boardLotTable;
   private final History history;
   private final Map<String, List<Price>> prices;
   private final LocalProperties properties;
@@ -25,10 +27,12 @@ public class World {
 
   private World(final Account account,
                 final Broker broker,
+                final BoardLotTable boardLotTable,
                 final History history,
                 final Map<String, List<Price>> prices) {
     this.account = account;
     this.broker = broker;
+    this.boardLotTable = boardLotTable;
     this.history = history;
     this.prices = prices;
     properties = new LocalProperties();
@@ -40,6 +44,10 @@ public class World {
 
   public Broker getBroker() {
     return broker;
+  }
+
+  public BoardLotTable getBoardLotTable() {
+    return boardLotTable;
   }
 
   public History getHistory() {
@@ -76,6 +84,7 @@ public class World {
   public static final class Builder {
     private Account account;
     private Broker broker;
+    private BoardLotTable boardLotTable;
     private History history;
     private Map<String, List<Price>> prices = Maps.newHashMap();
 
@@ -87,16 +96,24 @@ public class World {
       this.broker = broker;
       return this;
     }
+
+    public Builder boardLotTable(final BoardLotTable boardLotTable) {
+      this.boardLotTable = boardLotTable;
+      return this;
+    }
+
     public Builder history(final History history) {
       this.history = history;
       return this;
     }
+
     public Builder pricesForSymbol(final String symbol, final List<Price> prices) {
       this.prices.put(symbol, prices);
       return this;
     }
+
     public World build() {
-      return new World(account, broker, history, prices);
+      return new World(account, broker, boardLotTable, history, prices);
     }
   }
 }

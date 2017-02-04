@@ -133,4 +133,8 @@ public class Simulation {
   public Broker getBroker() {
     return broker;
   }
+
+  public World getWorld() {
+    return world;
+  }
 }
