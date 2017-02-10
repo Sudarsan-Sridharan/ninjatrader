@@ -9,7 +9,6 @@ import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.model.request.SaveRequest;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -39,18 +38,6 @@ public class PriceAdjustmentProcessTest {
     calculator = mock(PriceAdjustmentCalculator.class);
 
     process = new PriceAdjustmentProcess(priceDao, calculator);
-  }
-
-  @Test
-  public void testRunWithAllSymbols_shouldRetrieveSymbolsFromDatabase() {
-    when(priceDao.findAllSymbols()).thenReturn(Sets.newHashSet("MEG", "BDO"));
-
-    process.process(PriceAdjustmentRequest.forAllSymbols().from(from).to(to).adjustment(Operations.startWith(2)));
-
-    verify(priceDao).findAllSymbols();
-
-    verify(priceDao, times(2)).find(any(FindRequest.class));
-    verify(priceDao, times(2)).save(any(SaveRequest.class));
   }
 
   @Test

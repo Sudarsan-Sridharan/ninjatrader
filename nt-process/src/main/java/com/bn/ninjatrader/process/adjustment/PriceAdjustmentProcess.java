@@ -10,7 +10,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.util.List;
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -34,19 +33,11 @@ public class PriceAdjustmentProcess {
     checkNotNull(request, "request must not be null.");
     checkNotNull(request.getOperation(), "request.adjustment must not be null.");
 
-    final Set<String> symbols = request.isForAllSymbols() ? priceDao.findAllSymbols() : request.getSymbols();
-    symbols.forEach(symbol -> adjustPricesForSymbol(symbol, request));
-  }
-
-  /**
-   * Adjust prices for symbol.
-   */
-  private void adjustPricesForSymbol(final String symbol, final PriceAdjustmentRequest req) {
     final List<Price> prices = priceDao.find(FindRequest
-        .findSymbol(symbol).from(req.getFromDate()).to(req.getToDate()));
+        .findSymbol(request.getSymbol()).from(request.getFromDate()).to(request.getToDate()));
 
-    final List<Price> adjustedPrices = calculator.calc(prices, req.getOperation());
+    final List<Price> adjustedPrices = calculator.calc(prices, request.getOperation());
 
-    priceDao.save(SaveRequest.save(symbol).timeFrame(TimeFrame.ONE_DAY).values(adjustedPrices));
+    priceDao.save(SaveRequest.save(request.getSymbol()).timeFrame(TimeFrame.ONE_DAY).values(adjustedPrices));
   }
 }

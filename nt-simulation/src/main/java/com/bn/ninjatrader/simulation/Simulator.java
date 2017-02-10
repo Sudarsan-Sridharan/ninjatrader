@@ -85,7 +85,6 @@ public class Simulator {
             .condition(eq(BAR_INDEX, 1))
             .then(SetPropertyStatement.builder()
                 .add("PULLBACK", 0)
-                .add("TOP", 0)
                 .add("TRAILING_STOP", 0)
                 .add(LAST_BROKEN_TOP, 0)
                 .build())
