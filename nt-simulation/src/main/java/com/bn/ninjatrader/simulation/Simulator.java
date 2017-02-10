@@ -114,12 +114,12 @@ public class Simulator {
         // Buy Condition -- EMA bounce (price bounce from EMA 50)
         .addStatement(ConditionalStatement.withName("Bounce from EMA 50")
             .condition(Conditions.and(
-                lte(PcntChangeValue.of(Operations.create(PRICE_HIGH).plus(PipValue.of(2)), LowestValue.of(PRICE_LOW).fromBarsAgo(6)), MAX_BUY_RISK),
+                lte(PcntChangeValue.of(Operations.startWith(PRICE_HIGH).plus(PipValue.of(2)), LowestValue.of(PRICE_LOW).fromBarsAgo(6)), MAX_BUY_RISK),
                 gt(PRICE_CLOSE, EMA.withPeriod(18)) // Price above EMA 18
             ))
             .then(MultiStatement.of(
                 BuyOrderStatement.builder()
-                    .orderType(AtPrice.of(Operations.create(PRICE_HIGH).plus(PipValue.of(2))))
+                    .orderType(AtPrice.of(Operations.startWith(PRICE_HIGH).plus(PipValue.of(2))))
                     .orderConfig(OrderConfig.withBarsFromNow(1).expireAfterNumOfBars(1))
                     .build()
                 )
@@ -129,10 +129,10 @@ public class Simulator {
         // Price Below Trailing Stop -- Sell
         .addStatement(ConditionalStatement.withName("Sell")
             .condition(Conditions.or(
-                lt(PRICE_LOW, Operations.create(PropertyValue.of("TRAILING_STOP")).minus(PipValue.of(2)))
+                lt(PRICE_LOW, Operations.startWith(PropertyValue.of("TRAILING_STOP")).minus(PipValue.of(2)))
             ))
             .then(ConditionalStatement.withName("Check if gap down")
-                .condition(lt(PRICE_HIGH, Operations.create(PropertyValue.of("TRAILING_STOP")).minus(PipValue.of(2))))
+                .condition(lt(PRICE_HIGH, Operations.startWith(PropertyValue.of("TRAILING_STOP")).minus(PipValue.of(2))))
                 .then(
                     SellOrderStatement.builder() // Protection from gap down.
                         .orderType(OrderTypes.marketClose())
@@ -140,7 +140,7 @@ public class Simulator {
                 )
                 .otherwise(MultiStatement.of(
                     SellOrderStatement.builder() // Sell at price 2 pips below trailing stop
-                        .orderType(AtPrice.of(Operations.create(PropertyValue.of("TRAILING_STOP")).minus(PipValue.of(2))))
+                        .orderType(AtPrice.of(Operations.startWith(PropertyValue.of("TRAILING_STOP")).minus(PipValue.of(2))))
                         .build()
                 ))
             )
@@ -149,11 +149,11 @@ public class Simulator {
         // If price above EMA 18 by over 16%
         .addStatement(ConditionalStatement.withName("Take Profit")
             .condition(Conditions.and(
-                gte(Operations.create(PRICE_HIGH).minus(EMA.withPeriod(18)).div(EMA.withPeriod(18)), 0.16)
+                gte(Operations.startWith(PRICE_HIGH).minus(EMA.withPeriod(18)).div(EMA.withPeriod(18)), 0.16)
             ))
             .then(MultiStatement.of(
                 SellOrderStatement.builder()
-                    .orderType(AtPrice.of(Operations.create(EMA.withPeriod(18)).mult(1.16)))
+                    .orderType(AtPrice.of(Operations.startWith(EMA.withPeriod(18)).mult(1.16)))
                     .build()
                 )
             )

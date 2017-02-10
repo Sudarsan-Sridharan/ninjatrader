@@ -19,7 +19,7 @@ public class PriceAdjustmentRequestTest {
 
   @Test
   public void testCreate_shouldSetProperties() {
-    final Operation adjustment = Operations.create(3);
+    final Operation adjustment = Operations.startWith(3);
     final PriceAdjustmentRequest request =
         PriceAdjustmentRequest.forAllSymbols().from(from).to(to).adjustment(adjustment);
 

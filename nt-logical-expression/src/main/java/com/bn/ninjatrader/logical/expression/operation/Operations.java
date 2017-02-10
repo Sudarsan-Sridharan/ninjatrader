@@ -11,11 +11,11 @@ public class Operations {
     return Constant.of(constant);
   }
 
-  public static ArithmeticOperation create(double constant) {
+  public static ArithmeticOperation startWith(double constant) {
     return new ArithmeticOperation(constant);
   }
 
-  public static ArithmeticOperation create(Operation operation) {
+  public static ArithmeticOperation startWith(Operation operation) {
     return new ArithmeticOperation(operation);
   }
 }

@@ -25,13 +25,13 @@ public class PriceAdjustmentCalculatorTest {
         Price.builder().date(now).open(100).high(200).low(50).close(75).change(90).volume(20000).build()
     );
 
-    assertThat(calculator.calc(prices, Operations.create(PriceAdjustmentCalculator.PRICE).div(5)))
+    assertThat(calculator.calc(prices, Operations.startWith(PriceAdjustmentCalculator.PRICE).div(5)))
         .containsExactly(
             Price.builder().date(now).open(2).high(3).low(0.2).close(0.6).change(-0.06).volume(10000).build(),
             Price.builder().date(now).open(20).high(40).low(10).close(15).change(18).volume(20000).build()
     );
 
-    assertThat(calculator.calc(prices, Operations.create(3).minus(1).mult(PriceAdjustmentCalculator.PRICE)))
+    assertThat(calculator.calc(prices, Operations.startWith(3).minus(1).mult(PriceAdjustmentCalculator.PRICE)))
         .containsExactly(
             Price.builder().date(now).open(20).high(30).low(2).close(6).change(-0.6).volume(10000).build(),
             Price.builder().date(now).open(200).high(400).low(100).close(150).change(180).volume(20000).build()
