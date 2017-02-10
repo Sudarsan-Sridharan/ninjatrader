@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_CLOSE;
+import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_OPEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -34,12 +35,13 @@ public class HighestValueTest {
     history = mock(History.class);
     world = mock(World.class);
 
-    bar1 = BarData.builder().world(world).addData(PRICE_CLOSE, 1).build();
-    bar2 = BarData.builder().world(world).addData(PRICE_CLOSE, 1.00001).build();
-    bar3 = BarData.builder().world(world).addData(PRICE_CLOSE, 3).build();
+    bar1 = BarData.builder().world(world).addData(PRICE_CLOSE, 1).addData(PRICE_OPEN, 1.1).build();
+    bar2 = BarData.builder().world(world).addData(PRICE_CLOSE, 1.00001).addData(PRICE_OPEN, 2).build();
+    bar3 = BarData.builder().world(world).addData(PRICE_CLOSE, 3).addData(PRICE_OPEN, 2.9).build();
 
     when(world.getHistory()).thenReturn(history);
 
+    when(history.getNBarsAgo(0)).thenReturn(Optional.of(bar1));
     when(history.getNBarsAgo(1)).thenReturn(Optional.of(bar1));
     when(history.getNBarsAgo(2)).thenReturn(Optional.of(bar2));
     when(history.getNBarsAgo(3)).thenReturn(Optional.of(bar3));
@@ -47,22 +49,39 @@ public class HighestValueTest {
 
   @Test
   public void testGetValue_shouldReturnHighestValueAmongNBars() {
-    assertThat(HighestValue.of(PRICE_CLOSE, 1).getValue(bar1)).isEqualTo(1.0);
-    assertThat(HighestValue.of(PRICE_CLOSE, 2).getValue(bar1)).isEqualTo(1.00001);
-    assertThat(HighestValue.of(PRICE_CLOSE, 3).getValue(bar1)).isEqualTo(3);
+    assertThat(HighestValue.of(PRICE_CLOSE).fromBarsAgo(1).getValue(bar1)).isEqualTo(1.0);
+    assertThat(HighestValue.of(PRICE_CLOSE).fromBarsAgo(2).getValue(bar1)).isEqualTo(1.00001);
+    assertThat(HighestValue.of(PRICE_CLOSE).fromBarsAgo(3).getValue(bar1)).isEqualTo(3);
+
+    assertThat(HighestValue.of(PRICE_CLOSE).toBarsAgo(1).getValue(bar1)).isEqualTo(1.0);
+    assertThat(HighestValue.of(PRICE_CLOSE).toBarsAgo(2).getValue(bar1)).isEqualTo(1.00001);
+    assertThat(HighestValue.of(PRICE_CLOSE).toBarsAgo(3).getValue(bar1)).isEqualTo(3);
   }
 
   @Test
-  public void testChangeNumOfBarsAgo_shoulrReturnNewObject() {
-    final HighestValue function = HighestValue.of(PRICE_CLOSE);
-    assertThat(function.inNumOfBarsAgo(3)).isNotEqualTo(function);
-    assertThat(function.inNumOfBarsAgo(10)).isEqualTo(HighestValue.of(PRICE_CLOSE, 10));
+  public void testValueWithBarsAgoRange_shouldReturnLowestValueInRange() {
+    assertThat(HighestValue.of(PRICE_CLOSE).fromBarsAgo(1).toBarsAgo(3).getValue(bar1)).isEqualTo(3.0);
+    assertThat(HighestValue.of(PRICE_CLOSE).fromBarsAgo(3).toBarsAgo(1).getValue(bar1)).isEqualTo(3.0);
+
+    assertThat(HighestValue.of(PRICE_CLOSE).fromBarsAgo(2).toBarsAgo(3).getValue(bar1)).isEqualTo(3.0);
+    assertThat(HighestValue.of(PRICE_CLOSE).fromBarsAgo(3).toBarsAgo(2).getValue(bar1)).isEqualTo(3.0);
+
+    assertThat(HighestValue.of(PRICE_CLOSE).fromBarsAgo(1).toBarsAgo(2).getValue(bar1)).isEqualTo(1.00001);
+    assertThat(HighestValue.of(PRICE_CLOSE).fromBarsAgo(2).toBarsAgo(1).getValue(bar1)).isEqualTo(1.00001);
   }
+
+  @Test
+  public void testValueWithMultiOperations_shouldReturnLowestValueAmongOperations() {
+    assertThat(HighestValue.of(PRICE_CLOSE, PRICE_OPEN).getValue(bar1)).isEqualTo(1.1);
+    assertThat(HighestValue.of(PRICE_CLOSE, PRICE_OPEN).fromBarsAgo(2).getValue(bar1)).isEqualTo(2);
+    assertThat(HighestValue.of(PRICE_CLOSE, PRICE_OPEN).fromBarsAgo(3).getValue(bar1)).isEqualTo(3);
+  }
+
 
   @Test
   public void testSerializeDeserialize_shouldReturnSameObject() throws IOException {
     final ObjectMapper om = TestUtil.objectMapper();
-    final HighestValue function = new HighestValue(PRICE_CLOSE, 1);
+    final HighestValue function = HighestValue.of(PRICE_CLOSE, PRICE_OPEN).fromBarsAgo(1).toBarsAgo(3);
     final String serialized = om.writeValueAsString(function);
     assertThat(om.readValue(serialized, Operation.class)).isEqualTo(function);
   }

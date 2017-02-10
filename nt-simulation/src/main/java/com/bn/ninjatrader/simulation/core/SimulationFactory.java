@@ -4,14 +4,10 @@ import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.request.FindRequest;
-import com.bn.ninjatrader.simulation.model.Account;
-import com.bn.ninjatrader.simulation.model.Broker;
-import com.bn.ninjatrader.simulation.model.BrokerFactory;
+import com.bn.ninjatrader.simulation.model.*;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
-import com.bn.ninjatrader.simulation.model.History;
 import com.bn.ninjatrader.simulation.data.provider.DataProvider;
 import com.bn.ninjatrader.simulation.annotation.AllDataProviders;
-import com.bn.ninjatrader.simulation.model.World;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
@@ -55,8 +51,10 @@ public class SimulationFactory {
 
     final FindRequest findRequest = findSymbol(params.getSymbol()).from(params.getFromDate()).to(params.getToDate());
     final List<Price> priceList = priceDao.find(findRequest);
-    final Account account = Account.withStartingCash(params.getStartingCash());
-    final Broker broker = brokerFactory.createBroker(account);
+
+    // TODO use factory
+    final Account account = new Account(new Portfolio(), new Bookkeeper(), new TradeStatistic(), params.getStartingCash());
+    final Broker broker = brokerFactory.createBroker();
     final History history = History.withMaxSize(52);
     final World world = World.builder().account(account).broker(broker).boardLotTable(boardLotTable).history(history)
         .pricesForSymbol(params.getSymbol(), priceList).build();

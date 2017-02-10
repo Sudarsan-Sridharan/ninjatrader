@@ -26,13 +26,13 @@ public class ImportCSVPriceTask extends Task {
   private final CsvPriceImporter csvPriceImporter;
 
   @Inject
-  public ImportCSVPriceTask(CsvPriceImporter csvPriceImporter) {
+  public ImportCSVPriceTask(final CsvPriceImporter csvPriceImporter) {
     super("import-csv-price");
     this.csvPriceImporter = csvPriceImporter;
   }
 
   @Override
-  public void execute(ImmutableMultimap<String, String> args, PrintWriter printWriter) throws Exception {
+  public void execute(final ImmutableMultimap<String, String> args, final PrintWriter printWriter) throws Exception {
     LOG.info("Executing ImportPrice {}", args);
     csvPriceImporter.importPrices();
   }

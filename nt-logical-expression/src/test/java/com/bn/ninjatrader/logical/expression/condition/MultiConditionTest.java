@@ -81,6 +81,7 @@ public class MultiConditionTest {
   }
 
   private static final class DummyMultiCondition<T extends Data> extends MultiCondition<DummyMultiCondition<T>, T> {
+
     public static final <T extends Data> DummyMultiCondition<T> newInstance() {
       return new DummyMultiCondition<>();
     }

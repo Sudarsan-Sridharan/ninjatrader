@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMultimap;
 import org.junit.Test;
 
 import java.io.PrintWriter;
+import java.time.LocalDate;
 
 import static org.mockito.Mockito.*;
 
@@ -20,10 +21,10 @@ public class ImportPSEDailyQuotesTaskTest {
 
   @Test
   public void execute_shouldImportPrices() throws Exception {
-    final ImmutableMultimap<String, String> map = ImmutableMultimap.<String, String>builder().build();
+    final ImmutableMultimap<String, String> args = ImmutableMultimap.<String, String>builder().build();
 
-    task.execute(map, printWriter);
+    task.execute(args, printWriter);
 
-    verify(importer, times(1)).importData();
+    verify(importer).importData(any(LocalDate.class));
   }
 }

@@ -101,6 +101,7 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
                 break;
             }
         }
+        toIndex++;
         return transactions.slice(fromIndex, toIndex);
     };
 
@@ -123,6 +124,7 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
                 break;
             }
         }
+        toIndex++;
         return marks.slice(fromIndex, toIndex);
     };
 

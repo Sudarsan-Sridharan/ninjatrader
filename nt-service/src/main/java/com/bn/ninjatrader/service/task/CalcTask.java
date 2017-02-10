@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.service.task;
 
+import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.common.util.DateFormats;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.process.annotation.AllCalcProcess;
@@ -72,7 +73,7 @@ public class CalcTask extends Task {
   }
 
   @Override
-  public void execute(final ImmutableMultimap<String, String> args, final PrintWriter printWriter) throws Exception {
+  public void execute(final ImmutableMultimap<String, String> args, final PrintWriter printWriter) {
     LOG.debug("Executing task with arguments", args);
 
     try {
@@ -106,7 +107,7 @@ public class CalcTask extends Task {
       printWriter.append(MSG_SUCCESS).append("\n");
     } catch (final Exception e) {
       printWriter.append(MSG_FAIL).append("\n");
-      throw e;
+      throw new RuntimeException(e);
     }
   }
 
@@ -124,7 +125,7 @@ public class CalcTask extends Task {
     for (final CalcProcess calcProcess : calcProcesses) {
       for (final String symbol : symbols) {
         LOG.info("Calc [{}] for symbol [{}] from [{}] to [{}]", calcProcess.getProcessName(), symbol, fromDate, toDate);
-        calcProcess.process(calcSymbol(symbol).from(fromDate).to(toDate));
+        calcProcess.process(calcSymbol(symbol).from(fromDate).to(toDate).timeFrames(TimeFrame.ONE_DAY));
       }
     }
   }

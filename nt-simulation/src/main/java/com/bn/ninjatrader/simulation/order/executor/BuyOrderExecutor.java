@@ -2,7 +2,6 @@ package com.bn.ninjatrader.simulation.order.executor;
 
 import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.order.BuyOrder;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
 import com.bn.ninjatrader.simulation.order.type.OrderType;
@@ -26,14 +25,10 @@ public class BuyOrderExecutor extends OrderExecutor {
   }
 
   @Override
-  public BuyTransaction execute(final Account account, final PendingOrder order, final BarData barData) {
-    checkConditions(account, order, barData);
+  public BuyTransaction execute(final PendingOrder order, final BarData barData) {
+    checkConditions(order, barData);
 
-    final BuyTransaction buyTransaction = fulfillBuyOrder(order, barData);
-
-    updateAccount(account, buyTransaction);
-
-    return buyTransaction;
+    return fulfillBuyOrder(order, barData);
   }
 
   private BuyTransaction fulfillBuyOrder(final PendingOrder pendingOrder, final BarData barData) {
@@ -49,11 +44,5 @@ public class BuyOrderExecutor extends OrderExecutor {
         .shares(numOfShares)
         .barIndex(barData.getIndex())
         .build();
-  }
-
-  private void updateAccount(final Account account, final BuyTransaction transaction) {
-    account.addToPortfolio(transaction);
-    account.addCash(-transaction.getValue());
-    account.onBuySuccess(transaction);
   }
 }

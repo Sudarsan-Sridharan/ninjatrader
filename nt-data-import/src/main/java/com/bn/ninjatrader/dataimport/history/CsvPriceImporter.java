@@ -8,8 +8,8 @@ import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.guice.NtModelModule;
 import com.bn.ninjatrader.model.request.SaveRequest;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Brad on 4/28/16.
@@ -50,7 +51,7 @@ public class CsvPriceImporter {
   public void importPricesFromDir(final String directory) throws IOException {
     final File dir = new File(directory);
     final Collection<File> files = FileUtils.listFiles(dir, SUPPORTED_FORMATS, true);
-    final List<DailyQuote> quotes = Lists.newArrayList();
+    final Set<DailyQuote> quotes = Sets.newHashSet(); // Use Set to avoid duplicates
 
     for (final File file : files) {
       LOG.debug("Importing file: {}", file.getAbsoluteFile());

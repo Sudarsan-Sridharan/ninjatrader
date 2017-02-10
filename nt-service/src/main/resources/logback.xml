@@ -11,24 +11,9 @@
         </encoder>
     </appender>
 
-
-    <logger name="org.hibernate" level="WARN"/>
     <logger name="org.apache" level="WARN"/>
-    <logger name="org.jboss" level="WARN"/>
-    <logger name="org.reflections" level="WARN"/>
-    <logger name="org.quartz" level="INFO"/>
-    <logger name="net.sf.json.xml.XMLSerializer" level="WARN"/>
     <logger name="com.ning.http.client.providers.netty" level="INFO"/>
     <logger name="org.mongodb" level="WARN"/>
-
-    <logger name="com.pi.common.util.process.ThreadHelper" level="WARN"/>
-    <logger name="com.pi.ipconnect" level="INFO"/>
-    <logger name="com.zaxxer" level="WARN"/>
-    <logger name="HikariPool" level="WARN"/>
-    <logger name="org.elasticsearch" level="WARN"/>
-    <logger name="com.amazonaws" level="WARN"/>
-    <logger name="org.zeroturnaround" level="WARN"/>
-    <logger name="org.openqa.selenium" level="WARN"/>
 
     <root>
         <appender-ref ref="STDOUT"/>

@@ -3,6 +3,7 @@ package com.bn.ninjatrader.simulation.core;
 import com.bn.ninjatrader.common.util.NtLocalDateDeserializer;
 import com.bn.ninjatrader.common.util.NtLocalDateSerializer;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.bn.ninjatrader.simulation.statement.EmptyStatement;
 import com.bn.ninjatrader.simulation.statement.Statement;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -51,6 +52,12 @@ public class SimulationParams {
   @JsonProperty("statements")
   private final List<Statement> statements = Lists.newArrayList();
 
+  @JsonProperty("onBuyFulfilledStatement")
+  private Statement onBuyFulfilledStatement;
+
+  @JsonProperty("onSellFulfilledStatement")
+  private Statement onSellFulfilledStatement;
+
   @JsonIgnore
   private final Set<Variable> variables = Sets.newHashSet();
 
@@ -63,13 +70,19 @@ public class SimulationParams {
                           final LocalDate toDate,
                           final String symbol,
                           final double startingCash,
-                          final List<Statement> statements) {
+                          final List<Statement> statements,
+                          final Statement onBuyFulfilledStatement,
+                          final Statement onSellFulfilledStatement) {
     this.fromDate = fromDate;
     this.toDate = toDate;
     this.symbol = symbol;
     this.startingCash = startingCash;
     this.statements.addAll(statements);
+    this.onBuyFulfilledStatement = onBuyFulfilledStatement;
+    this.onSellFulfilledStatement = onSellFulfilledStatement;
 
+    variables.addAll(onBuyFulfilledStatement.getVariables());
+    variables.addAll(onSellFulfilledStatement.getVariables());
 
     for (final Statement statement : statements) {
       variables.addAll(statement.getVariables());
@@ -113,6 +126,14 @@ public class SimulationParams {
 
   public List<Statement> getStatements() {
     return Lists.newArrayList(statements);
+  }
+
+  public Statement getOnBuyFulfilledStatement() {
+    return onBuyFulfilledStatement;
+  }
+
+  public Statement getOnSellFulfilledStatement() {
+    return onSellFulfilledStatement;
   }
 
   @Override
@@ -166,6 +187,8 @@ public class SimulationParams {
     private String symbol;
     private double startingCash;
     private final List<Statement> statements = Lists.newArrayList();
+    private Statement onBuyFulfilledStatement = EmptyStatement.instance();
+    private Statement onSellFulfilledStatement = EmptyStatement.instance();
 
     public Builder from(final LocalDate fromDate) {
       this.fromDate = fromDate;
@@ -195,8 +218,17 @@ public class SimulationParams {
       this.statements.addAll(Lists.asList(statement, more));
       return this;
     }
+    public Builder onBuyFulfilledStatement(final Statement onBuyFulfilledStatement) {
+      this.onBuyFulfilledStatement = onBuyFulfilledStatement;
+      return this;
+    }
+    public Builder onSellfulfilledStatement(final Statement onSellFulfilledStatement) {
+      this.onSellFulfilledStatement = onSellFulfilledStatement;
+      return this;
+    }
     public SimulationParams build() {
-      return new SimulationParams(fromDate, toDate, symbol, startingCash, statements);
+      return new SimulationParams(fromDate, toDate, symbol, startingCash, statements,
+          onBuyFulfilledStatement, onSellFulfilledStatement);
     }
   }
 }

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,9 +57,9 @@ public class BinaryOperation<T extends Data> implements Operation<T> {
 
   @Override
   public Set<Variable> getVariables() {
-    final Set<Variable> dataTypes = lhs.getVariables();
-    dataTypes.addAll(rhs.getVariables());
-    return dataTypes;
+    final Set<Variable> set = Sets.newHashSet(lhs.getVariables());
+    set.addAll(rhs.getVariables());
+    return set;
   }
 
   @Override

@@ -1,6 +1,5 @@
 package com.bn.ninjatrader.process.request;
 
-import com.bn.ninjatrader.common.data.Stock;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
@@ -11,8 +10,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by Brad on 7/28/16.
@@ -26,44 +23,39 @@ public class CalcRequest {
   private final List<Integer> periods = Lists.newArrayList();
   private final List<TimeFrame> timeFrames = Lists.newArrayList();
 
-  public static CalcRequest calcSymbol(String symbol) {
+  public static CalcRequest calcSymbol(final String symbol) {
     return new CalcRequest().symbol(symbol);
   }
 
-  public static CalcRequest calcSymbol(String symbol, String ... moreSymbols) {
-    return new CalcRequest().symbols(symbol, moreSymbols);
-  }
-
-  public static CalcRequest forStock(Stock stock) {
-    checkNotNull(stock, "stock must not be null");
-    return new CalcRequest().symbol(stock.getSymbol());
+  public static CalcRequest calcSymbol(final String symbol, final String ... more) {
+    return new CalcRequest().symbols(symbol, more);
   }
 
   private CalcRequest() {
     allTimeFrames();
   }
 
-  public CalcRequest symbol(String symbol) {
+  public CalcRequest symbol(final String symbol) {
     this.symbol = symbol;
     symbolSet.clear();
     symbolSet.add(symbol);
     return this;
   }
 
-  public CalcRequest symbols(String symbol, String ... moreSymbols) {
+  public CalcRequest symbols(final String symbol, final String ... more) {
     this.symbol = symbol;
     symbolSet.clear();
     symbolSet.add(symbol);
-    symbolSet.addAll(Arrays.asList(moreSymbols));
+    symbolSet.addAll(Arrays.asList(more));
     return this;
   }
 
-  public CalcRequest from(LocalDate fromDate) {
+  public CalcRequest from(final LocalDate fromDate) {
     this.fromDate = fromDate;
     return this;
   }
 
-  public CalcRequest to(LocalDate toDate) {
+  public CalcRequest to(final LocalDate toDate) {
     this.toDate = toDate;
     return this;
   }
@@ -85,16 +77,15 @@ public class CalcRequest {
     return this;
   }
 
-  public CalcRequest timeFrames(TimeFrame timeFrame) {
+  public CalcRequest timeFrames(final TimeFrame timeFrame) {
     timeFrames.clear();
     timeFrames.add(timeFrame);
     return this;
   }
 
-  public CalcRequest timeFrames(TimeFrame timeFrame, TimeFrame ... moreTimeFrames) {
+  public CalcRequest timeFrames(final TimeFrame timeFrame, final TimeFrame ... more) {
     timeFrames.clear();
-    timeFrames.add(timeFrame);
-    timeFrames.addAll(Arrays.asList(moreTimeFrames));
+    timeFrames.addAll(Lists.asList(timeFrame, more));
     return this;
   }
 

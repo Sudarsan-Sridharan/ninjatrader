@@ -2,9 +2,9 @@ package com.bn.ninjatrader.simulation.order.executor;
 
 import com.bn.ninjatrader.common.boardlot.BoardLot;
 import com.bn.ninjatrader.common.boardlot.BoardLotTable;
-import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
+import com.bn.ninjatrader.simulation.model.Portfolio;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 import org.junit.Before;
@@ -22,28 +22,29 @@ import static org.mockito.Mockito.when;
  */
 public class OrderExecutorTest {
   private final LocalDate now = LocalDate.of(2016, 1, 1);
-  private final Price price = Price.builder().date(now).open(1).high(2).low(3).close(4).volume(1000).build();
   private final BoardLot boardLot1 = BoardLot.newLot().lot(1000).tick(0.1).build();
   private final BoardLot boardLot2 = BoardLot.newLot().lot(100).tick(0.1).build();
 
   private BoardLotTable boardLotTable;
   private Account account;
+  private Portfolio portfolio;
 
   private OrderExecutor executor;
 
   @Before
   public void before() {
-    account = Account.withStartingCash(100000);
-    account.addToPortfolio(Transaction.buy().price(1.0).shares(100000).build());
+    account = mock(Account.class);
+    portfolio = mock(Portfolio.class);
     boardLotTable = mock(BoardLotTable.class);
 
+    when(account.getPortfolio()).thenReturn(portfolio);
     when(boardLotTable.getBoardLot(1)).thenReturn(boardLot1);
     when(boardLotTable.getBoardLot(2)).thenReturn(boardLot1);
     when(boardLotTable.getBoardLot(5)).thenReturn(boardLot2);
 
     executor = new OrderExecutor(boardLotTable) {
       @Override
-      public Transaction execute(Account account, PendingOrder order, BarData barData) {
+      public Transaction execute(PendingOrder order, BarData barData) {
         return null;
       }
     };
@@ -66,6 +67,9 @@ public class OrderExecutorTest {
 
   @Test
   public void testCalculateProfit() {
+    when(portfolio.getAvgPrice()).thenReturn(1.0);
+    when(portfolio.getTotalShares()).thenReturn(100000l);
+
     double profit = executor.calculateProfit(account, 2.0);
     assertThat(profit).isEqualTo(100000.0);
 
@@ -78,6 +82,9 @@ public class OrderExecutorTest {
 
   @Test
   public void testCalculateProfitAtLowerPrice() {
+    when(portfolio.getAvgPrice()).thenReturn(1.0);
+    when(portfolio.getTotalShares()).thenReturn(100000l);
+
     double profit = executor.calculateProfit(account, 0.5);
     assertThat(profit).isEqualTo(-50000.0);
   }

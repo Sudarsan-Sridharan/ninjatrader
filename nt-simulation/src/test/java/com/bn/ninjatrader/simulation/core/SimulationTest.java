@@ -1,13 +1,9 @@
 package com.bn.ninjatrader.simulation.core;
 
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.simulation.model.Account;
-import com.bn.ninjatrader.simulation.model.Broker;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
-import com.bn.ninjatrader.simulation.model.History;
-import com.bn.ninjatrader.simulation.model.World;
-import com.bn.ninjatrader.simulation.model.Bookkeeper;
+import com.bn.ninjatrader.simulation.model.*;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,6 +37,7 @@ public class SimulationTest {
 
 
   private Account account;
+  private Portfolio portfolio;
   private Bookkeeper bookkeeper;
   private Broker broker;
   private BarDataFactory barDataFactory;
@@ -53,6 +50,7 @@ public class SimulationTest {
   @Before
   public void before() {
     account = mock(Account.class);
+    portfolio = mock(Portfolio.class);
     bookkeeper = mock(Bookkeeper.class);
     broker = mock(Broker.class);
     barDataFactory = mock(BarDataFactory.class);
@@ -60,7 +58,9 @@ public class SimulationTest {
     simulationData = mock(SimulationData.class);
 
     when(account.getBookkeeper()).thenReturn(bookkeeper);
+    when(account.getPortfolio()).thenReturn(portfolio);
     when(account.getLiquidCash()).thenReturn(100000d);
+    when(portfolio.isEmpty()).thenReturn(true);
     when(barDataFactory.create(any(Price.class), anyInt(), anyList(), any(World.class)))
         .thenReturn(bar1, bar2);
 

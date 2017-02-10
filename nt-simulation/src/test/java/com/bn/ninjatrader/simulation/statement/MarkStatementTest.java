@@ -29,10 +29,11 @@ public class MarkStatementTest {
 
   private final LocalDate now = LocalDate.of(2016, 2, 1);
 
-  private final MarkStatement orig = MarkStatement.builder().color("yellow").build();
-  private final MarkStatement equal = MarkStatement.builder().color("yellow").build();
-  private final MarkStatement diffColor = MarkStatement.builder().color("red").build();
-  private final MarkStatement diffNumOfBarsAgo = MarkStatement.builder().color("yellow").numOfBarsAgo(5).build();
+  private final MarkStatement orig = MarkStatement.withColor("yellow");
+  private final MarkStatement equal = MarkStatement.withColor("yellow");
+  private final MarkStatement diffColor = MarkStatement.withColor("red");
+  private final MarkStatement diffNumOfBarsAgo = MarkStatement.withColor("yellow").numOfBarsAgo(5);
+  private final MarkStatement diffMarker = MarkStatement.withColor("yellow").marker(MarkStatement.Marker.ARROWDOWN);
 
   private World world;
   private History history;
@@ -79,13 +80,14 @@ public class MarkStatementTest {
         .isNotEqualTo(null)
         .isNotEqualTo("")
         .isNotEqualTo(diffColor)
-        .isNotEqualTo(diffNumOfBarsAgo);
+        .isNotEqualTo(diffNumOfBarsAgo)
+        .isNotEqualTo(diffMarker);
   }
 
   @Test
   public void testHashcode_shouldHaveEqualHashcodeIfAllPropertiesAreEqual() {
-    assertThat(Sets.newHashSet(orig, equal, diffColor, diffNumOfBarsAgo))
-        .containsExactlyInAnyOrder(orig, diffColor, diffNumOfBarsAgo);
+    assertThat(Sets.newHashSet(orig, equal, diffColor, diffNumOfBarsAgo, diffMarker))
+        .containsExactlyInAnyOrder(orig, diffColor, diffNumOfBarsAgo, diffMarker);
   }
 
   @Test

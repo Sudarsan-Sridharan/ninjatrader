@@ -2,11 +2,13 @@ package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.simulation.data.BarData;
+import com.bn.ninjatrader.simulation.listener.BrokerListener;
 import com.bn.ninjatrader.simulation.order.*;
 import com.bn.ninjatrader.simulation.order.executor.BuyOrderExecutor;
 import com.bn.ninjatrader.simulation.order.executor.OrderExecutor;
 import com.bn.ninjatrader.simulation.order.executor.SellOrderExecutor;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
+import com.bn.ninjatrader.simulation.transaction.SellTransaction;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.google.common.collect.Maps;
@@ -19,6 +21,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -30,12 +33,14 @@ public class BrokerTest {
   private final Price price = new Price(now, 1, 2, 3, 4, 1000);
   private final BarData barData = BarData.builder().price(price).build();
   private final BuyTransaction buyTransaction = Transaction.buy().price(4).shares(1000).date(now).build();
+  private final SellTransaction sellTransaction = Transaction.sell().price(4).shares(1000).date(now).build();
   private final BuyOrder buyOrder = BuyOrder.builder().cashAmount(100000).build();
+  private final SellOrder sellOrder = SellOrder.builder().date(now).shares(1000).build();
 
   private Broker broker;
-  private Account account;
   private BuyOrderExecutor buyOrderExecutor;
   private SellOrderExecutor sellOrderExecutor;
+  private BrokerListener brokerListener;
 
   private Map<TransactionType, OrderExecutor> orderExecutors;
 
@@ -43,13 +48,14 @@ public class BrokerTest {
   public void setup() {
     buyOrderExecutor = mock(BuyOrderExecutor.class);
     sellOrderExecutor = mock(SellOrderExecutor.class);
+    brokerListener = mock(BrokerListener.class);
 
     orderExecutors = Maps.newHashMap();
     orderExecutors.put(TransactionType.BUY, buyOrderExecutor);
     orderExecutors.put(TransactionType.SELL, sellOrderExecutor);
 
-    account = Account.withStartingCash(100000);
-    broker = new Broker(account, orderExecutors);
+    broker = new Broker(orderExecutors);
+    broker.addListener(brokerListener);
   }
 
   @Test
@@ -69,7 +75,7 @@ public class BrokerTest {
 
   @Test
   public void testProcessPendingOrder_shouldProcessPendingOrders() {
-    when(buyOrderExecutor.execute(any(Account.class), any(PendingOrder.class), any(BarData.class)))
+    when(buyOrderExecutor.execute(any(PendingOrder.class), any(BarData.class)))
         .thenReturn(buyTransaction);
 
     broker.submitOrder(buyOrder, barData);
@@ -93,5 +99,27 @@ public class BrokerTest {
     broker.removePendingOrders(broker.getPendingOrders());
 
     assertThat(broker.getPendingOrders()).isEmpty();
+  }
+
+  @Test
+  public void testListenerOnBuyFulfilled_shouldCallBuyFulfilledOnListeners() {
+    when(buyOrderExecutor.execute(any(PendingOrder.class), any(BarData.class)))
+        .thenReturn(buyTransaction);
+
+    broker.submitOrder(buyOrder, barData);
+    broker.processPendingOrders(barData);
+
+    verify(brokerListener).onFulfilledBuy(buyTransaction, barData);
+  }
+
+  @Test
+  public void testListenerOnSellFulfilled_shouldCallSellFulfilledOnListeners() {
+    when(sellOrderExecutor.execute(any(PendingOrder.class), any(BarData.class)))
+        .thenReturn(sellTransaction);
+
+    broker.submitOrder(sellOrder, barData);
+    broker.processPendingOrders(barData);
+
+    verify(brokerListener).onFulfilledSell(sellTransaction, barData);
   }
 }

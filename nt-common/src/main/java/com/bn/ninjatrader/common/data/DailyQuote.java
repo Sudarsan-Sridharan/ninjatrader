@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.common.data;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import java.time.LocalDate;
 
@@ -73,6 +74,30 @@ public class DailyQuote {
 
   public void setVolume(long volume) {
     price.volume(volume);
+  }
+
+  @Override
+  public boolean equals(final Object obj) {
+    if (obj == null || !(obj instanceof DailyQuote)) {
+      return false;
+    }
+    if (obj == this) {
+      return true;
+    }
+    final DailyQuote rhs = (DailyQuote) obj;
+    return Objects.equal(symbol, rhs.symbol)
+        && Objects.equal(getDate(), rhs.getDate())
+        && Objects.equal(getOpen(), rhs.getOpen())
+        && Objects.equal(getHigh(), rhs.getHigh())
+        && Objects.equal(getLow(), rhs.getLow())
+        && Objects.equal(getClose(), rhs.getClose())
+        && Objects.equal(getVolume(), rhs.getVolume());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(symbol, price.getDate(), price.getOpen(),
+        price.getHigh(), price.getLow(), price.getClose(), price.getVolume());
   }
 
   @Override

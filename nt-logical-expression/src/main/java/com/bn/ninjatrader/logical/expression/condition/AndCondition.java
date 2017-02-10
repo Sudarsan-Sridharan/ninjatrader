@@ -14,6 +14,10 @@ public class AndCondition<T extends Data> extends MultiCondition<AndCondition<T>
     super();
   }
 
+  public AndCondition(final Condition<T> condition1) {
+    super(condition1);
+  }
+
   public AndCondition(final Condition<T> condition1, final Condition<T> condition2) {
     super(condition1, condition2);
   }

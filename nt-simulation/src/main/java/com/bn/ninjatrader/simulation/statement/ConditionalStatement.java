@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.simulation.statement;
 
 import com.bn.ninjatrader.logical.expression.condition.Condition;
+import com.bn.ninjatrader.logical.expression.condition.FalseCondition;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,8 +26,16 @@ public class ConditionalStatement implements Statement {
     return new Builder();
   }
 
+  public static final ConditionalStatement withCondition(final Condition<BarData> condition) {
+    return new ConditionalStatement(condition, EmptyStatement.instance(), EmptyStatement.instance(), "");
+  }
+  public static final ConditionalStatement withName(final String name) {
+    return new ConditionalStatement(FalseCondition.instance(), EmptyStatement.instance(),
+        EmptyStatement.instance(), name);
+  }
+
   @JsonProperty("if")
-  private final Condition<BarData> condition;
+  private final Condition condition;
 
   @JsonProperty("then")
   private final Statement thenStatement;
@@ -55,6 +64,22 @@ public class ConditionalStatement implements Statement {
     } else {
       elseStatement.run(barData);
     }
+  }
+
+  public ConditionalStatement condition(final Condition condition) {
+    return new ConditionalStatement(condition, thenStatement, elseStatement, name);
+  }
+
+  public ConditionalStatement name(final String name) {
+    return new ConditionalStatement(condition, thenStatement, elseStatement, name);
+  }
+
+  public ConditionalStatement then(final Statement thenStatement) {
+    return new ConditionalStatement(condition, thenStatement, elseStatement, name);
+  }
+
+  public ConditionalStatement otherwise(final Statement elseStatement) {
+    return new ConditionalStatement(condition, thenStatement, elseStatement, name);
   }
 
   @Override

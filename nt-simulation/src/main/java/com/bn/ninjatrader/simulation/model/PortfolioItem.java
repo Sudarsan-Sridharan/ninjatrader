@@ -9,6 +9,8 @@ import com.google.common.base.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
+ * This class is immutable.
+ *
  * @author bradwee2000@gmail.com
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

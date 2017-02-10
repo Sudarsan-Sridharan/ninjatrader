@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Test</title>
+    <title>Ninja Trader</title>
     <script data-main="js/ninjachart2" src="js/lib/require.js"></script>
     <script>
     </script>

@@ -15,6 +15,10 @@ import java.time.LocalDate;
  */
 public class SellTransaction extends Transaction {
 
+  public static SellTransactionBuilder builder() {
+    return new SellTransactionBuilder();
+  }
+
   @JsonProperty("profit")
   private final double profit;
 

@@ -4,26 +4,29 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
-    <!-- BEGIN Guice configuration -->
     <filter>
-        <filter-name>guiceFilter</filter-name>
-        <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+        <filter-name>JerseyWebService</filter-name>
+        <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.bn.ninjatrader.server.config.JerseyConfiguration</param-value>
+        </init-param>
+        <init-param>
+            <param-name>jersey.config.server.provider.scanning.recursive</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>jersey.config.servlet.filter.staticContentRegex</param-name>
+            <param-value>/.*js</param-value>
+        </init-param>
     </filter>
     <filter-mapping>
-        <filter-name>guiceFilter</filter-name>
+        <filter-name>JerseyWebService</filter-name>
         <url-pattern>/*</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
-        <dispatcher>FORWARD</dispatcher>
-        <dispatcher>INCLUDE</dispatcher>
-        <dispatcher>ERROR</dispatcher>
     </filter-mapping>
-    <!-- END Guice configuration -->
 
     <listener>
         <listener-class>com.bn.ninjatrader.server.listener.VelocityInitializer</listener-class>
-    </listener>
-    <listener>
-        <listener-class>com.bn.ninjatrader.server.guice.NtGuiceServletContextListener</listener-class>
     </listener>
 
 </web-app>

@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * Created by Brad on 8/23/16.
@@ -25,7 +26,10 @@ public class PortfolioTest {
 
   @Test
   public void testOnCreate() {
-    assertPortfolioIsEmpty();
+    assertThat(portfolio.isEmpty()).isTrue();
+    assertThat(portfolio.getAvgPrice()).isEqualTo(0.0);
+    assertThat(portfolio.getTotalShares()).isEqualTo(0);
+    assertThat(portfolio.getEquityValue()).isEqualTo(0);
   }
 
   @Test
@@ -74,13 +78,81 @@ public class PortfolioTest {
   public void testClear_shouldRemoveAllSharesFromPortfolio() {
     portfolio.add(buy1);
     portfolio.clear();
-    assertPortfolioIsEmpty();
-  }
-
-  private void assertPortfolioIsEmpty() {
     assertThat(portfolio.isEmpty()).isTrue();
     assertThat(portfolio.getAvgPrice()).isEqualTo(0.0);
     assertThat(portfolio.getTotalShares()).isEqualTo(0);
     assertThat(portfolio.getEquityValue()).isEqualTo(0);
   }
+
+  @Test
+  public void testCommitShares_shouldAddSharesToNumOfCommittedShares() {
+    portfolio.add(Transaction.buy().symbol("MEG").price(1).shares(10000).build());
+    assertThat(portfolio.getCommittedShares("MEG")).isEqualTo(0);
+
+    // BDO doesn't exist
+    portfolio.commitShares("BDO", 10000);
+    assertThat(portfolio.getCommittedShares("MEG")).isEqualTo(0);
+    assertThat(portfolio.getCommittedShares("BDO")).isEqualTo(0);
+
+    portfolio.commitShares("MEG", 5000);
+    assertThat(portfolio.getCommittedShares("MEG")).isEqualTo(5000);
+
+    portfolio.commitShares("MEG", 5000);
+    assertThat(portfolio.getCommittedShares("MEG")).isEqualTo(10000);
+
+    // Can't commit any more shares. Should throw exception.
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+      portfolio.commitShares("MEG", 1);
+    });
+  }
+
+  @Test
+  public void testCancelCommittedShares_shouldDeductFromCommittedShares() {
+    portfolio.add(Transaction.buy().symbol("MEG").price(1).shares(10000).build());
+    portfolio.commitShares("MEG", 5000);
+
+    // BDO doesn't exist
+    portfolio.cancelCommittedShares("BDO", 5000);
+    assertThat(portfolio.getCommittedShares("MEG")).isEqualTo(5000);
+
+    // Cancel partial
+    portfolio.cancelCommittedShares("MEG", 1000);
+    assertThat(portfolio.getCommittedShares("MEG")).isEqualTo(4000);
+
+    // Cancel all
+    portfolio.cancelCommittedShares("MEG", 4000);
+    assertThat(portfolio.getCommittedShares("MEG")).isEqualTo(0);
+
+    // Nothing left. Can't cancel anymore
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+      portfolio.cancelCommittedShares("MEG", 1);
+    });
+  }
+
+  @Test
+  public void testFulfillCommittedShares_shouldDeductFromTotalShares() {
+    portfolio.add(Transaction.buy().symbol("MEG").price(1).shares(10000).build());
+    portfolio.commitShares("MEG", 5000);
+
+    // BDO doesn't exist
+    portfolio.fulfillCommittedShares("BDO", 5000);
+    assertThat(portfolio.getCommittedShares("MEG")).isEqualTo(5000);
+    assertThat(portfolio.getTotalShares("MEG")).isEqualTo(10000);
+
+    // Fulfill partial
+    portfolio.fulfillCommittedShares("MEG", 1000);
+    assertThat(portfolio.getCommittedShares("MEG")).isEqualTo(4000);
+    assertThat(portfolio.getTotalShares("MEG")).isEqualTo(9000);
+
+    // Fulfill all
+    portfolio.fulfillCommittedShares("MEG", 4000);
+    assertThat(portfolio.getCommittedShares("MEG")).isEqualTo(0);
+    assertThat(portfolio.getTotalShares("MEG")).isEqualTo(5000);
+
+    // Nothing left to fulfill
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+      portfolio.fulfillCommittedShares("MEG", 1);
+    });
+  }
+
 }

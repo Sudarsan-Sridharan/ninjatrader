@@ -8,6 +8,7 @@ import com.bn.ninjatrader.service.provider.LocalDateParamConverterProvider;
 import com.bn.ninjatrader.service.resource.*;
 import com.bn.ninjatrader.service.task.CalcTask;
 import com.bn.ninjatrader.service.task.ImportCSVPriceTask;
+import com.bn.ninjatrader.service.task.ImportPSETraderDailyQuotesTask;
 import com.bn.ninjatrader.service.task.ImportPSEDailyQuotesTask;
 import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
 import com.google.inject.Guice;
@@ -48,14 +49,15 @@ public class ServiceApplication extends Application<ServiceConfig> {
 
   @Inject
   private CalcTask calcTask;
-
   @Inject
   private ImportCSVPriceTask importPriceTask;
   @Inject
   private ImportPSEDailyQuotesTask importPSEDailyQuotesTask;
+  @Inject
+  private ImportPSETraderDailyQuotesTask importPSETraderDailyQuotesTask;
 
   @Override
-  public void run(ServiceConfig serviceConfig, Environment env) throws Exception {
+  public void run(final ServiceConfig serviceConfig, final Environment env) throws Exception {
     env.healthChecks().register("health", serviceHealthCheck);
     env.jersey().packages(LocalDateParamConverterProvider.class.getPackage().getName());
 
@@ -78,6 +80,7 @@ public class ServiceApplication extends Application<ServiceConfig> {
     admin.addTask(calcTask);
     admin.addTask(importPriceTask);
     admin.addTask(importPSEDailyQuotesTask);
+    admin.addTask(importPSETraderDailyQuotesTask);
   }
 
   private void setupFilters(final ServletEnvironment servlet) {

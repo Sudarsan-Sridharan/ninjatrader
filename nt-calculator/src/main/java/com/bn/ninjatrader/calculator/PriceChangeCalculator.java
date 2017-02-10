@@ -15,13 +15,13 @@ import java.util.List;
  */
 @Singleton
 public class PriceChangeCalculator {
-  private static final Logger log = LoggerFactory.getLogger(PriceChangeCalculator.class);
+  private static final Logger LOG = LoggerFactory.getLogger(PriceChangeCalculator.class);
 
-  public List<Price> calc(List<Price> priceList) {
+  public List<Price> calc(final List<Price> priceList) {
     boolean isFirst = true;
     double prevClose = 0;
 
-    for (Price price : priceList) {
+    for (final Price price : priceList) {
       if (isFirst) {
         isFirst = false;
       } else {

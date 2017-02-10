@@ -49,13 +49,8 @@ public class AndConditionTest {
 
   @Test
   public void testAddCondition_shouldReturnFalseIfOneIsFalse() {
-    final AndCondition condition = new AndCondition();
-    condition.add(trueCondition);
-    condition.add(trueCondition);
-    assertThat(condition.isMatch(barData)).isTrue();
-
-    condition.add(falseCondition);
-    assertThat(condition.isMatch(barData)).isFalse();
+    assertThat(new AndCondition(trueCondition, trueCondition).isMatch(barData)).isTrue();
+    assertThat(new AndCondition(trueCondition, trueCondition, falseCondition).isMatch(barData)).isFalse();
   }
 
   @Test

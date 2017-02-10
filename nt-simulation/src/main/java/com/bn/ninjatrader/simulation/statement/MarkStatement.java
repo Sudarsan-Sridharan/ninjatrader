@@ -24,9 +24,20 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MarkStatement implements Statement {
   private static final Logger LOG = LoggerFactory.getLogger(MarkStatement.class);
+  private static final String DEFAULT_COLOR = "blue";
+  private static final int DEFAULT_NUM_OF_BARS = 0;
+  private static final Marker DEFAULT_MARKER = Marker.VLINE;
 
-  public static final Builder builder() {
-    return new Builder();
+  public static final MarkStatement withMarker(final Marker marker) {
+    return new MarkStatement(DEFAULT_COLOR, DEFAULT_NUM_OF_BARS, marker);
+  }
+
+  public static final MarkStatement withColor(final String color) {
+    return new MarkStatement(color, DEFAULT_NUM_OF_BARS, DEFAULT_MARKER);
+  }
+
+  public enum Marker {
+    VLINE, ARROWUP, ARROWDOWN
   }
 
   @JsonProperty("color")
@@ -35,10 +46,15 @@ public class MarkStatement implements Statement {
   @JsonProperty("numOfBarsAgo")
   private final int numOfBarsAgo;
 
+  @JsonProperty("marker")
+  private final Marker marker;
+
   public MarkStatement(@JsonProperty("color") final String color,
-                       @JsonProperty("numOfBarsAgo") final int numOfBarsAgo) {
+                       @JsonProperty("numOfBarsAgo") final int numOfBarsAgo,
+                       @JsonProperty("marker") final Marker marker) {
     this.color = color;
     this.numOfBarsAgo = numOfBarsAgo;
+    this.marker = marker;
   }
 
   @Override
@@ -58,12 +74,28 @@ public class MarkStatement implements Statement {
     return Collections.emptySet();
   }
 
+  public MarkStatement color(final String color) {
+    return new MarkStatement(color, numOfBarsAgo, marker);
+  }
+
+  public MarkStatement numOfBarsAgo(final int numOfBarsAgo) {
+    return new MarkStatement(color, numOfBarsAgo, marker);
+  }
+
+  public MarkStatement marker(final Marker marker) {
+    return new MarkStatement(color, numOfBarsAgo, marker);
+  }
+
   public String getColor() {
     return color;
   }
 
   public int getNumOfBarsAgo() {
     return numOfBarsAgo;
+  }
+
+  public Marker getMarker() {
+    return marker;
   }
 
   @Override
@@ -76,38 +108,18 @@ public class MarkStatement implements Statement {
     }
     final MarkStatement rhs = (MarkStatement) obj;
     return Objects.equal(color, rhs.color)
-        && Objects.equal(numOfBarsAgo, rhs.numOfBarsAgo);
+        && Objects.equal(numOfBarsAgo, rhs.numOfBarsAgo)
+        && Objects.equal(marker, rhs.marker);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(color, numOfBarsAgo);
+    return Objects.hashCode(color, numOfBarsAgo, marker);
   }
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this).add("color", color).toString();
-  }
-
-  /**
-   * Builder class
-   */
-  public static final class Builder {
-    private String color = "blue";
-    private int numOfBarsAgo;
-
-    public Builder color(final String color) {
-      this.color = color;
-      return this;
-    }
-
-    public Builder numOfBarsAgo(final int numOfBarsAgo) {
-      this.numOfBarsAgo = numOfBarsAgo;
-      return this;
-    }
-
-    public MarkStatement build() {
-      return new MarkStatement(color, numOfBarsAgo);
-    }
+    return MoreObjects.toStringHelper(this)
+        .add("color", color).add("numOfBarsAgo", numOfBarsAgo).add("marker", marker).toString();
   }
 }

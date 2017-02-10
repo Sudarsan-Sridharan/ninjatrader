@@ -5,5 +5,5 @@ package com.bn.ninjatrader.simulation.model;
  */
 public interface BrokerFactory {
 
-  Broker createBroker(Account account);
+  Broker createBroker();
 }

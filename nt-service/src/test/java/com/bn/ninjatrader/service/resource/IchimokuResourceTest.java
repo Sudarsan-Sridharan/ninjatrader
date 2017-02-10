@@ -2,8 +2,8 @@ package com.bn.ninjatrader.service.resource;
 
 import com.bn.ninjatrader.common.data.Ichimoku;
 import com.bn.ninjatrader.common.util.TestUtil;
-import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.model.dao.IchimokuDao;
+import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.service.model.IchimokuResponse;
 import com.bn.ninjatrader.service.provider.LocalDateParamConverterProvider;
 import com.google.common.collect.Lists;
@@ -12,7 +12,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -20,8 +19,7 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author bradwee2000@gmail.com
@@ -49,7 +47,7 @@ public class IchimokuResourceTest {
 
   @After
   public void after() {
-    Mockito.reset(ichimokuService);
+    reset(ichimokuService);
   }
 
   @Test

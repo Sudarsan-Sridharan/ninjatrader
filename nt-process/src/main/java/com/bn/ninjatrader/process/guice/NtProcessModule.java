@@ -21,12 +21,12 @@ public class NtProcessModule extends AbstractModule {
   @Provides
   @AllCalcProcess
   private List<CalcProcess> provideCalcAllProcess(
-      CalcWeeklyPriceProcess calcWeeklyPriceProcess,
-      CalcPriceChangeProcess calcPriceChangeProcess,
-      CalcMeanProcess calcMeanProcess,
-      CalcSMAProcess calcSMAProcess,
-      CalcEMAProcess calcEMAProcess,
-      CalcRSIProcess calcRSIProcess
+      final CalcWeeklyPriceProcess calcWeeklyPriceProcess,
+      final CalcPriceChangeProcess calcPriceChangeProcess,
+      final CalcMeanProcess calcMeanProcess,
+      final CalcSMAProcess calcSMAProcess,
+      final CalcEMAProcess calcEMAProcess,
+      final CalcRSIProcess calcRSIProcess
   ) {
     return Lists.newArrayList(
         calcWeeklyPriceProcess,

@@ -20,11 +20,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import static com.bn.ninjatrader.model.util.QueryParam.*;
 
@@ -33,7 +31,6 @@ import static com.bn.ninjatrader.model.util.QueryParam.*;
  */
 @Singleton
 public class PriceDao extends AbstractDateObjDao<PriceDocument, Price> {
-
   private static final Logger LOG = LoggerFactory.getLogger(PriceDao.class);
 
   @Inject
@@ -137,19 +134,14 @@ public class PriceDao extends AbstractDateObjDao<PriceDocument, Price> {
     }
   }
 
-  public Collection<String> findAllSymbols() {
+  public Set<String> findAllSymbols() {
     final int thisYear = LocalDate.now().getYear();
     final Set<String> symbols = Sets.newHashSet();
 
     try (final MongoCursor<PriceDocument> cursor = getMongoCollection()
             .find(Queries.FIND_BY_TIMEFRAME_YEAR, TimeFrame.ONE_DAY, thisYear)
             .as(PriceDocument.class)) {
-      cursor.forEach(new Consumer<PriceDocument>() {
-        @Override
-        public void accept(final PriceDocument priceData) {
-          symbols.add(priceData.getSymbol());
-        }
-      });
+      cursor.forEach(priceDocument -> symbols.add(priceDocument.getSymbol()));
     } catch (final IOException e) {
       throw new RuntimeException(e);
     }

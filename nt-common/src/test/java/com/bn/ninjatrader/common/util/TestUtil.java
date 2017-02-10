@@ -21,8 +21,6 @@ import static org.testng.Assert.assertEquals;
  */
 public class TestUtil {
   private static final Logger LOG = LoggerFactory.getLogger(TestUtil.class);
-  private static final String HASHCODE_ERROR_MSG = "Expecting hashcode of %s != %s";
-  private static final String EQUALS_ERROR_MSG = "Expecting %s != %s";
   private static final Random random = new Random();
   private static final ZoneId zoneId = ZoneId.systemDefault();
   private static final ObjectMapper objectMapper = new ObjectMapper();

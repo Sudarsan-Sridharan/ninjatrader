@@ -5,7 +5,9 @@ import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.model.Broker;
+import com.bn.ninjatrader.simulation.model.Portfolio;
 import com.bn.ninjatrader.simulation.model.World;
+import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.order.OrderConfig;
 import com.bn.ninjatrader.simulation.order.SellOrder;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
@@ -39,6 +41,7 @@ public class SellOrderStatementTest {
 
   private World world;
   private Account account;
+  private Portfolio portfolio;
   private Broker broker;
   private BarData barData;
 
@@ -47,6 +50,7 @@ public class SellOrderStatementTest {
     world = mock(World.class);
     broker = mock(Broker.class);
     account = mock(Account.class);
+    portfolio = mock(Portfolio.class);
     barData = mock(BarData.class);
 
     when(barData.getWorld()).thenReturn(world);
@@ -54,6 +58,7 @@ public class SellOrderStatementTest {
     when(world.getBroker()).thenReturn(broker);
     when(world.getAccount()).thenReturn(account);
     when(account.getLiquidCash()).thenReturn(100000d);
+    when(account.getPortfolio()).thenReturn(portfolio);
   }
 
   @Test
@@ -70,9 +75,8 @@ public class SellOrderStatementTest {
     final SellOrderStatement statement = SellOrderStatement.builder()
         .orderType(marketOpen()).orderConfig(OrderConfig.withBarsFromNow(1)).build();
 
-    // Account has shares to sell
-    when(account.hasShares()).thenReturn(true);
-    when(account.getNumOfShares()).thenReturn(100000l);
+    when(portfolio.isEmpty()).thenReturn(false);
+    when(portfolio.canCommitShares(anyString(), anyLong())).thenReturn(true);
 
     statement.run(barData);
 
@@ -89,17 +93,16 @@ public class SellOrderStatementTest {
   }
 
   @Test
-  public void testRunPendingOrders_shouldNotSubmitBuyOrder() {
+  public void testRunWithNoCommittableShares_shouldNotSubmitOrder() {
     final SellOrderStatement statement = SellOrderStatement.builder()
         .orderType(marketOpen()).orderConfig(OrderConfig.withBarsFromNow(1)).build();
 
-    // Broker has no pending orders
-    when(broker.hasPendingOrder()).thenReturn(Boolean.TRUE);
+    when(portfolio.isEmpty()).thenReturn(false);
+    when(portfolio.canCommitShares(anyString(), anyLong())).thenReturn(false);
 
     statement.run(barData);
 
-    // Verify order submitted to broker
-    verify(broker, times(0)).submitOrder(any(SellOrder.class), any(BarData.class));
+    verify(broker, times(0)).submitOrder(any(Order.class), any(BarData.class));
   }
 
   @Test

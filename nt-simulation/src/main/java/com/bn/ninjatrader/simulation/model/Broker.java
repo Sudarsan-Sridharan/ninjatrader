@@ -2,17 +2,19 @@ package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.simulation.annotation.OrderExecutors;
 import com.bn.ninjatrader.simulation.data.BarData;
+import com.bn.ninjatrader.simulation.listener.BrokerListener;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
 import com.bn.ninjatrader.simulation.order.executor.OrderExecutor;
 import com.bn.ninjatrader.simulation.order.type.OrderType;
+import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
+import com.bn.ninjatrader.simulation.transaction.SellTransaction;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,15 +33,12 @@ public class Broker {
 
   private final List<PendingOrder> pendingOrders = Lists.newArrayList();
   private final Map<TransactionType, Transaction> lastTransactions = Maps.newHashMap();
+  private final List<BrokerListener> listeners = Lists.newArrayList();
 
   private final Map<TransactionType, OrderExecutor> orderExecutors;
-  private final Account account;
 
   @Inject
-  public Broker(@Assisted final Account account,
-                @OrderExecutors final Map<TransactionType, OrderExecutor> orderExecutors) {
-    checkNotNull(account);
-    this.account = account;
+  public Broker(@OrderExecutors final Map<TransactionType, OrderExecutor> orderExecutors) {
     this.orderExecutors = orderExecutors;
   }
 
@@ -85,8 +84,10 @@ public class Broker {
     final TransactionType tnxType = order.getTransactionType();
     final OrderType orderType = order.getOrderType();
 
-    final Transaction transaction = orderExecutor.execute(account, pendingOrder, barData);
+    final Transaction transaction = orderExecutor.execute(pendingOrder, barData);
     lastTransactions.put(transaction.getTransactionType(), transaction);
+
+    publishToListeners(transaction, barData);
 
     LOG.info("{} - Processed {} order at price [{}]", barData.getPrice().getDate(), tnxType,
         orderType.getFulfilledPrice(pendingOrder.getSubmittedBarData(), barData));
@@ -110,6 +111,25 @@ public class Broker {
 
   public Optional<Transaction> getLastTransaction(final TransactionType transactionType) {
     return Optional.ofNullable(lastTransactions.get(transactionType));
+  }
+
+  public void publishToListeners(final Transaction transaction, final BarData barData) {
+    for (final BrokerListener listener : listeners) {
+      switch(transaction.getTransactionType()) {
+        case SELL: listener.onFulfilledSell((SellTransaction) transaction, barData); break;
+        case BUY: listener.onFulfilledBuy((BuyTransaction) transaction, barData); break;
+      }
+    }
+  }
+
+  public void addListener(final BrokerListener listener) {
+    this.listeners.add(listener);
+  }
+
+  public void addListeners(final BrokerListener listener1,
+                           final BrokerListener listener2,
+                           final BrokerListener ... more) {
+    this.listeners.addAll(Lists.asList(listener1, listener2, more));
   }
 
   @Override

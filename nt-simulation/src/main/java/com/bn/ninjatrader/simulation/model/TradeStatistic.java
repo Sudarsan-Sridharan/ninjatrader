@@ -12,8 +12,7 @@ import org.slf4j.LoggerFactory;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TradeStatistic {
-
-  private static final Logger log = LoggerFactory.getLogger(TradeStatistic.class);
+  private static final Logger LOG = LoggerFactory.getLogger(TradeStatistic.class);
 
   @JsonProperty("trades")
   private int numOfTrades = 0;
@@ -33,11 +32,17 @@ public class TradeStatistic {
   @JsonProperty("totalLosses")
   private double totalLosses = 0;
 
-  @JsonProperty("biggestGain")
-  private double biggestGain = 0;
+  @JsonProperty("maxGainTxn")
+  private SellTransaction maxGainTxn = SellTransaction.builder().build();
 
-  @JsonProperty("biggestLoss")
-  private double biggestLoss = 0;
+  @JsonProperty("maxPcntGainTxn")
+  private SellTransaction maxPcntGainTxn = SellTransaction.builder().build();
+
+  @JsonProperty("maxLossTxn")
+  private SellTransaction maxLossTxn = SellTransaction.builder().build();
+
+  @JsonProperty("maxPcntLossTxn")
+  private SellTransaction maxPcntLossTxn = SellTransaction.builder().build();
 
   public int getNumOfTrades() {
     return numOfTrades;
@@ -57,14 +62,6 @@ public class TradeStatistic {
 
   public double getTotalLosses() {
     return totalLosses;
-  }
-
-  public double getBiggestGain() {
-    return biggestGain;
-  }
-
-  public double getBiggestLoss() {
-    return biggestLoss;
   }
 
   @JsonProperty("winLoseRatio")
@@ -88,33 +85,39 @@ public class TradeStatistic {
     return NumUtil.toPercent((double) numOfLosses / numOfTrades);
   }
 
-  public void collectStats(SellTransaction transaction) {
+  public void collectStats(final SellTransaction transaction) {
     if (transaction == null) {
       return;
     }
     if (transaction.getProfit() > 0) {
       numOfWins++;
       totalGain = NumUtil.plus(totalGain, transaction.getProfit());
-      biggestGain = Math.max(biggestGain, transaction.getProfit());
+      maxGainTxn = transaction.getProfit() > maxGainTxn.getProfit() ? transaction : maxGainTxn;
+      maxPcntGainTxn = transaction.getProfitPcnt() > maxPcntGainTxn.getProfitPcnt() ?
+          transaction : maxPcntGainTxn;
     } else {
       numOfLosses++;
       totalLosses = NumUtil.plus(totalLosses, transaction.getProfit());
-      biggestLoss = Math.min(biggestLoss, transaction.getProfit());
+      maxLossTxn = transaction.getProfit() < maxLossTxn.getProfit() ? transaction : maxLossTxn;
+      maxPcntLossTxn = transaction.getProfitPcnt() < maxPcntLossTxn.getProfitPcnt() ?
+          transaction : maxPcntLossTxn;
     }
     numOfTrades++;
     totalProfit = NumUtil.plus(totalProfit, transaction.getProfit());
   }
 
   public void print() {
-    log.info("# of Trades: {}", numOfTrades);
-    log.info("# of Wins: {} ({}%)", numOfWins, getWinPcnt());
-    log.info("# of Losses: {} ({}%)", numOfLosses, getLossPcnt());
-    log.info("Win / Loss Ratio: {}", getWinLoseRatio());
-    log.info("Biggest Gain: {}", biggestGain);
-    log.info("Biggest Loss: {}", biggestLoss);
-    log.info("Total Gain: {}", NumUtil.trimPrice(totalGain));
-    log.info("Total Loss: {}", NumUtil.trimPrice(totalLosses));
-    log.info("Total Profit: {}", NumUtil.trimPrice(totalProfit));
-    log.info("Profit per Trade: {}", getProfitPerTrade());
+    LOG.info("# of Trades: {}", numOfTrades);
+    LOG.info("# of Wins: {} ({}%)", numOfWins, getWinPcnt());
+    LOG.info("# of Losses: {} ({}%)", numOfLosses, getLossPcnt());
+    LOG.info("Win / Loss Ratio: {}", getWinLoseRatio());
+    LOG.info("Biggest Gain Amt: {} ({}%)", maxGainTxn.getProfit(), NumUtil.toPercent(maxGainTxn.getProfitPcnt()));
+    LOG.info("Biggest Loss Amt: {} ({}%)", maxLossTxn.getProfit(), NumUtil.toPercent(maxLossTxn.getProfitPcnt()));
+    LOG.info("Biggest % Gain: {} ({}%)", maxPcntGainTxn.getProfit(), NumUtil.toPercent(maxPcntGainTxn.getProfitPcnt()));
+    LOG.info("Biggest % Loss: {} ({}%)", maxPcntLossTxn.getProfit(), NumUtil.toPercent(maxPcntLossTxn.getProfitPcnt()));
+    LOG.info("Total Gain: {}", NumUtil.trimPrice(totalGain));
+    LOG.info("Total Loss: {}", NumUtil.trimPrice(totalLosses));
+    LOG.info("Total Profit: {}", NumUtil.trimPrice(totalProfit));
+    LOG.info("Profit per Trade: {}", getProfitPerTrade());
   }
 }

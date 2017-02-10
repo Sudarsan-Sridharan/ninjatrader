@@ -22,10 +22,9 @@ public abstract class OrderExecutor {
     this.boardLotTable = boardLotTable;
   }
 
-  public abstract Transaction execute(Account account, PendingOrder order, BarData barData);
+  public abstract Transaction execute(final PendingOrder order, final BarData barData);
 
-  protected void checkConditions(final Account account, final PendingOrder order, final BarData barData) {
-    checkNotNull(account, "account must not be null.");
+  protected void checkConditions(final PendingOrder order, final BarData barData) {
     checkNotNull(order, "order must not be null.");
     checkNotNull(barData, "barData must not be null.");
   }

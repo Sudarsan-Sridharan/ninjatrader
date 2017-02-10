@@ -14,6 +14,10 @@ public class OrCondition<T extends Data> extends MultiCondition<OrCondition<T>, 
     super();
   }
 
+  public OrCondition(final Condition<T> condition) {
+    super(condition);
+  }
+
   public OrCondition(final Condition<T> condition1, final Condition<T> condition2) {
     super(condition1, condition2);
   }

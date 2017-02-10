@@ -18,14 +18,15 @@ import java.util.Set;
 public abstract class MultiCondition<T, S extends Data> implements Condition<S> {
 
   @JsonProperty("conditions")
-  private List<Condition<S>> conditions;
+  private final List<Condition<S>> conditions = Lists.newArrayList();
 
-  public MultiCondition() {
-    conditions = Lists.newArrayList();
+  public MultiCondition() {}
+
+  public MultiCondition(final Condition<S> condition1) {
+    conditions.add(condition1);
   }
 
   public MultiCondition(final Condition<S> condition1, final Condition<S> condition2) {
-    this();
     conditions.add(condition1);
     conditions.add(condition2);
   }

@@ -3,19 +3,17 @@ package com.bn.ninjatrader.dataimport.daily;
 import com.bn.ninjatrader.common.data.DailyQuote;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.model.guice.NtModelModule;
 import com.bn.ninjatrader.model.request.SaveRequest;
 import com.bn.ninjatrader.thirdparty.investagrams.InvestagramsService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.inject.Guice;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -31,12 +29,16 @@ public class InvestagramsHistoricalPriceImporter extends AbstractDailyPriceImpor
   private InvestagramsService investagramsService;
 
   @Override
+  protected List<DailyQuote> provideDailyQuotes(final LocalDate date) {
+    return provideDailyQuotes();
+  }
+
   protected List<DailyQuote> provideDailyQuotes() {
     return investagramsService.getHistoricalQuotesForAllStocks();
   }
 
   @Override
-  public void importData() throws IOException {
+  public void importData(final Collection<LocalDate> dates) {
     for (Map.Entry<String, List<Price>> symbolPriceList : toPriceMap(provideDailyQuotes()).entrySet()) {
       LOG.debug("Saved prices for {}", symbolPriceList.getKey());
       priceDao.save(SaveRequest.save(symbolPriceList.getKey())
@@ -45,24 +47,15 @@ public class InvestagramsHistoricalPriceImporter extends AbstractDailyPriceImpor
     }
   }
 
-  private Map<String, List<Price>> toPriceMap(List<DailyQuote> dailyQuotes) {
-    Map<String, List<Price>> symbolMap = Maps.newHashMap();
-    for (DailyQuote dailyQuote : dailyQuotes) {
-      String symbol = dailyQuote.getSymbol();
+  private Map<String, List<Price>> toPriceMap(final List<DailyQuote> dailyQuotes) {
+    final Map<String, List<Price>> symbolMap = Maps.newHashMap();
+    for (final DailyQuote dailyQuote : dailyQuotes) {
+      final String symbol = dailyQuote.getSymbol();
       if (symbolMap.get(symbol) == null) {
         symbolMap.put(symbol, Lists.newArrayList());
       }
       symbolMap.get(symbol).add(dailyQuote.getPrice());
     }
     return symbolMap;
-  }
-
-  public static void main(String args[]) throws IOException {
-    Injector injector = Guice.createInjector(
-        new NtModelModule()
-    );
-
-    InvestagramsHistoricalPriceImporter app = injector.getInstance(InvestagramsHistoricalPriceImporter.class);
-    app.importData();
   }
 }

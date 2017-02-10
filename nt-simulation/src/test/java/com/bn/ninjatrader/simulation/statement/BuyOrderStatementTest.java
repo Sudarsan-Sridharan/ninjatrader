@@ -5,6 +5,7 @@ import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.model.Broker;
+import com.bn.ninjatrader.simulation.model.Portfolio;
 import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.simulation.order.BuyOrder;
 import com.bn.ninjatrader.simulation.order.OrderConfig;
@@ -44,11 +45,13 @@ public class BuyOrderStatementTest {
   private Account account;
   private Broker broker;
   private BarData barData;
+  private Portfolio portfolio;
 
   @Before
   public void before() {
     world = mock(World.class);
     account = mock(Account.class);
+    portfolio = mock(Portfolio.class);
     broker = mock(Broker.class);
     barData = mock(BarData.class);
 
@@ -56,6 +59,7 @@ public class BuyOrderStatementTest {
     when(barData.getPrice()).thenReturn(price);
     when(world.getBroker()).thenReturn(broker);
     when(world.getAccount()).thenReturn(account);
+    when(account.getPortfolio()).thenReturn(portfolio);
     when(account.getLiquidCash()).thenReturn(100000d);
   }
 
@@ -72,7 +76,8 @@ public class BuyOrderStatementTest {
     final ArgumentCaptor<BarData> barDataCaptor = ArgumentCaptor.forClass(BarData.class);
 
     // Broker has no pending orders
-    when(broker.hasPendingOrder()).thenReturn(Boolean.FALSE);
+    when(broker.hasPendingOrder()).thenReturn(false);
+    when(portfolio.isEmpty()).thenReturn(true);
 
     orig.run(barData);
 
@@ -90,13 +95,13 @@ public class BuyOrderStatementTest {
   }
 
   @Test
-  public void testRunPendingOrders_shouldNotSubmitBuyOrder() {
-    // Broker has no pending orders
+  public void testRunWithPendingOrders_shouldNotSubmitBuyOrder() {
+    // Broker has pending orders
     when(broker.hasPendingOrder()).thenReturn(Boolean.TRUE);
 
     orig.run(barData);
 
-    // Verify order submitted to broker
+    // Verify no orders submitted to broker
     verify(broker, times(0)).submitOrder(any(BuyOrder.class), any(BarData.class));
   }
 

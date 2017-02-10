@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
+import java.time.LocalDate;
 
 /**
  * Imports PSE daily quotes to database and runs calculations for the day.
@@ -35,9 +36,10 @@ public class ImportPSEDailyQuotesTask extends Task {
   }
 
   @Override
-  public void execute(ImmutableMultimap<String, String> immutableMultimap, PrintWriter printWriter) throws Exception {
+  public void execute(final ImmutableMultimap<String, String> args,
+                      final PrintWriter printWriter) throws Exception {
     try {
-      this.importer.importData();
+      this.importer.importData(LocalDate.now());
       LOG.info("Done importing. Calculating.");
       this.calcTask.execute(ImmutableMultimap.of(), printWriter);
       LOG.info("Done calculating.");

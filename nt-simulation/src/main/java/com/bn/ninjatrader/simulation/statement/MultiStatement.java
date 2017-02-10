@@ -23,6 +23,16 @@ public class MultiStatement implements Statement {
     return new Builder();
   }
 
+  public static final MultiStatement of(final Statement statement) {
+    return new MultiStatement(Lists.newArrayList(statement));
+  }
+
+  public static final MultiStatement of(final Statement statement1,
+                                        final Statement statement2,
+                                        final Statement ... more) {
+    return new MultiStatement(Lists.asList(statement1, statement2, more));
+  }
+
   @JsonProperty("statements")
   private final List<Statement> statementList = Lists.newArrayList();
 

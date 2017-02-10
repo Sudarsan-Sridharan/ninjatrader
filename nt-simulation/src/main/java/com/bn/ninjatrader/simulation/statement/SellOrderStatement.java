@@ -5,6 +5,7 @@ import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.model.Broker;
+import com.bn.ninjatrader.simulation.model.Portfolio;
 import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.order.OrderConfig;
@@ -49,11 +50,18 @@ public class SellOrderStatement implements Statement {
     final World world = barData.getWorld();
     final Broker broker = world.getBroker();
     final Account account = world.getAccount();
+    final Portfolio portfolio = account.getPortfolio();
 
-    if (account.hasShares()) {
+    if (!portfolio.isEmpty()) {
       final Price price = barData.getPrice();
-      final Order order = SellOrder.builder().date(price.getDate()).type(orderType).config(orderConfig).build();
-      broker.submitOrder(order, barData);
+      final String symbol = "";
+      final long totalSharesToSell = portfolio.getTotalShares(symbol);
+
+      if (portfolio.canCommitShares(symbol, totalSharesToSell)) {
+        portfolio.commitShares(symbol, totalSharesToSell);
+        final Order order = SellOrder.builder().date(price.getDate()).type(orderType).config(orderConfig).build();
+        broker.submitOrder(order, barData);
+      }
     }
   }
 
@@ -72,7 +80,7 @@ public class SellOrderStatement implements Statement {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(final Object obj) {
     if (obj == null || !(obj instanceof SellOrderStatement)) {
       return false;
     }

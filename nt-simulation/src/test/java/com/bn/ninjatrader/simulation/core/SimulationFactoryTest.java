@@ -8,7 +8,6 @@ import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
 import com.bn.ninjatrader.simulation.data.DataType;
 import com.bn.ninjatrader.simulation.data.provider.DataProvider;
-import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.model.Broker;
 import com.bn.ninjatrader.simulation.model.BrokerFactory;
 import com.bn.ninjatrader.simulation.model.World;
@@ -43,6 +42,7 @@ public class SimulationFactoryTest {
 
   private PriceDao priceDao;
   private BrokerFactory brokerFactory;
+  private Broker broker;
   private DataProvider dataProvider;
   private List<DataProvider> dataFinderList;
   private SimulationParams params;
@@ -53,6 +53,7 @@ public class SimulationFactoryTest {
   public void before() {
     priceDao = mock(PriceDao.class);
     brokerFactory = mock(BrokerFactory.class);
+    broker = mock(Broker.class);
     dataProvider = mock(DataProvider.class);
     barDataFactory = mock(BarDataFactory.class);
     boardLotTable = mock(BoardLotTable.class);
@@ -70,6 +71,7 @@ public class SimulationFactoryTest {
 
     when(priceDao.find(any())).thenReturn(randomPrices(NUM_OF_PRICES));
     when(dataProvider.getSupportedDataTypes()).thenReturn(Lists.newArrayList(DataType.PRICE_CLOSE));
+    when(brokerFactory.createBroker()).thenReturn(broker);
   }
 
   @Test
@@ -77,7 +79,7 @@ public class SimulationFactoryTest {
     final Broker broker = mock(Broker.class);
     final List<Price> prices = Lists.newArrayList(mock(Price.class));
 
-    when(brokerFactory.createBroker(any(Account.class))).thenReturn(broker);
+    when(brokerFactory.createBroker()).thenReturn(broker);
     when(priceDao.find(any(FindRequest.class))).thenReturn(prices);
 
     final SimulationFactory factory =

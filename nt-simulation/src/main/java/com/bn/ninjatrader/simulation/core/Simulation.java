@@ -3,10 +3,13 @@ package com.bn.ninjatrader.simulation.core;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
+import com.bn.ninjatrader.simulation.listener.BrokerListener;
 import com.bn.ninjatrader.simulation.model.*;
 import com.bn.ninjatrader.simulation.order.SellOrder;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.statement.Statement;
+import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
+import com.bn.ninjatrader.simulation.transaction.SellTransaction;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +24,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Created by Brad on 8/3/16.
  */
-public class Simulation {
+public class Simulation implements BrokerListener {
 
   private static final Logger LOG = LoggerFactory.getLogger(Simulation.class);
 
@@ -54,6 +57,8 @@ public class Simulation {
     this.barDataFactory = barDataFactory;
 
     checkValidConstructorParams();
+
+    broker.addListeners(this, account);
   }
 
   private void checkValidConstructorParams() {
@@ -93,12 +98,11 @@ public class Simulation {
   }
 
   private void sellAll(final String symbol) {
-    if (account.hasShares()) {
+    if (!account.getPortfolio().isEmpty()) {
       final List<Price> priceList = priceDatastore.get(symbol);
-      int lastIndex = priceDatastore.size() - 1;
+      int lastIndex = priceList.size() - 1;
       final Price lastPrice = priceList.get(lastIndex);
-      final BarData barData =
-          barDataFactory.create(lastPrice, lastIndex, simulationDataList, world);
+      final BarData barData = barDataFactory.create(lastPrice, lastIndex, simulationDataList, world);
       broker.submitOrder(SellOrder.builder().date(lastPrice.getDate()).build(), barData);
       broker.processPendingOrders(barData);
     }
@@ -136,5 +140,15 @@ public class Simulation {
 
   public World getWorld() {
     return world;
+  }
+
+  @Override
+  public void onFulfilledBuy(final BuyTransaction transaction, final BarData barData) {
+    simulationParams.getOnBuyFulfilledStatement().run(barData);
+  }
+
+  @Override
+  public void onFulfilledSell(final SellTransaction transaction, final BarData barData) {
+    simulationParams.getOnSellFulfilledStatement().run(barData);
   }
 }

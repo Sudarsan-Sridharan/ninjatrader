@@ -5,6 +5,7 @@ import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.model.Broker;
+import com.bn.ninjatrader.simulation.model.Portfolio;
 import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.simulation.order.BuyOrder;
 import com.bn.ninjatrader.simulation.order.Order;
@@ -50,8 +51,9 @@ public class BuyOrderStatement implements Statement {
     final World world = barData.getWorld();
     final Broker broker = world.getBroker();
     final Account account = world.getAccount();
+    final Portfolio portfolio = account.getPortfolio();
 
-    if (!account.hasShares() && !broker.hasPendingOrder()) {
+    if (portfolio.isEmpty() && !broker.hasPendingOrder()) {
       final Price price = barData.getPrice();
       final Order order = BuyOrder.builder()
           .date(price.getDate()).cashAmount(account.getLiquidCash()).type(orderType).config(orderConfig).build();
