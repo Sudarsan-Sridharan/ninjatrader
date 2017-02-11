@@ -45,7 +45,7 @@ define(["d3", "require", "./abstractchart"], function(d3, require) {
             .style("stroke", function () {
                 return config.color.next()
             })
-            .style("stroke-width", "1px");
+            .style("stroke-width", "0.6px");
         line.merge(line)
             .attr("period", this._getLinePeriodAttr)
             .attr("d", this.pathPerLine);

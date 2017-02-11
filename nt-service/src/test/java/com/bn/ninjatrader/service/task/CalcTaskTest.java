@@ -6,6 +6,7 @@ import com.bn.ninjatrader.process.calc.CalcProcess;
 import com.bn.ninjatrader.process.request.CalcRequest;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -36,7 +37,7 @@ public class CalcTaskTest {
 
   @Before
   public void before() {
-    when(priceDao.findAllSymbols()).thenReturn(Lists.newArrayList("MEG"));
+    when(priceDao.findAllSymbols()).thenReturn(Sets.newHashSet("MEG"));
     when(printWriter.append(any())).thenReturn(printWriter);
 
     when(process1.getProcessName()).thenReturn("process1");
@@ -138,17 +139,19 @@ public class CalcTaskTest {
     final ArgumentCaptor<CalcRequest> calcRequestCaptor2 = ArgumentCaptor.forClass(CalcRequest.class);
     final ImmutableMultimap<String, String> map = ImmutableMultimap.<String, String>builder().build();
 
-    when(priceDao.findAllSymbols()).thenReturn(Lists.newArrayList("MEG", "BDO", "TEL"));
+    when(priceDao.findAllSymbols()).thenReturn(Sets.newHashSet("MEG", "BDO", "TEL"));
 
     // Run
     calcTask.execute(map, printWriter);
 
     // Verify process1 is run for each symbol
     verify(process1, times(3)).process(calcRequestCaptor1.capture());
-    assertThat(calcRequestCaptor1.getAllValues()).hasSize(3).extracting("symbol").containsExactly("MEG", "BDO", "TEL");
+    assertThat(calcRequestCaptor1.getAllValues()).hasSize(3).extracting("symbol")
+        .containsExactlyInAnyOrder("MEG", "BDO", "TEL");
 
     // Verify process2 is run for each symbol
     verify(process2, times(3)).process(calcRequestCaptor2.capture());
-    assertThat(calcRequestCaptor2.getAllValues()).hasSize(3).extracting("symbol").containsExactly("MEG", "BDO", "TEL");
+    assertThat(calcRequestCaptor2.getAllValues()).hasSize(3).extracting("symbol")
+        .containsExactlyInAnyOrder("MEG", "BDO", "TEL");
   }
 }

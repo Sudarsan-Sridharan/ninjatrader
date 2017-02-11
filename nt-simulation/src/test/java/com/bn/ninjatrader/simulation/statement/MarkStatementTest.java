@@ -5,6 +5,7 @@ import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.History;
 import com.bn.ninjatrader.simulation.model.Mark;
+import com.bn.ninjatrader.simulation.model.Marker;
 import com.bn.ninjatrader.simulation.model.World;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
@@ -33,7 +34,7 @@ public class MarkStatementTest {
   private final MarkStatement equal = MarkStatement.withColor("yellow");
   private final MarkStatement diffColor = MarkStatement.withColor("red");
   private final MarkStatement diffNumOfBarsAgo = MarkStatement.withColor("yellow").numOfBarsAgo(5);
-  private final MarkStatement diffMarker = MarkStatement.withColor("yellow").marker(MarkStatement.Marker.ARROWDOWN);
+  private final MarkStatement diffMarker = MarkStatement.withColor("yellow").marker(Marker.ARROW_BOTTOM);
 
   private World world;
   private History history;
@@ -62,15 +63,17 @@ public class MarkStatementTest {
   public void testBuild_shouldSetProperties() {
     assertThat(orig.getColor()).isEqualTo("yellow");
     assertThat(orig.getNumOfBarsAgo()).isEqualTo(0);
+    assertThat(orig.getMarker()).isEqualTo(Marker.ARROW_TOP);
     assertThat(diffColor.getColor()).isEqualTo("red");
     assertThat(diffNumOfBarsAgo.getNumOfBarsAgo()).isEqualTo(5);
+    assertThat(diffMarker.getMarker()).isEqualTo(Marker.ARROW_BOTTOM);
   }
 
   @Test
   public void testRun_shouldAddMarkOnTheDate() {
     orig.run(barData);
 
-    assertThat(marks).containsExactly(Mark.onDate(now).withColor("yellow"));
+    assertThat(marks).containsExactly(Mark.onDate(now).withColor("yellow").withMarker(Marker.ARROW_TOP));
   }
 
   @Test

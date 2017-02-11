@@ -20,6 +20,7 @@ public class MarkTest {
   private final Mark equal = Mark.onDate(now).withColor("red");
   private final Mark diffDate = Mark.onDate(now.plusDays(1)).withColor("red");
   private final Mark diffColor = Mark.onDate(now).withColor("blue");
+  private final Mark diffMarker = Mark.onDate(now).withColor("red").withMarker(Marker.ARROW_BOTTOM);
 
   @Test
   public void testCreate_shouldSetProperties() {
@@ -34,13 +35,14 @@ public class MarkTest {
         .isNotEqualTo(null)
         .isNotEqualTo("")
         .isNotEqualTo(diffColor)
-        .isNotEqualTo(diffDate);
+        .isNotEqualTo(diffDate)
+        .isNotEqualTo(diffMarker);
   }
 
   @Test
   public void testHashcode_shouldHaveEqualHashcodeIfAllPropertiesAreEqual() {
-    assertThat(Sets.newHashSet(orig, equal, diffDate, diffColor))
-        .containsExactlyInAnyOrder(orig, diffDate, diffColor);
+    assertThat(Sets.newHashSet(orig, equal, diffDate, diffColor, diffMarker))
+        .containsExactlyInAnyOrder(orig, diffDate, diffColor, diffMarker);
   }
 
   @Test

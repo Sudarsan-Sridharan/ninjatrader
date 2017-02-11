@@ -9,18 +9,40 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
         this.transactionGroup = this.getMain().append("g").classed("transactions", true);
         this.markGroup = this.getMain().append("g").classed("marks", true);
 
-        this._getClass = function(tnx) { return tnx.type };
-        this._getTransactionPath = function(tnx) {
-            var x = config.xByDate(tnx.dt) + config.columnWidth / 2;
-            var y = panel.yScale(tnx.price);
+        this._getClass = function(txn) { return txn.type };
+
+        this._getTransactionPath = function(txn) {
+            var x = config.xByDate(txn.dt) + config.columnWidth / 2;
+            var y = panel.yScale(txn.price);
             var vLine = "M" + x + ",0V" + config.chartHeight;
             var hLine = "M" + (x - config.columnWidth/2) + "," + y + "h" + (config.columnWidth);
             return vLine + hLine;
         };
+
+        // Path for markers (LINE, ARROW_TOP, ARROW_BOTTOM
         this._getMarkPath = function(mark) {
-            var x = config.xByDate(mark.date) + config.columnWidth / 2;
-            return "M" + x + ",0V" + config.chartHeight;
-        }
+            if (mark.marker == "LINE") { // Vertical Line
+                var x = config.xByDate(mark.date) + config.columnWidth / 2;
+                return "M" + x + ",0V" + config.chartHeight;
+
+            } else if (mark.marker == "ARROW_BOTTOM") { // Arrow Bottom
+                var x = config.xByDate(mark.date);
+                var path = "M" + x + "," + (config.chartHeight - 2); // start at bottom-left side of column
+                path += "h" + config.columnWidth; // move to right
+                path += "l" + (-config.columnWidth / 2) + "," + (-config.columnWidth); // move diagonally to middle
+                path += "Z"; // close
+                return path;
+
+            } else { // Arrow Top
+                var x = config.xByDate(mark.date);
+                var path = "M" + x + ",2"; // start at left side of column
+                path += "h" + config.columnWidth; // move to right
+                path += "l" + (-config.columnWidth / 2) + "," + config.columnWidth; // move diagonally to middle
+                path += "Z"; // close
+                return path;
+            }
+        };
+
         this._getMarkColor = function(mark) {
             return mark.color;
         }
@@ -73,11 +95,13 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
         mark.enter()
             .append("path")
             .attr("d", this._getMarkPath)
-            .style("stroke", this._getMarkColor);
+            .style("stroke", this._getMarkColor)
+            .style("fill", this._getMarkColor);
 
         mark.merge(mark)
             .attr("d", this._getMarkPath)
-            .style("stroke", this._getMarkColor);
+            .style("stroke", this._getMarkColor)
+            .style("fill", this._getMarkColor);
 
         mark.exit()
             .remove();
@@ -90,12 +114,13 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
         var toIndex = 0;
 
         for (var i in transactions) {
+            var txnIndex = this.config.indexByDate(transactions[i].dt)
             // Closest visible index from
-            if (!fromIndex && transactions[i].index >= viewportIndexRange[0]) {
+            if (!fromIndex && txnIndex>= viewportIndexRange[0]) {
                 fromIndex = i;
             }
             // Closest visible index to
-            if (transactions[i].index <= viewportIndexRange[1]) {
+            if (txnIndex <= viewportIndexRange[1]) {
                 toIndex = i;
             } else {
                 break;

@@ -48,8 +48,6 @@ public class AtPrice implements OrderType {
   public boolean isFulfillable(final BarData onSubmitBarData, final BarData currentBarData) {
     final Price currentPrice = currentBarData.getPrice();
     final double expectedPrice = price.getValue(onSubmitBarData);
-    if (expectedPrice == 0.0)
-    LOG.info("{} {} between {} and {} -- {}", currentPrice.getDate(), expectedPrice, currentPrice.getLow(), currentPrice.getHigh(), onSubmitBarData.getWorld().getProperties());
     return expectedPrice >= currentPrice.getLow() && expectedPrice <= currentPrice.getHigh();
   }
 

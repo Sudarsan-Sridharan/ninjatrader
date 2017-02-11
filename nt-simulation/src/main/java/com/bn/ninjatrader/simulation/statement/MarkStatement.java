@@ -5,6 +5,7 @@ import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.History;
 import com.bn.ninjatrader.simulation.model.Mark;
+import com.bn.ninjatrader.simulation.model.Marker;
 import com.bn.ninjatrader.simulation.model.World;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -26,7 +27,7 @@ public class MarkStatement implements Statement {
   private static final Logger LOG = LoggerFactory.getLogger(MarkStatement.class);
   private static final String DEFAULT_COLOR = "blue";
   private static final int DEFAULT_NUM_OF_BARS = 0;
-  private static final Marker DEFAULT_MARKER = Marker.VLINE;
+  private static final Marker DEFAULT_MARKER = Marker.ARROW_TOP;
 
   public static final MarkStatement withMarker(final Marker marker) {
     return new MarkStatement(DEFAULT_COLOR, DEFAULT_NUM_OF_BARS, marker);
@@ -34,10 +35,6 @@ public class MarkStatement implements Statement {
 
   public static final MarkStatement withColor(final String color) {
     return new MarkStatement(color, DEFAULT_NUM_OF_BARS, DEFAULT_MARKER);
-  }
-
-  public enum Marker {
-    VLINE, ARROWUP, ARROWDOWN
   }
 
   @JsonProperty("color")
@@ -64,7 +61,7 @@ public class MarkStatement implements Statement {
     final Optional<BarData> historyBarData = history.getNBarsAgo(numOfBarsAgo);
     if (historyBarData.isPresent()) {
       final Price price = historyBarData.get().getPrice();
-      world.getChartMarks().add(Mark.onDate(price.getDate()).withColor(color));
+      world.getChartMarks().add(Mark.onDate(price.getDate()).withColor(color).withMarker(marker));
     }
   }
 

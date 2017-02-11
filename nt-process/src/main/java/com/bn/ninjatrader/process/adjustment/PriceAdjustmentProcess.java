@@ -3,12 +3,19 @@ package com.bn.ninjatrader.process.adjustment;
 import com.bn.ninjatrader.calculator.PriceAdjustmentCalculator;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
+import com.bn.ninjatrader.logical.expression.operation.Operations;
 import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.model.guice.NtModelModule;
 import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.model.request.SaveRequest;
+import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -18,6 +25,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @Singleton
 public class PriceAdjustmentProcess {
+  private static final Logger LOG = LoggerFactory.getLogger(PriceAdjustmentProcess.class);
 
   private final PriceDao priceDao;
   private final PriceAdjustmentCalculator calculator;
@@ -38,6 +46,18 @@ public class PriceAdjustmentProcess {
 
     final List<Price> adjustedPrices = calculator.calc(prices, request.getOperation());
 
+    adjustedPrices.forEach(price -> LOG.info("{}", price));
+
     priceDao.save(SaveRequest.save(request.getSymbol()).timeFrame(TimeFrame.ONE_DAY).values(adjustedPrices));
+  }
+
+  public static void main(String args[]) {
+    final Injector injector = Guice.createInjector(new NtModelModule());
+    final PriceAdjustmentProcess process = injector.getInstance(PriceAdjustmentProcess.class);
+
+    process.process(PriceAdjustmentRequest.forSymbol("DNL")
+        .from(LocalDate.now().minusYears(100))
+        .to(LocalDate.of(2015, 8, 14))
+        .adjustment(Operations.startWith(PriceAdjustmentRequest.PRICE).div(2)));
   }
 }

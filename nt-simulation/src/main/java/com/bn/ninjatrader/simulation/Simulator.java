@@ -10,6 +10,7 @@ import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
 import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
+import com.bn.ninjatrader.simulation.model.Marker;
 import com.bn.ninjatrader.simulation.operation.function.*;
 import com.bn.ninjatrader.simulation.order.OrderConfig;
 import com.bn.ninjatrader.simulation.order.type.AtPrice;
@@ -67,16 +68,16 @@ public class Simulator {
     );
     final Simulator simulator = injector.getInstance(Simulator.class);
 
-    final String LAST_BROKEN_TOP = "LAST_BROKEN_TOP";
-
     final int PULLBACK_MIN_BAR = 2;
     final int PULLBACK_NUM_OF_BARS = 5;
+    final int BUY_PIPS_BUFFER = 2;
+    final int SELL_PIPS_BUFFER = 2;
     final double PULLBACK_SENSITIVITY = 0.01;
     final double MAX_BUY_RISK = 0.05;
 
     final SimulationParams params = SimulationParams.builder()
-        .symbol("PRMX")
-        .from(LocalDate.now().minusYears(1))
+        .symbol("MEG")
+        .from(LocalDate.now().minusYears(4))
         .to(LocalDate.now())
         .startingCash(20000)
 
@@ -86,7 +87,6 @@ public class Simulator {
             .then(SetPropertyStatement.builder()
                 .add("PULLBACK", 0)
                 .add("TRAILING_STOP", 0)
-                .add(LAST_BROKEN_TOP, 0)
                 .build())
         )
 
@@ -105,20 +105,20 @@ public class Simulator {
                     .build(),
                 ConditionalStatement.withName("Move Trailing Stop Higher")
                     .condition(gt(PropertyValue.of("PULLBACK"), PropertyValue.of("TRAILING_STOP")))
-                    .then(SetPropertyStatement.builder().add("TRAILING_STOP", PropertyValue.of("PULLBACK")).build())
-//                MarkStatement.withColor("blue").marker(MarkStatement.Marker.ARROWUP).numOfBarsAgo(PULLBACK_MIN_BAR)
+                    .then(SetPropertyStatement.builder().add("TRAILING_STOP", PropertyValue.of("PULLBACK")).build()),
+                MarkStatement.withColor("blue").numOfBarsAgo(PULLBACK_MIN_BAR).marker(Marker.ARROW_BOTTOM)
             ))
         )
 
         // Buy Condition -- EMA bounce (price bounce from EMA 50)
         .addStatement(ConditionalStatement.withName("Bounce from EMA 50")
             .condition(Conditions.and(
-                lte(PcntChangeValue.of(Operations.startWith(PRICE_HIGH).plus(PipValue.of(2)), LowestValue.of(PRICE_LOW).fromBarsAgo(6)), MAX_BUY_RISK),
+                lte(PcntChangeValue.of(Operations.startWith(PRICE_HIGH).plus(PipValue.of(BUY_PIPS_BUFFER)), LowestValue.of(PRICE_LOW).fromBarsAgo(6)), MAX_BUY_RISK),
                 gt(PRICE_CLOSE, EMA.withPeriod(18)) // Price above EMA 18
             ))
             .then(MultiStatement.of(
                 BuyOrderStatement.builder()
-                    .orderType(AtPrice.of(Operations.startWith(PRICE_HIGH).plus(PipValue.of(2))))
+                    .orderType(AtPrice.of(Operations.startWith(PRICE_HIGH).plus(PipValue.of(BUY_PIPS_BUFFER))))
                     .orderConfig(OrderConfig.withBarsFromNow(1).expireAfterNumOfBars(1))
                     .build()
                 )
@@ -128,18 +128,18 @@ public class Simulator {
         // Price Below Trailing Stop -- Sell
         .addStatement(ConditionalStatement.withName("Sell")
             .condition(Conditions.or(
-                lt(PRICE_LOW, Operations.startWith(PropertyValue.of("TRAILING_STOP")).minus(PipValue.of(2)))
+                lt(PRICE_LOW, Operations.startWith(PropertyValue.of("TRAILING_STOP")).minus(PipValue.of(SELL_PIPS_BUFFER)))
             ))
             .then(ConditionalStatement.withName("Check if gap down")
-                .condition(lt(PRICE_HIGH, Operations.startWith(PropertyValue.of("TRAILING_STOP")).minus(PipValue.of(2))))
+                .condition(lt(PRICE_HIGH, Operations.startWith(PropertyValue.of("TRAILING_STOP")).minus(PipValue.of(SELL_PIPS_BUFFER))))
                 .then(
                     SellOrderStatement.builder() // Protection from gap down.
                         .orderType(OrderTypes.marketClose())
                         .build()
                 )
                 .otherwise(MultiStatement.of(
-                    SellOrderStatement.builder() // Sell at price 2 pips below trailing stop
-                        .orderType(AtPrice.of(Operations.startWith(PropertyValue.of("TRAILING_STOP")).minus(PipValue.of(2))))
+                    SellOrderStatement.builder() // Sell at price N pips below trailing stop
+                        .orderType(AtPrice.of(Operations.startWith(PropertyValue.of("TRAILING_STOP")).minus(PipValue.of(SELL_PIPS_BUFFER))))
                         .build()
                 ))
             )
@@ -168,6 +168,6 @@ public class Simulator {
 
         .build();
 
-    simulator.play(params);
+    final SimulationReport report = simulator.play(params);
   }
 }

@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.process.adjustment;
 
 import com.bn.ninjatrader.logical.expression.operation.Operation;
+import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.google.common.base.MoreObjects;
 
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class PriceAdjustmentRequest {
 
+  public static final Variable PRICE = Variable.of("PRICE");
   public static PriceAdjustmentRequest forSymbol(final String symbol) {
     return new PriceAdjustmentRequest(symbol);
   }

@@ -61,7 +61,7 @@ public class PriceAdjustmentCalculator {
 
     @Override
     public Double get(final Variable variable) {
-      if (variable == PRICE) {
+      if (PRICE.equals(variable)) {
         switch (attr) {
           case OPEN: return price.getOpen();
           case HIGH: return price.getHigh();
