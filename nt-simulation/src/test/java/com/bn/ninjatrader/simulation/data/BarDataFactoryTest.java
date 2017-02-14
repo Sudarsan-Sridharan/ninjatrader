@@ -44,7 +44,7 @@ public class BarDataFactoryTest {
 
   @Test
   public void testCreateBarData_shouldSetProperties() {
-    final BarData barData = barDataFactory.create(price, 1, Collections.emptyList(), null);
+    final BarData barData = barDataFactory.create("MEG", price, 1, Collections.emptyList(), null);
 
     assertThat(barData).isNotNull();
     assertThat(barData.getPrice()).isEqualTo(price);
@@ -52,6 +52,7 @@ public class BarDataFactoryTest {
     assertThat(barData.get(PRICE_OPEN)).isEqualTo(1.0);
     assertThat(barData.get(PRICE_HIGH)).isEqualTo(2.0);
     assertThat(barData.get(BAR_INDEX)).isEqualTo(1.0);
+    assertThat(barData.getSymbol()).isEqualTo("MEG");
   }
 
   @Test
@@ -62,7 +63,7 @@ public class BarDataFactoryTest {
     when(simulationData.getDataAtIndex(0)).thenReturn(dataMap);
 
     final BarData barData =
-        barDataFactory.create(price, 0, Lists.newArrayList(simulationData), world);
+        barDataFactory.create("MEG", price, 0, Lists.newArrayList(simulationData), world);
     assertThat(barData.get(SMA.withPeriod(21))).isEqualTo(100.15);
     assertThat(barData.getWorld()).isEqualTo(world);
   }

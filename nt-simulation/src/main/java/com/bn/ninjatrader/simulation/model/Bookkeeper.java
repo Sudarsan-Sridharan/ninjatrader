@@ -27,10 +27,4 @@ public class Bookkeeper {
   public List<Transaction> getTransactions() {
     return transactions;
   }
-
-  public void print() {
-    for (final Transaction transaction : transactions) {
-      log.info("{}", transaction.toString());
-    }
-  }
 }

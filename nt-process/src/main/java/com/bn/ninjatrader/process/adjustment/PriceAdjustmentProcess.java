@@ -55,9 +55,9 @@ public class PriceAdjustmentProcess {
     final Injector injector = Guice.createInjector(new NtModelModule());
     final PriceAdjustmentProcess process = injector.getInstance(PriceAdjustmentProcess.class);
 
-    process.process(PriceAdjustmentRequest.forSymbol("DNL")
+    process.process(PriceAdjustmentRequest.forSymbol("MWIDE")
         .from(LocalDate.now().minusYears(100))
-        .to(LocalDate.of(2015, 8, 14))
-        .adjustment(Operations.startWith(PriceAdjustmentRequest.PRICE).div(2)));
+        .to(LocalDate.of(2013, 7, 15))
+        .adjustment(Operations.startWith(PriceAdjustmentRequest.PRICE).mult(0.769454545)));
   }
 }

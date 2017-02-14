@@ -46,6 +46,13 @@ public class Simulation implements BrokerListener {
   public Simulation(final World world,
                     final SimulationParams simulationParams,
                     final BarDataFactory barDataFactory) {
+    checkNotNull(simulationParams, "SimulationParams must not be null.");
+    checkNotNull(world, "world must not be null.");
+    checkNotNull(world.getAccount(), "World.Account must not be null.");
+    checkNotNull(world.getPrices(), "World.Prices must not be null.");
+    checkArgument(world.getPrices().size() > 0, "World.Prices must not be empty.");
+    checkArgument(simulationParams.getStartingCash() > 0, "Starting cash must be > 0.");
+
     this.world = world;
     this.account = world.getAccount();
     this.broker = world.getBroker();
@@ -56,17 +63,7 @@ public class Simulation implements BrokerListener {
     this.statements = simulationParams.getStatements();
     this.barDataFactory = barDataFactory;
 
-    checkValidConstructorParams();
-
     broker.addListeners(this, account);
-  }
-
-  private void checkValidConstructorParams() {
-    checkNotNull(simulationParams, "SimulationParams must not be null.");
-    checkNotNull(account, "Account must not be null.");
-    checkArgument(simulationParams.getStartingCash() > 0, "Starting cash must be > 0.");
-    checkNotNull(priceDatastore);
-    checkArgument(priceDatastore.size() > 0, "Price list must not be empty.");
   }
 
   public SimulationReport play() {
@@ -74,13 +71,11 @@ public class Simulation implements BrokerListener {
     for (final Map.Entry<String, List<Price>> entry : priceDatastore.entrySet()) {
       final String symbol = entry.getKey();
       for (final Price price : entry.getValue()) {
-        final BarData barData =
-            barDataFactory.create(price, barIndex, simulationDataList, world);
+        final BarData barData = barDataFactory.create(symbol, price, barIndex, simulationDataList, world);
         history.add(barData);
         processBar(barData);
         barIndex++;
       }
-      sellAll(symbol);
     }
     onSimulationEnd();
     return createSimulationReport();
@@ -94,7 +89,7 @@ public class Simulation implements BrokerListener {
   }
 
   private void onSimulationEnd() {
-    account.print();
+
   }
 
   private void sellAll(final String symbol) {
@@ -102,7 +97,7 @@ public class Simulation implements BrokerListener {
       final List<Price> priceList = priceDatastore.get(symbol);
       int lastIndex = priceList.size() - 1;
       final Price lastPrice = priceList.get(lastIndex);
-      final BarData barData = barDataFactory.create(lastPrice, lastIndex, simulationDataList, world);
+      final BarData barData = barDataFactory.create(symbol, lastPrice, lastIndex, simulationDataList, world);
       broker.submitOrder(SellOrder.builder().date(lastPrice.getDate()).build(), barData);
       broker.processPendingOrders(barData);
     }
@@ -121,7 +116,8 @@ public class Simulation implements BrokerListener {
     report.setSimulationParams(simulationParams);
     report.setTradeStatistic(account.getTradeStatistic());
     report.setTransactions(account.getBookkeeper().getTransactions());
-    report.setEndingCash(account.getLiquidCash());
+    report.setStartingCash(simulationParams.getStartingCash());
+    report.setEndingCash(account.getTotalAccountValue());
     report.setMarks(world.getChartMarks());
     return report;
   }

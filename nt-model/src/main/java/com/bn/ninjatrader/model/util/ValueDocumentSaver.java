@@ -3,7 +3,7 @@ package com.bn.ninjatrader.model.util;
 import com.bn.ninjatrader.common.data.Value;
 import com.bn.ninjatrader.common.util.DateFormats;
 import com.bn.ninjatrader.model.request.SaveRequest;
-import com.google.common.base.Preconditions;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.jongo.MongoCollection;
@@ -13,41 +13,39 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * Created by Brad on 7/28/16.
  */
 public class ValueDocumentSaver {
-
   private static final Logger LOG = LoggerFactory.getLogger(ValueDocumentSaver.class);
 
   private final MongoCollection mongoCollection;
 
-  public ValueDocumentSaver(MongoCollection mongoCollections) {
+  public ValueDocumentSaver(final MongoCollection mongoCollections) {
     this.mongoCollection = mongoCollections;
   }
 
-  public void save(SaveRequest saveRequest) {
-    assertPreconditions(saveRequest);
+  public void save(final SaveRequest saveRequest) {
+    checkArgument(StringUtils.isNotEmpty(saveRequest.getSymbol()));
+    checkArgument(saveRequest.getPeriod() > 0);
+
     if (!saveRequest.hasValues()) {
       return;
     }
 
-    List<ValuesPerYear> valuesPerYearList = splitToValuesPerYear(saveRequest.getValues());
+    final List<ValuesPerYear> valuesPerYearList = splitToValuesPerYear(saveRequest.getValues());
     saveValuesPerYear(saveRequest, valuesPerYearList);
   }
 
-  private void assertPreconditions(SaveRequest saveRequest) {
-    Preconditions.checkArgument(StringUtils.isNotEmpty(saveRequest.getSymbol()));
-    Preconditions.checkArgument(saveRequest.getPeriod() > 0);
-  }
-
-  private List<ValuesPerYear> splitToValuesPerYear(List<? extends Value> values) {
+  private List<ValuesPerYear> splitToValuesPerYear(final List<? extends Value> values) {
     Collections.sort(values);
-    List<ValuesPerYear> valuesPerYearList = Lists.newArrayList();
+    final List<ValuesPerYear> valuesPerYearList = Lists.newArrayList();
 
     ValuesPerYear valuesPerYear = null;
     int currYear = 0;
-    for (Value value : values) {
+    for (final Value value : values) {
       // Collect all values of same year til year has changed
       if (currYear != value.getDate().getYear()) {
         currYear = value.getDate().getYear();
@@ -60,8 +58,8 @@ public class ValueDocumentSaver {
     return valuesPerYearList;
   }
 
-  private void saveValuesPerYear(SaveRequest saveRequest, List<ValuesPerYear> valuesPerYearList) {
-    for (ValuesPerYear valuesPerYear : valuesPerYearList) {
+  private void saveValuesPerYear(final SaveRequest saveRequest, final List<ValuesPerYear> valuesPerYearList) {
+    for (final ValuesPerYear valuesPerYear : valuesPerYearList) {
       removeByDates(saveRequest, valuesPerYear);
       saveByYearAndPeriod(saveRequest, valuesPerYear);
     }
@@ -70,7 +68,7 @@ public class ValueDocumentSaver {
   /**
    * Remove all existing Values w/ same dates
    */
-  private void removeByDates(SaveRequest saveRequest, ValuesPerYear valuesPerYear) {
+  private void removeByDates(final SaveRequest saveRequest, final ValuesPerYear valuesPerYear) {
     if (!valuesPerYear.getDatesToRemove().isEmpty()) {
       mongoCollection.update(Queries.FIND_BY_PERIOD,
           saveRequest.getSymbol(),
@@ -94,6 +92,9 @@ public class ValueDocumentSaver {
     }
   }
 
+  /**
+   * ValuesPerYear Class
+   */
   private static class ValuesPerYear {
     private int year;
     private List<Value> values;
@@ -123,6 +124,14 @@ public class ValueDocumentSaver {
 
     public List<String> getDatesToRemove() {
       return datesToRemove;
+    }
+
+    @Override
+    public String toString() {
+      return MoreObjects.toStringHelper(this)
+          .add("year", year)
+          .add("datesToRemove", datesToRemove)
+          .add("values", values).toString();
     }
   }
 }

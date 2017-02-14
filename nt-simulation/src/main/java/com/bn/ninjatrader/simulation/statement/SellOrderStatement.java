@@ -54,12 +54,18 @@ public class SellOrderStatement implements Statement {
 
     if (!portfolio.isEmpty()) {
       final Price price = barData.getPrice();
-      final String symbol = "";
+      final String symbol = barData.getSymbol();
       final long totalSharesToSell = portfolio.getTotalShares(symbol);
 
       if (portfolio.canCommitShares(symbol, totalSharesToSell)) {
         portfolio.commitShares(symbol, totalSharesToSell);
-        final Order order = SellOrder.builder().date(price.getDate()).type(orderType).config(orderConfig).build();
+        final Order order = SellOrder.builder()
+            .date(price.getDate())
+            .symbol(barData.getSymbol())
+            .shares(totalSharesToSell)
+            .type(orderType)
+            .config(orderConfig)
+            .build();
         broker.submitOrder(order, barData);
       }
     }

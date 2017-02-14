@@ -2,15 +2,20 @@ package com.bn.ninjatrader.simulation.order;
 
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.order.type.OrderType;
+import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDate;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * @author bradwee2000@gmail.com
  */
-public class PendingOrder {
+public class PendingOrder implements Order {
   private static final Logger LOG = LoggerFactory.getLogger(PendingOrder.class);
 
   public static final PendingOrder of(final Order order, final BarData barData) {
@@ -21,6 +26,9 @@ public class PendingOrder {
   private final BarData submittedBarData;
 
   private PendingOrder(final Order order, final BarData submittedBarData) {
+    checkNotNull(order, "order must not be null.");
+    checkNotNull(submittedBarData, "submittedBarData must not be null.");
+
     this.order = order;
     this.submittedBarData = submittedBarData;
   }
@@ -58,11 +66,11 @@ public class PendingOrder {
 
   @Override
   public boolean equals(final Object obj) {
-    if (obj == null || !(obj instanceof PendingOrder)) {
-      return false;
-    }
     if (obj == this) {
       return true;
+    }
+    if (obj == null || !(obj instanceof PendingOrder)) {
+      return false;
     }
     final PendingOrder rhs = (PendingOrder) obj;
     return Objects.equal(order, rhs.order)
@@ -77,5 +85,35 @@ public class PendingOrder {
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this).add("order", order).add("submittedBarData", submittedBarData).toString();
+  }
+
+  @Override
+  public String getSymbol() {
+    return order.getSymbol();
+  }
+
+  @Override
+  public LocalDate getOrderDate() {
+    return order.getOrderDate();
+  }
+
+  @Override
+  public long getNumOfShares() {
+    return order.getNumOfShares();
+  }
+
+  @Override
+  public TransactionType getTransactionType() {
+    return order.getTransactionType();
+  }
+
+  @Override
+  public OrderType getOrderType() {
+    return order.getOrderType();
+  }
+
+  @Override
+  public OrderConfig getOrderConfig() {
+    return order.getOrderConfig();
   }
 }

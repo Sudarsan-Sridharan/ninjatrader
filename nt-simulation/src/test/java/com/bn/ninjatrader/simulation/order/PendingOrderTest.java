@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
  */
 public class PendingOrderTest {
 
-  private AbstractOrder order;
+  private Order order;
   private OrderType orderType;
   private OrderConfig orderConfig;
   private BarData currentBarData;
@@ -23,7 +23,7 @@ public class PendingOrderTest {
 
   @Before
   public void before() {
-    order = mock(AbstractOrder.class);
+    order = mock(Order.class);
     orderType = mock(OrderType.class);
     orderConfig = mock(OrderConfig.class);
     currentBarData = mock(BarData.class);
@@ -31,6 +31,9 @@ public class PendingOrderTest {
 
     when(order.getOrderType()).thenReturn(orderType);
     when(order.getOrderConfig()).thenReturn(orderConfig);
+    when(order.getSymbol()).thenReturn("MEG");
+    when(order.getNumOfShares()).thenReturn(1000l);
+
     when(boughtAtBarData.getIndex()).thenReturn(1);
     when(currentBarData.getIndex()).thenReturn(1);
   }
@@ -39,7 +42,10 @@ public class PendingOrderTest {
   public void testCreate_shouldSetProperties() {
     final PendingOrder pendingOrder = PendingOrder.of(order, boughtAtBarData);
     assertThat(pendingOrder.getSubmittedBarData()).isEqualTo(boughtAtBarData);
-    assertThat(pendingOrder.getOrder()).isEqualTo(order);
+    assertThat(pendingOrder.getOrderType()).isEqualTo(orderType);
+    assertThat(pendingOrder.getOrderConfig()).isEqualTo(orderConfig);
+    assertThat(pendingOrder.getSymbol()).isEqualTo("MEG");
+    assertThat(pendingOrder.getNumOfShares()).isEqualTo(1000);
   }
 
   @Test

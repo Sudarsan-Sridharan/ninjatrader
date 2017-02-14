@@ -21,27 +21,32 @@ public class Price implements DateObj<Price> {
   }
 
   @JsonProperty("o")
-  private double open;
+  private double o; // open. Names are abbreviated to keep space usage low in datastore.
 
   @JsonProperty("h")
-  private double high;
+  private double h; // high
 
   @JsonProperty("l")
-  private double low;
+  private double l; // low
 
   @JsonProperty("c")
-  private double close;
+  private double c; // close
 
   @JsonProperty("v")
-  private long volume;
+  private long v; // volume
 
   @JsonProperty("ch")
-  private double change;
+  private double ch; // change from previous price close
 
   @JsonProperty("d")
   @JsonSerialize(using = NtLocalDateSerializer.class)
   @JsonDeserialize(using = NtLocalDateDeserializer.class)
-  private LocalDate date;
+  private LocalDate d; // date
+
+  /**
+   * Objectify requires private no-arg constructor.
+   */
+  private Price() {}
 
   public Price(final LocalDate date,
                final double open,
@@ -52,59 +57,58 @@ public class Price implements DateObj<Price> {
     this(date, open, high, low, close, 0d, volume);
   }
 
-  public Price(@JsonProperty("d")
-               @JsonSerialize(using = NtLocalDateSerializer.class)
+  public Price(@JsonSerialize(using = NtLocalDateSerializer.class)
                @JsonDeserialize(using = NtLocalDateDeserializer.class)
-               final LocalDate date,
+               @JsonProperty("d") final LocalDate date,
                @JsonProperty("o") final double open,
                @JsonProperty("h") final double high,
                @JsonProperty("l") final double low,
                @JsonProperty("c") final double close,
                @JsonProperty("ch") final double change,
                @JsonProperty("v") final long volume) {
-    this.date = date;
-    this.open = open;
-    this.high = high;
-    this.low = low;
-    this.close = close;
-    this.change = change;
-    this.volume = volume;
+    this.d = date;
+    this.o = open;
+    this.h = high;
+    this.l = low;
+    this.c = close;
+    this.ch = change;
+    this.v = volume;
   }
 
   public double getOpen() {
-    return open;
+    return o;
   }
 
   public double getHigh() {
-    return high;
+    return h;
   }
 
   public double getLow() {
-    return low;
+    return l;
   }
 
   public double getClose() {
-    return close;
+    return c;
   }
 
   public long getVolume() {
-    return volume;
+    return v;
   }
 
   public void setVolume(long volume) {
-    this.volume = volume;
+    this.v = volume;
   }
 
   public LocalDate getDate() {
-    return date;
+    return d;
   }
 
   public double getChange() {
-    return change;
+    return ch;
   }
 
   public void setChange(double change) {
-    this.change = change;
+    this.ch = change;
   }
 
   @Override
@@ -112,24 +116,24 @@ public class Price implements DateObj<Price> {
     if (obj == null || obj.getClass() != getClass()) { return false; }
     if (obj == this) { return true; }
     final Price rhs = (Price) obj;
-    return Objects.equal(date, rhs.date)
-        && Objects.equal(open, rhs.open)
-        && Objects.equal(high, rhs.high)
-        && Objects.equal(low, rhs.low)
-        && Objects.equal(close, rhs.close)
-        && Objects.equal(change, rhs.change)
-        && Objects.equal(volume, rhs.volume);
+    return Objects.equal(d, rhs.d)
+        && Objects.equal(o, rhs.o)
+        && Objects.equal(h, rhs.h)
+        && Objects.equal(l, rhs.l)
+        && Objects.equal(c, rhs.c)
+        && Objects.equal(ch, rhs.ch)
+        && Objects.equal(v, rhs.v);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(date, open, high, low, close, change, volume);
+    return Objects.hashCode(d, o, h, l, c, ch, v);
   }
 
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
-        .add("D", date).add("O", open).add("H", high).add("L", low).add("C", close).add("CH", change).add("V", volume)
+        .add("D", d).add("O", o).add("H", h).add("L", l).add("C", c).add("CH", ch).add("V", v)
         .toString();
   }
 
@@ -150,13 +154,13 @@ public class Price implements DateObj<Price> {
     private double change;
 
     public Builder copyOf(final Price price) {
-      this.date = price.date;
-      this.open = price.open;
-      this.high = price.high;
-      this.low = price.low;
-      this.close = price.close;
-      this.change = price.change;
-      this.volume = price.volume;
+      this.date = price.d;
+      this.open = price.o;
+      this.high = price.h;
+      this.low = price.l;
+      this.close = price.c;
+      this.change = price.ch;
+      this.volume = price.v;
       return this;
     }
     public Builder date(final LocalDate date) {

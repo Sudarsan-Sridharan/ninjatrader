@@ -12,12 +12,15 @@ import com.bn.ninjatrader.simulation.transaction.SellTransaction;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by Brad on 8/13/16.
  */
 @Singleton
 public class SellOrderExecutor extends OrderExecutor {
+  private static final Logger LOG = LoggerFactory.getLogger(SellOrderExecutor.class);
 
   @Inject
   public SellOrderExecutor(final BoardLotTable boardLotTable) {
@@ -29,17 +32,20 @@ public class SellOrderExecutor extends OrderExecutor {
 
     final World world = currentBarData.getWorld();
     final Account account = world.getAccount();
-    final OrderType orderType = pendingOrder.getOrder().getOrderType();
+    final OrderType orderType = pendingOrder.getOrderType();
     final BarData submittedBarData = pendingOrder.getSubmittedBarData();
     final Portfolio portfolio = account.getPortfolio();
-    final double soldPrice = orderType.getFulfilledPrice(submittedBarData, currentBarData);
-    final long numOfShares = portfolio.getTotalShares();
-    final double profit = calculateProfit(account, soldPrice);
-    final double profitPcnt = NumUtil.divide(profit, portfolio.getEquityValue());
+    final String symbol = currentBarData.getSymbol();
+    final long numOfShares = portfolio.getTotalShares(symbol);
+    final double sellPrice = orderType.getFulfilledPrice(submittedBarData, currentBarData);
+    final double avgPrice = portfolio.getAvgPrice(symbol);
+    final double profit = NumUtil.multiply(sellPrice - avgPrice, numOfShares);
+    final double profitPcnt = NumUtil.divide(profit, portfolio.getEquityValue(symbol));
 
     final SellTransaction sellTransaction = Transaction.sell()
         .date(currentBarData.getPrice().getDate())
-        .price(soldPrice)
+        .symbol(pendingOrder.getSymbol())
+        .price(sellPrice)
         .shares(numOfShares)
         .profit(profit)
         .profitPcnt(profitPcnt)

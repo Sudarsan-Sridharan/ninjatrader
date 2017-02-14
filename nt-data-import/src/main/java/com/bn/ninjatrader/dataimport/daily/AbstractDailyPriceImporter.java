@@ -47,6 +47,11 @@ public abstract class AbstractDailyPriceImporter {
     }
 
     for (final DailyQuote quote : provideDailyQuotes(date)) {
+      if (quote.getOpen() == 0 || quote.getHigh() == 0 || quote.getLow() == 0 || quote.getClose() == 0) {
+        LOG.warn("Ignoring zero value quote: {}", quote);
+        continue;
+      }
+
       priceDao.save(SaveRequest.save(quote.getSymbol())
           .timeFrame(TimeFrame.ONE_DAY)
           .values(Lists.newArrayList(quote.getPrice())));

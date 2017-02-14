@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 public class NtLocalDateDeserializer extends JsonDeserializer<LocalDate> {
 
   @Override
-  public LocalDate deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+  public LocalDate deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
     String string = p.getText().trim();
     if (string.length() == 0) {
       return null;

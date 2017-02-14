@@ -2,10 +2,7 @@ package com.bn.ninjatrader.simulation.order.executor;
 
 import com.bn.ninjatrader.common.boardlot.BoardLot;
 import com.bn.ninjatrader.common.boardlot.BoardLotTable;
-import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.model.Account;
-import com.bn.ninjatrader.simulation.model.Portfolio;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 
@@ -27,13 +24,6 @@ public abstract class OrderExecutor {
   protected void checkConditions(final PendingOrder order, final BarData barData) {
     checkNotNull(order, "order must not be null.");
     checkNotNull(barData, "barData must not be null.");
-  }
-
-  public double calculateProfit(final Account account, final double sellPrice) {
-    final Portfolio portfolio = account.getPortfolio();
-    final long totalShares = portfolio.getTotalShares();
-    final double priceDiff = sellPrice - portfolio.getAvgPrice();
-    return NumUtil.multiply(priceDiff, totalShares);
   }
 
   public long getNumOfSharesCanBuyWithAmount(final double cashAmount, final double price) {

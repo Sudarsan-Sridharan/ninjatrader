@@ -27,12 +27,11 @@ import static org.mockito.Mockito.when;
  */
 public class BuyOrderExecutorTest {
 
-
   private final LocalDate now = LocalDate.of(2016, 1, 1);
   private final Price price = Price.builder().date(now).open(1).high(2).low(3).close(4).volume(1000).build();
   private final BarData submittedBarData = BarData.builder().price(price).build();
   private final BoardLot boardLot = BoardLot.newLot().lot(1000).tick(0.1).build();
-  private final Order order = BuyOrder.builder().cashAmount(100000).type(OrderTypes.marketOpen()).build();
+  private final Order order = BuyOrder.builder().symbol("MEG").cashAmount(100000).type(OrderTypes.marketOpen()).build();
   private final PendingOrder pendingOrder = PendingOrder.of(order, submittedBarData);
 
   private BoardLotTable boardLotTable;
@@ -58,11 +57,12 @@ public class BuyOrderExecutorTest {
   }
 
   @Test
-  public void testExecute() {
+  public void testExecute_shouldReturnTransaction() {
     final BuyTransaction transaction = executor.execute(pendingOrder, barData);
 
     assertThat(transaction).isNotNull();
     assertThat(transaction.getDate()).isEqualTo(now);
+    assertThat(transaction.getSymbol()).isEqualTo("MEG");
     assertThat(transaction.getNumOfShares()).isEqualTo(100000);
     assertThat(transaction.getTransactionType()).isEqualTo(TransactionType.BUY);
     assertThat(transaction.getValue()).isEqualTo(100000.0);

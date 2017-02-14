@@ -56,7 +56,12 @@ public class BuyOrderStatement implements Statement {
     if (portfolio.isEmpty() && !broker.hasPendingOrder()) {
       final Price price = barData.getPrice();
       final Order order = BuyOrder.builder()
-          .date(price.getDate()).cashAmount(account.getLiquidCash()).type(orderType).config(orderConfig).build();
+          .symbol(barData.getSymbol())
+          .date(price.getDate())
+          .cashAmount(account.getLiquidCash())
+          .type(orderType)
+          .config(orderConfig)
+          .build();
       broker.submitOrder(order, barData);
     }
   }
@@ -77,11 +82,11 @@ public class BuyOrderStatement implements Statement {
 
   @Override
   public boolean equals(final Object obj) {
-    if (obj == null || !(obj instanceof  BuyOrderStatement)) {
-      return false;
-    }
     if (obj == this) {
       return true;
+    }
+    if (obj == null || !(obj instanceof  BuyOrderStatement)) {
+      return false;
     }
     final BuyOrderStatement rhs = (BuyOrderStatement) obj;
     return Objects.equal(orderType, rhs.orderType)

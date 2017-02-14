@@ -9,6 +9,7 @@ import java.time.LocalDate;
  * @author bradwee2000@gmail.com
  */
 public interface Order {
+  String getSymbol();
 
   LocalDate getOrderDate();
 

@@ -49,6 +49,7 @@ public class SellOrderExecutorTest {
 
     when(barData.getPrice()).thenReturn(price);
     when(barData.getWorld()).thenReturn(world);
+    when(barData.getSymbol()).thenReturn("MEG");
     when(world.getAccount()).thenReturn(account);
     when(account.getPortfolio()).thenReturn(portfolio);
 
@@ -56,10 +57,10 @@ public class SellOrderExecutorTest {
   }
 
   @Test
-  public void testExecute() {
-    when(portfolio.getTotalShares()).thenReturn(100000l);
-    when(portfolio.getEquityValue()).thenReturn(100000d);
-    when(portfolio.getAvgPrice()).thenReturn(0.75);
+  public void testExecute_shouldCreateSellTransactionWithCalcProfit() {
+    when(portfolio.getTotalShares("MEG")).thenReturn(100000l);
+    when(portfolio.getEquityValue("MEG")).thenReturn(100000d);
+    when(portfolio.getAvgPrice("MEG")).thenReturn(0.75);
 
     final SellTransaction txn = executor.execute(pendingOrder, barData);
 

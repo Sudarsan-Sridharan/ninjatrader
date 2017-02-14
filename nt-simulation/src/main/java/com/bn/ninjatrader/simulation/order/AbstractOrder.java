@@ -17,17 +17,20 @@ public abstract class AbstractOrder implements Order {
   private static final Logger LOG = LoggerFactory.getLogger(AbstractOrder.class);
 
   private final LocalDate orderDate;
+  private final String symbol;
   private final long numOfShares;
   private final TransactionType transactionType;
   private final OrderType orderType;
   private final OrderConfig orderConfig;
 
   protected AbstractOrder(final LocalDate orderDate,
+                          final String symbol,
                           final TransactionType transactionType,
                           final OrderType orderType,
                           final OrderConfig orderConfig,
                           final long numOfShares) {
     this.orderDate = orderDate;
+    this.symbol = symbol;
     this.transactionType = transactionType;
     this.orderType = orderType;
     this.orderConfig = orderConfig;
@@ -60,9 +63,15 @@ public abstract class AbstractOrder implements Order {
   }
 
   @Override
+  public String getSymbol() {
+    return symbol;
+  }
+
+  @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
         .add("orderDate", orderDate)
+        .add("symbol", symbol)
         .add("numOfShares", numOfShares)
         .add("transactionType", transactionType)
         .add("orderType", orderType)
@@ -76,6 +85,7 @@ public abstract class AbstractOrder implements Order {
     if (obj == this) { return true; }
     final AbstractOrder rhs = (AbstractOrder) obj;
     return Objects.equal(orderDate, rhs.orderDate)
+        && Objects.equal(symbol, rhs.symbol)
         && Objects.equal(transactionType, rhs.transactionType)
         && Objects.equal(numOfShares, rhs.numOfShares)
         && Objects.equal(orderType, rhs.orderType)
@@ -84,13 +94,14 @@ public abstract class AbstractOrder implements Order {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(orderDate, transactionType, numOfShares, orderType, orderConfig);
+    return Objects.hashCode(orderDate, symbol, transactionType, numOfShares, orderType, orderConfig);
   }
 
   /**
    * Builder class
    */
   abstract static class OrderBuilder<T extends OrderBuilder> {
+    private String symbol;
     private long numOfShares;
     private LocalDate orderDate;
     private OrderType orderType = OrderTypes.marketClose();
@@ -98,6 +109,11 @@ public abstract class AbstractOrder implements Order {
 
     public T date(final LocalDate orderDate) {
       this.orderDate = orderDate;
+      return getThis();
+    }
+
+    public T symbol(final String symbol) {
+      this.symbol = symbol;
       return getThis();
     }
 
@@ -130,6 +146,10 @@ public abstract class AbstractOrder implements Order {
 
     public OrderConfig getOrderConfig() {
       return orderConfig;
+    }
+
+    public String getSymbol() {
+      return symbol;
     }
 
     abstract T getThis();

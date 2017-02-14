@@ -64,28 +64,4 @@ public class OrderExecutorTest {
     numOfShares = executor.getNumOfSharesCanBuyWithAmount(99999, 5);
     assertThat(numOfShares).isEqualTo(19900);
   }
-
-  @Test
-  public void testCalculateProfit() {
-    when(portfolio.getAvgPrice()).thenReturn(1.0);
-    when(portfolio.getTotalShares()).thenReturn(100000l);
-
-    double profit = executor.calculateProfit(account, 2.0);
-    assertThat(profit).isEqualTo(100000.0);
-
-    profit = executor.calculateProfit(account, 2.5);
-    assertThat(profit).isEqualTo(150000.0);
-
-    profit = executor.calculateProfit(account, 3.0);
-    assertThat(profit).isEqualTo(200000.0);
-  }
-
-  @Test
-  public void testCalculateProfitAtLowerPrice() {
-    when(portfolio.getAvgPrice()).thenReturn(1.0);
-    when(portfolio.getTotalShares()).thenReturn(100000l);
-
-    double profit = executor.calculateProfit(account, 0.5);
-    assertThat(profit).isEqualTo(-50000.0);
-  }
 }

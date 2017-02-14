@@ -67,7 +67,7 @@ public class Broker {
       } else if (pendingOrder.isExpired(barData)) {
         LOG.info("{} - Expired {} order submitted on {}",
             barData.getPrice().getDate(),
-            pendingOrder.getOrder().getTransactionType(),
+            pendingOrder.getTransactionType(),
             pendingOrder.getSubmittedBarData().getPrice().getDate());
         fulfilledOrders.add(pendingOrder);
       }
@@ -76,13 +76,12 @@ public class Broker {
   }
 
   private void fulfillOrder(final PendingOrder pendingOrder, final BarData barData) {
-    final OrderExecutor orderExecutor = orderExecutors.get(pendingOrder.getOrder().getTransactionType());
+    final OrderExecutor orderExecutor = orderExecutors.get(pendingOrder.getTransactionType());
     checkNotNull(orderExecutor, "No OrderExecutor found for TransactionType: %s",
-        pendingOrder.getOrder().getTransactionType());
+        pendingOrder.getTransactionType());
 
-    final Order order = pendingOrder.getOrder();
-    final TransactionType tnxType = order.getTransactionType();
-    final OrderType orderType = order.getOrderType();
+    final TransactionType tnxType = pendingOrder.getTransactionType();
+    final OrderType orderType = pendingOrder.getOrderType();
 
     final Transaction transaction = orderExecutor.execute(pendingOrder, barData);
     lastTransactions.put(transaction.getTransactionType(), transaction);

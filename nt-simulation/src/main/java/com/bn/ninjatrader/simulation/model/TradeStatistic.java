@@ -64,6 +64,26 @@ public class TradeStatistic {
     return totalLosses;
   }
 
+  public double getTotalProfit() {
+    return totalProfit;
+  }
+
+  public SellTransaction getMaxGainTxn() {
+    return maxGainTxn;
+  }
+
+  public SellTransaction getMaxLossTxn() {
+    return maxLossTxn;
+  }
+
+  public SellTransaction getMaxPcntGainTxn() {
+    return maxPcntGainTxn;
+  }
+
+  public SellTransaction getMaxPcntLossTxn() {
+    return maxPcntLossTxn;
+  }
+
   @JsonProperty("winLoseRatio")
   public double getWinLoseRatio() {
     return NumUtil.trim((double) numOfWins / numOfLosses, 5);
@@ -104,20 +124,5 @@ public class TradeStatistic {
     }
     numOfTrades++;
     totalProfit = NumUtil.plus(totalProfit, transaction.getProfit());
-  }
-
-  public void print() {
-    LOG.info("# of Trades: {}", numOfTrades);
-    LOG.info("# of Wins: {} ({}%)", numOfWins, getWinPcnt());
-    LOG.info("# of Losses: {} ({}%)", numOfLosses, getLossPcnt());
-    LOG.info("Win / Loss Ratio: {}", getWinLoseRatio());
-    LOG.info("Biggest Gain Amt: {} ({}%)", maxGainTxn.getProfit(), NumUtil.toPercent(maxGainTxn.getProfitPcnt()));
-    LOG.info("Biggest Loss Amt: {} ({}%)", maxLossTxn.getProfit(), NumUtil.toPercent(maxLossTxn.getProfitPcnt()));
-    LOG.info("Biggest % Gain: {} ({}%)", maxPcntGainTxn.getProfit(), NumUtil.toPercent(maxPcntGainTxn.getProfitPcnt()));
-    LOG.info("Biggest % Loss: {} ({}%)", maxPcntLossTxn.getProfit(), NumUtil.toPercent(maxPcntLossTxn.getProfitPcnt()));
-    LOG.info("Total Gain: {}", NumUtil.trimPrice(totalGain));
-    LOG.info("Total Loss: {}", NumUtil.trimPrice(totalLosses));
-    LOG.info("Total Profit: {}", NumUtil.trimPrice(totalProfit));
-    LOG.info("Profit per Trade: {}", getProfitPerTrade());
   }
 }

@@ -23,11 +23,13 @@ public class BarDataFactory {
     this.priceDataMapAdaptor = priceDataMapAdaptor;
   }
 
-  public BarData create(final Price price,
+  public BarData create(final String symbol,
+                        final Price price,
                         final int barIndex,
                         final Collection<SimulationData> dataCollection,
                         final World world) {
     final BarData.Builder barDataBuilder = BarData.builder()
+        .symbol(symbol)
         .index(barIndex)
         .price(price)
         .world(world)

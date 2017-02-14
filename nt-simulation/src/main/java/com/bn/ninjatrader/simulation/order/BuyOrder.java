@@ -22,11 +22,12 @@ public class BuyOrder extends AbstractOrder {
   private final double cashAmount;
 
   private BuyOrder(final LocalDate orderDate,
+                   final String symbol,
                    final OrderType orderType,
                    final OrderConfig orderConfig,
                    final long numOfShares,
                    final double cashAmount) {
-    super(orderDate, TransactionType.BUY, orderType, orderConfig, numOfShares);
+    super(orderDate, symbol, TransactionType.BUY, orderType, orderConfig, numOfShares);
     this.cashAmount = cashAmount;
   }
 
@@ -37,6 +38,7 @@ public class BuyOrder extends AbstractOrder {
   public String toString() {
     return MoreObjects.toStringHelper(this)
         .add("orderType", getOrderType())
+        .add("symbol", getSymbol())
         .add("numOfShares", getNumOfShares())
         .add("orderDate", getOrderDate())
         .add("transactionType", getTransactionType())
@@ -76,7 +78,7 @@ public class BuyOrder extends AbstractOrder {
 
     @Override
     public BuyOrder build() {
-      return new BuyOrder(getOrderDate(), getOrderType(), getOrderConfig(), getNumOfShares(), cashAmount);
+      return new BuyOrder(getOrderDate(), getSymbol(), getOrderType(), getOrderConfig(), getNumOfShares(), cashAmount);
     }
   }
 }

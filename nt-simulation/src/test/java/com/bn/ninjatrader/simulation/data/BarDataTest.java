@@ -14,9 +14,10 @@ public class BarDataTest {
   @Test
   public void testBuild_shouldSetProperties() {
     final Price price = Price.builder().close(1).build();
-    final BarData barData = BarData.builder().price(price).index(10).build();
+    final BarData barData = BarData.builder().price(price).index(10).symbol("MEG").build();
 
     assertThat(barData).isNotNull();
+    assertThat(barData.getSymbol()).isEqualTo("MEG");
     assertThat(barData.getPrice()).isEqualTo(price);
     assertThat(barData.getIndex()).isEqualTo(10);
   }

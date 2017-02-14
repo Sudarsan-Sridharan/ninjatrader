@@ -61,7 +61,7 @@ public class SimulationTest {
     when(account.getPortfolio()).thenReturn(portfolio);
     when(account.getLiquidCash()).thenReturn(100000d);
     when(portfolio.isEmpty()).thenReturn(true);
-    when(barDataFactory.create(any(Price.class), anyInt(), anyList(), any(World.class)))
+    when(barDataFactory.create(anyString(), any(Price.class), anyInt(), anyList(), any(World.class)))
         .thenReturn(bar1, bar2);
 
     world = World.builder().account(account).broker(broker).pricesForSymbol("MEG", prices).history(history).build();
@@ -74,9 +74,9 @@ public class SimulationTest {
   public void testPlay_shouldCreateBarDataForEachPrice() {
     simulation.play();
 
-    // Should create bar data twice. One for each price.
-    verify(barDataFactory).create(price1, 0, Lists.newArrayList(simulationData), world);
-    verify(barDataFactory).create(price2, 1, Lists.newArrayList(simulationData), world);
+    // Should forSymbol bar data twice. One for each price.
+    verify(barDataFactory).create("MEG", price1, 0, Lists.newArrayList(simulationData), world);
+    verify(barDataFactory).create("MEG", price2, 1, Lists.newArrayList(simulationData), world);
   }
 
   @Test

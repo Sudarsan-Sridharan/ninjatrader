@@ -28,15 +28,15 @@ public class RSIValue extends Value {
   }
 
   @JsonProperty("g")
-  private final double avgGain;
+  private final double g; // Average gain. Names are abbreviated to save space in datastore.
 
   @JsonProperty("l")
-  private final double avgLoss;
+  private final double l; // Average loss
 
-  public RSIValue(LocalDate date, double value) {
+  public RSIValue(final LocalDate date, final double value) {
     super(date, value);
-    avgGain = 0;
-    avgLoss = 0;
+    g = 0;
+    l = 0;
   }
 
   public RSIValue(@JsonDeserialize(using = NtLocalDateDeserializer.class)
@@ -45,38 +45,38 @@ public class RSIValue extends Value {
                   @JsonProperty("g") final double avgGain,
                   @JsonProperty("l") final double avgLoss) {
     super(date, value);
-    this.avgGain = avgGain;
-    this.avgLoss = avgLoss;
+    this.g = avgGain;
+    this.l = avgLoss;
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (obj == null || !(obj instanceof RSIValue)) { return false; }
+  public boolean equals(final Object obj) {
     if (obj == this) { return true; }
+    if (obj == null || !(obj instanceof RSIValue)) { return false; }
     final RSIValue rhs = (RSIValue) obj;
     return Objects.equal(getDate(), rhs.getDate())
         && Objects.equal(getValue(), rhs.getValue())
-        && Objects.equal(avgGain, rhs.avgGain)
-        && Objects.equal(avgLoss, rhs.avgLoss);
+        && Objects.equal(g, rhs.g)
+        && Objects.equal(l, rhs.l);
   }
 
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
-        .add("D", getDate()).add("V", getValue()).add("avgGain", avgGain).add("avgLoss", avgLoss).toString();
+        .add("D", getDate()).add("V", getValue()).add("avgGain", g).add("avgLoss", l).toString();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(getDate(), getValue(), avgGain, avgLoss);
+    return Objects.hashCode(getDate(), getValue(), g, l);
   }
 
   public double getAvgGain() {
-    return avgGain;
+    return g;
   }
 
   public double getAvgLoss() {
-    return avgLoss;
+    return l;
   }
 }
 

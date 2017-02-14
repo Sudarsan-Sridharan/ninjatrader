@@ -58,15 +58,8 @@ public class Account implements BrokerListener {
     return portfolio;
   }
 
-  public void print() {
-    final double profit = getProfit();
-
-    bookkeeper.print();
-    tradeStatistic.print();
-
-    LOG.info("Starting Cash: {}", startingCash);
-    LOG.info("Ending Cash: {}", (long) liquidCash);
-    LOG.info("% Gain: {}%", NumUtil.toPercent(profit / startingCash));
+  public double getTotalAccountValue() {
+    return NumUtil.plus(portfolio.getTotalEquityValue(), liquidCash);
   }
 
   @Override
@@ -75,17 +68,17 @@ public class Account implements BrokerListener {
   }
 
   @Override
-  public void onFulfilledBuy(final BuyTransaction transaction, final BarData barData) {
-    portfolio.add(transaction);
-    addCash(-transaction.getValue());
-    bookkeeper.keep(transaction);
+  public void onFulfilledBuy(final BuyTransaction txn, final BarData barData) {
+    portfolio.add(txn);
+    addCash(-txn.getValue());
+    bookkeeper.keep(txn);
   }
 
   @Override
-  public void onFulfilledSell(final SellTransaction transaction, final BarData barData) {
-    addCash(transaction.getValue());
+  public void onFulfilledSell(final SellTransaction txn, final BarData barData) {
+    addCash(txn.getValue());
     portfolio.clear();
-    bookkeeper.keep(transaction);
-    tradeStatistic.collectStats(transaction);
+    bookkeeper.keep(txn);
+    tradeStatistic.collectStats(txn);
   }
 }

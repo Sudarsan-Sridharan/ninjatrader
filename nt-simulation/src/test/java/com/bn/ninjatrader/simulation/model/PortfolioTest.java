@@ -13,9 +13,11 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  */
 public class PortfolioTest {
 
-  private final BuyTransaction buy1 = Transaction.buy().price(1).shares(10000).build();
-  private final BuyTransaction buy2 = Transaction.buy().price(2).shares(10000).build();
-  private final BuyTransaction buy3 = Transaction.buy().price(3).shares(1000).build();
+  private final BuyTransaction buy1 = Transaction.buy().symbol("MEG").price(1).shares(10000).build();
+  private final BuyTransaction buy2 = Transaction.buy().symbol("MEG").price(2).shares(10000).build();
+  private final BuyTransaction buy3 = Transaction.buy().symbol("MEG").price(3).shares(1000).build();
+
+  private final BuyTransaction buyDiffSymbol = Transaction.buy().symbol("BDO").price(1).shares(1000).build();
 
   private Portfolio portfolio;
 
@@ -27,9 +29,7 @@ public class PortfolioTest {
   @Test
   public void testOnCreate() {
     assertThat(portfolio.isEmpty()).isTrue();
-    assertThat(portfolio.getAvgPrice()).isEqualTo(0.0);
-    assertThat(portfolio.getTotalShares()).isEqualTo(0);
-    assertThat(portfolio.getEquityValue()).isEqualTo(0);
+    assertThat(portfolio.getTotalEquityValue()).isEqualTo(0);
   }
 
   @Test
@@ -39,39 +39,60 @@ public class PortfolioTest {
   }
 
   @Test
-  public void testAvgPrice_shouldReturnAveragePriceOfAllInPortfolio() {
+  public void testAvgPrice_shouldReturnAveragePriceOfStockInPortfolio() {
     portfolio.add(buy1);
-    assertThat(portfolio.getAvgPrice()).isEqualTo(1.0);
+    assertThat(portfolio.getAvgPrice("MEG")).isEqualTo(1.0);
 
     portfolio.add(buy2);
-    assertThat(portfolio.getAvgPrice()).isEqualTo(1.5);
+    assertThat(portfolio.getAvgPrice("MEG")).isEqualTo(1.5);
 
     portfolio.add(buy3);
-    assertThat(portfolio.getAvgPrice()).isEqualTo(1.5714285714285714);
+    portfolio.add(buyDiffSymbol);
+    assertThat(portfolio.getAvgPrice("MEG")).isEqualTo(1.5714285714285714);
+    assertThat(portfolio.getAvgPrice("BDO")).isEqualTo(1);
+
+    // URC symbol doesn't exist. Should throw exception.
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> portfolio.getAvgPrice("URC"))
+        .withMessageContaining("URC");
   }
 
   @Test
   public void testNumOfShares_shouldReturnTotalSharesInPortfolio() {
     portfolio.add(buy1);
-    assertThat(portfolio.getTotalShares()).isEqualTo(10000);
+    assertThat(portfolio.getTotalShares("MEG")).isEqualTo(10000);
 
     portfolio.add(buy2);
-    assertThat(portfolio.getTotalShares()).isEqualTo(20000);
+    assertThat(portfolio.getTotalShares("MEG")).isEqualTo(20000);
 
     portfolio.add(buy3);
-    assertThat(portfolio.getTotalShares()).isEqualTo(21000);
+    portfolio.add(buyDiffSymbol);
+    assertThat(portfolio.getTotalShares("MEG")).isEqualTo(21000);
+    assertThat(portfolio.getTotalShares("BDO")).isEqualTo(1000);
+
+    // URC symbol doesn't exist. Should throw exception.
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> portfolio.getTotalShares("URC"))
+        .withMessageContaining("URC");
   }
 
   @Test
   public void testGetEquityValue_shouldReturnTotalEquitValue() {
     portfolio.add(buy1);
-    assertThat(portfolio.getEquityValue()).isEqualTo(10000);
+    assertThat(portfolio.getEquityValue("MEG")).isEqualTo(10000);
 
     portfolio.add(buy2);
-    assertThat(portfolio.getEquityValue()).isEqualTo(30000);
+    assertThat(portfolio.getEquityValue("MEG")).isEqualTo(30000);
 
     portfolio.add(buy3);
-    assertThat(portfolio.getEquityValue()).isEqualTo(33000);
+    portfolio.add(buyDiffSymbol);
+    assertThat(portfolio.getEquityValue("MEG")).isEqualTo(33000);
+    assertThat(portfolio.getEquityValue("BDO")).isEqualTo(1000);
+
+    // URC symbol doesn't exist. Should throw exception.
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> portfolio.getEquityValue("URC"))
+        .withMessageContaining("URC");
   }
 
   @Test
@@ -79,9 +100,7 @@ public class PortfolioTest {
     portfolio.add(buy1);
     portfolio.clear();
     assertThat(portfolio.isEmpty()).isTrue();
-    assertThat(portfolio.getAvgPrice()).isEqualTo(0.0);
-    assertThat(portfolio.getTotalShares()).isEqualTo(0);
-    assertThat(portfolio.getEquityValue()).isEqualTo(0);
+    assertThat(portfolio.contains("MEG")).isFalse();
   }
 
   @Test
@@ -89,31 +108,32 @@ public class PortfolioTest {
     portfolio.add(Transaction.buy().symbol("MEG").price(1).shares(10000).build());
     assertThat(portfolio.getCommittedShares("MEG")).isEqualTo(0);
 
-    // BDO doesn't exist
-    portfolio.commitShares("BDO", 10000);
-    assertThat(portfolio.getCommittedShares("MEG")).isEqualTo(0);
-    assertThat(portfolio.getCommittedShares("BDO")).isEqualTo(0);
-
+    // Can commit 5000 shares
+    assertThat(portfolio.canCommitShares("MEG", 5000)).isTrue();
     portfolio.commitShares("MEG", 5000);
     assertThat(portfolio.getCommittedShares("MEG")).isEqualTo(5000);
 
+    // Can commit another 5000 more shares
+    assertThat(portfolio.canCommitShares("MEG", 5000)).isTrue();
     portfolio.commitShares("MEG", 5000);
     assertThat(portfolio.getCommittedShares("MEG")).isEqualTo(10000);
 
+    // Can't commit any more shares.
+    assertThat(portfolio.canCommitShares("MEG", 1)).isFalse();
+
     // Can't commit any more shares. Should throw exception.
-    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-      portfolio.commitShares("MEG", 1);
-    });
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> portfolio.commitShares("MEG", 1));
+
+    // URC symbol doesn't exist. Should throw exception.
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> portfolio.commitShares("URC", 100));
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> portfolio.getCommittedShares("URC"));
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> portfolio.canCommitShares("URC", 100));
   }
 
   @Test
   public void testCancelCommittedShares_shouldDeductFromCommittedShares() {
     portfolio.add(Transaction.buy().symbol("MEG").price(1).shares(10000).build());
     portfolio.commitShares("MEG", 5000);
-
-    // BDO doesn't exist
-    portfolio.cancelCommittedShares("BDO", 5000);
-    assertThat(portfolio.getCommittedShares("MEG")).isEqualTo(5000);
 
     // Cancel partial
     portfolio.cancelCommittedShares("MEG", 1000);
@@ -124,20 +144,18 @@ public class PortfolioTest {
     assertThat(portfolio.getCommittedShares("MEG")).isEqualTo(0);
 
     // Nothing left. Can't cancel anymore
-    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-      portfolio.cancelCommittedShares("MEG", 1);
-    });
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> portfolio.cancelCommittedShares("MEG", 1));
+
+    // URC symbol doesn't exist. Should throw exception.
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> portfolio.cancelCommittedShares("URC", 1));
   }
 
   @Test
   public void testFulfillCommittedShares_shouldDeductFromTotalShares() {
     portfolio.add(Transaction.buy().symbol("MEG").price(1).shares(10000).build());
     portfolio.commitShares("MEG", 5000);
-
-    // BDO doesn't exist
-    portfolio.fulfillCommittedShares("BDO", 5000);
-    assertThat(portfolio.getCommittedShares("MEG")).isEqualTo(5000);
-    assertThat(portfolio.getTotalShares("MEG")).isEqualTo(10000);
 
     // Fulfill partial
     portfolio.fulfillCommittedShares("MEG", 1000);
@@ -149,10 +167,23 @@ public class PortfolioTest {
     assertThat(portfolio.getCommittedShares("MEG")).isEqualTo(0);
     assertThat(portfolio.getTotalShares("MEG")).isEqualTo(5000);
 
-    // Nothing left to fulfill
-    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-      portfolio.fulfillCommittedShares("MEG", 1);
-    });
+    // Nothing left to fulfill. Should throw exception.
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> portfolio.fulfillCommittedShares("MEG", 1));
+
+    // URC symbol doesn't exist. Should throw exception.
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> portfolio.fulfillCommittedShares("URC", 1));
   }
 
+  @Test
+  public void testTotalEquityValue_shouldReturnSumOfAllItemEquityValues() {
+    assertThat(portfolio.getTotalEquityValue()).isEqualTo(0);
+
+    portfolio.add(Transaction.buy().symbol("MEG").price(2).shares(10000).build());
+    assertThat(portfolio.getTotalEquityValue()).isEqualTo(20000);
+
+    portfolio.add(Transaction.buy().symbol("BDO").price(3).shares(1000).build());
+    assertThat(portfolio.getTotalEquityValue()).isEqualTo(23000);
+  }
 }

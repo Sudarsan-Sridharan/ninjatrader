@@ -17,15 +17,18 @@ public class BarData implements Data {
     return new Builder();
   }
 
+  private final String symbol;
   private final int index;
   private final DataMap dataMap;
   private final Price price;
   private final World world;
 
-  private BarData(final int index,
+  private BarData(final String symbol,
+                  final int index,
                   final Price price,
                   final DataMap dataMap,
                   final World world) {
+    this.symbol = symbol;
     this.index = index;
     this.price = price;
     this.dataMap = dataMap;
@@ -48,10 +51,14 @@ public class BarData implements Data {
     return world;
   }
 
+  public String getSymbol() {
+    return symbol;
+  }
+
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
-        .add("index", index).add("price", price).add("dataMap", dataMap).add("world", world)
+        .add("symbol", symbol).add("index", index).add("price", price).add("dataMap", dataMap).add("world", world)
         .toString();
   }
 
@@ -63,6 +70,7 @@ public class BarData implements Data {
     private DataMap dataMap = new DataMap();
     private Price price;
     private World world;
+    private String symbol;
 
     public Builder index(final int index) {
       this.index = index;
@@ -84,8 +92,13 @@ public class BarData implements Data {
       this.world = world;
       return this;
     }
+    public Builder symbol(final String symbol) {
+      this.symbol = symbol;
+      return this;
+    }
+
     public BarData build() {
-      return new BarData(index, price, dataMap, world);
+      return new BarData(symbol, index, price, dataMap, world);
     }
   }
 }

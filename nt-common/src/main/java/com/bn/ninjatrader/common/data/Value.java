@@ -28,46 +28,46 @@ public class Value implements DateObj<Value> {
   @JsonProperty("d")
   @JsonSerialize(using = NtLocalDateSerializer.class)
   @JsonDeserialize(using = NtLocalDateDeserializer.class)
-  private LocalDate date;
+  private LocalDate d; // Date. Names are abbreviated to save space in Datastore
 
   @JsonProperty("v")
-  private double value;
+  private double v; // Value
 
   public Value() {}
 
-  public Value(LocalDate date, double value) {
-    this.date = date;
-    this.value = value;
+  public Value(final LocalDate date, final double value) {
+    this.d = date;
+    this.v = value;
   }
 
   public LocalDate getDate() {
-    return date;
+    return d;
   }
 
   public double getValue() {
-    return value;
+    return v;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(date, value);
+    return Objects.hashCode(d, v);
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (obj == null || !(obj instanceof Value)) { return false; }
+  public boolean equals(final Object obj) {
     if (obj == this) { return true; }
+    if (obj == null || !(obj instanceof Value)) { return false; }
     final Value rhs = (Value) obj;
-    return Objects.equal(date, rhs.date)
-        && Objects.equal(value, rhs.value);
+    return Objects.equal(d, rhs.d)
+        && Objects.equal(v, rhs.v);
   }
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this).add("D", date).add("V", value).toString();
+    return MoreObjects.toStringHelper(this).add("D", d).add("V", v).toString();
   }
 
-  public int compareTo(Value v2) {
+  public int compareTo(final Value v2) {
     return getDate().compareTo(v2.getDate());
   }
 }

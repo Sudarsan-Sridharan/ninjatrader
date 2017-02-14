@@ -57,6 +57,7 @@ public class BuyOrderStatementTest {
 
     when(barData.getWorld()).thenReturn(world);
     when(barData.getPrice()).thenReturn(price);
+    when(barData.getSymbol()).thenReturn("MEG");
     when(world.getBroker()).thenReturn(broker);
     when(world.getAccount()).thenReturn(account);
     when(account.getPortfolio()).thenReturn(portfolio);
@@ -86,6 +87,7 @@ public class BuyOrderStatementTest {
 
     final BuyOrder order = orderCaptor.getValue();
     assertThat(order.getCashAmount()).isEqualTo(100000d);
+    assertThat(order.getSymbol()).isEqualTo("MEG");
     assertThat(order.getOrderType()).isEqualTo(OrderTypes.marketClose());
     assertThat(order.getOrderDate()).isEqualTo(now);
     assertThat(order.getOrderConfig()).isEqualTo(OrderConfig.defaults());

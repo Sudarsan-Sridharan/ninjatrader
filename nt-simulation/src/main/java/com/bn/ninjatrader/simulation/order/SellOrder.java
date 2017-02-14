@@ -15,10 +15,11 @@ public class SellOrder extends AbstractOrder {
   }
 
   private SellOrder(final LocalDate orderDate,
+                    final String symbol,
                     final OrderType orderType,
                     final OrderConfig orderConfig,
                     final long numOfShares) {
-    super(orderDate, TransactionType.SELL, orderType, orderConfig, numOfShares);
+    super(orderDate, symbol, TransactionType.SELL, orderType, orderConfig, numOfShares);
   }
 
   /**
@@ -32,7 +33,7 @@ public class SellOrder extends AbstractOrder {
 
     @Override
     public SellOrder build() {
-      return new SellOrder(getOrderDate(), getOrderType(), getOrderConfig(), getNumOfShares());
+      return new SellOrder(getOrderDate(), getSymbol(), getOrderType(), getOrderConfig(), getNumOfShares());
     }
   }
 }

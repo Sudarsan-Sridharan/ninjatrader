@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -15,6 +17,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PortfolioItem {
+  private static final Logger LOG = LoggerFactory.getLogger(PortfolioItem.class);
 
   public static final Builder builder() {
     return new Builder();
@@ -52,6 +55,7 @@ public class PortfolioItem {
   public PortfolioItem addSharesWithPrice(final long shares, final double price) {
     checkArgument(shares > 0, "shares must be > 0");
     checkArgument(price > 0, "price must be > 0");
+
     final long newTotalShares = totalShares + shares;
     final double newAvgPrice = ((avgPrice * totalShares) + (price * shares)) / newTotalShares;
     return new PortfolioItem(symbol, newTotalShares, committedShares, newAvgPrice);
