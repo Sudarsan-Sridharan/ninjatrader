@@ -1,15 +1,13 @@
 package com.bn.ninjatrader.service.task;
 
 import com.bn.ninjatrader.dataimport.history.CsvPriceImporter;
-import com.codahale.metrics.annotation.Timed;
-import com.google.common.collect.ImmutableMultimap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import io.dropwizard.servlets.tasks.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.PrintWriter;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 
 /**
  * To execute multiple processes:
@@ -18,8 +16,8 @@ import java.io.PrintWriter;
  * @author bradwee2000@gmail.com
  */
 @Singleton
-@Timed
-public class ImportCSVPriceTask extends Task {
+@Path("/task/importcsvprice")
+public class ImportCSVPriceTask {
 
   private static final Logger LOG = LoggerFactory.getLogger(ImportCSVPriceTask.class);
 
@@ -27,13 +25,11 @@ public class ImportCSVPriceTask extends Task {
 
   @Inject
   public ImportCSVPriceTask(final CsvPriceImporter csvPriceImporter) {
-    super("import-csv-price");
     this.csvPriceImporter = csvPriceImporter;
   }
 
-  @Override
-  public void execute(final ImmutableMultimap<String, String> args, final PrintWriter printWriter) throws Exception {
-    LOG.info("Executing ImportPrice {}", args);
+  @POST
+  public void importCsvPrices() throws Exception {
     csvPriceImporter.importPrices();
   }
 }

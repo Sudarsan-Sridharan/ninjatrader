@@ -19,6 +19,7 @@
         <module>nt-service</module>
         <module>nt-simulation</module>
         <module>nt-thirdparty</module>
+        <module>nt-service-dropwizard</module>
     </modules>
 
     <properties>

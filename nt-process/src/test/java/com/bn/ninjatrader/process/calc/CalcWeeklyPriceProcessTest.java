@@ -7,6 +7,7 @@ import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.model.request.SaveRequest;
+import com.bn.ninjatrader.process.request.CalcRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -14,7 +15,6 @@ import org.mockito.ArgumentCaptor;
 import java.time.LocalDate;
 import java.util.Collections;
 
-import static com.bn.ninjatrader.process.request.CalcRequest.calcSymbol;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -23,6 +23,9 @@ import static org.mockito.Mockito.*;
  * Created by Brad on 8/16/16.
  */
 public class CalcWeeklyPriceProcessTest {
+
+  private final LocalDate fromDate = LocalDate.of(2016, 2, 5);
+  private final LocalDate toDate = LocalDate.of(2016, 2, 10);
 
   private final LocalDate week1 = LocalDate.of(2016, 2, 1);
   private final LocalDate week2 = LocalDate.of(2016, 2, 8);
@@ -49,10 +52,8 @@ public class CalcWeeklyPriceProcessTest {
   @Test
   public void testProcessBars_shouldAdjustFromDateToStartOfWeek() {
     final ArgumentCaptor<FindRequest> findRequestCaptor = ArgumentCaptor.forClass(FindRequest.class);
-    final LocalDate fromDate = LocalDate.of(2016, 2, 5);
-    final LocalDate toDate = LocalDate.of(2016, 2, 10);
 
-    process.process(calcSymbol("MEG").from(fromDate).to(toDate));
+    process.process(CalcRequest.forSymbol("MEG").from(fromDate).to(toDate));
 
     verify(priceDao).find(findRequestCaptor.capture());
     final FindRequest findRequest = findRequestCaptor.getValue();
@@ -62,12 +63,20 @@ public class CalcWeeklyPriceProcessTest {
   }
 
   @Test
+  public void testCalcWithMultipleSymbols_shouldCalcForEachGivenSymbol() {
+    process.process(CalcRequest.forSymbols("MEG", "BDO").from(fromDate).to(toDate));
+
+    verify(priceDao, times(2)).find(any(FindRequest.class));
+
+    verify(priceDao, times(2)).save(any(SaveRequest.class));
+  }
+
+  @Test
   public void testSaveOnlyValuesWithinRequestedDates() {
     final ArgumentCaptor<SaveRequest> saveRequestCaptor = ArgumentCaptor.forClass(SaveRequest.class);
-    final LocalDate fromDate = LocalDate.of(2016, 2, 5);
-    final LocalDate toDate = LocalDate.of(2016, 2, 10);
 
-    process.process(calcSymbol("MEG").from(fromDate).to(toDate));
+
+    process.process(CalcRequest.forSymbol("MEG").from(fromDate).to(toDate));
 
     verify(priceDao).save(saveRequestCaptor.capture());
     final SaveRequest saveRequest = saveRequestCaptor.getValue();

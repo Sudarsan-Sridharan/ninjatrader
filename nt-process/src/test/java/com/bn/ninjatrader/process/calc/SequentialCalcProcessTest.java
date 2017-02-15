@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 
-import static com.bn.ninjatrader.process.request.CalcRequest.calcSymbol;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
@@ -58,7 +57,7 @@ public class SequentialCalcProcessTest {
     final LocalDate fromDate = LocalDate.of(2015, 1, 1);
     final LocalDate toDate = LocalDate.of(2017, 2, 2);
     final SequentialCalcProcess process = SequentialCalcProcess.newInstance("test", calcProcess1, calcProcess2);
-    final CalcRequest request = calcSymbol("MEG").from(fromDate).to(toDate);
+    final CalcRequest request = CalcRequest.forSymbol("MEG").from(fromDate).to(toDate);
 
     process.process(request);
 

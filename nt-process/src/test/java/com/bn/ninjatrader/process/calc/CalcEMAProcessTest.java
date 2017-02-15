@@ -9,6 +9,7 @@ import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.guice.NtModelTestModule;
 import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.model.request.SaveRequest;
+import com.bn.ninjatrader.process.request.CalcRequest;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.junit.After;
@@ -22,7 +23,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.bn.ninjatrader.model.request.FindRequest.findSymbol;
-import static com.bn.ninjatrader.process.request.CalcRequest.calcSymbol;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -68,17 +68,17 @@ public class CalcEMAProcessTest {
 
   @Test
   public void testCalcEma_shouldSaveEmaValuesToDatabase() {
-    process.process(calcSymbol("MEG").from(dataStartDate).to(dataEndDate).periods(18));
+    process.process(CalcRequest.forSymbol("MEG").from(dataStartDate).to(dataEndDate).periods(18));
     assertThat(emaDao.find(FindRequest.findSymbol("MEG").from(fromDate).to(toDate).period(18)))
         .hasSize(132);
   }
 
   @Test
   public void testCalcTwice_shouldProduceSameResult() {
-    process.process(calcSymbol("MEG").from(fromDate).to(toDate).periods(18));
+    process.process(CalcRequest.forSymbol("MEG").from(fromDate).to(toDate).periods(18));
     final List<RSIValue> baselineEmaValues = emaDao.find(findSymbol("MEG").from(fromDate).to(toDate).period(18));
 
-    process.process(calcSymbol("MEG").from(fromDate).to(toDate).periods(18));
+    process.process(CalcRequest.forSymbol("MEG").from(fromDate).to(toDate).periods(18));
     assertThat(emaDao.find(findSymbol("MEG").from(fromDate).to(toDate).period(18)))
         .isEqualTo(baselineEmaValues);
   }
@@ -86,18 +86,18 @@ public class CalcEMAProcessTest {
   @Test
   public void testCalcMultipleTimesWithContinuation_shouldGiveSameResultsAsFirstCalc() {
     // Calculate EMA values from start date
-    process.process(calcSymbol("MEG").from(dataStartDate).to(toDate).periods(18));
+    process.process(CalcRequest.forSymbol("MEG").from(dataStartDate).to(toDate).periods(18));
 
     // Baseline EMA values
     final List<Value> baselineEmaValues = emaDao.find(findSymbol("MEG").from(fromDate).to(toDate).period(18));
 
     // Calculate a second time, moving the from date. It should continue from prior EMA value.
-    process.process(calcSymbol("MEG").from(fromDate.plusDays(1)).to(toDate).periods(18));
+    process.process(CalcRequest.forSymbol("MEG").from(fromDate.plusDays(1)).to(toDate).periods(18));
     assertThat(emaDao.find(findSymbol("MEG").from(fromDate).to(toDate).period(18)))
         .isEqualTo(baselineEmaValues);
 
     // Calculate a third time, moving the from date by 2 months. It should continue from prior EMA value.
-    process.process(calcSymbol("MEG").from(fromDate.plusMonths(2)).to(toDate).periods(18));
+    process.process(CalcRequest.forSymbol("MEG").from(fromDate.plusMonths(2)).to(toDate).periods(18));
     assertThat(emaDao.find(findSymbol("MEG").from(fromDate).to(toDate).period(18)))
         .isEqualTo(baselineEmaValues);
   }

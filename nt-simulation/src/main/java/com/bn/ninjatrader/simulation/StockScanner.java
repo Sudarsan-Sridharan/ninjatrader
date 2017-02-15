@@ -57,7 +57,6 @@ public class StockScanner {
       final String symbol = report.getSimulationParams().getSymbol();
       final Transaction txn = report.getTransactions().get(report.getTransactions().size()-1);
       LOG.info("{} - {} - {}", symbol, report.getTradeStatistic().getTotalProfit(), txn);
-
     }
   }
 

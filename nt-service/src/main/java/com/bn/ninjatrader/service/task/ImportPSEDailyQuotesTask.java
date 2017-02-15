@@ -1,15 +1,15 @@
 package com.bn.ninjatrader.service.task;
 
 import com.bn.ninjatrader.dataimport.daily.PseDailyPriceImporter;
-import com.codahale.metrics.annotation.Timed;
-import com.google.common.collect.ImmutableMultimap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import io.dropwizard.servlets.tasks.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.PrintWriter;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+import java.time.Clock;
 import java.time.LocalDate;
 
 /**
@@ -20,33 +20,23 @@ import java.time.LocalDate;
  * @author bradwee2000@gmail.com
  */
 @Singleton
-@Timed
-public class ImportPSEDailyQuotesTask extends Task {
+@Path("/task/import-pse-quotes")
+public class ImportPSEDailyQuotesTask {
   private static final Logger LOG = LoggerFactory.getLogger(ImportPSEDailyQuotesTask.class);
 
   private final PseDailyPriceImporter importer;
-  private final CalcTask calcTask;
+  private final Clock clock;
 
   @Inject
   public ImportPSEDailyQuotesTask(final PseDailyPriceImporter importer,
-                                  final CalcTask calcTask) {
-    super("import-pse-quotes");
+                                  final Clock clock) {
     this.importer = importer;
-    this.calcTask = calcTask;
+    this.clock = clock;
   }
 
-  @Override
-  public void execute(final ImmutableMultimap<String, String> args,
-                      final PrintWriter printWriter) throws Exception {
-    try {
-      this.importer.importData(LocalDate.now());
-      LOG.info("Done importing. Calculating.");
-      this.calcTask.execute(ImmutableMultimap.of(), printWriter);
-      LOG.info("Done calculating.");
-      printWriter.append("Done\n");
-    } catch (Exception e) {
-      printWriter.append("Failed\n");
-      throw e;
-    }
+  @POST
+  public Response importPseDailyQuotes() {
+    this.importer.importData(LocalDate.now(clock));
+    return Response.noContent().build();
   }
 }

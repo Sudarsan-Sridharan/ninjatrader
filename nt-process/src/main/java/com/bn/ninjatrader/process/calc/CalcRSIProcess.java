@@ -5,6 +5,7 @@ import com.bn.ninjatrader.common.data.RSIValue;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.RSIDao;
 import com.bn.ninjatrader.process.provider.PriorValueProvider;
+import com.bn.ninjatrader.process.util.CalcProcessNames;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -20,7 +21,6 @@ import java.util.List;
 @Singleton
 public class CalcRSIProcess extends AbstractCalcContinuedValuesProcess<RSIValue> {
   private static final Logger LOG = LoggerFactory.getLogger(CalcRSIProcess.class);
-  private static final String PROCESS_NAME = "rsi";
   private static final List<Integer> DEFAULT_PERIODS = Collections.unmodifiableList(Lists.newArrayList(10, 14, 20));
 
   @Inject
@@ -38,6 +38,6 @@ public class CalcRSIProcess extends AbstractCalcContinuedValuesProcess<RSIValue>
 
   @Override
   public String getProcessName() {
-    return PROCESS_NAME;
+    return CalcProcessNames.RSI;
   }
 }

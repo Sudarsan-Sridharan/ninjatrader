@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static com.bn.ninjatrader.process.request.CalcRequest.calcSymbol;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -63,7 +62,7 @@ public class AbstractCalcValuesProcessTest {
     LocalDate date = LocalDate.MIN; // out of range
     when(calculator.calc(any())).thenReturn(calcResult);
 
-    process.process(calcSymbol("MEG").from(date).to(date).periods(process.getDefaultPeriods()));
+    process.process(CalcRequest.forSymbol("MEG").from(date).to(date).periods(process.getDefaultPeriods()));
 
     verify(priceDao, times(0)).save(any(SaveRequest.class));
   }
@@ -73,7 +72,7 @@ public class AbstractCalcValuesProcessTest {
     calcResult.put(20, Collections.emptyList());
     when(calculator.calc(any())).thenReturn(calcResult);
 
-    process.process(calcSymbol("MEG").from(DATE_2014).to(DATE_2017).periods(20));
+    process.process(CalcRequest.forSymbol("MEG").from(DATE_2014).to(DATE_2017).periods(20));
 
     verify(priceDao, times(0)).save(any(SaveRequest.class));
   }
@@ -84,7 +83,7 @@ public class AbstractCalcValuesProcessTest {
     calcResult.put(20, TestUtil.randomValues(3));
     when(calculator.calc(any())).thenReturn(calcResult);
 
-    process.process(CalcRequest.calcSymbol("MEG", "BDO", "TEL")
+    process.process(CalcRequest.forSymbols("MEG", "BDO", "TEL")
         .timeFrames(TimeFrame.ONE_DAY)
         .from(DATE_2014)
         .to(DATE_2017));
@@ -101,7 +100,7 @@ public class AbstractCalcValuesProcessTest {
     calcResult.put(100, TestUtil.randomValues(2));
     when(calculator.calc(any())).thenReturn(calcResult);
 
-    process.process(CalcRequest.calcSymbol("MEG")
+    process.process(CalcRequest.forSymbol("MEG")
         .timeFrames(TimeFrame.ONE_DAY)
         .from(DATE_2014)
         .to(DATE_2017)
@@ -118,7 +117,7 @@ public class AbstractCalcValuesProcessTest {
     calcResult.put(20, TestUtil.randomValues(3));
     when(calculator.calc(any())).thenReturn(calcResult);
 
-    process.process(CalcRequest.calcSymbol("MEG")
+    process.process(CalcRequest.forSymbol("MEG")
         .allTimeFrames()
         .from(DATE_2014)
         .to(DATE_2017));
@@ -138,7 +137,7 @@ public class AbstractCalcValuesProcessTest {
     calcResult.put(100, TestUtil.randomValues(3));
     when(calculator.calc(any())).thenReturn(calcResult);
 
-    process.process(CalcRequest.calcSymbol("MEG", "BDO")
+    process.process(CalcRequest.forSymbols("MEG", "BDO")
         .allTimeFrames()
         .from(DATE_2014)
         .to(DATE_2017));
@@ -159,7 +158,7 @@ public class AbstractCalcValuesProcessTest {
     calcResult.put(20, TestUtil.randomValuesForDateRange(DATE_2014.plusMonths(6), DATE_2015));
     when(calculator.calc(any())).thenReturn(calcResult);
 
-    process.process(CalcRequest.calcSymbol("MEG")
+    process.process(CalcRequest.forSymbol("MEG")
         .timeFrames(TimeFrame.ONE_DAY)
         .from(DATE_2015)
         .to(DATE_2015));

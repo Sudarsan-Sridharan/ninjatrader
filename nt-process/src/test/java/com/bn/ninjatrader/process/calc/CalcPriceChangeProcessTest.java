@@ -6,6 +6,7 @@ import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.request.SaveRequest;
+import com.bn.ninjatrader.process.request.CalcRequest;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import org.junit.Before;
@@ -17,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 import static com.bn.ninjatrader.common.type.TimeFrame.ONE_DAY;
-import static com.bn.ninjatrader.process.request.CalcRequest.calcSymbol;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -49,7 +49,7 @@ public class CalcPriceChangeProcessTest {
   public void testProcessOneSymbol_shouldSaveProcessedValuesForThatSymbol() {
     final ArgumentCaptor<SaveRequest> saveRequestCaptor = ArgumentCaptor.forClass(SaveRequest.class);
 
-    process.process(calcSymbol("MEG").timeFrames(ONE_DAY));
+    process.process(CalcRequest.forSymbol("MEG").timeFrames(ONE_DAY));
 
     verify(priceDao).save(saveRequestCaptor.capture());
 
@@ -61,7 +61,7 @@ public class CalcPriceChangeProcessTest {
   public void testProcessMultipleSymbolsAndTimeFrames_shouldProcessEachSymbolAndTimeFrame() {
     final ArgumentCaptor<SaveRequest> saveRequestCaptor = ArgumentCaptor.forClass(SaveRequest.class);
 
-    process.process(calcSymbol("MEG", "BDO", "MBT").allTimeFrames());
+    process.process(CalcRequest.forSymbols("MEG", "BDO", "MBT").allTimeFrames());
 
     // Should save 3 symbols * each time frame.
     verify(priceDao, times(3 * TimeFrame.values().length)).save(saveRequestCaptor.capture());

@@ -4,6 +4,7 @@ import com.bn.ninjatrader.calculator.EMACalculator;
 import com.bn.ninjatrader.model.dao.EMADao;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.process.provider.PriorValueProvider;
+import com.bn.ninjatrader.process.util.CalcProcessNames;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -20,7 +21,6 @@ import java.util.List;
 public class CalcEMAProcess extends AbstractCalcContinuedValuesProcess {
 
   private static final Logger LOG = LoggerFactory.getLogger(CalcEMAProcess.class);
-  private static final String PROCESS_NAME = "ema";
   private static final List<Integer> DEFAULT_PERIODS =
       Collections.unmodifiableList(Lists.newArrayList(18, 50, 100, 200));
 
@@ -39,6 +39,6 @@ public class CalcEMAProcess extends AbstractCalcContinuedValuesProcess {
 
   @Override
   public String getProcessName() {
-    return PROCESS_NAME;
+    return CalcProcessNames.EMA;
   }
 }

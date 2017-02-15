@@ -7,6 +7,7 @@ import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 import com.bn.ninjatrader.model.request.SaveRequest;
 import com.bn.ninjatrader.process.request.CalcRequest;
+import com.bn.ninjatrader.process.util.CalcProcessNames;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
@@ -24,7 +25,6 @@ import static com.bn.ninjatrader.model.request.FindRequest.findSymbol;
 public class CalcPriceChangeProcess extends AbstractCalcProcess implements CalcProcess {
   private static final Logger LOG = LoggerFactory.getLogger(CalcPriceChangeProcess.class);
   private static final int REQUIRED_NUM_OF_PAST_BARS = 1;
-  private static final String PROCESS_NAME = "price-change";
 
   private final PriceChangeCalculator calculator;
   private final PriceDao priceDao;
@@ -59,7 +59,7 @@ public class CalcPriceChangeProcess extends AbstractCalcProcess implements CalcP
 
   @Override
   public String getProcessName() {
-    return PROCESS_NAME;
+    return CalcProcessNames.PRICE_CHANGE;
   }
 
 }

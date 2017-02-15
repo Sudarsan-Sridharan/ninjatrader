@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.service;
+package com.bn.ninjatrader.service.dropwizard;
 
 import io.dropwizard.Configuration;
 

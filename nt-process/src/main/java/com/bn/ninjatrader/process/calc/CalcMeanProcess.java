@@ -3,6 +3,7 @@ package com.bn.ninjatrader.process.calc;
 import com.bn.ninjatrader.calculator.MeanCalculator;
 import com.bn.ninjatrader.model.dao.MeanDao;
 import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.process.util.CalcProcessNames;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -19,7 +20,6 @@ import java.util.List;
 public class CalcMeanProcess extends AbstractCalcValuesProcess {
 
   private static final Logger LOG = LoggerFactory.getLogger(CalcMeanProcess.class);
-  private static final String PROCESS_NAME = "mean";
   private static final List<Integer> DEFAULT_PERIODS = Collections.unmodifiableList(Lists.newArrayList(9, 26, 52));
 
   @Inject
@@ -36,6 +36,6 @@ public class CalcMeanProcess extends AbstractCalcValuesProcess {
 
   @Override
   public String getProcessName() {
-    return PROCESS_NAME;
+    return CalcProcessNames.MEAN;
   }
 }

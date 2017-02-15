@@ -151,19 +151,18 @@ public class GoldenAlgo {
             )
         )
 
-        //TODO Acivate only if EMA FAN not in effect??
         // If price above EMA 18 by over 16%
-//        .addStatement(ConditionalStatement.withName("Take Profit")
-//            .condition(Conditions.and(
-//                gte(Operations.startWith(PRICE_HIGH).minus(EMA.withPeriod(18)).div(EMA.withPeriod(18)), 0.16)
-//            ))
-//            .then(MultiStatement.of(
-//                SellOrderStatement.builder()
-//                    .orderType(AtPrice.of(Operations.startWith(EMA.withPeriod(18)).mult(1.16)))
-//                    .build()
-//                )
-//            )
-//        )
+        .addStatement(ConditionalStatement.withName("Take Profit")
+            .condition(Conditions.and(
+                gte(Operations.startWith(PRICE_HIGH).minus(EMA.withPeriod(18)).div(EMA.withPeriod(18)), 0.16)
+            ))
+            .then(MultiStatement.of(
+                SellOrderStatement.builder()
+                    .orderType(AtPrice.of(Operations.startWith(EMA.withPeriod(18)).mult(1.16)))
+                    .build()
+                )
+            )
+        )
 
         // TRAILING STOP Upon Buy
         .onBuyFulfilledStatement(MultiStatement.of(

@@ -39,7 +39,6 @@ public class Simulator {
   public SimulationReport play(final SimulationParams params) {
     final Simulation simulation = simulationFactory.create(params);
     SimulationReport simulationReport = simulation.play();
-//    saveReport(simulationReport);
     return simulationReport;
   }
 
@@ -63,7 +62,7 @@ public class Simulator {
         .to(LocalDate.now().minusYears(0))
 //        .maxBuyRisk(0.10)
 //        .pullbackSensit ivity(0.005)
-        .forSymbol("MEG"));
+        .forSymbol("MCP"));
     simulator.saveReport(report);
     new SimulationReportPrinter().printReport(report);
 //    permute(simulator);

@@ -30,7 +30,7 @@ public class SMAResource extends AbstractDataResource {
   private final SMADao smaDao;
 
   @Inject
-  public SMAResource(SMADao smaDao, Clock clock) {
+  public SMAResource(final SMADao smaDao, final Clock clock) {
     super(clock);
     this.smaDao = smaDao;
   }

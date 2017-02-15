@@ -9,40 +9,20 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
-    <artifactId>nt-service</artifactId>
+    <artifactId>nt-service-dropwizard</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>com.beachninja</groupId>
-            <artifactId>nt-calculator</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.beachninja</groupId>
             <artifactId>nt-common</artifactId>
         </dependency>
         <dependency>
             <groupId>com.beachninja</groupId>
-            <artifactId>nt-data-import</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.beachninja</groupId>
-            <artifactId>nt-model</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.beachninja</groupId>
-            <artifactId>nt-process</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.beachninja</groupId>
-            <artifactId>nt-simulation</artifactId>
+            <artifactId>nt-service</artifactId>
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
         </dependency>
 
         <!-- Test dependencies -->
@@ -98,7 +78,7 @@
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.bn.ninjatrader.service.ServiceApplication</mainClass>
+                                    <mainClass>com.bn.ninjatrader.service.dropwizard.ServiceApplication</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

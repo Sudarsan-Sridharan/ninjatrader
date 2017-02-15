@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.service;
+package com.bn.ninjatrader.service.dropwizard;
 
 import com.bn.ninjatrader.model.guice.NtModelModule;
 import com.bn.ninjatrader.process.guice.NtProcessModule;
@@ -8,8 +8,8 @@ import com.bn.ninjatrader.service.provider.LocalDateParamConverterProvider;
 import com.bn.ninjatrader.service.resource.*;
 import com.bn.ninjatrader.service.task.CalcTask;
 import com.bn.ninjatrader.service.task.ImportCSVPriceTask;
-import com.bn.ninjatrader.service.task.ImportPSETraderDailyQuotesTask;
 import com.bn.ninjatrader.service.task.ImportPSEDailyQuotesTask;
+import com.bn.ninjatrader.service.task.ImportPSETraderDailyQuotesTask;
 import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -17,7 +17,6 @@ import com.google.inject.Injector;
 import io.dropwizard.Application;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
 import io.dropwizard.jetty.setup.ServletEnvironment;
-import io.dropwizard.setup.AdminEnvironment;
 import io.dropwizard.setup.Environment;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 
@@ -62,7 +61,6 @@ public class ServiceApplication extends Application<ServiceConfig> {
     env.jersey().packages(LocalDateParamConverterProvider.class.getPackage().getName());
 
     setupResources(env.jersey());
-    setupAdmin(env.admin());
     setupFilters(env.servlets());
   }
 
@@ -74,13 +72,12 @@ public class ServiceApplication extends Application<ServiceConfig> {
     jersey.register(rsiResource);
     jersey.register(meanResource);
     jersey.register(simulationResource);
-  }
 
-  private void setupAdmin(final AdminEnvironment admin) {
-    admin.addTask(calcTask);
-    admin.addTask(importPriceTask);
-    admin.addTask(importPSEDailyQuotesTask);
-    admin.addTask(importPSETraderDailyQuotesTask);
+    // Maintenance tasks
+    jersey.register(calcTask);
+    jersey.register(importPriceTask);
+    jersey.register(importPSEDailyQuotesTask);
+    jersey.register(importPSETraderDailyQuotesTask);
   }
 
   private void setupFilters(final ServletEnvironment servlet) {

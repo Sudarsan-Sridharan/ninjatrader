@@ -3,6 +3,7 @@ package com.bn.ninjatrader.process.calc;
 import com.bn.ninjatrader.calculator.SMACalculator;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.SMADao;
+import com.bn.ninjatrader.process.util.CalcProcessNames;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -18,7 +19,6 @@ import java.util.List;
 @Singleton
 public class CalcSMAProcess extends AbstractCalcValuesProcess {
   private static final Logger LOG = LoggerFactory.getLogger(CalcSMAProcess.class);
-  private static final String PROCESS_NAME = "sma";
   private static final List<Integer> DEFAULT_PERIODS =
       Collections.unmodifiableList(Lists.newArrayList(10, 15, 20, 21, 30, 50, 100, 200));
 
@@ -36,6 +36,6 @@ public class CalcSMAProcess extends AbstractCalcValuesProcess {
 
   @Override
   public String getProcessName() {
-    return PROCESS_NAME;
+    return CalcProcessNames.SMA;
   }
 }

@@ -8,6 +8,7 @@ import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.RSIDao;
 import com.bn.ninjatrader.model.guice.NtModelTestModule;
 import com.bn.ninjatrader.model.request.SaveRequest;
+import com.bn.ninjatrader.process.request.CalcRequest;
 import com.google.common.collect.Lists;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -20,7 +21,6 @@ import java.util.List;
 
 import static com.bn.ninjatrader.common.type.TimeFrame.ONE_DAY;
 import static com.bn.ninjatrader.model.request.FindRequest.findSymbol;
-import static com.bn.ninjatrader.process.request.CalcRequest.calcSymbol;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -75,7 +75,7 @@ public class CalcRSIProcessTest {
   @Test
   public void testCalcParamsWithExistingRSIValues_shouldContinueFromExistingRSIValues() {
     // Add RSI values to db first
-    process.process(calcSymbol("MEG").from(fromDate).to(toDate).periods(period));
+    process.process(CalcRequest.forSymbol("MEG").from(fromDate).to(toDate).periods(period));
 
     // Retrieve RSIValue to continue calculating from
     final RSIValue expectedValueToContinueFrom = rsiDao.find(findSymbol("MEG")
@@ -100,10 +100,10 @@ public class CalcRSIProcessTest {
 
   @Test
   public void testCalcTwice_shouldProduceSameResult() {
-    process.process(calcSymbol("MEG").from(fromDate).to(toDate).periods(14));
+    process.process(CalcRequest.forSymbol("MEG").from(fromDate).to(toDate).periods(14));
     final List<RSIValue> rsiValues1 = rsiDao.find(findSymbol("MEG").from(fromDate).to(toDate).period(14));
 
-    process.process(calcSymbol("MEG").from(fromDate).to(toDate).periods(14));
+    process.process(CalcRequest.forSymbol("MEG").from(fromDate).to(toDate).periods(14));
     final List<RSIValue> rsiValues2 = rsiDao.find(findSymbol("MEG").from(fromDate).to(toDate).period(14));
 
     assertThat(rsiValues1).isEqualTo(rsiValues2);
@@ -112,18 +112,18 @@ public class CalcRSIProcessTest {
   @Test
   public void testCalcMultipleTimesWithContinuation_shouldGiveSameResultsAsFirstCalc() {
     // Calculate RSI values from start date
-    process.process(calcSymbol("MEG").from(dataStartDate).to(toDate).periods(14));
+    process.process(CalcRequest.forSymbol("MEG").from(dataStartDate).to(toDate).periods(14));
 
     // Baseline RSI values
     final List<RSIValue> rsiValues1 = rsiDao.find(findSymbol("MEG").from(fromDate).to(toDate).period(14));
 
     // Calculate a second time, moving the from date. It should continue from prior RSI value.
-    process.process(calcSymbol("MEG").from(fromDate.plusDays(1)).to(toDate).periods(14));
+    process.process(CalcRequest.forSymbol("MEG").from(fromDate.plusDays(1)).to(toDate).periods(14));
     final List<RSIValue> rsiValues2 = rsiDao.find(findSymbol("MEG").from(fromDate).to(toDate).period(14));
     assertThat(rsiValues1).isEqualTo(rsiValues2);
 
     // Calculate a third time, moving from date by 2 months. It should continue from prior RSI value.
-    process.process(calcSymbol("MEG").from(fromDate.plusMonths(2)).to(toDate).periods(14));
+    process.process(CalcRequest.forSymbol("MEG").from(fromDate.plusMonths(2)).to(toDate).periods(14));
     final List<RSIValue> rsiValues3 = rsiDao.find(findSymbol("MEG").from(fromDate).to(toDate).period(14));
     assertThat(rsiValues1).isEqualTo(rsiValues3);
   }

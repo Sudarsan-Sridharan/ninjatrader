@@ -8,6 +8,7 @@ import com.bn.ninjatrader.common.util.DateUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.request.SaveRequest;
 import com.bn.ninjatrader.process.request.CalcRequest;
+import com.bn.ninjatrader.process.util.CalcProcessNames;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
@@ -24,7 +25,6 @@ import static com.bn.ninjatrader.model.request.FindRequest.findSymbol;
 @Singleton
 public class CalcWeeklyPriceProcess implements CalcProcess {
   private static final Logger LOG = LoggerFactory.getLogger(CalcWeeklyPriceProcess.class);
-  private static final String PROCESS_NAME = "weekly-price";
 
   private final WeeklyPriceCalculator calculator;
   private final PriceDao priceDao;
@@ -39,23 +39,24 @@ public class CalcWeeklyPriceProcess implements CalcProcess {
   @Override
   public void process(final CalcRequest calcRequest) {
     LOG.debug("with {}", calcRequest);
-    final String symbol = calcRequest.getSymbol();
-    final LocalDate priceFromDate = DateUtil.toStartOfWeek(calcRequest.getFromDate());
-    final LocalDate priceToDate = calcRequest.getToDate();
+    for (final String symbol : calcRequest.getAllSymbols()) {
+      final LocalDate priceFromDate = DateUtil.toStartOfWeek(calcRequest.getFromDate());
+      final LocalDate priceToDate = calcRequest.getToDate();
 
-    final List<Price> prices = priceDao.find(findSymbol(symbol).from(priceFromDate).to(priceToDate));
-    final List<Price> weeklyPrices = calculator.calc(prices);
+      final List<Price> prices = priceDao.find(findSymbol(symbol).from(priceFromDate).to(priceToDate));
+      final List<Price> weeklyPrices = calculator.calc(prices);
 
-    DateObjUtil.trimToDateRange(weeklyPrices, calcRequest.getFromDate(), calcRequest.getToDate());
-    if (!weeklyPrices.isEmpty()) {
-      priceDao.save(SaveRequest.save(symbol)
-          .timeFrame(TimeFrame.ONE_WEEK)
-          .values(weeklyPrices));
+      DateObjUtil.trimToDateRange(weeklyPrices, calcRequest.getFromDate(), calcRequest.getToDate());
+      if (!weeklyPrices.isEmpty()) {
+        priceDao.save(SaveRequest.save(symbol)
+            .timeFrame(TimeFrame.ONE_WEEK)
+            .values(weeklyPrices));
+      }
     }
   }
 
   @Override
   public String getProcessName() {
-    return PROCESS_NAME;
+    return CalcProcessNames.WEEKLY_PRICE;
   }
 }

@@ -4,8 +4,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 
+import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.WeekFields;
 import java.util.List;
 
@@ -13,6 +15,7 @@ import java.util.List;
  * Created by Brad on 8/16/16.
  */
 public class DateUtil {
+  public static final String PH_ZONE_ID = "Asia/Manila";
 
   private DateUtil() {}
 
@@ -56,5 +59,9 @@ public class DateUtil {
     } else {
       return LocalDate.parse(date, DateFormats.DB_DATE_FORMAT);
     }
+  }
+
+  public static LocalDate phNow(final Clock clock) {
+    return LocalDate.now(clock.withZone(ZoneId.of("Asia/Manila")));
   }
 }

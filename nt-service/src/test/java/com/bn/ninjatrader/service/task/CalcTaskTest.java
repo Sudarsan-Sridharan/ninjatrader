@@ -1,20 +1,19 @@
 package com.bn.ninjatrader.service.task;
 
 import com.bn.ninjatrader.common.util.TestUtil;
-import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.process.calc.CalcProcess;
-import com.bn.ninjatrader.process.request.CalcRequest;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.bn.ninjatrader.process.request.CalcServiceRequest;
+import com.bn.ninjatrader.process.service.CalcService;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import java.io.PrintWriter;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Form;
 import java.time.Clock;
 import java.time.LocalDate;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -22,136 +21,109 @@ import static org.mockito.Mockito.*;
 /**
  * @author bradwee2000@gmail.com
  */
-public class CalcTaskTest {
+public class CalcTaskTest extends JerseyTest {
 
-  private final PriceDao priceDao = mock(PriceDao.class);
-  private final PrintWriter printWriter = mock(PrintWriter.class);
-  private final LocalDate now = LocalDate.of(2016, 2, 1);
-  private final Clock clock = TestUtil.fixedClock(now);
+  private static final LocalDate now = LocalDate.of(2016, 2, 10);
+  private static final Clock clock = TestUtil.fixedClock(now);
+  private static final CalcService calcService = mock(CalcService.class);
 
-  private final CalcProcess process1 = mock(CalcProcess.class);
-  private final CalcProcess process2 = mock(CalcProcess.class);
-  private final List<CalcProcess> allCalcProcesses = Lists.newArrayList(process1, process2);
-
-  private CalcTask calcTask;
+  @Override
+  protected Application configure() {
+    final CalcTask calcTask = new CalcTask(clock, calcService);
+    return new ResourceConfig().register(calcTask);
+  }
 
   @Before
   public void before() {
-    when(priceDao.findAllSymbols()).thenReturn(Sets.newHashSet("MEG"));
-    when(printWriter.append(any())).thenReturn(printWriter);
-
-    when(process1.getProcessName()).thenReturn("process1");
-    when(process2.getProcessName()).thenReturn("process2");
-
-    calcTask = new CalcTask(allCalcProcesses, clock, priceDao);
+    reset(calcService);
   }
 
   @Test
-  public void testExecuteAllProcess_shouldExecuteEachProcess() throws Exception {
-    final ImmutableMultimap<String, String> map = ImmutableMultimap.<String, String>builder()
-        .put("name", "all")
-        .put("name", "process1")
-        .build();
+  public void testRunWithNoInputDate_shouldRunProcessForToday() {
+    final ArgumentCaptor<CalcServiceRequest> captor = ArgumentCaptor.forClass(CalcServiceRequest.class);
 
-    calcTask.execute(map, printWriter);
+    target("/task/calc").request().post(Entity.form(new Form()
+        .param("process", "process1")
+        .param("symbol", "MEG")
+    ));
 
-    verify(process1).process(any(CalcRequest.class));
-    verify(process2).process(any(CalcRequest.class));
+    verify(calcService).calc(captor.capture());
+    assertThat(captor.getValue().getSymbols()).containsExactly("MEG");
+    assertThat(captor.getValue().getFrom()).hasValue(now);
+    assertThat(captor.getValue().getTo()).hasValue(now);
   }
 
   @Test
-  public void testExecuteMultipleProcesses_shouldRunEachNamedProcess() throws Exception {
-    final ImmutableMultimap<String, String> map = ImmutableMultimap.<String, String>builder()
-        .put("name", "process1")
-        .put("name", "process2")
-        .build();
+  public void testRunWithMultiProcessAndSymbols_shouldRunForEachProcessAndSymbol() {
+    final ArgumentCaptor<CalcServiceRequest> captor = ArgumentCaptor.forClass(CalcServiceRequest.class);
 
-    calcTask.execute(map, printWriter);
+    target("/task/calc").request().post(Entity.form(new Form()
+        .param("process", "process1")
+        .param("process", "process2")
+        .param("symbol", "MEG")
+        .param("symbol", "BDO")
+    ));
 
-    verify(process1).process(any(CalcRequest.class));
-    verify(process2).process(any(CalcRequest.class));
+    verify(calcService).calc(captor.capture());
+    assertThat(captor.getValue().getProcessNames()).containsExactly("process1", "process2");
+    assertThat(captor.getValue().getSymbols()).containsExactly("MEG", "BDO");
+    assertThat(captor.getValue().isAllProcesses()).isFalse();
+    assertThat(captor.getValue().isAllSymbols()).isFalse();
   }
 
   @Test
-  public void testWithFromTo_shouldIncludeFromToDates() throws Exception {
-    final ArgumentCaptor<CalcRequest> calcRequestCaptor = ArgumentCaptor.forClass(CalcRequest.class);
-    final ImmutableMultimap<String, String> map = ImmutableMultimap.<String, String>builder()
-        .put("name", "process1")
-        .put("from", "20160101")
-        .put("to", "20170202")
-        .build();
+  public void testRunWithAllProcess_shouldRunAllProcesses() throws Exception {
+    final ArgumentCaptor<CalcServiceRequest> captor = ArgumentCaptor.forClass(CalcServiceRequest.class);
 
-    calcTask.execute(map, printWriter);
+    target("/task/calc").request().post(Entity.form(new Form()
+        .param("process", "process1")
+        .param("process", "all")
+    ));
 
-    verify(process1).process(calcRequestCaptor.capture());
-
-    final CalcRequest calcRequest = calcRequestCaptor.getValue();
-    assertThat(calcRequest.getFromDate()).isEqualTo(LocalDate.of(2016, 1, 1));
-    assertThat(calcRequest.getToDate()).isEqualTo(LocalDate.of(2017, 2, 2));
+    verify(calcService).calc(captor.capture());
+    assertThat(captor.getValue().getProcessNames()).isEmpty();
+    assertThat(captor.getValue().isAllProcesses()).isTrue();
   }
 
   @Test
-  public void testDefaultSettings_shouldCalcForTodayDate() throws Exception {
-    final ArgumentCaptor<CalcRequest> calcReqCaptor1 = ArgumentCaptor.forClass(CalcRequest.class);
-    final ArgumentCaptor<CalcRequest> calcReqCaptor2 = ArgumentCaptor.forClass(CalcRequest.class);
-    final ImmutableMultimap<String, String> map = ImmutableMultimap.<String, String>builder()
-        .build();
+  public void testRunWithNoInputProcess_shouldRunAllProcesses() throws Exception {
+    final ArgumentCaptor<CalcServiceRequest> captor = ArgumentCaptor.forClass(CalcServiceRequest.class);
 
-    calcTask.execute(map, printWriter);
+    target("/task/calc").request().post(Entity.form(new Form()));
 
-    // Verify process1 is run with today's date
-    verify(process1).process(calcReqCaptor1.capture());
-    final CalcRequest calcRequest = calcReqCaptor1.getValue();
-    assertThat(calcRequest.getFromDate()).isEqualTo(now);
-    assertThat(calcRequest.getToDate()).isEqualTo(now);
-
-    // Verify process2 is run with today's date
-    verify(process2).process(calcReqCaptor2.capture());
-    final CalcRequest calcRequest2 = calcReqCaptor2.getValue();
-    assertThat(calcRequest2.getFromDate()).isEqualTo(now);
-    assertThat(calcRequest2.getToDate()).isEqualTo(now);
+    verify(calcService).calc(captor.capture());
+    assertThat(captor.getValue().getProcessNames()).isEmpty();
+    assertThat(captor.getValue().getSymbols()).isEmpty();
+    assertThat(captor.getValue().isAllProcesses()).isTrue();
+    assertThat(captor.getValue().isAllSymbols()).isTrue();
   }
 
   @Test
-  public void testCalcForSpecifiedSymbols_shouldCalcForEachInputSymbols() throws Exception {
-    final ArgumentCaptor<CalcRequest> calcReqCaptor1 = ArgumentCaptor.forClass(CalcRequest.class);
-    final ArgumentCaptor<CalcRequest> calcReqCaptor2 = ArgumentCaptor.forClass(CalcRequest.class);
-    final ImmutableMultimap<String, String> map = ImmutableMultimap.<String, String>builder()
-        .put("symbol", "BDO")
-        .put("symbol", "CEB")
-        .build();
+  public void testRunWithDateRange_shouldIncludeFromToDates() throws Exception {
+    final ArgumentCaptor<CalcServiceRequest> captor = ArgumentCaptor.forClass(CalcServiceRequest.class);
 
-    // Run
-    calcTask.execute(map, printWriter);
+    target("/task/calc").request().post(Entity.form(new Form()
+        .param("process", "process1")
+        .param("from", "20160101")
+        .param("to", "20170202")
+    ));
 
-    // Verify process1 is run with input symbols
-    verify(process1, times(2)).process(calcReqCaptor1.capture());
-    assertThat(calcReqCaptor1.getAllValues()).hasSize(2).extracting("symbol").containsExactly("BDO", "CEB");
-
-    // Verify process2 is run with input symbols
-    verify(process2, times(2)).process(calcReqCaptor2.capture());
-    assertThat(calcReqCaptor2.getAllValues()).hasSize(2).extracting("symbol").containsExactly("BDO", "CEB");
+    verify(calcService).calc(captor.capture());
+    assertThat(captor.getValue().getFrom()).hasValue(LocalDate.of(2016, 1, 1));
+    assertThat(captor.getValue().getTo()).hasValue(LocalDate.of(2017, 2, 2));
   }
 
   @Test
   public void testCalcForAllSymbols_shouldCalcForAllSymbols() throws Exception {
-    final ArgumentCaptor<CalcRequest> calcRequestCaptor1 = ArgumentCaptor.forClass(CalcRequest.class);
-    final ArgumentCaptor<CalcRequest> calcRequestCaptor2 = ArgumentCaptor.forClass(CalcRequest.class);
-    final ImmutableMultimap<String, String> map = ImmutableMultimap.<String, String>builder().build();
+    final ArgumentCaptor<CalcServiceRequest> captor = ArgumentCaptor.forClass(CalcServiceRequest.class);
 
-    when(priceDao.findAllSymbols()).thenReturn(Sets.newHashSet("MEG", "BDO", "TEL"));
+    target("/task/calc").request().post(Entity.form(new Form()
+        .param("process", "process1")
+    ));
 
-    // Run
-    calcTask.execute(map, printWriter);
-
-    // Verify process1 is run for each symbol
-    verify(process1, times(3)).process(calcRequestCaptor1.capture());
-    assertThat(calcRequestCaptor1.getAllValues()).hasSize(3).extracting("symbol")
-        .containsExactlyInAnyOrder("MEG", "BDO", "TEL");
-
-    // Verify process2 is run for each symbol
-    verify(process2, times(3)).process(calcRequestCaptor2.capture());
-    assertThat(calcRequestCaptor2.getAllValues()).hasSize(3).extracting("symbol")
-        .containsExactlyInAnyOrder("MEG", "BDO", "TEL");
+    // Verify all symbols submitted for processing
+    verify(calcService).calc(captor.capture());
+    assertThat(captor.getValue().getSymbols()).isEmpty();
+    assertThat(captor.getValue().isAllSymbols()).isTrue();
   }
 }

@@ -1,30 +1,41 @@
 package com.bn.ninjatrader.service.task;
 
+import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.dataimport.daily.PseDailyPriceImporter;
-import com.google.common.collect.ImmutableMultimap;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
 
-import java.io.PrintWriter;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Form;
+import javax.ws.rs.core.Response;
+import java.time.Clock;
 import java.time.LocalDate;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
  * @author bradwee2000@gmail.com
  */
-public class ImportPSEDailyQuotesTaskTest {
+public class ImportPSEDailyQuotesTaskTest extends JerseyTest {
 
-  private final PrintWriter printWriter = mock(PrintWriter.class);
-  private final PseDailyPriceImporter importer = mock(PseDailyPriceImporter.class);
-  private final CalcTask calcTask = mock(CalcTask.class);
-  private final ImportPSEDailyQuotesTask task = new ImportPSEDailyQuotesTask(importer, calcTask);
+  private static final LocalDate now = LocalDate.of(2016, 2, 1);
+  private static final PseDailyPriceImporter importer = mock(PseDailyPriceImporter.class);
+  private static final Clock clock = TestUtil.fixedClock(now);
+
+  @Override
+  protected Application configure() {
+    final ImportPSEDailyQuotesTask resource = new ImportPSEDailyQuotesTask(importer, clock);
+    return new ResourceConfig().register(resource);
+  }
 
   @Test
-  public void execute_shouldImportPrices() throws Exception {
-    final ImmutableMultimap<String, String> args = ImmutableMultimap.<String, String>builder().build();
+  public void testImportPseQuotes_shouldImportQuotes() throws Exception {
+    final Response response = target("/task/import-pse-quotes").request().post(Entity.form(new Form()));
+    assertThat(response.getStatus()).isEqualTo(204);
 
-    task.execute(args, printWriter);
-
-    verify(importer).importData(any(LocalDate.class));
+    verify(importer).importData(now);
   }
 }

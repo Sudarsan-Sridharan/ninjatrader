@@ -32,9 +32,9 @@ public class SellOrderExecutor extends OrderExecutor {
 
     final World world = currentBarData.getWorld();
     final Account account = world.getAccount();
+    final Portfolio portfolio = account.getPortfolio();
     final OrderType orderType = pendingOrder.getOrderType();
     final BarData submittedBarData = pendingOrder.getSubmittedBarData();
-    final Portfolio portfolio = account.getPortfolio();
     final String symbol = currentBarData.getSymbol();
     final long numOfShares = portfolio.getTotalShares(symbol);
     final double sellPrice = orderType.getFulfilledPrice(submittedBarData, currentBarData);
