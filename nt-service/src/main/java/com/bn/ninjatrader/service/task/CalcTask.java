@@ -24,10 +24,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * curl -X POST localhost:8080/tasks/calc
  *
  * To execute all calculations for specific dates:
- * curl -X POST localhost:8080/tasks/calc -d "name=all&from=19900101&to=20200101"
+ * curl -X POST localhost:8080/task/calc -d "name=all&from=19900101&to=20200101"
  *
  * To execute multiple specific calculations:
- * curl -X POST localhost:8080/tasks/calc -d "name=rsi&name=mean&from=19900101&to=20200101"
+ * curl -X POST localhost:8080/task/calc -d "name=rsi&name=mean&from=19900101&to=20200101"
  *
  * @author bradwee2000@gmail.com
  */

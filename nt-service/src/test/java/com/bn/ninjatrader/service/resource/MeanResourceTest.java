@@ -5,12 +5,10 @@ import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.model.dao.MeanDao;
 import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.service.model.MultiPeriodResponse;
-import com.bn.ninjatrader.service.provider.LocalDateParamConverterProvider;
 import com.google.common.collect.Lists;
-import io.dropwizard.testing.junit.ResourceTestRule;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -26,7 +24,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author bradwee2000@gmail.com
  */
-public class MeanResourceTest {
+public class MeanResourceTest extends AbstractJerseyTest {
 
   private static final MeanDao meanDao = mock(MeanDao.class);
   private static final LocalDate date1 = LocalDate.of(2016, 2, 1);
@@ -35,11 +33,10 @@ public class MeanResourceTest {
   private static final Value value2 = Value.of(date2, 5);
   private static final Clock fixedClock = TestUtil.fixedClock(date1);
 
-  @ClassRule
-  public static final ResourceTestRule resources = ResourceTestRule.builder()
-      .addResource(new MeanResource(meanDao, fixedClock))
-      .addProvider(LocalDateParamConverterProvider.class)
-      .build();
+  @Override
+  protected ResourceConfig configureResource(final ResourceConfig resourceConfig) {
+    return resourceConfig.register(new MeanResource(meanDao, fixedClock));
+  }
 
   @Before
   public void before() {
@@ -54,10 +51,13 @@ public class MeanResourceTest {
 
   @Test
   public void requestValuesForOnePeriod_shouldReturnValuesForOnePeriod() {
-    int period = 9;
+    final int period = 9;
 
-    MultiPeriodResponse<Value> response = resources.client()
-        .target(String.format("/mean/MEG?timeframe=ONE_DAY&from=20160101&to=20171231&period=%d", period))
+    final MultiPeriodResponse<Value> response = target("/mean/MEG")
+        .queryParam("timeframe", "ONE_DAY")
+        .queryParam("from", "20160101")
+        .queryParam("to", "20171231")
+        .queryParam("period", period)
         .request()
         .get(MultiPeriodResponse.class);
 
@@ -67,21 +67,21 @@ public class MeanResourceTest {
     // has 2 values for that period.
     assertThat(response.getValues().get(period)).hasSize(2);
 
-    List<Value> values = Lists.newArrayList(response.getValues().get(period));
-    assertThat(values).hasSize(2);
-    assertThat(values.get(0)).isEqualTo(value1);
-    assertThat(values.get(1)).isEqualTo(value2);
+    final List<Value> values = Lists.newArrayList(response.getValues().get(period));
+    assertThat(values).containsExactly(value1, value2);
   }
 
   @Test
   public void requestValuesForMultiPeriods_shouldReturnValuesForEachPeriod() {
-    int period1 = 20;
-    int period2 = 50;
-    int period3 = 100;
-    int unknownPeriod = 200;
+    final int period1 = 20;
+    final int period2 = 50;
+    final int period3 = 100;
+    final int unknownPeriod = 200;
 
-    MultiPeriodResponse response = resources.client()
-        .target(String.format("/mean/MEG?period=%d&period=%d&period=%d", period1, period2, period3))
+    final MultiPeriodResponse response = target(String.format("/mean/MEG"))
+        .queryParam("period", period1)
+        .queryParam("period", period2)
+        .queryParam("period", period3)
         .request()
         .get(MultiPeriodResponse.class);
 

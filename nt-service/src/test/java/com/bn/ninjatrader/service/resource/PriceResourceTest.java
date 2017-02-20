@@ -1,17 +1,15 @@
 package com.bn.ninjatrader.service.resource;
 
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.service.model.PriceResponse;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.request.FindRequest;
-import com.bn.ninjatrader.service.provider.LocalDateParamConverterProvider;
+import com.bn.ninjatrader.service.model.PriceResponse;
 import com.google.common.collect.Lists;
-import io.dropwizard.testing.junit.ResourceTestRule;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -28,7 +26,7 @@ import static org.mockito.Mockito.*;
 /**
  * @author bradwee2000@gmail.com
  */
-public class PriceResourceTest {
+public class PriceResourceTest extends AbstractJerseyTest {
 
   private static final PriceDao priceDao = mock(PriceDao.class);
   private static final LocalDate date1 = LocalDate.of(2016, 2, 1);
@@ -37,11 +35,10 @@ public class PriceResourceTest {
   private static final Price price2 = new Price(date2, 5, 6, 7, 8, 20000);
   private static final Clock fixedClock = TestUtil.fixedClock(date1);
 
-  @ClassRule
-  public static final ResourceTestRule resources = ResourceTestRule.builder()
-      .addResource(new PriceResource(priceDao, fixedClock))
-      .addProvider(LocalDateParamConverterProvider.class)
-      .build();
+  @Override
+  protected ResourceConfig configureResource(final ResourceConfig resourceConfig) {
+    return resourceConfig.register(new PriceResource(priceDao, fixedClock));
+  }
 
   @Before
   public void before() {
@@ -56,30 +53,31 @@ public class PriceResourceTest {
 
   @Test
   public void testPriceResponse() {
-    PriceResponse priceResponse = resources.client()
-        .target("/price/MEG?timeframe=ONE_WEEK&from=20160101&to=20171231")
+    final PriceResponse priceResponse = target("/price/MEG")
+        .queryParam("timeframe", "ONE_WEEK")
+        .queryParam("from", "20160101")
+        .queryParam("to", "20171231")
         .request()
         .get(PriceResponse.class);
 
-    assertThat(priceResponse.getPriceList()).hasSize(2);
-    assertThat(priceResponse.getPriceList().get(0)).isEqualTo(price1);
-    assertThat(priceResponse.getPriceList().get(1)).isEqualTo(price2);
+    assertThat(priceResponse.getPriceList()).containsExactly(price1, price2);
     assertThat(priceResponse.getFromDate()).isEqualTo(date1);
     assertThat(priceResponse.getToDate()).isEqualTo(date2);
   }
 
   @Test
-  public void testQueryParams() {
-    ArgumentCaptor<FindRequest> findRequestCaptor = ArgumentCaptor.forClass(FindRequest.class);
-
-    resources.client()
-        .target("/price/BDO?timeframe=ONE_WEEK&from=20160101&to=20171231")
+  public void testQueryParams_shouldParseQueryParams() {
+    target("/price/BDO")
+        .queryParam("timeframe", "ONE_WEEK")
+        .queryParam("from", "20160101")
+        .queryParam("to", "20171231")
         .request()
         .get(PriceResponse.class);
 
-    verify(priceDao, times(1)).find(findRequestCaptor.capture());
+    final ArgumentCaptor<FindRequest> captor = ArgumentCaptor.forClass(FindRequest.class);
+    verify(priceDao, times(1)).find(captor.capture());
 
-    FindRequest findRequest = findRequestCaptor.getValue();
+    final FindRequest findRequest = captor.getValue();
     assertThat(findRequest.getSymbol()).isEqualTo("BDO");
     assertThat(findRequest.getTimeFrame()).isEqualTo(TimeFrame.ONE_WEEK);
     assertThat(findRequest.getFromDate()).isEqualTo(LocalDate.of(2016, 1, 1));
@@ -88,13 +86,12 @@ public class PriceResourceTest {
 
   @Test
   public void testDefaultQueryParams() {
-    ArgumentCaptor<FindRequest> findRequestCaptor = ArgumentCaptor.forClass(FindRequest.class);
+    target("/price/MBT").request().get(PriceResponse.class);
 
-    resources.client().target("/price/MBT").request().get(PriceResponse.class);
+    final ArgumentCaptor<FindRequest> captor = ArgumentCaptor.forClass(FindRequest.class);
+    verify(priceDao, times(1)).find(captor.capture());
 
-    verify(priceDao, times(1)).find(findRequestCaptor.capture());
-
-    FindRequest findRequest = findRequestCaptor.getValue();
+    final FindRequest findRequest = captor.getValue();
     assertThat(findRequest.getSymbol()).isEqualTo("MBT");
     assertThat(findRequest.getTimeFrame()).isEqualTo(TimeFrame.ONE_DAY);
     assertThat(findRequest.getFromDate()).isEqualTo(LocalDate.now(fixedClock).minusYears(2));
@@ -106,7 +103,7 @@ public class PriceResourceTest {
     when(priceDao.find(any(FindRequest.class)))
         .thenReturn(Collections.emptyList());
 
-    PriceResponse priceResponse = resources.client().target("/price/MBT").request().get(PriceResponse.class);
+    final PriceResponse priceResponse = target("/price/MBT").request().get(PriceResponse.class);
 
     assertThat(priceResponse.getFromDate()).isNull();
     assertThat(priceResponse.getToDate()).isNull();
@@ -115,9 +112,6 @@ public class PriceResourceTest {
 
   @Test(expected = NotFoundException.class)
   public void testInvalidPath() {
-    resources.client()
-        .target("/price")
-        .request()
-        .get(PriceResponse.class);
+    target("/price").request().get(PriceResponse.class);
   }
 }

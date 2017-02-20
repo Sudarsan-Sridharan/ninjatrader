@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.simulation.core;
 
 import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.simulation.calculator.VarCalculator;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
 import com.bn.ninjatrader.simulation.model.*;
@@ -35,14 +36,13 @@ public class SimulationTest {
   private final SimulationParams params = SimulationParams.builder()
       .startingCash(100000).from(date1).to(date2).symbol("MEG").build();
 
-
   private Account account;
   private Portfolio portfolio;
   private Bookkeeper bookkeeper;
   private Broker broker;
   private BarDataFactory barDataFactory;
   private History history;
-  private SimulationData simulationData;
+  private VarCalculator varCalculator;
   private World world;
 
   private Simulation simulation;
@@ -55,19 +55,19 @@ public class SimulationTest {
     broker = mock(Broker.class);
     barDataFactory = mock(BarDataFactory.class);
     history = mock(History.class);
-    simulationData = mock(SimulationData.class);
+    varCalculator = mock(VarCalculator.class);
 
     when(account.getBookkeeper()).thenReturn(bookkeeper);
     when(account.getPortfolio()).thenReturn(portfolio);
     when(account.getLiquidCash()).thenReturn(100000d);
     when(portfolio.isEmpty()).thenReturn(true);
-    when(barDataFactory.create(anyString(), any(Price.class), anyInt(), anyList(), any(World.class)))
+    when(barDataFactory.create(anyString(), any(Price.class), anyInt(), any(World.class), anyList()))
         .thenReturn(bar1, bar2);
 
     world = World.builder().account(account).broker(broker).pricesForSymbol("MEG", prices).history(history).build();
 
     simulation = new Simulation(world, params, barDataFactory);
-    simulation.addSimulationData(simulationData);
+    simulation.addVarCalculators(Lists.newArrayList(varCalculator));
   }
 
   @Test
@@ -75,8 +75,8 @@ public class SimulationTest {
     simulation.play();
 
     // Should forSymbol bar data twice. One for each price.
-    verify(barDataFactory).create("MEG", price1, 0, Lists.newArrayList(simulationData), world);
-    verify(barDataFactory).create("MEG", price2, 1, Lists.newArrayList(simulationData), world);
+    verify(barDataFactory).create("MEG", price1, 0,  world, Lists.newArrayList(varCalculator));
+    verify(barDataFactory).create("MEG", price2, 1, world, Lists.newArrayList(varCalculator));
   }
 
   @Test

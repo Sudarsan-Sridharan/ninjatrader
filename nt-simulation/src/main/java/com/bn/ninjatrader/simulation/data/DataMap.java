@@ -17,6 +17,12 @@ public class DataMap implements Map<Variable, Double> {
   private static final Logger LOG = LoggerFactory.getLogger(DataMap.class);
   private static final String DATA_TYPE_NOT_EXIST_ERROR = "Value does not exist for the DataType: %s";
 
+  // TODO make unmodifiable!
+  private static final DataMap EMPTY_INSTANCE = DataMap.newInstance();
+
+  public static DataMap empty() {
+    return EMPTY_INSTANCE;
+  }
   public static final DataMap newInstance() {
     return new DataMap();
   }

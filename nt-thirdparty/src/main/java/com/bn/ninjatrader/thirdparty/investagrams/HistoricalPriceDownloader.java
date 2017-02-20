@@ -2,7 +2,7 @@ package com.bn.ninjatrader.thirdparty.investagrams;
 
 import com.bn.ninjatrader.common.data.DailyQuote;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.document.PriceDocument;
+import com.bn.ninjatrader.model.document.PriceDoc;
 import com.bn.ninjatrader.thirdparty.exception.StockReadFailException;
 import com.bn.ninjatrader.thirdparty.util.DocumentDownloader;
 import com.google.common.collect.Lists;
@@ -84,9 +84,9 @@ public class HistoricalPriceDownloader {
   }
 
   private Collection<String> getSymbolsFromPrices() {
-    List<PriceDocument> priceDocuments = priceDao.find();
+    List<PriceDoc> priceDocuments = priceDao.find();
     Set<String> symbols = Sets.newHashSet();
-    for (PriceDocument priceDocument : priceDocuments) {
+    for (PriceDoc priceDocument : priceDocuments) {
       if (priceDocument.getYear() == LocalDate.now().getYear()) {
         symbols.add(priceDocument.getSymbol());
       }

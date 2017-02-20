@@ -20,7 +20,6 @@
         <appengine.version>1.9.46</appengine.version>
         <appengine.maven.plugin.version>1.0.0</appengine.maven.plugin.version>
 
-        <objectify.version>5.1.13</objectify.version>
         <guava.version>20.0</guava.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

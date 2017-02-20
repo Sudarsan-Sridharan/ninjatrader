@@ -4,6 +4,8 @@ import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.request.FindRequest;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
@@ -15,48 +17,49 @@ import java.util.Optional;
  * @author bradwee2000@gmail.com
  */
 public class ResourceRequest {
+  private static final Logger LOG = LoggerFactory.getLogger(ResourceRequest.class);
 
   @PathParam("symbol")
   private String symbol;
 
   @QueryParam("timeframe")
-  private Optional<TimeFrame> timeFrame;
+  private TimeFrame timeFrame;
 
   @QueryParam("from")
-  private Optional<LocalDate> from;
+  private LocalDate from;
 
   @QueryParam("to")
-  private Optional<LocalDate> to;
+  private LocalDate to;
 
   public String getSymbol() {
     return symbol;
   }
 
-  public void setSymbol(String symbol) {
+  public void setSymbol(final String symbol) {
     this.symbol = symbol;
   }
 
   public Optional<TimeFrame> getTimeFrame() {
-    return timeFrame;
+    return Optional.ofNullable(timeFrame);
   }
 
-  public void setTimeFrame(Optional<TimeFrame> timeFrame) {
+  public void setTimeFrame(final TimeFrame timeFrame) {
     this.timeFrame = timeFrame;
   }
 
   public Optional<LocalDate> getFrom() {
-    return from;
+    return Optional.ofNullable(from);
   }
 
-  public void setFrom(Optional<LocalDate> from) {
+  public void setFrom(final LocalDate from) {
     this.from = from;
   }
 
   public Optional<LocalDate> getTo() {
-    return to;
+    return Optional.ofNullable(to);
   }
 
-  public void setTo(Optional<LocalDate> to) {
+  public void setTo(final LocalDate to) {
     this.to = to;
   }
 
@@ -70,10 +73,10 @@ public class ResourceRequest {
         .build();
   }
 
-  public FindRequest toFindRequest(Clock clock) {
+  public FindRequest toFindRequest(final Clock clock) {
     return FindRequest.findSymbol(symbol)
-        .timeframe(timeFrame.orElse(TimeFrame.ONE_DAY))
-        .from(from.orElse(LocalDate.now(clock).minusYears(2)))
-        .to(to.orElse(LocalDate.now(clock)));
+        .timeframe(getTimeFrame().orElse(TimeFrame.ONE_DAY))
+        .from(getFrom().orElse(LocalDate.now(clock).minusYears(2)))
+        .to(getTo().orElse(LocalDate.now(clock)));
   }
 }

@@ -1,0 +1,6 @@
+# https://cloud.google.com/appengine/docs/flexible/java/scheduling-jobs-with-cron-yaml
+
+cron:
+#- description: daily summary job
+#  url: /tasks/summary
+#  schedule: every 24 hours

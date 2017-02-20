@@ -4,7 +4,7 @@ import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.common.util.TestUtil;
-import com.bn.ninjatrader.model.document.PriceDocument;
+import com.bn.ninjatrader.model.document.PriceDoc;
 import com.bn.ninjatrader.model.guice.NtModelTestModule;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 import com.bn.ninjatrader.model.request.SaveRequest;
@@ -57,7 +57,7 @@ public class PriceDaoTest extends AbstractDaoTest {
   @Test
   public void testSaveAndFind_shouldSaveAndRetrieveEqualObject() {
     // Prepare document
-    final PriceDocument priceData = new PriceDocument("MEG", 2016);
+    final PriceDoc priceData = new PriceDoc("MEG", 2016);
 
     // Add Price document for January 1 and 2, 2016
     priceData.getData().add(price1);
@@ -67,11 +67,11 @@ public class PriceDaoTest extends AbstractDaoTest {
     priceDao.save(priceData);
 
     // Find document
-    final List<PriceDocument> result = priceDao.find();
+    final List<PriceDoc> result = priceDao.find();
     assertThat(result).isNotNull().hasSize(1);
 
     // Verify document
-    final PriceDocument resultData = result.get(0);
+    final PriceDoc resultData = result.get(0);
     assertThat(resultData.getSymbol()).isEqualTo(priceData.getSymbol());
     assertThat(resultData.getYear()).isEqualTo(priceData.getYear());
     assertThat(resultData.getData()).containsExactly(price1, price2);
@@ -182,7 +182,7 @@ public class PriceDaoTest extends AbstractDaoTest {
 
     priceDao.removeByDates(Lists.newArrayList(now));
 
-    List<PriceDocument> results = priceDao.find();
+    List<PriceDoc> results = priceDao.find();
     assertEquals(results.size(), 3);
 
     assertThat(priceDao.find()).hasSize(3); // Should still have 3 documents with no prices.

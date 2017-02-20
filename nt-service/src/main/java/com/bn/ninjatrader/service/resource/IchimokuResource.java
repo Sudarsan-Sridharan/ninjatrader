@@ -2,6 +2,7 @@ package com.bn.ninjatrader.service.resource;
 
 import com.bn.ninjatrader.common.data.Ichimoku;
 import com.bn.ninjatrader.model.dao.IchimokuDao;
+import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.service.model.IchimokuResponse;
 import com.bn.ninjatrader.service.model.ResourceRequest;
 import com.google.inject.Inject;
@@ -30,15 +31,17 @@ public class IchimokuResource extends AbstractDataResource {
   private final IchimokuDao ichimokuService;
 
   @Inject
-  public IchimokuResource(IchimokuDao ichimokuService, Clock clock) {
+  public IchimokuResource(final IchimokuDao ichimokuService,
+                          final Clock clock) {
     super(clock);
     this.ichimokuService = ichimokuService;
   }
 
   @GET
   @Path("/{symbol}")
-  public IchimokuResponse getIchimoku(@BeanParam ResourceRequest req) {
-    List<Ichimoku> ichimokuList = ichimokuService.find(req.toFindRequest(getClock()));
+  public IchimokuResponse getIchimoku(@BeanParam final ResourceRequest req) {
+    final FindRequest findRequest = req.toFindRequest(getClock());
+    final List<Ichimoku> ichimokuList = ichimokuService.find(findRequest);
     return new IchimokuResponse().setValues(ichimokuList);
   }
 }

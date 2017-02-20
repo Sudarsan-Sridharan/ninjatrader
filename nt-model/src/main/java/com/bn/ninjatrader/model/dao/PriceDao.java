@@ -5,7 +5,7 @@ import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.common.util.DateObjUtil;
 import com.bn.ninjatrader.common.util.DateUtil;
 import com.bn.ninjatrader.model.annotation.PriceCollection;
-import com.bn.ninjatrader.model.document.PriceDocument;
+import com.bn.ninjatrader.model.document.PriceDoc;
 import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.model.request.SaveRequest;
 import com.bn.ninjatrader.model.util.Queries;
@@ -30,7 +30,7 @@ import static com.bn.ninjatrader.model.util.QueryParam.*;
  * Created by Brad on 4/30/16.
  */
 @Singleton
-public class PriceDao extends AbstractDateObjDao<PriceDocument, Price> {
+public class PriceDao extends AbstractDateObjDao<PriceDoc, Price> {
   private static final Logger LOG = LoggerFactory.getLogger(PriceDao.class);
 
   @Inject
@@ -44,15 +44,15 @@ public class PriceDao extends AbstractDateObjDao<PriceDocument, Price> {
     final LocalDate fromDate = findRequest.getFromDate();
     final LocalDate toDate = findRequest.getToDate();
 
-    final List<PriceDocument> priceDataList = Lists.newArrayList(getMongoCollection()
+    final List<PriceDoc> priceDataList = Lists.newArrayList(getMongoCollection()
         .find(Queries.FIND_BY_SYMBOL_TIMEFRAME_YEAR_RANGE, findRequest.getSymbol(),
             findRequest.getTimeFrame(),
             fromDate.getYear(),
             toDate.getYear())
-        .as(PriceDocument.class).iterator());
+        .as(PriceDoc.class).iterator());
     final List<Price> prices = Lists.newArrayList();
 
-    for (final PriceDocument priceData : priceDataList) {
+    for (final PriceDoc priceData : priceDataList) {
       prices.addAll(priceData.getData());
     }
 
@@ -61,12 +61,12 @@ public class PriceDao extends AbstractDateObjDao<PriceDocument, Price> {
     return prices;
   }
 
-  public List<PriceDocument> find() {
-    return Lists.newArrayList(getMongoCollection().find().as(PriceDocument.class).iterator());
+  public List<PriceDoc> find() {
+    return Lists.newArrayList(getMongoCollection().find().as(PriceDoc.class).iterator());
   }
 
   @Override
-  public void save(final PriceDocument priceDocument) {
+  public void save(final PriceDoc priceDocument) {
     Collections.sort(priceDocument.getData());
     super.save(priceDocument);
   }
@@ -138,9 +138,9 @@ public class PriceDao extends AbstractDateObjDao<PriceDocument, Price> {
     final int thisYear = LocalDate.now().getYear();
     final Set<String> symbols = Sets.newHashSet();
 
-    try (final MongoCursor<PriceDocument> cursor = getMongoCollection()
+    try (final MongoCursor<PriceDoc> cursor = getMongoCollection()
             .find(Queries.FIND_BY_TIMEFRAME_YEAR, TimeFrame.ONE_DAY, thisYear)
-            .as(PriceDocument.class)) {
+            .as(PriceDoc.class)) {
       cursor.forEach(priceDocument -> symbols.add(priceDocument.getSymbol()));
     } catch (final IOException e) {
       throw new RuntimeException(e);

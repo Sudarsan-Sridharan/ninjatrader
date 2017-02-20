@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.service.model;
 
 import com.bn.ninjatrader.common.type.TimeFrame;
+import com.bn.ninjatrader.common.util.DateUtil;
 import com.bn.ninjatrader.model.request.FindRequest;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -23,16 +24,16 @@ public class MultiPeriodRequest {
   private String symbol;
 
   @QueryParam("timeframe")
-  private Optional<TimeFrame> timeFrame;
+  private TimeFrame timeFrame;
 
   @QueryParam("period")
   private List<Integer> periods;
 
   @QueryParam("from")
-  private Optional<LocalDate> from;
+  private LocalDate from;
 
   @QueryParam("to")
-  private Optional<LocalDate> to;
+  private LocalDate to;
 
   public String getSymbol() {
     return symbol;
@@ -42,11 +43,11 @@ public class MultiPeriodRequest {
     this.symbol = symbol;
   }
 
-  public Optional<TimeFrame> getTimeFrame() {
+  public TimeFrame getTimeFrame() {
     return timeFrame;
   }
 
-  public void setTimeFrame(Optional<TimeFrame> timeFrame) {
+  public void setTimeFrame(TimeFrame timeFrame) {
     this.timeFrame = timeFrame;
   }
 
@@ -62,19 +63,19 @@ public class MultiPeriodRequest {
     periods = Lists.asList(period, morePeriods);
   }
 
-  public Optional<LocalDate> getFrom() {
+  public LocalDate getFrom() {
     return from;
   }
 
-  public void setFrom(Optional<LocalDate> from) {
+  public void setFrom(LocalDate from) {
     this.from = from;
   }
 
-  public Optional<LocalDate> getTo() {
+  public LocalDate getTo() {
     return to;
   }
 
-  public void setTo(Optional<LocalDate> to) {
+  public void setTo(LocalDate to) {
     this.to = to;
   }
 
@@ -89,14 +90,14 @@ public class MultiPeriodRequest {
         .build();
   }
 
-  public Collection<FindRequest> toFindRequest(Clock clock) {
+  public Collection<FindRequest> toFindRequest(final Clock clock) {
     List<FindRequest> requests = Lists.newArrayList();
     for (int period : periods) {
       requests.add(FindRequest.findSymbol(symbol)
           .period(period)
-          .timeframe(timeFrame.orElse(TimeFrame.ONE_DAY))
-          .from(from.orElse(LocalDate.now(clock).minusYears(2)))
-          .to(to.orElse(LocalDate.now(clock))));
+          .timeframe(Optional.ofNullable(timeFrame).orElse(TimeFrame.ONE_DAY))
+          .from(Optional.ofNullable(from).orElse(DateUtil.phNow(clock).minusYears(1)))
+          .to(Optional.ofNullable(to).orElse(DateUtil.phNow(clock))));
     }
     return requests;
   }

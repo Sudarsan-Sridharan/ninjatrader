@@ -4,9 +4,9 @@ import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.util.QueryParam;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.googlecode.objectify.annotation.Id;
 import org.jongo.marshall.jackson.oid.MongoId;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
@@ -18,8 +18,15 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AbstractDocument<T> implements Comparable<AbstractDocument> {
 
+  public static final String id(final String symbol, final int year, final TimeFrame timeFrame) {
+    return String.format("%s-%s-%s", symbol, year, timeFrame);
+  }
+
   @MongoId
   @MongoObjectId
+  public String mongoId;
+
+  @Id
   public String id;
 
   @JsonProperty(QueryParam.SYMBOL)
@@ -36,17 +43,24 @@ public abstract class AbstractDocument<T> implements Comparable<AbstractDocument
 
   public AbstractDocument() {}
 
-  public AbstractDocument(String symbol, int year) {
+  public AbstractDocument(final String symbol, final int year) {
     this.symbol = symbol;
     this.year = year;
   }
 
+  public AbstractDocument(final String symbol, final int year, final TimeFrame timeFrame) {
+    this.id = id(symbol, year, timeFrame);
+    this.symbol = symbol;
+    this.year = year;
+    this.timeFrame = timeFrame;
+  }
+
   public String getId() {
-    return id;
+    return mongoId;
   }
 
   public void setId(String id) {
-    this.id = id;
+    this.mongoId = id;
   }
 
   public String getSymbol() {
@@ -87,15 +101,16 @@ public abstract class AbstractDocument<T> implements Comparable<AbstractDocument
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .append("symbol", symbol)
-        .append("timeFrame", timeFrame)
-        .append("year", year)
-        .append("data", data)
-        .build();
+    return MoreObjects.toStringHelper(this)
+        .add("id", id)
+        .add("symbol", symbol)
+        .add("timeFrame", timeFrame)
+        .add("year", year)
+        .add("data", data)
+        .toString();
   }
 
-  public int compareTo(AbstractDocument data2) {
+  public int compareTo(final AbstractDocument data2) {
     if (!symbol.equals(data2.getSymbol())) {
       return symbol.compareTo(data2.getSymbol());
     }

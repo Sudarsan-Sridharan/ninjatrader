@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.process.util;
 
-import com.bn.ninjatrader.model.document.PriceDocument;
+import com.bn.ninjatrader.model.document.PriceDoc;
 import com.mongodb.DBCursor;
 import org.jongo.MongoCursor;
 import org.jongo.ResultHandler;
@@ -12,17 +12,17 @@ import java.util.List;
 /**
  * Created by Brad on 6/11/16.
  */
-public class MockCursor extends MongoCursor<PriceDocument> {
+public class MockCursor extends MongoCursor<PriceDoc> {
 
-  public MockCursor(DBCursor cursor, ResultHandler<PriceDocument> resultHandler) {
+  public MockCursor(DBCursor cursor, ResultHandler<PriceDoc> resultHandler) {
     super(cursor, resultHandler);
   }
 
-  List<PriceDocument> priceDataList;
-  Iterator<PriceDocument> iterator;
+  List<PriceDoc> priceDataList;
+  Iterator<PriceDoc> iterator;
   boolean isClosed = false;
 
-  public MockCursor(List<PriceDocument> priceDataList) {
+  public MockCursor(List<PriceDoc> priceDataList) {
     super(null, null);
     this.priceDataList = priceDataList;
     this.iterator = priceDataList.iterator();
@@ -34,11 +34,11 @@ public class MockCursor extends MongoCursor<PriceDocument> {
   }
 
   @Override
-  public Iterator<PriceDocument> iterator() {
+  public Iterator<PriceDoc> iterator() {
     return iterator;
   }
 
-  public Iterator<PriceDocument> getIterator() {
+  public Iterator<PriceDoc> getIterator() {
     return iterator;
   }
 

@@ -1,0 +1,10 @@
+# https://cloud.google.com/appengine/docs/flexible/java/configuring-datastore-indexes-with-index-yaml
+
+indexes:
+- kind: PriceDocument
+  ancestor: no
+  properties:
+  - name: symbol
+  - name: timeFrame
+  - name: year
+    direction: desc

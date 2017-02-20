@@ -37,10 +37,10 @@ public class SMAResource extends AbstractDataResource {
 
   @GET
   @Path("/{symbol}")
-  public MultiPeriodResponse<Value> getSMA(@BeanParam MultiPeriodRequest req) {
-    MultiPeriodResponse<Value> response = new MultiPeriodResponse<>();
-    for (FindRequest findRequest : req.toFindRequest(getClock())) {
-      List<Value> values = smaDao.find(findRequest);
+  public MultiPeriodResponse<Value> getSMA(@BeanParam final MultiPeriodRequest req) {
+    final MultiPeriodResponse<Value> response = new MultiPeriodResponse<>();
+    for (final FindRequest findRequest : req.toFindRequest(getClock())) {
+      final List<Value> values = smaDao.find(findRequest);
       response.put(findRequest.getPeriod(), values);
     }
     return response;

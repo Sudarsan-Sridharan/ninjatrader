@@ -30,17 +30,17 @@ public class MeanResource extends AbstractDataResource {
   private final MeanDao meanDao;
 
   @Inject
-  public MeanResource(MeanDao meanDao, Clock clock) {
+  public MeanResource(final MeanDao meanDao, final Clock clock) {
     super(clock);
     this.meanDao = meanDao;
   }
 
   @GET
   @Path("/{symbol}")
-  public MultiPeriodResponse<Value> getMean(@BeanParam MultiPeriodRequest req) {
-    MultiPeriodResponse<Value> response = new MultiPeriodResponse<>();
-    for (FindRequest findRequest : req.toFindRequest(getClock())) {
-      List<Value> values = meanDao.find(findRequest);
+  public MultiPeriodResponse<Value> getMean(@BeanParam final MultiPeriodRequest req) {
+    final MultiPeriodResponse<Value> response = new MultiPeriodResponse<>();
+    for (final FindRequest findRequest : req.toFindRequest(getClock())) {
+      final List<Value> values = meanDao.find(findRequest);
       response.put(findRequest.getPeriod(), values);
     }
     return response;

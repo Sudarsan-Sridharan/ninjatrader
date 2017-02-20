@@ -3,7 +3,7 @@ package com.bn.ninjatrader.service.dropwizard;
 import com.bn.ninjatrader.model.guice.NtModelModule;
 import com.bn.ninjatrader.process.guice.NtProcessModule;
 import com.bn.ninjatrader.service.guice.NtServiceModule;
-import com.bn.ninjatrader.service.health.ServiceHealthCheck;
+import com.bn.ninjatrader.service.dropwizard.health.ServiceHealthCheck;
 import com.bn.ninjatrader.service.provider.LocalDateParamConverterProvider;
 import com.bn.ninjatrader.service.resource.*;
 import com.bn.ninjatrader.service.task.CalcTask;

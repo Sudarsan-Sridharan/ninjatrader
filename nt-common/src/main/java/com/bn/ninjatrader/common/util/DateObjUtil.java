@@ -25,10 +25,10 @@ public class DateObjUtil {
   }
 
   public static void trimToDateRange(List<? extends DateObj> list, LocalDate fromDate, LocalDate toDate) {
-    List<DateObj> removeList = Lists.newArrayList();
+    final List<DateObj> removeList = Lists.newArrayList();
 
     // Remove all values prior to from date
-    for (DateObj dateObj : list) {
+    for (final DateObj dateObj : list) {
       if (dateObj.getDate().isBefore(fromDate)) {
         removeList.add(dateObj);
       } else {
@@ -42,7 +42,7 @@ public class DateObjUtil {
 
     // Remove all prices after to date
     removeList.clear();
-    for (DateObj dateObj: list) {
+    for (final DateObj dateObj: list) {
 
       // If future value (no date), continue
       if (dateObj.getDate() == null) {

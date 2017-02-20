@@ -1,9 +1,7 @@
 package com.bn.ninjatrader.simulation.data;
 
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.common.data.Value;
-import com.bn.ninjatrader.simulation.adaptor.PriceDataMapAdaptor;
-import com.bn.ninjatrader.simulation.core.SimulationData;
+import com.bn.ninjatrader.simulation.calculator.VarCalculator;
 import com.bn.ninjatrader.simulation.model.World;
 import com.google.common.collect.Lists;
 import org.junit.Before;
@@ -25,46 +23,42 @@ public class BarDataFactoryTest {
 
   private final LocalDate now = LocalDate.of(2016, 1, 1);
   private final Price price = Price.builder().date(now).close(1).build();
-  private final DataMap dataMap = DataMap.newInstance().addData(PRICE_OPEN, 1.0).addData(PRICE_HIGH, 2.0);
 
-  private PriceDataMapAdaptor priceDataMapAdaptor;
   private BarDataFactory barDataFactory;
   private World world;
 
-
   @Before
   public void setup() {
-    priceDataMapAdaptor = mock(PriceDataMapAdaptor.class);
     world = mock(World.class);
 
-    when(priceDataMapAdaptor.toDataMap(any(Price.class))).thenReturn(dataMap);
-
-    barDataFactory = new BarDataFactory(priceDataMapAdaptor);
+    barDataFactory = new BarDataFactory();
   }
 
   @Test
   public void testCreateBarData_shouldSetProperties() {
-    final BarData barData = barDataFactory.create("MEG", price, 1, Collections.emptyList(), null);
+    final BarData barData = barDataFactory.create("MEG", price, 1, null, Collections.emptyList());
 
     assertThat(barData).isNotNull();
     assertThat(barData.getPrice()).isEqualTo(price);
     assertThat(barData.getIndex()).isEqualTo(1);
-    assertThat(barData.get(PRICE_OPEN)).isEqualTo(1.0);
-    assertThat(barData.get(PRICE_HIGH)).isEqualTo(2.0);
-    assertThat(barData.get(BAR_INDEX)).isEqualTo(1.0);
     assertThat(barData.getSymbol()).isEqualTo("MEG");
   }
 
   @Test
-  public void testCreateBarDataWithSimulationData_shouldFillDataMapVariablesWithValues() {
-    final SimulationData<Value> simulationData = mock(SimulationData.class);
-    final DataMap dataMap = DataMap.newInstance().addData(SMA.withPeriod(21), 100.15);
+  public void testWithMultiVarCalculators_shouldFillAllVariablesWithValues() {
+    final VarCalculator varCalculator1 = mock(VarCalculator.class);
+    final VarCalculator varCalculator2 = mock(VarCalculator.class);
 
-    when(simulationData.getDataAtIndex(0)).thenReturn(dataMap);
+    when(varCalculator1.calc(any(Price.class))).thenReturn(DataMap.newInstance()
+        .addData(PRICE_OPEN, 1.0).addData(PRICE_HIGH, 2.0));
+    when(varCalculator2.calc(any(Price.class))).thenReturn(DataMap.newInstance()
+        .addData(SMA.withPeriod(21), 100.15));
 
     final BarData barData =
-        barDataFactory.create("MEG", price, 0, Lists.newArrayList(simulationData), world);
+        barDataFactory.create("MEG", price, 0, world, Lists.newArrayList(varCalculator1, varCalculator2));
+
     assertThat(barData.get(SMA.withPeriod(21))).isEqualTo(100.15);
-    assertThat(barData.getWorld()).isEqualTo(world);
+    assertThat(barData.get(PRICE_OPEN)).isEqualTo(1.0);
+    assertThat(barData.get(PRICE_HIGH)).isEqualTo(2.0);
   }
 }

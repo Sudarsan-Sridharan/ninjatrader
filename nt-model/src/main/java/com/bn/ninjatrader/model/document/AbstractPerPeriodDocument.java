@@ -18,7 +18,7 @@ public class AbstractPerPeriodDocument<T> extends AbstractDocument<T> {
     super();
   }
 
-  public AbstractPerPeriodDocument(String symbol, int year, int period) {
+  public AbstractPerPeriodDocument(final String symbol, final int year, final int period) {
     super(symbol, year);
     this.period = period;
   }

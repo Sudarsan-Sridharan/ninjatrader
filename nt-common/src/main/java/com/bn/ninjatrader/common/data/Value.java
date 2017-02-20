@@ -1,13 +1,16 @@
 package com.bn.ninjatrader.common.data;
 
+import com.bn.ninjatrader.common.translator.LocalDateTranslatorFactory;
 import com.bn.ninjatrader.common.util.NtLocalDateDeserializer;
 import com.bn.ninjatrader.common.util.NtLocalDateSerializer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.googlecode.objectify.annotation.Translate;
 
 import java.time.LocalDate;
 
@@ -28,6 +31,7 @@ public class Value implements DateObj<Value> {
   @JsonProperty("d")
   @JsonSerialize(using = NtLocalDateSerializer.class)
   @JsonDeserialize(using = NtLocalDateDeserializer.class)
+  @Translate(value = LocalDateTranslatorFactory.class)
   private LocalDate d; // Date. Names are abbreviated to save space in Datastore
 
   @JsonProperty("v")
@@ -40,10 +44,12 @@ public class Value implements DateObj<Value> {
     this.v = value;
   }
 
+  @JsonIgnore
   public LocalDate getDate() {
     return d;
   }
 
+  @JsonIgnore
   public double getValue() {
     return v;
   }

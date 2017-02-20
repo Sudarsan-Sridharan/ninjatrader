@@ -21,10 +21,10 @@ import java.util.stream.Collectors;
  * Imports PSE-Trader daily quotes to database and runs calculations for the day.
  *
  * To import daily quotes from PSE-Trader and store to database:
- * curl -X POST localhost:8081/tasks/import-pse-trader-quotes
+ * curl -X POST localhost:8080/task/import-pse-trader-quotes
  *
  * To import data for specific dates:
- * curl -X POST localhost:8081/tasks/import-pse-trader-quotes -d "date={}&date={}"
+ * curl -X POST localhost:8080/task/import-pse-trader-quotes -d "date={}&date={}"
  *
  * @author bradwee2000@gmail.com
  */

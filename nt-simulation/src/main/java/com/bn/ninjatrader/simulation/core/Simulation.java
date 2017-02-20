@@ -1,11 +1,14 @@
 package com.bn.ninjatrader.simulation.core;
 
 import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.simulation.calculator.VarCalculator;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
 import com.bn.ninjatrader.simulation.listener.BrokerListener;
-import com.bn.ninjatrader.simulation.model.*;
-import com.bn.ninjatrader.simulation.order.SellOrder;
+import com.bn.ninjatrader.simulation.model.Account;
+import com.bn.ninjatrader.simulation.model.Broker;
+import com.bn.ninjatrader.simulation.model.History;
+import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.statement.Statement;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
@@ -28,7 +31,6 @@ public class Simulation implements BrokerListener {
 
   private static final Logger LOG = LoggerFactory.getLogger(Simulation.class);
 
-  private final List<SimulationData> simulationDataList = Lists.newArrayList();
   private final BarDataFactory barDataFactory;
   private final SimulationParams simulationParams;
 
@@ -36,8 +38,8 @@ public class Simulation implements BrokerListener {
   private final Broker broker;
   private final Account account;
   private final History history;
-  private final LocalProperties properties;
   private final Map<String, List<Price>> priceDatastore;
+  private final List<VarCalculator> varCalculators = Lists.newArrayList();
 
   private final List<Statement> statements;
 
@@ -58,7 +60,6 @@ public class Simulation implements BrokerListener {
     this.broker = world.getBroker();
     this.priceDatastore = world.getPrices();
     this.history = world.getHistory();
-    this.properties = world.getProperties();
     this.simulationParams = simulationParams;
     this.statements = simulationParams.getStatements();
     this.barDataFactory = barDataFactory;
@@ -71,7 +72,7 @@ public class Simulation implements BrokerListener {
     for (final Map.Entry<String, List<Price>> entry : priceDatastore.entrySet()) {
       final String symbol = entry.getKey();
       for (final Price price : entry.getValue()) {
-        final BarData barData = barDataFactory.create(symbol, price, barIndex, simulationDataList, world);
+        final BarData barData = barDataFactory.create(symbol, price, barIndex, world, varCalculators);
         history.add(barData);
         processBar(barData);
         barIndex++;
@@ -92,23 +93,21 @@ public class Simulation implements BrokerListener {
 
   }
 
-  private void sellAll(final String symbol) {
-    if (!account.getPortfolio().isEmpty()) {
-      final List<Price> priceList = priceDatastore.get(symbol);
-      int lastIndex = priceList.size() - 1;
-      final Price lastPrice = priceList.get(lastIndex);
-      final BarData barData = barDataFactory.create(symbol, lastPrice, lastIndex, simulationDataList, world);
-      broker.submitOrder(SellOrder.builder().date(lastPrice.getDate()).build(), barData);
-      broker.processPendingOrders(barData);
-    }
-  }
 
-  public void addSimulationData(final Collection<SimulationData> dataList) {
-    this.simulationDataList.addAll(dataList);
-  }
+//  @Deprecated
+//  private void sellAll(final String symbol) {
+//    if (!account.getPortfolio().isEmpty()) {
+//      final List<Price> priceList = priceDatastore.get(symbol);
+//      int lastIndex = priceList.size() - 1;
+//      final Price lastPrice = priceList.get(lastIndex);
+//      final BarData barData = barDataFactory.create(symbol, lastPrice, world, varCalculators);
+//      broker.submitOrder(SellOrder.builder().date(lastPrice.getDate()).build(), barData);
+//      broker.processPendingOrders(barData);
+//    }
+//  }
 
-  public void addSimulationData(final SimulationData simulationData) {
-    this.simulationDataList.add(simulationData);
+  public void addVarCalculators(final Collection<VarCalculator> varCalculators) {
+    this.varCalculators.addAll(varCalculators);
   }
 
   public SimulationReport createSimulationReport() {
@@ -146,5 +145,19 @@ public class Simulation implements BrokerListener {
   @Override
   public void onFulfilledSell(final SellTransaction transaction, final BarData barData) {
     simulationParams.getOnSellFulfilledStatement().run(barData);
+  }
+
+  /**
+   * Do some calculations prior to running the simulation.
+   * Since some variables need past prices in order to calculate a value,
+   * this ensures that variable values are ready.
+   * @param preDatePrices
+   */
+  public void preCalc(final List<Price> preDatePrices) {
+    for (final Price price : preDatePrices) {
+      for (final VarCalculator varCalculator : varCalculators) {
+        varCalculator.calc(price);
+      }
+    }
   }
 }

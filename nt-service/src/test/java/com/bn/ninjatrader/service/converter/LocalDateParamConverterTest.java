@@ -22,6 +22,12 @@ public class LocalDateParamConverterTest {
   }
 
   @Test
+  public void parseNullDate_shouldReturnNull() {
+    assertThat(converter.fromString("")).isNull();
+    assertThat(converter.fromString(null)).isNull();
+  }
+
+  @Test
   public void parseValidFormat_shouldReturnValidDates() {
     assertThat(converter.fromString("20160101")).isEqualTo(LocalDate.of(2016, 1, 1));
     assertThat(converter.fromString("19991231")).isEqualTo(LocalDate.of(1999, 12, 31));
