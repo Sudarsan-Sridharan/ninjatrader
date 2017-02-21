@@ -3,6 +3,7 @@ package com.bn.ninjatrader.dataimport.daily;
 import com.bn.ninjatrader.common.data.DailyQuote;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
+import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.request.SaveRequest;
 import com.bn.ninjatrader.thirdparty.investagrams.InvestagramsService;
 import com.google.common.collect.Lists;
@@ -25,8 +26,16 @@ public class InvestagramsHistoricalPriceImporter extends AbstractDailyPriceImpor
 
   private static final Logger LOG = LoggerFactory.getLogger(InvestagramsHistoricalPriceImporter.class);
 
+  private final InvestagramsService investagramsService;
+  private final PriceDao priceDao;
+
   @Inject
-  private InvestagramsService investagramsService;
+  public InvestagramsHistoricalPriceImporter(final InvestagramsService investagramsService,
+                                             final PriceDao priceDao) {
+    super(priceDao);
+    this.investagramsService = investagramsService;
+    this.priceDao = priceDao;
+  }
 
   @Override
   protected List<DailyQuote> provideDailyQuotes(final LocalDate date) {

@@ -30,9 +30,6 @@ public class PriceResponse {
   @JsonDeserialize(using = LocalDateDeserializer.class)
   private LocalDate toDate;
 
-  @JsonProperty("summary")
-  private Price priceSummary;
-
   @JsonProperty("values")
   private List<Price> priceList = Lists.newArrayList();
 
@@ -50,14 +47,6 @@ public class PriceResponse {
 
   public void setToDate(LocalDate toDate) {
     this.toDate = toDate;
-  }
-
-  public Price getPriceSummary() {
-    return priceSummary;
-  }
-
-  public void setPriceSummary(Price priceSummary) {
-    this.priceSummary = priceSummary;
   }
 
   public List<Price> getPriceList() {
@@ -78,7 +67,6 @@ public class PriceResponse {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
         .append("fromDate", fromDate)
         .append("toDate", toDate)
-        .append("priceSummary", priceSummary)
         .append("size", priceList.size())
         .toString();
   }

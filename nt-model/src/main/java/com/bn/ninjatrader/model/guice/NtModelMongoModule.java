@@ -1,6 +1,11 @@
 package com.bn.ninjatrader.model.guice;
 
+import com.bn.ninjatrader.common.guice.NtClockModule;
 import com.bn.ninjatrader.model.annotation.*;
+import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.model.dao.ReportDao;
+import com.bn.ninjatrader.model.dao.mongo.PriceDaoMongo;
+import com.bn.ninjatrader.model.dao.mongo.ReportDaoMongo;
 import com.bn.ninjatrader.model.mongo.DbClient;
 import com.google.inject.AbstractModule;
 import org.jongo.MongoCollection;
@@ -12,9 +17,9 @@ import java.lang.annotation.Annotation;
 /**
  * Created by Brad on 4/30/16.
  */
-public class NtModelModule extends AbstractModule {
+public class NtModelMongoModule extends AbstractModule {
 
-  private static final Logger LOG = LoggerFactory.getLogger(NtModelModule.class);
+  private static final Logger LOG = LoggerFactory.getLogger(NtModelMongoModule.class);
 
   public static final String SETTINGS_COLLECTION = "settings";
   public static final String ICHIMOKU_COLLECTION = "ichimoku";
@@ -28,16 +33,21 @@ public class NtModelModule extends AbstractModule {
 
   private final DbClient dbClient;
 
-  public NtModelModule() {
+  public NtModelMongoModule() {
     this(DbClient.createDefault());
   }
 
-  public NtModelModule(final DbClient dbClient) {
+  public NtModelMongoModule(final DbClient dbClient) {
     this.dbClient = dbClient;
   }
 
   @Override
   protected void configure() {
+    install(new NtClockModule());
+
+    bind(PriceDao.class).to(PriceDaoMongo.class);
+    bind(ReportDao.class).to(ReportDaoMongo.class);
+
     bindAnnotatedToCollection(SettingsCollection.class, SETTINGS_COLLECTION);
     bindAnnotatedToCollection(ReportCollection.class, REPORT_COLLECTION);
     bindAnnotatedToCollection(PriceCollection.class, PRICE_COLLECTION);

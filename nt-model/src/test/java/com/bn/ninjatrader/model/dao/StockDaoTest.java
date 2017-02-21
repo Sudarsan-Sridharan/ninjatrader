@@ -17,7 +17,7 @@ import static org.testng.Assert.*;
 /**
  * Created by Brad on 5/4/16.
  */
-public class StockDaoTest extends AbstractDaoTest {
+public class StockDaoTest {
 
   private StockDao stockDao;
 

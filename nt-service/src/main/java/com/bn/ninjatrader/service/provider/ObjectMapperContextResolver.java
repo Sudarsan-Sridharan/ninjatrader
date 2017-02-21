@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.service.provider;
 
+import com.bn.ninjatrader.common.util.ObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
@@ -13,14 +13,18 @@ import javax.ws.rs.ext.ContextResolver;
  * @author bradwee2000@gmail.com
  */
 @Singleton
-public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
-  private static final Logger LOG = LoggerFactory.getLogger(ObjectMapperProvider.class);
+public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper> {
+  private static final Logger LOG = LoggerFactory.getLogger(ObjectMapperContextResolver.class);
 
   private final ObjectMapper OM;
 
+  public ObjectMapperContextResolver() {
+    OM = new ObjectMapperProvider().get();
+  }
+
   @Inject
-  public ObjectMapperProvider() {
-    OM = createDefaultObjectMapper();
+  public ObjectMapperContextResolver(final ObjectMapperProvider objectMapperProvider) {
+    OM = objectMapperProvider.get();
   }
 
   @Override
@@ -30,10 +34,5 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
   public ObjectMapper get() {
     return OM;
-  }
-
-  private static ObjectMapper createDefaultObjectMapper() {
-    return new ObjectMapper()
-        .registerModule(new GuavaModule());
   }
 }

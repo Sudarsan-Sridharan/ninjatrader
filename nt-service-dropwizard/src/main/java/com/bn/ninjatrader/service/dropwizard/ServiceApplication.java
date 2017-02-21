@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.service.dropwizard;
 
-import com.bn.ninjatrader.model.guice.NtModelModule;
+import com.bn.ninjatrader.model.guice.NtModelMongoModule;
 import com.bn.ninjatrader.process.guice.NtProcessModule;
 import com.bn.ninjatrader.service.guice.NtServiceModule;
 import com.bn.ninjatrader.service.dropwizard.health.ServiceHealthCheck;
@@ -87,7 +87,7 @@ public class ServiceApplication extends Application<ServiceConfig> {
 
   public static void main(String[] args) throws Exception {
     final Injector injector = Guice.createInjector(
-        new NtModelModule(),
+        new NtModelMongoModule(),
         new NtServiceModule(),
         new NtProcessModule(),
         new NtSimulationModule()

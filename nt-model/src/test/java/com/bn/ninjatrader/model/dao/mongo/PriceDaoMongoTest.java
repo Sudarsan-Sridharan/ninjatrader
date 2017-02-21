@@ -1,15 +1,16 @@
-package com.bn.ninjatrader.model.dao;
+package com.bn.ninjatrader.model.dao.mongo;
 
 import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.common.util.TestUtil;
-import com.bn.ninjatrader.model.document.PriceDoc;
 import com.bn.ninjatrader.model.guice.NtModelTestModule;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 import com.bn.ninjatrader.model.request.SaveRequest;
+import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.util.Modules;
 import org.jongo.MongoCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,18 +18,18 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 
 import static com.bn.ninjatrader.model.request.FindRequest.findSymbol;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.testng.Assert.assertEquals;
 
 /**
  * Created by Brad on 5/4/16.
  */
-public class PriceDaoTest extends AbstractDaoTest {
-  private static final Logger LOG = LoggerFactory.getLogger(PriceDaoTest.class);
+public class PriceDaoMongoTest {
+  private static final Logger LOG = LoggerFactory.getLogger(PriceDaoMongoTest.class);
 
   private final LocalDate now = LocalDate.of(2016, 1, 1);
   private final LocalDate tomorrow = now.plusDays(1);
@@ -40,41 +41,26 @@ public class PriceDaoTest extends AbstractDaoTest {
   private final Price price2 = Price.builder().date(tomorrow)
       .open(2.1).high(2.2).low(2.0).close(2.1).volume(2000).build();
 
-  private PriceDao priceDao;
+  private PriceDaoMongo priceDao;
 
   @BeforeClass
   public void setup() {
-    final Injector injector = Guice.createInjector(new NtModelTestModule());
-    priceDao = injector.getInstance(PriceDao.class);
+    final Injector injector = Guice.createInjector(Modules
+        .override(new NtModelTestModule())
+        .with(new AbstractModule() {
+          @Override
+          protected void configure() {
+            bind(Clock.class).toInstance(TestUtil.fixedClock(now));
+          }
+        })
+    );
+    priceDao = injector.getInstance(PriceDaoMongo.class);
   }
 
   @BeforeMethod
   public void cleanup() {
     final MongoCollection collection = priceDao.getMongoCollection();
     collection.remove();
-  }
-
-  @Test
-  public void testSaveAndFind_shouldSaveAndRetrieveEqualObject() {
-    // Prepare document
-    final PriceDoc priceData = new PriceDoc("MEG", 2016);
-
-    // Add Price document for January 1 and 2, 2016
-    priceData.getData().add(price1);
-    priceData.getData().add(price2);
-
-    // Save Price document
-    priceDao.save(priceData);
-
-    // Find document
-    final List<PriceDoc> result = priceDao.find();
-    assertThat(result).isNotNull().hasSize(1);
-
-    // Verify document
-    final PriceDoc resultData = result.get(0);
-    assertThat(resultData.getSymbol()).isEqualTo(priceData.getSymbol());
-    assertThat(resultData.getYear()).isEqualTo(priceData.getYear());
-    assertThat(resultData.getData()).containsExactly(price1, price2);
   }
 
   @Test
@@ -97,14 +83,13 @@ public class PriceDaoTest extends AbstractDaoTest {
     assertThat(priceDao.find(findSymbol("BDO").from(now).to(tomorrow))).containsExactly(price2);
   }
 
-  //TODO
-//  @Test
-//  public void testFindAllSymbols_shouldReturnAllSymbols() {
-//    priceDao.save(SaveRequest.save("MEG").values(Lists.newArrayList(price1)));
-//    priceDao.save(SaveRequest.save("BDO").values(Lists.newArrayList(price2)));
-//
-//    assertThat(priceDao.findAllSymbols()).hasSize(2).containsOnly("MEG", "BDO");
-//  }
+  @Test
+  public void testFindAllSymbols_shouldReturnAllSymbols() {
+    priceDao.save(SaveRequest.save("MEG").values(Lists.newArrayList(price1)));
+    priceDao.save(SaveRequest.save("BDO").values(Lists.newArrayList(price2)));
+
+    assertThat(priceDao.findAllSymbols()).containsOnly("MEG", "BDO");
+  }
 
   @Test
   public void testSort_shouldSortPricesByDate() {
@@ -166,29 +151,6 @@ public class PriceDaoTest extends AbstractDaoTest {
     // Verify results. 3 removed, 3 remaining
     assertThat(priceDao.find(findSymbol("MEG").from(year2014).to(price6.getDate())))
         .containsExactly(price3, price4, price5);
-  }
-
-  @Test
-  public void testRemoveByDatesForAllSymbols_shouldRemoveAllPricesForAllSymbolsWithGivenDates() {
-    final Price price1 = Price.builder().date(now).open(1.1).high(1.2).low(1.0).close(1.1).volume(1000).build();
-    final Price price2 = Price.builder().date(now).open(2.1).high(2.2).low(2.0).close(2.1).volume(2000).build();
-    final Price price3 = Price.builder().date(now).open(3.1).high(3.2).low(3.3).close(3.4).volume(3000).build();
-    final Price price4 = Price.builder().date(tomorrow).open(4.1).high(4.2).low(4.3).close(4.4).volume(4000).build();
-
-    priceDao.save(SaveRequest.save("MEG").values(price1));
-    priceDao.save(SaveRequest.save("BDO").values(price2));
-    priceDao.save(SaveRequest.save("MBT").values(price3));
-    priceDao.save(SaveRequest.save("MEG").values(price4)); // Should remain
-
-    priceDao.removeByDates(Lists.newArrayList(now));
-
-    List<PriceDoc> results = priceDao.find();
-    assertEquals(results.size(), 3);
-
-    assertThat(priceDao.find()).hasSize(3); // Should still have 3 documents with no prices.
-    assertThat(priceDao.find(findSymbol("BDO").from(now).to(now))).isEmpty();
-    assertThat(priceDao.find(findSymbol("MBT").from(now).to(now))).isEmpty();
-    assertThat(priceDao.find(findSymbol("MEG").from(now).to(tomorrow))).containsExactly(price4);
   }
 
   @Test

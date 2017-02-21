@@ -62,6 +62,10 @@ public class DateUtil {
   }
 
   public static LocalDate phNow(final Clock clock) {
-    return LocalDate.now(clock.withZone(ZoneId.of("Asia/Manila")));
+    return LocalDate.now(clock.withZone(ZoneId.of(PH_ZONE_ID)));
+  }
+
+  public static Clock phClock() {
+    return Clock.system(ZoneId.of(PH_ZONE_ID));
   }
 }

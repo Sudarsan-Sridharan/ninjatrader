@@ -5,7 +5,7 @@ import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.logical.expression.operation.Operations;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.guice.NtModelModule;
+import com.bn.ninjatrader.model.guice.NtModelMongoModule;
 import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.model.request.SaveRequest;
 import com.google.inject.Guice;
@@ -52,7 +52,7 @@ public class PriceAdjustmentProcess {
   }
 
   public static void main(String args[]) {
-    final Injector injector = Guice.createInjector(new NtModelModule());
+    final Injector injector = Guice.createInjector(new NtModelMongoModule());
     final PriceAdjustmentProcess process = injector.getInstance(PriceAdjustmentProcess.class);
 
     process.process(PriceAdjustmentRequest.forSymbol("MWIDE")

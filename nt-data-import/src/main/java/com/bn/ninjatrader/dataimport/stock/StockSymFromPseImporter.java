@@ -2,7 +2,7 @@ package com.bn.ninjatrader.dataimport.stock;
 
 import com.bn.ninjatrader.common.data.Stock;
 import com.bn.ninjatrader.model.dao.StockDao;
-import com.bn.ninjatrader.model.guice.NtModelModule;
+import com.bn.ninjatrader.model.guice.NtModelMongoModule;
 import com.bn.ninjatrader.thirdparty.pse.PseAllStockUpdate;
 import com.bn.ninjatrader.thirdparty.pse.PseService;
 import com.bn.ninjatrader.thirdparty.pse.PseStock;
@@ -53,7 +53,7 @@ public class StockSymFromPseImporter {
 
   public static void main(String args[]) throws Exception {
     Injector injector = Guice.createInjector(
-        new NtModelModule()
+        new NtModelMongoModule()
     );
 
     StockSymFromPseImporter app = injector.getInstance(StockSymFromPseImporter.class);

@@ -1,23 +1,26 @@
-package com.bn.ninjatrader.model.appengine.dao;
+package com.bn.ninjatrader.model.dao.datastore;
 
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.common.util.DateObjUtil;
-import com.bn.ninjatrader.model.appengine.request.FindPriceRequest;
 import com.bn.ninjatrader.model.appengine.PriceDocument;
+import com.bn.ninjatrader.model.appengine.request.FindPriceRequest;
 import com.bn.ninjatrader.model.appengine.request.SavePriceRequest;
+import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.googlecode.objectify.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Clock;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.google.appengine.repackaged.com.google.api.client.util.Preconditions.checkNotNull;
@@ -26,14 +29,23 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 /**
  * @author bradwee2000@gmail.com
  */
-public class PriceDaoGae {
-  private static final Logger LOG = LoggerFactory.getLogger(PriceDaoGae.class);
+@Singleton
+public class PriceDaoDatastore implements PriceDao<SavePriceRequest, FindPriceRequest> {
+  private static final Logger LOG = LoggerFactory.getLogger(PriceDaoDatastore.class);
+
+  private final Clock clock;
+
+  @Inject
+  public PriceDaoDatastore(final Clock clock) {
+    this.clock = clock;
+  }
 
   public Map<Key<PriceDocument>, PriceDocument> save(final PriceDocument document) {
     return ofy().save().entities(document).now();
   }
 
-  public Map<Key<PriceDocument>, PriceDocument> save(final SavePriceRequest request) {
+  @Override
+  public void save(final SavePriceRequest request) {
     // Organize prices by year
     final Multimap<Integer, Price> pricesPerYear = ArrayListMultimap.create();
     for (final Price price : request.getPrices()) {
@@ -61,14 +73,16 @@ public class PriceDaoGae {
       final Collection<Price> pricesToSave = pricesPerYear.get(year);
       final Map<LocalDate, Price> docPrices = documents.get(key).getData().stream()
           .collect(Collectors.toMap(price -> price.getDate(), price -> price));
+
       docPrices.putAll(pricesToSave.stream().collect(Collectors.toMap(price -> price.getDate(), price -> price)));
       documents.get(key).setData(docPrices.values().stream().collect(Collectors.toList()));
     }
 
     // Save all documents
-    return ofy().save().entities(documents.values()).now();
+    ofy().save().entities(documents.values()).now();
   }
 
+  @Override
   public List<Price> find(final FindPriceRequest request) {
     checkNotNull(request, "FindPriceRequest must not be null.");
     checkNotNull(request.getSymbol(), "FindPriceRequest.symbol must not be null.");
@@ -98,6 +112,23 @@ public class PriceDaoGae {
     DateObjUtil.trimToDateRange(prices, request.getFromDate(), request.getToDate());
 
     return prices;
+  }
+
+  @Override
+  public Set<String> findAllSymbols() {
+    final int thisYear = LocalDate.now(clock).getYear();
+    final Set<String> symbols = Sets.newHashSet();
+
+    final List<PriceDocument> documents = ofy().load().type(PriceDocument.class).filter("year = ", thisYear).list();
+    for (PriceDocument document : documents) {
+      symbols.add(document.getSymbol());
+    }
+    return symbols;
+  }
+
+  @Override
+  public List<Price> findBeforeDate(FindBeforeDateRequest build) {
+    return null;
   }
 
   private Key<PriceDocument> createKey(final String symbol, final int year, final TimeFrame timeFrame) {

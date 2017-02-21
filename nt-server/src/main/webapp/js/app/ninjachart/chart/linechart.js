@@ -8,23 +8,28 @@ define(["d3", "require", "./abstractchart"], function(d3, require) {
         AbstractChart.call(this, config, panel);
 
         this.x = function (value) {
-            return config.xByDate(value.d) + config.columnWidth / 2
+            return config.xByIndex(value.i) + config.columnWidth / 2;
         };
         this.y = function (value) {
             return panel.yScale(value.v)
         };
+        var removeEmptyValueFilter = function (value) {
+            return value.v;
+        }
         var linePath = d3.line()
             .x(this.x)
             .y(this.y);
-        this.pathPerLine = function (periodData) {
-            return linePath(periodData.values)
+
+        this.pathPerLine = function (valuesForPeriod) {
+            var values = valuesForPeriod.values.filter(removeEmptyValueFilter);
+            return linePath(values);
         };
     }
 
     LineChart.prototype = Object.create(AbstractChart.prototype);
     LineChart.prototype.constructor = LineChart;
 
-    LineChart.prototype.show = function() {
+    LineChart.prototype.show = function(prices) {
         if (!this.data) return;
         this.main.style("visibility", "visible");
         var values = this.getViewportValues(_viewportNumOfBarsPadding);
@@ -71,7 +76,6 @@ define(["d3", "require", "./abstractchart"], function(d3, require) {
      * Returns min and max values of all periods.
      */
     LineChart.prototype.getDataDomain = function() {
-        if (!this.data || !this.data.values) return null;
         var viewportValues = this.getViewportValues();
         var domainValues = [];
         for (var period in viewportValues) {
@@ -100,18 +104,12 @@ define(["d3", "require", "./abstractchart"], function(d3, require) {
     LineChart.prototype.getViewportValues = function(numOfBarsPadding) {
         numOfBarsPadding = numOfBarsPadding || 0;
 
-        var viewportDates = this.config.viewportDates;
+        var viewportIndexRange = this.config.viewportIndexRange;
         var viewportValues = [];
 
-        for (var period in this.data.values) {
-            var indexFrom = this.dateIndexMap[period][viewportDates[0]] || 0;
-            var indexTo = this.dateIndexMap[period][viewportDates[viewportDates.length-1]]
-                || this.data.values[period].length - 1;
-            indexTo *= 1 // convert to int
+        for (var period in this.data) {
+            viewportValues[period] = this.data[period].slice(viewportIndexRange[0], viewportIndexRange[1]);
 
-            indexFrom = indexFrom - numOfBarsPadding >= 0 ? indexFrom - numOfBarsPadding : 0;
-            indexTo += numOfBarsPadding;
-            viewportValues[period] = this.data.values[period].slice(indexFrom, indexTo);
         }
         return viewportValues;
     };

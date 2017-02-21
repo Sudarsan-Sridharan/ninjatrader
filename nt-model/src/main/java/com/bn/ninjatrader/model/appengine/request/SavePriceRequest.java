@@ -38,17 +38,17 @@ public class SavePriceRequest {
   }
 
   public SavePriceRequest addPrice(final Price price) {
-    prices.add(price);
+    this.prices.add(price);
     return this;
   }
 
   public SavePriceRequest addPrices(final Collection<Price> prices) {
-    prices.addAll(prices);
+    this.prices.addAll(prices);
     return this;
   }
 
   public SavePriceRequest addPrices(final Price price, final Price ... more) {
-    prices.addAll(Lists.asList(price, more));
+    this.prices.addAll(Lists.asList(price, more));
     return this;
   }
 

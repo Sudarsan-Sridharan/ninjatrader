@@ -1,13 +1,13 @@
-package com.bn.ninjatrader.model.appengine.dao;
+package com.bn.ninjatrader.model.dao.datastore;
 
 import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.model.appengine.request.FindPriceRequest;
+import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.model.appengine.PriceDocument;
+import com.bn.ninjatrader.model.appengine.request.FindPriceRequest;
 import com.bn.ninjatrader.model.appengine.request.SavePriceRequest;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.Closeable;
@@ -18,14 +18,13 @@ import org.junit.Test;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author bradwee2000@gmail.com
  */
-public class PriceDaoGaeTest {
+public class PriceDaoDatastoreTest {
 
   private final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
@@ -44,7 +43,7 @@ public class PriceDaoGaeTest {
       .open(4.1).high(4.2).low(4.0).close(4.1).volume(4000).build();
 
   private Closeable session;
-  private PriceDaoGae priceDao;
+  private PriceDaoDatastore priceDao;
 
   @BeforeClass
   public static void setUpBeforeClass() {
@@ -53,27 +52,21 @@ public class PriceDaoGaeTest {
   }
 
   @Before
-  public void setUp() {
+  public void before() {
     this.session = ObjectifyService.begin();
     this.helper.setUp();
-    priceDao = new PriceDaoGae();
+    priceDao = new PriceDaoDatastore(TestUtil.fixedClock(now));
   }
 
   @After
-  public void tearDown() {
+  public void after() {
     this.session.close();
     this.helper.tearDown();
   }
 
   @Test
   public void testSaveAndFind_shouldSaveAndReturnSortedPrices() {
-    final Map<Key<PriceDocument>, PriceDocument> saved =
-        priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(price2, price1));
-
-    // Verify document key and values
-    assertThat(saved)
-        .containsOnlyKeys(Key.create(PriceDocument.class, PriceDocument.id("MEG", 2017, TimeFrame.ONE_DAY)));
-    assertThat(saved.values().iterator().next().getData()).containsExactlyInAnyOrder(price1, price2);
+    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(price2, price1));
 
     // Find prices
     final List<Price> prices = priceDao.find(FindPriceRequest.forSymbol("MEG")
@@ -87,14 +80,7 @@ public class PriceDaoGaeTest {
 
   @Test
   public void testSavePricesWithDiffYears_shouldSaveToEachDocumentPerYear() {
-    final Map<Key<PriceDocument>, PriceDocument> saved =
-        priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(price1, price2, price3, price4));
-
-    // Should save to 2 documents, one for each year.
-    assertThat(saved).containsOnlyKeys(
-        Key.create(PriceDocument.class, PriceDocument.id("MEG", 2017, TimeFrame.ONE_DAY)),
-        Key.create(PriceDocument.class, PriceDocument.id("MEG", 2018, TimeFrame.ONE_DAY))
-    );
+    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(price1, price2, price3, price4));
 
     // Find all prices
     final List<Price> prices = priceDao.find(FindPriceRequest.forSymbol("MEG").from(now).to(nextYear));
@@ -163,5 +149,14 @@ public class PriceDaoGaeTest {
         .containsExactly(price1, price2);
     assertThat(priceDao.find(FindPriceRequest.forSymbol("MEG").from(now).to(nextYear).timeframe(TimeFrame.ONE_WEEK)))
         .containsExactly(price2, price3);
+  }
+
+  @Test
+  public void testFindAllSymbols_shouldReturnAllSymbolsOfCurrentYear() {
+    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(price1));
+    priceDao.save(SavePriceRequest.forSymbol("BDO").addPrices(price2));
+    priceDao.save(SavePriceRequest.forSymbol("TEL").addPrices(price4)); // price of next year
+
+    assertThat(priceDao.findAllSymbols()).containsExactlyInAnyOrder("MEG", "BDO");
   }
 }

@@ -1,46 +1,57 @@
-define(["d3", "require", "./abstractchart"], function(d3, require) {
+define(["d3", "require", "./abstractchart", "../util/ichimokumeanstack"], function(d3, require) {
 
     var AbstractChart = require("./abstractchart");
+    var IchimokuMeanStack = require("../util/ichimokumeanstack");
 
-    var _getTenkanFilter = function(ichimoku) { if (ichimoku.t) return ichimoku; };
-    var _getKijunFilter = function(ichimoku) { if (ichimoku.k) return ichimoku; };
-    var _getChikouFilter = function(ichimoku) { if (ichimoku.c) return ichimoku; };
-    var _getSenkouAFilter = function(ichimoku) { if (ichimoku.sa) return ichimoku; };
-    var _getSenkouBFilter = function(ichimoku) { if (ichimoku.sb) return ichimoku; };
-    var _isSenkouAAboveB = function(ichimoku) {return ichimoku.sa > ichimoku.sb}
-    var _removeEmptyFilter = function(v) { if (v) return v; };
+    var _getTenkanFilter = function(ichimoku) { if (ichimoku.t) return ichimoku };
+    var _getKijunFilter = function(ichimoku) { if (ichimoku.k) return ichimoku };
+    var _getChikouFilter = function(ichimoku) { if (ichimoku.c) return ichimoku };
+    var _getSenkouAFilter = function(ichimoku) { if (ichimoku.sa) return ichimoku };
+    var _getSenkouBFilter = function(ichimoku) { if (ichimoku.sb) return ichimoku };
+    var _isSenkouAAboveB = function(ichimoku) { return ichimoku.sa > ichimoku.sb };
+    var _removeEmptyFilter = function(v) { if (v) return v };
 
     function IchimokuChart(config, panel) {
         AbstractChart.call(this, config, panel, "/ichimoku", "ichimoku");
 
-        this._getXByDate = function(ichimoku) { return config.xByDate(ichimoku.d) + config.columnWidth / 2 };
+        var futureSenkouPeriods = 26;
+        var chikouPastPeriods = 26;
+
+        this._getXByIndex = function(ichimoku) { return config.xByIndex(ichimoku.i) + config.columnWidth / 2 };
+        this._getChikouXByIndex = function(ichimoku) { return config.xByIndex(parseInt(ichimoku.i) - chikouPastPeriods) + config.columnWidth / 2 };
+        this._getSenkouXByIndex = function(ichimoku) { return config.xByIndex(parseInt(ichimoku.i) + futureSenkouPeriods) + config.columnWidth / 2 };
+
         this._getYOfTenkan = function(ichimoku) { return yScale(ichimoku.t) };
         this._getYOfKijun = function(ichimoku) { return yScale(ichimoku.k); };
         this._getYOfChikou = function(ichimoku) { return yScale(ichimoku.c); };
         this._getYOfSenkouA = function(ichimoku) { return yScale(ichimoku.sa) };
-        this._getYOfSenkouB = function(ichimoku) { return yScale(ichimoku.sb) }
+        this._getYOfSenkouB = function(ichimoku) { return yScale(ichimoku.sb) };
         this._getKumoPath = function(ichimoku) {
-            var x = config.xByDate(ichimoku.d) + config.columnWidth / 2;
+            var x = config.xByIndex(parseInt(ichimoku.i) + futureSenkouPeriods) + config.columnWidth / 2;
             var y1 = yScale(ichimoku.sa);
             var y2 = yScale(ichimoku.sb);
             return "M" + x + "," + y1 + "V" + y2;
         };
 
+        this._ichimokuTenkanStack = new IchimokuMeanStack(9);
+        this._ichimokuKijunStack = new IchimokuMeanStack(26);
+        this._ichimokuSenkouStack = new IchimokuMeanStack(52);
+
         var yScale = this.yScale;
         this.tenkanLine = d3.line()
-            .x(this._getXByDate)
+            .x(this._getXByIndex)
             .y(this._getYOfTenkan);
         this.kijunLine = d3.line()
-            .x(this._getXByDate)
+            .x(this._getXByIndex)
             .y(this._getYOfKijun);
         this.chikouLine = d3.line()
-            .x(this._getXByDate)
+            .x(this._getChikouXByIndex)
             .y(this._getYOfChikou);
         this.senkouALine = d3.line()
-            .x(this._getXByDate)
+            .x(this._getSenkouXByIndex)
             .y(this._getYOfSenkouA);
         this.senkouBLine = d3.line()
-            .x(this._getXByDate)
+            .x(this._getSenkouXByIndex)
             .y(this._getYOfSenkouB);
 
         var main = this.getMain();
@@ -60,7 +71,6 @@ define(["d3", "require", "./abstractchart"], function(d3, require) {
         this.main.style("visibility", "visible");
 
         var values = this.getViewportValues();
-
         this._printTenkan(values);
         this._printKijun(values);
         this._printChikou(values);
@@ -115,6 +125,40 @@ define(["d3", "require", "./abstractchart"], function(d3, require) {
             .remove();
     };
 
+    IchimokuChart.prototype.query = function(query, priceData, successCallback) {
+        var ichimokuData = [];
+
+        // Reset the stacks and prepare to calculate new values
+        this._ichimokuTenkanStack.clear();
+        this._ichimokuKijunStack.clear();
+        this._ichimokuSenkouStack.clear();
+
+        for (var i in priceData.values) {
+            var price = priceData.values[i];
+
+            this._ichimokuTenkanStack.addPrice(price);
+            this._ichimokuKijunStack.addPrice(price);
+            this._ichimokuSenkouStack.addPrice(price);
+
+            // Create value object containing index and value
+            var ichimoku = {};
+            ichimoku.i = i;
+            ichimoku.c = price.c; // Chikou is closing price
+            ichimoku.t = this._ichimokuTenkanStack.getValue(); // Tenkan
+            ichimoku.k = this._ichimokuKijunStack.getValue(); // Kijun
+            ichimoku.sa = (ichimoku.t + ichimoku.k) / 2; // Senkou Span A
+            ichimoku.sb = this._ichimokuSenkouStack.getValue(); // Senkou Span B
+
+            ichimokuData.push(ichimoku);
+        }
+
+        this.data = ichimokuData;
+
+        if (successCallback) {
+            successCallback(this);
+        }
+    };
+
     /**
      * Override from AbstractChart
      * Returns the ichimoku's lowest
@@ -131,6 +175,17 @@ define(["d3", "require", "./abstractchart"], function(d3, require) {
      */
     IchimokuChart.prototype.getHighestDomainValue = function(ichimoku) {
         return d3.max([ichimoku.t, ichimoku.k, ichimoku.c, ichimoku.sa, ichimoku.sb], _removeEmptyFilter);
+    };
+
+    IchimokuChart.prototype.getViewportValues = function(numOfBarsPadding) {
+        var viewportIndexRange = this.config.viewportIndexRange;
+        numOfBarsPadding = numOfBarsPadding || 26;
+        var fromIndex = viewportIndexRange[0] - numOfBarsPadding;
+        if (fromIndex < 0) {
+            fromIndex = 0;
+        }
+        var toIndex = viewportIndexRange[1] + numOfBarsPadding;
+        return this.data.slice(fromIndex, toIndex);
     };
 
     return IchimokuChart;

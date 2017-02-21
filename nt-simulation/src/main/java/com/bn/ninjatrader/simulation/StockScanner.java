@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.simulation;
 
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.guice.NtModelModule;
+import com.bn.ninjatrader.model.guice.NtModelMongoModule;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
 import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author bradwee2000@gmail.com
@@ -42,7 +43,8 @@ public class StockScanner {
     final LocalDate to = LocalDate.now();
     final List<SimulationReport> actionReports = Lists.newArrayList();
 
-    for (final String symbol : priceDao.findAllSymbols()) {
+    final Set<String> symbols = priceDao.findAllSymbols();
+    for (final String symbol : symbols) {
       final SimulationParams params = algo.from(from).to(to).forSymbol(symbol);
       final SimulationReport report = simulator.play(params);
       if (!report.getTransactions().isEmpty()) {
@@ -61,7 +63,10 @@ public class StockScanner {
   }
 
   public static void main(final String args[]) {
-    final Injector injector = Guice.createInjector( new NtModelModule(), new NtSimulationModule());
+    final Injector injector = Guice.createInjector(
+        new NtModelMongoModule(),
+        new NtSimulationModule()
+    );
     final StockScanner stockScanner = injector.getInstance(StockScanner.class);
     stockScanner.scan();
   }

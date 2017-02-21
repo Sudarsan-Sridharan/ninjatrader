@@ -7,7 +7,7 @@ import org.jongo.MongoCollection;
 /**
  * Created by Brad on 4/30/16.
  */
-public class NtModelTestModule extends NtModelModule {
+public class NtModelTestModule extends NtModelMongoModule {
 
   private static final String DB_NAME = "test_ninja_trader";
   private static final String HOST = "192.168.99.100:32768";

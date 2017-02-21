@@ -13,23 +13,23 @@ import java.time.LocalDateTime;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Report {
 
-  @JsonProperty("report_id")
+  @JsonProperty("reportId")
   private String reportId;
 
-  @JsonProperty("user")
-  private String user;
+  @JsonProperty("userId")
+  private String userId;
 
   @JsonProperty("data")
   private Object data;
 
-  @JsonProperty("lud")
+  @JsonProperty("lastUpdateDate")
   private LocalDateTime lastUpdateDate;
 
   public Report() {}
 
-  public Report(String reportId, String user, String data) {
+  public Report(final String reportId, final String userId, final String data) {
     this.reportId = reportId;
-    this.user = user;
+    this.userId = userId;
     this.data = data;
   }
 
@@ -41,12 +41,12 @@ public class Report {
     this.reportId = reportId;
   }
 
-  public String getUser() {
-    return user;
+  public String getUserId() {
+    return userId;
   }
 
-  public void setUser(String user) {
-    this.user = user;
+  public void setUserId(String userId) {
+    this.userId = userId;
   }
 
   public Object getData() {
@@ -68,13 +68,13 @@ public class Report {
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
-        .add("reportId", reportId).add("user", user).add("data", data).add("lastUpdateDate", lastUpdateDate)
+        .add("reportId", reportId).add("user", userId).add("data", data).add("lastUpdateDate", lastUpdateDate)
         .toString();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(reportId, user, data, lastUpdateDate);
+    return Objects.hashCode(reportId, userId, data, lastUpdateDate);
   }
 
   @Override
@@ -83,7 +83,7 @@ public class Report {
     if (obj == this) { return true; }
     final Report rhs = (Report) obj;
     return Objects.equal(reportId, rhs.reportId)
-      && Objects.equal(user, rhs.user)
+      && Objects.equal(userId, rhs.userId)
       && Objects.equal(data, rhs.data)
       && Objects.equal(lastUpdateDate, rhs.lastUpdateDate);
   }

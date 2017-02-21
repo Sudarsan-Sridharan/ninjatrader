@@ -11,8 +11,8 @@ public class QueryParam {
   public static final String PERIOD = "pr";
   public static final String DATA = "data";
 
-  public static final String USER = "user";
-  public static final String REPORT_ID = "report_id";
+  public static final String USER = "userId";
+  public static final String REPORT_ID = "reportId";
   public static final String SETTING_NAME = "n";
   public static final String SETTING_VALUE = "v";
 }

@@ -7,20 +7,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.time.Clock;
 import java.util.Optional;
+
+import static com.bn.ninjatrader.model.request.FindReportRequest.withReportId;
 
 /**
  * @author bradwee2000@gmail.com
  */
 @Singleton
 @Path("/simulation")
-@Produces(MediaType.APPLICATION_JSON)
 public class SimulationResource extends AbstractDataResource {
 
   private final ObjectMapper om = new ObjectMapper();
@@ -36,13 +35,17 @@ public class SimulationResource extends AbstractDataResource {
 
   @GET
   @Path("/report/{reportId}")
-  public SimulationReport getReport(@PathParam("reportId") final String reportId) {
-    final Optional<Report> foundReport = reportDao.findByReportId(reportId);
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getReport(@PathParam("reportId") final String reportId) {
+    final Optional<Report> foundReport = reportDao.findOne(withReportId(reportId));
 
     if (foundReport.isPresent()) {
-      return om.convertValue(foundReport.get().getData(), SimulationReport.class);
+      return Response.ok(om.convertValue(foundReport.get().getData(), SimulationReport.class))
+          .header("Access-Control-Allow-Origin", "*")
+          .header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+          .header("Access-Control-Allow-Methods", "GET")
+          .build();
     }
-
-    return null;
+    throw new NotFoundException(String.format("Report with ID [%s] is not found.", reportId));
   }
 }

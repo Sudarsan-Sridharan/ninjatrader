@@ -5,7 +5,7 @@ import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.dataimport.history.parser.CsvDataParser;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.guice.NtModelModule;
+import com.bn.ninjatrader.model.guice.NtModelMongoModule;
 import com.bn.ninjatrader.model.request.SaveRequest;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -80,7 +80,7 @@ public class CsvPriceImporter {
 
   public static void main(String args[]) throws Exception {
     final Injector injector = Guice.createInjector(
-        new NtModelModule()
+        new NtModelMongoModule()
     );
 
     final CsvPriceImporter app = injector.getInstance(CsvPriceImporter.class);

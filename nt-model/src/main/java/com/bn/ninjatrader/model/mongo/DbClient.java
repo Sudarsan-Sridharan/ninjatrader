@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.model.mongo;
 
-import com.bn.ninjatrader.model.guice.NtModelModule;
+import com.bn.ninjatrader.model.guice.NtModelMongoModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mongodb.DB;
@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * @author bradwee2000@gmail.com
  */
 public class DbClient {
-  private static final Logger LOG = LoggerFactory.getLogger(NtModelModule.class);
+  private static final Logger LOG = LoggerFactory.getLogger(NtModelMongoModule.class);
   private static final String DEFAULT_DB_NAME = "ninja_trader";
   private static final String DEFAULT_HOST = "192.168.99.100:32768";
   private static final int CONNECTION_TIMEOUT_MILLIS = 5000;

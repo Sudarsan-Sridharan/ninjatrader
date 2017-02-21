@@ -1,9 +1,8 @@
 package com.bn.ninjatrader.service.resource;
 
 import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.service.model.PriceResponse;
-import com.bn.ninjatrader.common.util.PriceUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.service.model.PriceResponse;
 import com.bn.ninjatrader.service.model.ResourceRequest;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -15,6 +14,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.time.Clock;
 import java.util.List;
 
@@ -23,23 +23,29 @@ import java.util.List;
  */
 @Singleton
 @Path("/price")
-@Produces(MediaType.APPLICATION_JSON)
 public class PriceResource extends AbstractDataResource {
   private static final Logger LOG = LoggerFactory.getLogger(PriceResource.class);
 
   private final PriceDao priceDao;
+  private final Clock clock;
 
   @Inject
   public PriceResource(final PriceDao priceDao, final Clock clock) {
     super(clock);
     this.priceDao = priceDao;
+    this.clock = clock;
   }
 
   @GET
   @Path("/{symbol}")
-  public PriceResponse getPrices(@BeanParam final ResourceRequest req) {
-    final List<Price> prices = priceDao.find(req.toFindRequest(getClock()));
-    return createPriceResponse(prices);
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getPrices(@BeanParam final ResourceRequest req) {
+    final List<Price> prices = priceDao.find(req.toFindRequest(clock));
+    return Response.ok(createPriceResponse(prices))
+        .header("Access-Control-Allow-Origin", "*")
+        .header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        .header("Access-Control-Allow-Methods", "GET")
+        .build();
   }
 
   private PriceResponse createPriceResponse(final List<Price> prices) {
@@ -48,7 +54,6 @@ public class PriceResource extends AbstractDataResource {
       response.setFromDate(prices.get(0).getDate());
       response.setToDate(prices.get(prices.size() - 1).getDate());
       response.setPriceList(prices);
-      response.setPriceSummary(PriceUtil.createSummary(prices));
     }
     return response;
   }

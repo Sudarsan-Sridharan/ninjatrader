@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.dataimport.daily;
 
 import com.bn.ninjatrader.common.data.DailyQuote;
+import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.thirdparty.pse.PseService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -17,8 +18,14 @@ import java.util.List;
 public class PseDailyPriceImporter extends AbstractDailyPriceImporter {
   private static final Logger LOG = LoggerFactory.getLogger(PseDailyPriceImporter.class);
 
+  private final PseService pseService;
+
   @Inject
-  private PseService pseService;
+  public PseDailyPriceImporter(final PseService pseService,
+                               final PriceDao priceDao) {
+    super(priceDao);
+    this.pseService = pseService;
+  }
 
   @Override
   protected List<DailyQuote> provideDailyQuotes(final LocalDate date) {

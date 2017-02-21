@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.dataimport.daily;
 
 import com.bn.ninjatrader.common.data.DailyQuote;
+import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.thirdparty.investagrams.InvestagramsService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -18,8 +19,14 @@ public class InvestagramsDailyPriceImporter extends AbstractDailyPriceImporter{
 
   private static final Logger LOG = LoggerFactory.getLogger(InvestagramsDailyPriceImporter.class);
 
+  private final InvestagramsService investagramsService;
+
   @Inject
-  private InvestagramsService investagramsService;
+  public InvestagramsDailyPriceImporter(final InvestagramsService investagramsService,
+                                        final PriceDao priceDao) {
+    super(priceDao);
+    this.investagramsService = investagramsService;
+  }
 
   @Override
   protected List<DailyQuote> provideDailyQuotes(final LocalDate date) {

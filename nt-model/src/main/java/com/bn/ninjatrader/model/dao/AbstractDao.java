@@ -19,9 +19,6 @@ public abstract class AbstractDao<T> {
     this.mongoCollection = mongoCollection;
   }
 
-  public void save(T t) {
-    mongoCollection.save(t);
-  }
 
   public MongoCollection getMongoCollection() {
     return mongoCollection;

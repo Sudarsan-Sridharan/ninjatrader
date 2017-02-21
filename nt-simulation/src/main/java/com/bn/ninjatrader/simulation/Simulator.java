@@ -3,7 +3,8 @@ package com.bn.ninjatrader.simulation;
 import com.bn.ninjatrader.calculator.guice.NtCalculatorModule;
 import com.bn.ninjatrader.common.data.Report;
 import com.bn.ninjatrader.model.dao.ReportDao;
-import com.bn.ninjatrader.model.guice.NtModelModule;
+import com.bn.ninjatrader.model.guice.NtModelMongoModule;
+import com.bn.ninjatrader.model.request.SaveReportRequest;
 import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
@@ -46,12 +47,12 @@ public class Simulator {
     final Report report = new Report();
     report.setReportId("SAMPLE_REPORT"); // TODO REMOVE THIS!!
     report.setData(simulationReport);
-    reportDao.save(report);
+    reportDao.save(SaveReportRequest.save(report));
   }
 
   public static void main(final String args[]) {
     final Injector injector = Guice.createInjector(
-        new NtModelModule(),
+        new NtModelMongoModule(),
         new NtCalculatorModule(),
         new NtSimulationModule()
     );
@@ -62,7 +63,7 @@ public class Simulator {
         .to(LocalDate.now().minusYears(0))
 //        .maxBuyRisk(0.10)
 //        .pullbackSensit ivity(0.005)
-        .forSymbol("DNL"));
+        .forSymbol("BLOOM"));
     simulator.saveReport(report);
     new SimulationReportPrinter().printReport(report);
 //    permute(simulator);

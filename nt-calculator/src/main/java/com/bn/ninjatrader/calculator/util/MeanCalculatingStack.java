@@ -29,7 +29,7 @@ public class MeanCalculatingStack extends FixedStack<Price> implements Calculati
     updateHighestAndLowest(addedPrice);
   }
 
-  private void updateHighestAndLowest(Price price) {
+  private void updateHighestAndLowest(final Price price) {
     highest = Math.max(price.getHigh(), highest);
     if (lowest == 0) {
       lowest = price.getLow();
@@ -40,7 +40,7 @@ public class MeanCalculatingStack extends FixedStack<Price> implements Calculati
   }
 
   @Override
-  protected void handleAfterRemove(Price removedPrice) {
+  protected void handleAfterRemove(final Price removedPrice) {
     if (removedPrice.getHigh() == highest) {
       findHighestFromPriceList();
     }
@@ -51,14 +51,14 @@ public class MeanCalculatingStack extends FixedStack<Price> implements Calculati
 
   private void findHighestFromPriceList() {
     highest = 0;
-    for (Price price : getList()) {
+    for (final Price price : getList()) {
       highest = Math.max(price.getHigh(), highest);
     }
   }
 
   private void findLowestFromPriceList() {
     lowest = 0;
-    for (Price price : getList()) {
+    for (final Price price : getList()) {
       if (lowest == 0) {
         lowest = price.getLow();
       } else {

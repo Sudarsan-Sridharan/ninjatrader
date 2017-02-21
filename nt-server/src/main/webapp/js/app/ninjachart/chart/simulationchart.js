@@ -13,6 +13,8 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
 
         this._getTransactionPath = function(txn) {
             var x = config.xByDate(txn.dt) + config.columnWidth / 2;
+            if(isNaN(x)) return ""; // If transaction date is out of price date range, ignore it.
+
             var y = panel.yScale(txn.price);
             var vLine = "M" + x + ",0V" + config.chartHeight;
             var hLine = "M" + (x - config.columnWidth/2) + "," + y + "h" + (config.columnWidth);
@@ -23,10 +25,11 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
         this._getMarkPath = function(mark) {
             if (mark.marker == "LINE") { // Vertical Line
                 var x = config.xByDate(mark.date) + config.columnWidth / 2;
+                if(isNaN(x)) return ""; // If mark date is out of price date range, ignore it.
                 return "M" + x + ",0V" + config.chartHeight;
-
             } else if (mark.marker == "ARROW_BOTTOM") { // Arrow Bottom
                 var x = config.xByDate(mark.date);
+                if(isNaN(x)) return "";
                 var path = "M" + x + "," + (config.chartHeight - 2); // start at bottom-left side of column
                 path += "h" + config.columnWidth; // move to right
                 path += "l" + (-config.columnWidth / 2) + "," + (-config.columnWidth); // move diagonally to middle
@@ -35,6 +38,7 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
 
             } else { // Arrow Top
                 var x = config.xByDate(mark.date);
+                if(isNaN(x)) return "";
                 var path = "M" + x + ",2"; // start at left side of column
                 path += "h" + config.columnWidth; // move to right
                 path += "l" + (-config.columnWidth / 2) + "," + config.columnWidth; // move diagonally to middle
@@ -115,6 +119,10 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
 
         for (var i in transactions) {
             var txnIndex = this.config.indexByDate(transactions[i].dt)
+
+            // If transaction is beyond price date range, ignore it and continue with others
+            if (!txnIndex) continue;
+
             // Closest visible index from
             if (!fromIndex && txnIndex>= viewportIndexRange[0]) {
                 fromIndex = i;
@@ -138,6 +146,10 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
 
         for (var i in marks) {
             var markIndex = this.config.indexByDate(marks[i].date);
+
+            // If mark is beyond price date range, ignore it and continue with others
+            if (!markIndex) continue;
+
             // Closest visible index from
             if (!fromIndex && markIndex >= viewportIndexRange[0]) {
                 fromIndex = i;
@@ -152,7 +164,6 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
         toIndex++;
         return marks.slice(fromIndex, toIndex);
     };
-
 
     SimulationChart.prototype.onDataLoad = function(data) {
         this._meta.setData(data);
