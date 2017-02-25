@@ -1,0 +1,16 @@
+<html>
+<head>
+    <title>Ninja Trader</title>
+    <script data-main="js/scan" src="js/lib/require.js"></script>
+    <script>
+    </script>
+</head>
+
+<body>
+
+<a href="#">Refresh</a>
+
+<div id="scanResult"></div>
+
+</body>
+</html>
