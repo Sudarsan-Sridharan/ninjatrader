@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.model.request;
 
-import com.bn.ninjatrader.common.data.Value;
+import com.bn.ninjatrader.model.deprecated.Value;
 import com.google.common.collect.Sets;
 import org.testng.annotations.Test;
 

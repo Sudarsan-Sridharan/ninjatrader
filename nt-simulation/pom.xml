@@ -14,6 +14,10 @@
     <dependencies>
         <dependency>
             <groupId>com.beachninja</groupId>
+            <artifactId>nt-calculator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.beachninja</groupId>
             <artifactId>nt-common</artifactId>
         </dependency>
         <dependency>
@@ -22,7 +26,7 @@
         </dependency>
         <dependency>
             <groupId>com.beachninja</groupId>
-            <artifactId>nt-model</artifactId>
+            <artifactId>nt-model-datastore</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.inject.extensions</groupId>
@@ -32,7 +36,7 @@
         <!-- Test dependencies -->
         <dependency>
             <groupId>com.beachninja</groupId>
-            <artifactId>nt-common</artifactId>
+            <artifactId>nt-model</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

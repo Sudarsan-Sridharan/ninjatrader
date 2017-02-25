@@ -16,8 +16,8 @@
 
 package com.bn.ninjatrader.service.appengine.listener;
 
-import com.bn.ninjatrader.common.translator.LocalDateTranslatorFactory;
-import com.bn.ninjatrader.model.appengine.PriceDocument;
+import com.bn.ninjatrader.model.datastore.translator.LocalDateTranslatorFactory;
+import com.bn.ninjatrader.model.datastore.document.PriceDocument;
 import com.googlecode.objectify.ObjectifyService;
 
 import javax.servlet.ServletContextEvent;

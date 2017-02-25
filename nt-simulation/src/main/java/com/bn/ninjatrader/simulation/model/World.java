@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.common.boardlot.BoardLotTable;
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

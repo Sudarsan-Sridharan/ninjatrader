@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.calculator;
 
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.simulation.data.DataMap;
 
 /**

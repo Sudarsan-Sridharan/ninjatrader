@@ -1,9 +1,9 @@
 //package com.bn.ninjatrader.process.calc;
 //
-//import com.bn.ninjatrader.common.data.Price;
-//import com.bn.ninjatrader.common.data.RSIValue;
+//import com.bn.ninjatrader.model.entity.Price;
+//import com.bn.ninjatrader.model.deprecated.RSIValue;
 //import com.bn.ninjatrader.common.data.Value;
-//import com.bn.ninjatrader.common.util.TestUtil;
+//import com.bn.ninjatrader.model.util.TestUtil;
 //import com.bn.ninjatrader.model.dao.EMADao;
 //import com.bn.ninjatrader.model.dao.PriceDao;
 //import com.bn.ninjatrader.model.guice.NtModelTestModule;

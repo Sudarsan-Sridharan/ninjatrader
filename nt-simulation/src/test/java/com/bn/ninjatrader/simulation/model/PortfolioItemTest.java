@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.model;
 
-import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.simulation.util.DummyObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.junit.Test;
@@ -116,7 +116,7 @@ public class PortfolioItemTest {
 
   @Test
   public void testSerializeDeserialize_shouldProduceEqualObject() throws IOException {
-    final ObjectMapper om = TestUtil.objectMapper();
+    final ObjectMapper om = DummyObjectMapperProvider.get();
     final String json = om.writeValueAsString(orig);
     assertThat(om.readValue(json, PortfolioItem.class)).isEqualTo(orig);
   }

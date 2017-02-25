@@ -1,11 +1,11 @@
 package com.bn.ninjatrader.simulation.statement;
 
-import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.LocalProperties;
 import com.bn.ninjatrader.simulation.model.Property;
 import com.bn.ninjatrader.simulation.model.World;
+import com.bn.ninjatrader.simulation.util.DummyObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.junit.Before;
@@ -91,7 +91,7 @@ public class SetPropertyStatementTest {
 
   @Test
   public void testSerializeDeserialize_shouldProduceEqualObject() throws IOException {
-    final ObjectMapper om = TestUtil.objectMapper();
+    final ObjectMapper om = DummyObjectMapperProvider.get();
     final String json = om.writeValueAsString(orig);
     assertThat(om.readValue(json, Statement.class)).isEqualTo(orig);
   }

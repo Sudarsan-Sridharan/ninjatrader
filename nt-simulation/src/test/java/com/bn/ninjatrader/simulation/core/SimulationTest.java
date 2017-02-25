@@ -1,6 +1,8 @@
 package com.bn.ninjatrader.simulation.core;
 
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
+import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.bn.ninjatrader.simulation.calculator.VarCalculator;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
@@ -27,8 +29,9 @@ public class SimulationTest {
 
   private final LocalDate date1 = LocalDate.of(2016, 2, 1);
   private final LocalDate date2 = LocalDate.of(2016, 2, 2);
-  private final Price price1 = new Price(date1, 1.2, 1.4, 1.1, 1.3, 100000);
-  private final Price price2 = new Price(date1, 2.2, 2.4, 2.1, 2.3, 200000);
+  private final PriceBuilderFactory pbf = new DummyPriceBuilderFactory();
+  private final Price price1 = pbf.builder().date(date1).open(1.2).high(1.4).low(1.1).close(1.3).volume(100000).build();
+  private final Price price2 = pbf.builder().date(date1).open(2.2).high(2.4).low(2.1).close(2.3).volume(200000).build();
   private final List<Price> prices = Lists.newArrayList(price1, price2);
   private final BarData bar1 = BarData.builder().price(price1).index(0).build();
   private final BarData bar2 = BarData.builder().price(price2).index(1).build();

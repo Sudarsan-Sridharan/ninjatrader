@@ -1,11 +1,11 @@
 package com.bn.ninjatrader.logical.expression.condition;
 
-import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.logical.expression.model.Data;
-import com.bn.ninjatrader.logical.expression.operator.InequalityOperator;
 import com.bn.ninjatrader.logical.expression.operation.Constant;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.bn.ninjatrader.logical.expression.operator.InequalityOperator;
+import com.bn.ninjatrader.logical.expression.util.TestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.junit.Test;
@@ -99,7 +99,7 @@ public class BasicConditionTest {
 
   @Test
   public void testSerializeDeserialize_shouldProduceEqualObject() throws IOException {
-    final ObjectMapper om = TestUtil.objectMapper();
+    final ObjectMapper om = TestUtil.om();
     final Condition condition = new BasicCondition(Constant.of(3.0), GT, Constant.of(1.0));
     final String json = om.writeValueAsString(condition);
     assertThat(om.readValue(json, Condition.class)).isEqualTo(condition);

@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.service.resource;
 
-import com.bn.ninjatrader.common.data.Report;
+import com.bn.ninjatrader.model.deprecated.Report;
 import com.bn.ninjatrader.model.dao.ReportDao;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.fasterxml.jackson.databind.ObjectMapper;

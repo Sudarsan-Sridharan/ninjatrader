@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.service.task;
 
-import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.dataimport.daily.PseTraderDailyPriceImporter;
+import com.bn.ninjatrader.model.util.TestUtil;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Before;

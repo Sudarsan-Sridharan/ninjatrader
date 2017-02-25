@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.statement;
 
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.History;

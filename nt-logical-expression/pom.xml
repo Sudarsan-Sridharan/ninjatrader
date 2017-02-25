@@ -16,10 +16,14 @@
             <groupId>com.beachninja</groupId>
             <artifactId>nt-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.beachninja</groupId>
+            <artifactId>nt-model</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.beachninja</groupId>
-            <artifactId>nt-common</artifactId>
+            <artifactId>nt-model</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

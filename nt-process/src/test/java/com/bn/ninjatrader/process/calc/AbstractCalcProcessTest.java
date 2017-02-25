@@ -1,8 +1,10 @@
 package com.bn.ninjatrader.process.calc;
 
 import com.beust.jcommander.internal.Lists;
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.common.type.TimeFrame;
+import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 import com.bn.ninjatrader.process.request.CalcRequest;
@@ -25,8 +27,12 @@ public class AbstractCalcProcessTest {
   private final LocalDate now = LocalDate.of(2016, 8, 2);
   private final LocalDate tomorrow = LocalDate.of(2016, 8, 3);
 
-  private final Price price1 = Price.builder().date(yesterday).open(1).high(1).low(1).close(1).volume(1000).build();
-  private final Price price2 = Price.builder().date(now).open(2).high(2).low(2).close(2).volume(2000).build();
+  private final PriceBuilderFactory priceBuilderFactory = new DummyPriceBuilderFactory();
+
+  private final Price price1 = priceBuilderFactory.builder()
+      .date(yesterday).open(1).high(1).low(1).close(1).volume(1000).build();
+  private final Price price2 = priceBuilderFactory.builder()
+      .date(now).open(2).high(2).low(2).close(2).volume(2000).build();
 
   private PriceDao priceDao;
   private AbstractCalcProcess process;

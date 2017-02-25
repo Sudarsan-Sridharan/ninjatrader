@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.logical.expression.operation;
 
-import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.logical.expression.model.Data;
+import com.bn.ninjatrader.logical.expression.util.TestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.junit.Test;
@@ -112,7 +112,7 @@ public class BinaryOperationTest {
 
   @Test
   public void testSerializeDeserialize_shouldReturnEqualObject() throws IOException {
-    final ObjectMapper om = TestUtil.objectMapper();
+    final ObjectMapper om = TestUtil.om();
     final BinaryOperation operation = BinaryOperation.of(var1, PLUS, BinaryOperation.of(3, PLUS, var2));
     final String json = om.writeValueAsString(operation);
     final Operation deserialized = om.readValue(json, Operation.class);

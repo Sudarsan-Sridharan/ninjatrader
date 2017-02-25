@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.model.request;
 
-import com.bn.ninjatrader.common.data.Report;
+import com.bn.ninjatrader.model.deprecated.Report;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;

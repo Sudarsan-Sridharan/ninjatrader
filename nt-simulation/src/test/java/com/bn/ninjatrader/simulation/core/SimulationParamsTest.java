@@ -1,10 +1,10 @@
 package com.bn.ninjatrader.simulation.core;
 
-import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.logical.expression.condition.Conditions;
 import com.bn.ninjatrader.simulation.data.DataType;
 import com.bn.ninjatrader.simulation.operation.Variables;
 import com.bn.ninjatrader.simulation.statement.ConditionalStatement;
+import com.bn.ninjatrader.simulation.util.DummyObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ public class SimulationParamsTest {
 
   @Test
   public void testSerializeDeserialize_shouldProduceEqualObject() throws IOException {
-    final ObjectMapper om = TestUtil.objectMapper();
+    final ObjectMapper om = DummyObjectMapperProvider.get();
     final SimulationParams params = new SimulationParams();
     params.setStartingCash(100000);
     params.setSymbol("MEG");

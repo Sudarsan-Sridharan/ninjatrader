@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.simulation.operation.function;
 
 import com.bn.ninjatrader.common.boardlot.BoardLotTable;
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.bn.ninjatrader.logical.expression.operation.Variable;

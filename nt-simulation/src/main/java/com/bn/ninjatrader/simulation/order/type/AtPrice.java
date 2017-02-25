@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.order.type;
 
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.logical.expression.operation.Constant;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.bn.ninjatrader.logical.expression.operation.Variable;

@@ -11,7 +11,6 @@
     <packaging>jar</packaging>
     <artifactId>nt-calculator</artifactId>
 
-
     <dependencies>
         <dependency>
             <groupId>com.beachninja</groupId>
@@ -21,11 +20,15 @@
             <groupId>com.beachninja</groupId>
             <artifactId>nt-logical-expression</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.beachninja</groupId>
+            <artifactId>nt-model</artifactId>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>
             <groupId>com.beachninja</groupId>
-            <artifactId>nt-common</artifactId>
+            <artifactId>nt-model</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

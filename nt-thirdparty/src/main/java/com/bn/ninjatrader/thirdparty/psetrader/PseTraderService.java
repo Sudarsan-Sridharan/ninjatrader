@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.thirdparty.psetrader;
 
-import com.bn.ninjatrader.common.data.DailyQuote;
+import com.bn.ninjatrader.model.entity.DailyQuote;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

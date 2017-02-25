@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.core;
 
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.simulation.calculator.VarCalculator;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
@@ -93,31 +93,19 @@ public class Simulation implements BrokerListener {
 
   }
 
-
-//  @Deprecated
-//  private void sellAll(final String symbol) {
-//    if (!account.getPortfolio().isEmpty()) {
-//      final List<Price> priceList = priceDatastore.get(symbol);
-//      int lastIndex = priceList.size() - 1;
-//      final Price lastPrice = priceList.get(lastIndex);
-//      final BarData barData = barDataFactory.create(symbol, lastPrice, world, varCalculators);
-//      broker.submitOrder(SellOrder.builder().date(lastPrice.getDate()).build(), barData);
-//      broker.processPendingOrders(barData);
-//    }
-//  }
-
   public void addVarCalculators(final Collection<VarCalculator> varCalculators) {
     this.varCalculators.addAll(varCalculators);
   }
 
   public SimulationReport createSimulationReport() {
-    final SimulationReport report = new SimulationReport();
-    report.setSimulationParams(simulationParams);
-    report.setTradeStatistic(account.getTradeStatistic());
-    report.setTransactions(account.getBookkeeper().getTransactions());
-    report.setStartingCash(simulationParams.getStartingCash());
-    report.setEndingCash(account.getTotalAccountValue());
-    report.setMarks(world.getChartMarks());
+    final SimulationReport report = SimulationReport.builder()
+        .params(simulationParams)
+        .tradeStatistics(account.getTradeStatistic())
+        .addTransactions(account.getBookkeeper().getTransactions())
+        .startingCash(simulationParams.getStartingCash())
+        .endingCash(account.getTotalAccountValue())
+        .addMarks(world.getChartMarks())
+        .build();
     return report;
   }
 

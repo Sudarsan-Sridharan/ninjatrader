@@ -1,7 +1,9 @@
 package com.bn.ninjatrader.dataimport.history.parser;
 
-import com.bn.ninjatrader.common.data.DailyQuote;
+import com.bn.ninjatrader.model.entity.DailyQuote;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -32,6 +34,13 @@ public class CsvDataParser implements DataParser<File> {
                   DateTimeFormatter.ofPattern("M/d/yyyy"),
                   DateTimeFormatter.ofPattern("M/dd/yyyy"),
                   DateTimeFormatter.ofPattern("MM-dd-yyyy")};
+
+  private final PriceBuilderFactory priceBuilderFactory;
+
+  @Inject
+  public CsvDataParser(final PriceBuilderFactory priceBuilderFactory) {
+    this.priceBuilderFactory = priceBuilderFactory;
+  }
 
   public List<DailyQuote> parse(File file) throws IOException {
     List<DailyQuote> quotes = Lists.newArrayList();

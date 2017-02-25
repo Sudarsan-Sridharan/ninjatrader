@@ -1,10 +1,10 @@
 package com.bn.ninjatrader.dataimport.daily;
 
-import com.bn.ninjatrader.common.data.DailyQuote;
+import com.bn.ninjatrader.model.entity.DailyQuote;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.common.type.TimeFrame;
+import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.request.SaveRequest;
-import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,9 +23,12 @@ public abstract class AbstractDailyPriceImporter {
   private static final Logger LOG = LoggerFactory.getLogger(AbstractDailyPriceImporter.class);
 
   private final PriceDao priceDao;
+  private final PriceBuilderFactory priceBuilderFactory;
 
-  public AbstractDailyPriceImporter(final PriceDao priceDao) {
+  public AbstractDailyPriceImporter(final PriceDao priceDao,
+                                    final PriceBuilderFactory priceBuilderFactory) {
     this.priceDao = priceDao;
+    this.priceBuilderFactory = priceBuilderFactory;
   }
 
   public void importData(final LocalDate date) {
@@ -54,9 +57,9 @@ public abstract class AbstractDailyPriceImporter {
         continue;
       }
 
-      priceDao.save(SaveRequest.save(quote.getSymbol())
-          .timeFrame(TimeFrame.ONE_DAY)
-          .values(Lists.newArrayList(quote.getPrice())));
+      priceDao.save(SavePriceRequest.forSymbol(quote.getSymbol())
+          .timeframe(TimeFrame.ONE_DAY)
+          .addPrice(quote.getPrice(priceBuilderFactory)));
     }
   }
 

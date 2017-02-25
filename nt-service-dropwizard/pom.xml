@@ -18,6 +18,10 @@
         </dependency>
         <dependency>
             <groupId>com.beachninja</groupId>
+            <artifactId>nt-model-mongo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.beachninja</groupId>
             <artifactId>nt-service</artifactId>
         </dependency>
         <dependency>
@@ -28,7 +32,7 @@
         <!-- Test dependencies -->
         <dependency>
             <groupId>com.beachninja</groupId>
-            <artifactId>nt-common</artifactId>
+            <artifactId>nt-model</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

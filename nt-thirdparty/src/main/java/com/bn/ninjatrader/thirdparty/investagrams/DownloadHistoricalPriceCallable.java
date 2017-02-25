@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.thirdparty.investagrams;
 
-import com.bn.ninjatrader.common.data.DailyQuote;
+import com.bn.ninjatrader.model.entity.DailyQuote;
 import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.thirdparty.exception.StockReadFailException;
 import com.bn.ninjatrader.thirdparty.util.DocumentDownloader;

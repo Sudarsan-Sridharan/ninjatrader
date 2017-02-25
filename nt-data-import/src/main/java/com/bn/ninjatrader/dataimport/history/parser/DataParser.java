@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.dataimport.history.parser;
 
-import com.bn.ninjatrader.common.data.DailyQuote;
+import com.bn.ninjatrader.model.entity.DailyQuote;
 
 import java.util.List;
 

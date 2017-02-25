@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.service.task;
 
-import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.dataimport.daily.PseDailyPriceImporter;
+import com.bn.ninjatrader.model.util.TestUtil;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
@@ -14,7 +14,8 @@ import java.time.Clock;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author bradwee2000@gmail.com

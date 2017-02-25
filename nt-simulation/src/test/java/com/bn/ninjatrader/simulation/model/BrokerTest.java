@@ -1,9 +1,13 @@
 package com.bn.ninjatrader.simulation.model;
 
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
+import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.listener.BrokerListener;
-import com.bn.ninjatrader.simulation.order.*;
+import com.bn.ninjatrader.simulation.order.BuyOrder;
+import com.bn.ninjatrader.simulation.order.PendingOrder;
+import com.bn.ninjatrader.simulation.order.SellOrder;
 import com.bn.ninjatrader.simulation.order.executor.BuyOrderExecutor;
 import com.bn.ninjatrader.simulation.order.executor.OrderExecutor;
 import com.bn.ninjatrader.simulation.order.executor.SellOrderExecutor;
@@ -20,9 +24,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by Brad on 8/23/16.
@@ -30,7 +32,8 @@ import static org.mockito.Mockito.when;
 public class BrokerTest {
 
   private final LocalDate now = LocalDate.of(2016, 1, 1);
-  private final Price price = new Price(now, 1, 2, 3, 4, 1000);
+  private final PriceBuilderFactory pbf = new DummyPriceBuilderFactory();
+  private final Price price = pbf.builder().date(now).open(1).high(2).low(3).close(4).volume(1000).build();
   private final BarData barData = BarData.builder().price(price).build();
   private final BuyTransaction buyTransaction = Transaction.buy().price(4).shares(1000).date(now).build();
   private final SellTransaction sellTransaction = Transaction.sell().price(4).shares(1000).date(now).build();

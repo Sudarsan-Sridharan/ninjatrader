@@ -1,10 +1,10 @@
 package com.bn.ninjatrader.simulation.core;
 
 import com.bn.ninjatrader.common.boardlot.BoardLotTable;
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.logical.expression.condition.Conditions;
+import com.bn.ninjatrader.model.request.FindPriceRequest;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.simulation.calculator.VarCalculatorFactory;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
 import com.bn.ninjatrader.simulation.model.Broker;
@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.bn.ninjatrader.common.util.TestUtil.randomPrices;
+import static com.bn.ninjatrader.model.util.TestUtil.randomPrices;
 import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_CLOSE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -77,7 +77,7 @@ public class SimulationFactoryTest {
     final List<Price> prices = Lists.newArrayList(mock(Price.class));
 
     when(brokerFactory.createBroker()).thenReturn(broker);
-    when(priceDao.find(any(FindRequest.class))).thenReturn(prices);
+    when(priceDao.find(any(FindPriceRequest.class))).thenReturn(prices);
 
     final SimulationFactory factory =
         new SimulationFactory(varCalculatorFactory, priceDao, brokerFactory, barDataFactory, boardLotTable);

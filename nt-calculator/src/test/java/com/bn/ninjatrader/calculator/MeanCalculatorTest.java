@@ -2,9 +2,11 @@ package com.bn.ninjatrader.calculator;
 
 import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.calculator.parameter.CalcParams;
-import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.common.data.Value;
-import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.model.deprecated.Value;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
+import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
+import com.bn.ninjatrader.model.util.TestUtil;
 import mockit.Tested;
 import org.testng.annotations.Test;
 
@@ -25,11 +27,12 @@ public class MeanCalculatorTest {
   @Tested
   private MeanCalculator calculator;
 
+  private final PriceBuilderFactory priceBuilderFactory = new DummyPriceBuilderFactory();
+
   @Test
   public void testMeanOfPeriod() {
     final int highest = 10;
     final int lowest = 5;
-
     final LocalDate date = LocalDate.of(2016, 1, 1);
     final List<Price> priceList = Lists.newArrayList();
 
@@ -118,20 +121,24 @@ public class MeanCalculatorTest {
   @Test
   public void testMeanPrecision() {
     // Test 1
-    List<Value> result = calculator.calcForPeriod(withPrices(Price.builder().high(10.0052).low(0.00101).build()), 1);
+    List<Value> result = calculator.calcForPeriod(withPrices(priceBuilderFactory.builder()
+        .high(10.0052).low(0.00101).build()), 1);
     assertThat(result).hasSize(1);
     assertThat(result.get(0).getValue()).isEqualTo(5.003105);
 
     // Test 2
-    result = calculator.calcForPeriod(withPrices(Price.builder().high(9.5).low(9.5).build()), 1);
+    result = calculator.calcForPeriod(withPrices(priceBuilderFactory.builder()
+        .high(9.5).low(9.5).build()), 1);
     assertThat(result.get(0).getValue()).isEqualTo(9.5);
 
     // Test 3
-    result = calculator.calcForPeriod(withPrices(Price.builder().high(9.5).low(9.4).build()), 1);
+    result = calculator.calcForPeriod(withPrices(priceBuilderFactory.builder()
+        .high(9.5).low(9.4).build()), 1);
     assertThat(result.get(0).getValue()).isEqualTo(9.45);
 
     // Test 3
-    result = calculator.calcForPeriod(withPrices(Price.builder().high(0.000051).low(0.000053).build()), 1);
+    result = calculator.calcForPeriod(withPrices(priceBuilderFactory.builder()
+        .high(0.000051).low(0.000053).build()), 1);
     assertThat(result.get(0).getValue()).isEqualTo(0.000052);
   }
 }

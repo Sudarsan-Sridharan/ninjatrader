@@ -1,14 +1,15 @@
 package com.bn.ninjatrader.model.request;
 
 import com.bn.ninjatrader.common.type.TimeFrame;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import java.time.LocalDate;
 
 /**
  * Created by Brad on 7/27/16.
  */
+@Deprecated
 public class FindRequest {
 
   private String symbol;
@@ -17,13 +18,17 @@ public class FindRequest {
   private LocalDate toDate;
   private TimeFrame timeFrame = TimeFrame.ONE_DAY;
 
-  public static FindRequest findSymbol(String symbol) {
+  public static FindRequest findSymbol(final String symbol) {
     return new FindRequest(symbol);
   }
 
   public FindRequest() {}
 
-  public FindRequest(String symbol, TimeFrame timeFrame, int period, LocalDate from, LocalDate to) {
+  public FindRequest(final String symbol,
+                     final TimeFrame timeFrame,
+                     final int period,
+                     final LocalDate from,
+                     final LocalDate to) {
     this.symbol = symbol;
     this.timeFrame = timeFrame;
     this.period = period;
@@ -81,13 +86,30 @@ public class FindRequest {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    FindRequest that = (FindRequest) o;
+    return period == that.period &&
+        Objects.equal(symbol, that.symbol) &&
+        Objects.equal(fromDate, that.fromDate) &&
+        Objects.equal(toDate, that.toDate) &&
+        timeFrame == that.timeFrame;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(symbol, period, fromDate, toDate, timeFrame);
+  }
+
+  @Override
   public String toString() {
-    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .append("symbol", symbol)
-        .append("timeframe", timeFrame)
-        .append("period", period)
-        .append("from", fromDate)
-        .append("to", toDate)
-        .build();
+    return MoreObjects.toStringHelper(this)
+        .add("symbol", symbol)
+        .add("period", period)
+        .add("fromDate", fromDate)
+        .add("toDate", toDate)
+        .add("timeFrame", timeFrame)
+        .toString();
   }
 }

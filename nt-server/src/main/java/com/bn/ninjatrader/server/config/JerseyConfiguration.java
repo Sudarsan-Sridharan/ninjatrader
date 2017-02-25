@@ -1,8 +1,5 @@
 package com.bn.ninjatrader.server.config;
 
-import com.bn.ninjatrader.dataimport.guice.NtDataModule;
-import com.bn.ninjatrader.model.guice.NtModelMongoModule;
-import com.bn.ninjatrader.process.guice.NtProcessModule;
 import com.bn.ninjatrader.server.page.ChartPage;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -14,11 +11,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 public class JerseyConfiguration extends ResourceConfig {
 
   public JerseyConfiguration() {
-    final Injector injector = Guice.createInjector(
-        new NtModelMongoModule(),
-        new NtDataModule(),
-        new NtProcessModule());
-
+    final Injector injector = Guice.createInjector();
     register(injector.getInstance(ChartPage.class));
   }
 }

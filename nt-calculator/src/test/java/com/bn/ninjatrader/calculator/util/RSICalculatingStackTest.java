@@ -1,9 +1,9 @@
 package com.bn.ninjatrader.calculator.util;
 
 import com.beust.jcommander.internal.Lists;
-import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.common.data.RSIValue;
-import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.model.deprecated.RSIValue;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.util.TestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
@@ -133,8 +133,7 @@ public class RSICalculatingStackTest {
   }
 
   private Price change(double change) {
-    Price price = TestUtil.randomPrice();
-    price.setChange(change);
+    Price price = TestUtil.randomPriceBuilder().change(change).build();
     return price;
   }
 }

@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.thirdparty.pse;
 
-import com.bn.ninjatrader.common.data.Stock;
+import com.bn.ninjatrader.model.deprecated.Stock;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;

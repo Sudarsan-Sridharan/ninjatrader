@@ -1,8 +1,8 @@
 package com.bn.ninjatrader.simulation.operation.function;
 
-import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.bn.ninjatrader.simulation.data.BarData;
+import com.bn.ninjatrader.simulation.util.DummyObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.junit.Before;
@@ -60,7 +60,7 @@ public class PcntChangeValueTest {
 
   @Test
   public void testSerializeDeserialize_shouldReturnSameObject() throws IOException {
-    final ObjectMapper om = TestUtil.objectMapper();
+    final ObjectMapper om = DummyObjectMapperProvider.get();
     final String serialized = om.writeValueAsString(orig);
     assertThat(om.readValue(serialized, Operation.class)).isEqualTo(orig);
   }

@@ -16,8 +16,8 @@
 
 package com.beachninja.ninjatrader.service.appengine.standard.listener;
 
-import com.bn.ninjatrader.common.translator.LocalDateTranslatorFactory;
-import com.bn.ninjatrader.model.appengine.PriceDocument;
+import com.bn.ninjatrader.model.datastore.translator.LocalDateTranslatorFactory;
+import com.bn.ninjatrader.model.datastore.document.PriceDocument;
 import com.googlecode.objectify.ObjectifyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

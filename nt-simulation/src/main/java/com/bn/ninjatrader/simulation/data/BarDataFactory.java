@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.data;
 
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.simulation.calculator.VarCalculator;
 import com.bn.ninjatrader.simulation.model.World;
 import com.google.inject.Singleton;

@@ -1,15 +1,15 @@
 package com.bn.ninjatrader.service.model;
 
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.util.NtLocalDateDeserializer;
+import com.bn.ninjatrader.common.util.NtLocalDateSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,13 +21,13 @@ import java.util.List;
 public class PriceResponse {
 
   @JsonProperty("from")
-  @JsonSerialize(using = LocalDateSerializer.class)
-  @JsonDeserialize(using = LocalDateDeserializer.class)
+  @JsonSerialize(using = NtLocalDateSerializer.class)
+  @JsonDeserialize(using = NtLocalDateDeserializer.class)
   private LocalDate fromDate;
 
   @JsonProperty("to")
-  @JsonSerialize(using = LocalDateSerializer.class)
-  @JsonDeserialize(using = LocalDateDeserializer.class)
+  @JsonSerialize(using = NtLocalDateSerializer.class)
+  @JsonDeserialize(using = NtLocalDateDeserializer.class)
   private LocalDate toDate;
 
   @JsonProperty("values")
@@ -63,11 +63,26 @@ public class PriceResponse {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    PriceResponse that = (PriceResponse) o;
+    return Objects.equal(fromDate, that.fromDate) &&
+        Objects.equal(toDate, that.toDate) &&
+        Objects.equal(priceList, that.priceList);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(fromDate, toDate, priceList);
+  }
+
+  @Override
   public String toString() {
-    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .append("fromDate", fromDate)
-        .append("toDate", toDate)
-        .append("size", priceList.size())
+    return MoreObjects.toStringHelper(this)
+        .add("fromDate", fromDate)
+        .add("toDate", toDate)
+        .add("priceList", priceList)
         .toString();
   }
 }

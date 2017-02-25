@@ -1,7 +1,8 @@
 package com.bn.ninjatrader.simulation.statement;
 
-import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
+import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.model.Broker;
@@ -11,6 +12,7 @@ import com.bn.ninjatrader.simulation.order.BuyOrder;
 import com.bn.ninjatrader.simulation.order.OrderConfig;
 import com.bn.ninjatrader.simulation.order.type.OrderTypes;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
+import com.bn.ninjatrader.simulation.util.DummyObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.junit.Before;
@@ -29,8 +31,8 @@ import static org.mockito.Mockito.*;
 public class BuyOrderStatementTest {
 
   private final LocalDate now = LocalDate.of(2016, 2, 1);
-
-  private final Price price = Price.builder().date(now).close(1.1).build();
+  private final PriceBuilderFactory pbf = new DummyPriceBuilderFactory();
+  private final Price price = pbf.builder().date(now).close(1.1).build();
 
   private final BuyOrderStatement orig = BuyOrderStatement.builder()
       .orderType(OrderTypes.marketClose()).build();
@@ -125,7 +127,7 @@ public class BuyOrderStatementTest {
 
   @Test
   public void testSerializeDeserialize_shouldProduceEqualObject() throws IOException {
-    final ObjectMapper om = TestUtil.objectMapper();
+    final ObjectMapper om = DummyObjectMapperProvider.get();
     final String json = om.writeValueAsString(orig);
     assertThat(om.readValue(json, BuyOrderStatement.class)).isEqualTo(orig);
   }

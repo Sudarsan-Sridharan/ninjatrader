@@ -1,6 +1,8 @@
 package com.bn.ninjatrader.simulation.data;
 
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
+import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import org.junit.Test;
 
 import static com.bn.ninjatrader.simulation.operation.Variables.*;
@@ -11,9 +13,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class BarDataTest {
 
+  private final PriceBuilderFactory pbf = new DummyPriceBuilderFactory();
+
   @Test
   public void testBuild_shouldSetProperties() {
-    final Price price = Price.builder().close(1).build();
+    final Price price = pbf.builder().close(1).build();
     final BarData barData = BarData.builder().price(price).index(10).symbol("MEG").build();
 
     assertThat(barData).isNotNull();

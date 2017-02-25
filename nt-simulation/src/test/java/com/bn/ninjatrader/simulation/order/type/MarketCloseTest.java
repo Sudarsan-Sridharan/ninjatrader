@@ -1,8 +1,10 @@
 package com.bn.ninjatrader.simulation.order.type;
 
-import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
+import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.bn.ninjatrader.simulation.data.BarData;
+import com.bn.ninjatrader.simulation.util.DummyObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.junit.Before;
@@ -19,7 +21,8 @@ import static org.mockito.Mockito.when;
  */
 public class MarketCloseTest {
 
-  private final Price price = Price.builder().open(1).high(2).low(3).close(4.4).build();
+  private final PriceBuilderFactory pbf = new DummyPriceBuilderFactory();
+  private final Price price = pbf.builder().open(1).high(2).low(3).close(4.4).build();
   private final MarketClose marketClose = new MarketClose();
 
   private BarData submittedBarData;
@@ -63,7 +66,7 @@ public class MarketCloseTest {
 
   @Test
   public void testSerializeDeserialize_shouldProduceEqualObject() throws IOException {
-    final ObjectMapper om = TestUtil.objectMapper();
+    final ObjectMapper om = DummyObjectMapperProvider.get();
     final String json = om.writeValueAsString(marketClose);
     assertThat(om.readValue(json, OrderType.class)).isEqualTo(marketClose);
   }

@@ -1,18 +1,16 @@
 package com.bn.ninjatrader.dataimport.history;
 
-import com.bn.ninjatrader.common.data.DailyQuote;
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.DailyQuote;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.dataimport.history.parser.CsvDataParser;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.guice.NtModelMongoModule;
-import com.bn.ninjatrader.model.request.SaveRequest;
+import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import com.google.inject.Guice;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -37,11 +35,15 @@ public class CsvPriceImporter {
 
   private final CsvDataParser parser;
   private final PriceDao priceDao;
+  private final PriceBuilderFactory priceBuilderFactory;
 
   @Inject
-  public CsvPriceImporter(final CsvDataParser parser, final PriceDao priceDao) {
+  public CsvPriceImporter(final CsvDataParser parser,
+                          final PriceDao priceDao,
+                          final PriceBuilderFactory priceBuilderFactory) {
     this.parser = parser;
     this.priceDao = priceDao;
+    this.priceBuilderFactory = priceBuilderFactory;
   }
 
   public void importPrices() throws IOException {
@@ -69,21 +71,21 @@ public class CsvPriceImporter {
     final Multimap<String, Price> symbolMultimap = ArrayListMultimap.create();
 
     for (final DailyQuote quote : quotes) {
-      symbolMultimap.put(quote.getSymbol(), quote.getPrice());
+      symbolMultimap.put(quote.getSymbol(), quote.getPrice(priceBuilderFactory));
     }
 
     for (final Map.Entry<String, Collection<Price>> perSymbol : symbolMultimap.asMap().entrySet()) {
       final String symbol = perSymbol.getKey();
-      priceDao.save(SaveRequest.save(symbol).timeFrame(TimeFrame.ONE_DAY).values(perSymbol.getValue()));
+      priceDao.save(SavePriceRequest.forSymbol(symbol).timeframe(TimeFrame.ONE_DAY).addPrices(perSymbol.getValue()));
     }
   }
 
-  public static void main(String args[]) throws Exception {
-    final Injector injector = Guice.createInjector(
-        new NtModelMongoModule()
-    );
-
-    final CsvPriceImporter app = injector.getInstance(CsvPriceImporter.class);
-    app.importPrices();
-  }
+//  public static void main(String args[]) throws Exception {
+//    final Injector injector = Guice.createInjector(
+//        new NtModelMongoModule()
+//    );
+//
+//    final CsvPriceImporter app = injector.getInstance(CsvPriceImporter.class);
+//    app.importPrices();
+//  }
 }

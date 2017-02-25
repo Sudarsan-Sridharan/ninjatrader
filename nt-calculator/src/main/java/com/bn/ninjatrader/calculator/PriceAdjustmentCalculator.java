@@ -1,10 +1,12 @@
 package com.bn.ninjatrader.calculator;
 
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.logical.expression.model.Data;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.google.common.collect.Lists;
+import com.google.inject.Singleton;
 
 import java.util.List;
 
@@ -14,12 +16,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * @author bradwee2000@gmail.com
  */
+@Singleton
 public class PriceAdjustmentCalculator {
 
   public static final Variable PRICE = Variable.of("PRICE");
 
   private enum Attr {
     OPEN, HIGH, LOW, CLOSE, CHANGE
+  }
+
+  private final PriceBuilderFactory priceBuilderFactory;
+
+  public PriceAdjustmentCalculator(final PriceBuilderFactory priceBuilderFactory) {
+    this.priceBuilderFactory = priceBuilderFactory;
   }
 
   public List<Price> calc(final List<Price> priceList, final Operation adjustment) {
@@ -43,7 +52,7 @@ public class PriceAdjustmentCalculator {
    * @return
    */
   private Price adjustPrice(final PriceData priceData, final Operation adj) {
-    return Price.builder().copyOf(priceData.getPrice())
+    return priceBuilderFactory.builder().copyOf(priceData.getPrice())
         .open(adj.getValue(priceData.attr(Attr.OPEN)))
         .high(adj.getValue(priceData.attr(Attr.HIGH)))
         .low(adj.getValue(priceData.attr(Attr.LOW)))

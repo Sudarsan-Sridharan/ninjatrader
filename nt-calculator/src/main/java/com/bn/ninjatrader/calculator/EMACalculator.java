@@ -2,7 +2,7 @@ package com.bn.ninjatrader.calculator;
 
 import com.bn.ninjatrader.calculator.parameter.CalcParams;
 import com.bn.ninjatrader.calculator.util.EMACalculatingStack;
-import com.bn.ninjatrader.common.data.Value;
+import com.bn.ninjatrader.model.deprecated.Value;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

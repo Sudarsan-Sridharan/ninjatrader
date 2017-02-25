@@ -36,8 +36,7 @@
         <!-- Test dependencies -->
         <dependency>
             <groupId>com.beachninja</groupId>
-            <artifactId>nt-common</artifactId>
-            <version>${project.version}</version>
+            <artifactId>nt-model</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

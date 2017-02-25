@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.simulation.calculator;
 
 import com.bn.ninjatrader.calculator.util.SMACalculatingStack;
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.data.DataMap;
 import com.bn.ninjatrader.simulation.operation.Variables;

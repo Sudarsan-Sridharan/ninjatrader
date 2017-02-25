@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.process.service;
 
-import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.model.util.TestUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.process.calc.CalcProcess;
 import com.bn.ninjatrader.process.request.CalcRequest;

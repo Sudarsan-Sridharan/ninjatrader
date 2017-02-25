@@ -1,10 +1,13 @@
 package com.bn.ninjatrader.importer;
 
-import com.bn.ninjatrader.common.data.DailyQuote;
 import com.bn.ninjatrader.dataimport.history.CsvPriceImporter;
 import com.bn.ninjatrader.dataimport.history.parser.CsvDataParser;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.request.SaveRequest;
+import com.bn.ninjatrader.model.entity.DailyQuote;
+import com.bn.ninjatrader.model.entity.PriceBuilder;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
+import com.bn.ninjatrader.model.request.SavePriceRequest;
+import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +29,8 @@ public class CsvPriceImporterTest {
 
   private CsvDataParser parser;
   private PriceDao priceDao;
+  private PriceBuilderFactory priceBuilderFactory;
+  private PriceBuilder priceBuilder;
 
   private CsvPriceImporter importer;
 
@@ -43,25 +48,32 @@ public class CsvPriceImporterTest {
   public void before() {
     parser = mock(CsvDataParser.class);
     priceDao = mock(PriceDao.class);
+    priceBuilderFactory = new DummyPriceBuilderFactory();
 
-    importer = new CsvPriceImporter(parser, priceDao);
+    importer = new CsvPriceImporter(parser, priceDao, priceBuilderFactory);
   }
 
   @Test
   public void testSaveDifferentSymbols_shouldSaveQuotesForEachSymbol() {
-    final ArgumentCaptor<SaveRequest> requestCaptor = ArgumentCaptor.forClass(SaveRequest.class);
+    final ArgumentCaptor<SavePriceRequest> requestCaptor = ArgumentCaptor.forClass(SavePriceRequest.class);
     importer.save(Lists.newArrayList(quote1, quote2, quote3, quote4, quote5));
 
     verify(priceDao, times(2)).save(requestCaptor.capture());
 
-    final SaveRequest saveBdoRequest = requestCaptor.getAllValues().get(0);
+    final SavePriceRequest saveBdoRequest = requestCaptor.getAllValues().get(0);
 
     assertThat(saveBdoRequest.getSymbol()).isEqualTo("BDO");
-    assertThat(saveBdoRequest.getValues()).containsExactly(quote3.getPrice(), quote4.getPrice());
+    assertThat(saveBdoRequest.getPrices())
+        .containsExactly(
+            quote3.getPrice(priceBuilderFactory),
+            quote4.getPrice(priceBuilderFactory));
 
-    final SaveRequest saveMegRequest = requestCaptor.getAllValues().get(1);
+    final SavePriceRequest saveMegRequest = requestCaptor.getAllValues().get(1);
     assertThat(saveMegRequest.getSymbol()).isEqualTo("MEG");
-    assertThat(saveMegRequest.getValues())
-        .containsExactly(quote1.getPrice(), quote2.getPrice(), quote5.getPrice());
+    assertThat(saveMegRequest.getPrices())
+        .containsExactly(
+            quote1.getPrice(priceBuilderFactory),
+            quote2.getPrice(priceBuilderFactory),
+            quote5.getPrice(priceBuilderFactory));
   }
 }

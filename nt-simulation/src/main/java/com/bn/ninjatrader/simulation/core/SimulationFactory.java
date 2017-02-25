@@ -1,12 +1,12 @@
 package com.bn.ninjatrader.simulation.core;
 
 import com.bn.ninjatrader.common.boardlot.BoardLotTable;
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.bn.ninjatrader.model.request.FindPriceRequest;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
-import com.bn.ninjatrader.model.request.FindRequest;
 import com.bn.ninjatrader.simulation.calculator.VarCalculatorFactory;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
 import com.bn.ninjatrader.simulation.model.*;
@@ -48,7 +48,7 @@ public class SimulationFactory {
   public Simulation create(final SimulationParams params) {
     checkNotNull(params, "SimulationParams must not be null");
 
-    final FindRequest findRequest = FindRequest.findSymbol(params.getSymbol())
+    final FindPriceRequest findRequest = FindPriceRequest.forSymbol(params.getSymbol())
         .from(params.getFromDate())
         .to(params.getToDate());
 

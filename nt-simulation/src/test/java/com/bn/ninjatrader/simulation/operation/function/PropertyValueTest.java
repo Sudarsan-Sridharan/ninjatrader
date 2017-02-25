@@ -1,11 +1,11 @@
 package com.bn.ninjatrader.simulation.operation.function;
 
-import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.LocalProperties;
 import com.bn.ninjatrader.simulation.model.Property;
 import com.bn.ninjatrader.simulation.model.World;
+import com.bn.ninjatrader.simulation.util.DummyObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +48,7 @@ public class PropertyValueTest {
 
   @Test
   public void testSerializeDeserialize_shouldReturnSameObject() throws IOException {
-    final ObjectMapper om = TestUtil.objectMapper();
+    final ObjectMapper om = DummyObjectMapperProvider.get();
     final PropertyValue function = PropertyValue.of(CORRECT_KEY);
     final String serialized = om.writeValueAsString(function);
     assertThat(om.readValue(serialized, Operation.class)).isEqualTo(function);

@@ -1,8 +1,8 @@
 package com.bn.ninjatrader.logical.expression.condition;
 
-import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.logical.expression.model.Data;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.bn.ninjatrader.logical.expression.util.TestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -52,7 +52,7 @@ public class OrConditionTest {
 
   @Test
   public void testSerializeDeserialize_shouldReturnEqualObject() throws IOException {
-    final ObjectMapper om = TestUtil.objectMapper();
+    final ObjectMapper om = TestUtil.om();
     final OrCondition<Data> condition = new OrCondition<>()
         .add(Conditions.eq(Variable.of("DataType1"), 1.0))
         .add(Conditions.eq(Variable.of("DataType1"), Variable.of("DataType2")));

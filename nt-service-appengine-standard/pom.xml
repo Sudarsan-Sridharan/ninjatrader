@@ -24,7 +24,6 @@ limitations under the License.
 
     <modelVersion>4.0.0</modelVersion>
     <packaging>war</packaging>
-
     <artifactId>nt-service-appengine-standard</artifactId>
 
     <properties>
@@ -54,11 +53,6 @@ limitations under the License.
             <artifactId>nt-service</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>${appengine.version}</version>
-        </dependency>
-        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
@@ -69,7 +63,6 @@ limitations under the License.
             <artifactId>jstl</artifactId>
             <version>1.2</version>
         </dependency>
-
 
         <!-- Test Dependencies -->
         <dependency>
@@ -149,6 +142,24 @@ limitations under the License.
                 </configuration>
             </plugin>
 
+            <!--Convert code to java 7 to work in appengine standard env in the meantime-->
+            <plugin>
+                <groupId>net.orfjackal.retrolambda</groupId>
+                <artifactId>retrolambda-maven-plugin</artifactId>
+                <version>2.5.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>process-main</goal>
+                            <goal>process-test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
@@ -156,6 +167,7 @@ limitations under the License.
                 <configuration>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 </project>

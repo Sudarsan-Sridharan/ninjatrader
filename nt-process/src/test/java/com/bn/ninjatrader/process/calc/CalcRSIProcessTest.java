@@ -2,7 +2,7 @@
 //
 //import com.bn.ninjatrader.calculator.parameter.CalcParams;
 //import com.bn.ninjatrader.common.data.Price;
-//import com.bn.ninjatrader.common.data.RSIValue;
+//import com.bn.ninjatrader.model.deprecated.RSIValue;
 //import com.bn.ninjatrader.common.util.TestUtil;
 //import com.bn.ninjatrader.model.dao.PriceDao;
 //import com.bn.ninjatrader.model.dao.RSIDao;

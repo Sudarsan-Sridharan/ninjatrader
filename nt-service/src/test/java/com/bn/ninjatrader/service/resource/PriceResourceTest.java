@@ -1,10 +1,12 @@
 package com.bn.ninjatrader.service.resource;
 
-import com.bn.ninjatrader.common.data.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.request.FindRequest;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
+import com.bn.ninjatrader.model.request.FindPriceRequest;
+import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
+import com.bn.ninjatrader.model.util.TestUtil;
 import com.bn.ninjatrader.service.model.PriceResponse;
 import com.google.common.collect.Lists;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -31,8 +33,11 @@ public class PriceResourceTest extends AbstractJerseyTest {
   private static final PriceDao priceDao = mock(PriceDao.class);
   private static final LocalDate date1 = LocalDate.of(2016, 2, 1);
   private static final LocalDate date2 = LocalDate.of(2016, 2, 5);
-  private static final Price price1 = new Price(date1, 1, 2, 3, 4, 10000);
-  private static final Price price2 = new Price(date2, 5, 6, 7, 8, 20000);
+  private static final PriceBuilderFactory priceBuilderFactory = new DummyPriceBuilderFactory();
+  private static final Price price1 = priceBuilderFactory.builder()
+      .date(date1).open(1).high(2).low(3).close(4).volume(10000).build();
+  private static final Price price2 = priceBuilderFactory.builder()
+      .date(date2).open(5).high(6).low(7).close(8).volume(20000).build();
   private static final Clock fixedClock = TestUtil.fixedClock(date1);
 
   @Override
@@ -42,7 +47,7 @@ public class PriceResourceTest extends AbstractJerseyTest {
 
   @Before
   public void before() {
-    when(priceDao.find(any(FindRequest.class)))
+    when(priceDao.find(any(FindPriceRequest.class)))
         .thenReturn(Lists.newArrayList(price1, price2));
   }
 
@@ -74,33 +79,33 @@ public class PriceResourceTest extends AbstractJerseyTest {
         .request()
         .get(PriceResponse.class);
 
-    final ArgumentCaptor<FindRequest> captor = ArgumentCaptor.forClass(FindRequest.class);
+    final ArgumentCaptor<FindPriceRequest> captor = ArgumentCaptor.forClass(FindPriceRequest.class);
     verify(priceDao, times(1)).find(captor.capture());
 
-    final FindRequest findRequest = captor.getValue();
-    assertThat(findRequest.getSymbol()).isEqualTo("BDO");
-    assertThat(findRequest.getTimeFrame()).isEqualTo(TimeFrame.ONE_WEEK);
-    assertThat(findRequest.getFromDate()).isEqualTo(LocalDate.of(2016, 1, 1));
-    assertThat(findRequest.getToDate()).isEqualTo(LocalDate.of(2017, 12, 31));
+    final FindPriceRequest FindPriceRequest = captor.getValue();
+    assertThat(FindPriceRequest.getSymbol()).isEqualTo("BDO");
+    assertThat(FindPriceRequest.getTimeFrame()).isEqualTo(TimeFrame.ONE_WEEK);
+    assertThat(FindPriceRequest.getFromDate()).isEqualTo(LocalDate.of(2016, 1, 1));
+    assertThat(FindPriceRequest.getToDate()).isEqualTo(LocalDate.of(2017, 12, 31));
   }
 
   @Test
   public void testDefaultQueryParams() {
     target("/price/MBT").request().get(PriceResponse.class);
 
-    final ArgumentCaptor<FindRequest> captor = ArgumentCaptor.forClass(FindRequest.class);
+    final ArgumentCaptor<FindPriceRequest> captor = ArgumentCaptor.forClass(FindPriceRequest.class);
     verify(priceDao, times(1)).find(captor.capture());
 
-    final FindRequest findRequest = captor.getValue();
-    assertThat(findRequest.getSymbol()).isEqualTo("MBT");
-    assertThat(findRequest.getTimeFrame()).isEqualTo(TimeFrame.ONE_DAY);
-    assertThat(findRequest.getFromDate()).isEqualTo(LocalDate.now(fixedClock).minusYears(2));
-    assertThat(findRequest.getToDate()).isEqualTo(LocalDate.now(fixedClock));
+    final FindPriceRequest FindPriceRequest = captor.getValue();
+    assertThat(FindPriceRequest.getSymbol()).isEqualTo("MBT");
+    assertThat(FindPriceRequest.getTimeFrame()).isEqualTo(TimeFrame.ONE_DAY);
+    assertThat(FindPriceRequest.getFromDate()).isEqualTo(LocalDate.now(fixedClock).minusYears(2));
+    assertThat(FindPriceRequest.getToDate()).isEqualTo(LocalDate.now(fixedClock));
   }
 
   @Test
   public void testWithNoPricesFound() {
-    when(priceDao.find(any(FindRequest.class)))
+    when(priceDao.find(any(FindPriceRequest.class)))
         .thenReturn(Collections.emptyList());
 
     final PriceResponse priceResponse = target("/price/MBT").request().get(PriceResponse.class);

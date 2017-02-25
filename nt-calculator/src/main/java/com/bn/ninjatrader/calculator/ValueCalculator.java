@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.calculator;
 
 import com.bn.ninjatrader.calculator.parameter.CalcParams;
-import com.bn.ninjatrader.common.data.Value;
+import com.bn.ninjatrader.model.deprecated.Value;
 
 import java.util.List;
 import java.util.Map;

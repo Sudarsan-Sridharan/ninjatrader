@@ -1,21 +1,16 @@
 package com.bn.ninjatrader.process.adjustment;
 
 import com.bn.ninjatrader.calculator.PriceAdjustmentCalculator;
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.logical.expression.operation.Operations;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.guice.NtModelMongoModule;
-import com.bn.ninjatrader.model.request.FindRequest;
-import com.bn.ninjatrader.model.request.SaveRequest;
-import com.google.inject.Guice;
+import com.bn.ninjatrader.model.request.FindPriceRequest;
+import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -41,23 +36,25 @@ public class PriceAdjustmentProcess {
     checkNotNull(request, "request must not be null.");
     checkNotNull(request.getOperation(), "request.adjustment must not be null.");
 
-    final List<Price> prices = priceDao.find(FindRequest
-        .findSymbol(request.getSymbol()).from(request.getFromDate()).to(request.getToDate()));
+    final List<Price> prices = priceDao.find(FindPriceRequest.forSymbol(request.getSymbol())
+        .from(request.getFromDate()).to(request.getToDate()));
 
     final List<Price> adjustedPrices = calculator.calc(prices, request.getOperation());
 
     adjustedPrices.forEach(price -> LOG.info("{}", price));
 
-    priceDao.save(SaveRequest.save(request.getSymbol()).timeFrame(TimeFrame.ONE_DAY).values(adjustedPrices));
+    priceDao.save(SavePriceRequest.forSymbol(request.getSymbol())
+        .timeframe(TimeFrame.ONE_DAY)
+        .addPrices(adjustedPrices));
   }
 
-  public static void main(String args[]) {
-    final Injector injector = Guice.createInjector(new NtModelMongoModule());
-    final PriceAdjustmentProcess process = injector.getInstance(PriceAdjustmentProcess.class);
-
-    process.process(PriceAdjustmentRequest.forSymbol("MWIDE")
-        .from(LocalDate.now().minusYears(100))
-        .to(LocalDate.of(2013, 7, 15))
-        .adjustment(Operations.startWith(PriceAdjustmentRequest.PRICE).mult(0.769454545)));
-  }
+//  public static void main(String args[]) {
+//    final Injector injector = Guice.createInjector(new NtModelMongoModule());
+//    final PriceAdjustmentProcess process = injector.getInstance(PriceAdjustmentProcess.class);
+//
+//    process.process(PriceAdjustmentRequest.forSymbol("MWIDE")
+//        .from(LocalDate.now().minusYears(100))
+//        .to(LocalDate.of(2013, 7, 15))
+//        .adjustment(Operations.startWith(PriceAdjustmentRequest.PRICE).mult(0.769454545)));
+//  }
 }

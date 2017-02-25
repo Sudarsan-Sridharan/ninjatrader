@@ -1,9 +1,9 @@
 package com.bn.ninjatrader.simulation.statement;
 
-import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.World;
+import com.bn.ninjatrader.simulation.util.DummyObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.junit.Before;
@@ -79,7 +79,7 @@ public class MultiStatementTest {
   @Test
   public void testSerializeDeserialize_shouldProduceEqualObject() throws IOException {
     final MultiStatement statement = MultiStatement.builder().add(EmptyStatement.instance()).build();
-    final ObjectMapper om = TestUtil.objectMapper();
+    final ObjectMapper om = DummyObjectMapperProvider.get();
     final String json = om.writeValueAsString(statement);
     assertThat(om.readValue(json, Statement.class)).isEqualTo(statement);
   }

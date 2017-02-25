@@ -1,9 +1,9 @@
 package com.bn.ninjatrader.logical.expression.condition;
 
 
-import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.logical.expression.model.Data;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.bn.ninjatrader.logical.expression.util.TestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -55,7 +55,7 @@ public class AndConditionTest {
 
   @Test
   public void testSerializeDeserialize_shouldReturnEqualObject() throws IOException {
-    final ObjectMapper om = TestUtil.objectMapper();
+    final ObjectMapper om = TestUtil.om();
     final AndCondition condition = new AndCondition<>().add(Conditions.eq(Variable.of("DataType1"), 1.0));
     final String serialized = om.writeValueAsString(condition);
     final Condition deserialized = om.readValue(serialized, Condition.class);

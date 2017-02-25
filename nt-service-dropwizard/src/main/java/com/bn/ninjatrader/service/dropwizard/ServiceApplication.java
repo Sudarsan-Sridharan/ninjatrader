@@ -1,15 +1,12 @@
 package com.bn.ninjatrader.service.dropwizard;
 
-import com.bn.ninjatrader.model.guice.NtModelMongoModule;
+import com.bn.ninjatrader.model.mongo.guice.NtModelMongoModule;
 import com.bn.ninjatrader.process.guice.NtProcessModule;
-import com.bn.ninjatrader.service.guice.NtServiceModule;
 import com.bn.ninjatrader.service.dropwizard.health.ServiceHealthCheck;
+import com.bn.ninjatrader.service.guice.NtServiceModule;
 import com.bn.ninjatrader.service.provider.LocalDateParamConverterProvider;
 import com.bn.ninjatrader.service.resource.*;
-import com.bn.ninjatrader.service.task.CalcTask;
-import com.bn.ninjatrader.service.task.ImportCSVPriceTask;
-import com.bn.ninjatrader.service.task.ImportPSEDailyQuotesTask;
-import com.bn.ninjatrader.service.task.ImportPSETraderDailyQuotesTask;
+import com.bn.ninjatrader.service.task.*;
 import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -34,20 +31,14 @@ public class ServiceApplication extends Application<ServiceConfig> {
   @Inject
   private PriceResource priceResource;
   @Inject
-  private IchimokuResource ichimokuResource;
-  @Inject
-  private SMAResource smaResource;
-  @Inject
-  private EMAResource emaResource;
-  @Inject
-  private RSIResource rsiResource;
-  @Inject
-  private MeanResource meanResource;
-  @Inject
   private SimulationResource simulationResource;
 
   @Inject
   private CalcTask calcTask;
+  @Inject
+  private RunSimulationTask runSimulationTask;
+  @Inject
+  private RunStockScannerTask runStockScannerTask;
   @Inject
   private ImportCSVPriceTask importPriceTask;
   @Inject
@@ -66,15 +57,12 @@ public class ServiceApplication extends Application<ServiceConfig> {
 
   private void setupResources(final JerseyEnvironment jersey) {
     jersey.register(priceResource);
-    jersey.register(ichimokuResource);
-    jersey.register(smaResource);
-    jersey.register(emaResource);
-    jersey.register(rsiResource);
-    jersey.register(meanResource);
     jersey.register(simulationResource);
 
     // Maintenance tasks
     jersey.register(calcTask);
+    jersey.register(runSimulationTask);
+    jersey.register(runStockScannerTask);
     jersey.register(importPriceTask);
     jersey.register(importPSEDailyQuotesTask);
     jersey.register(importPSETraderDailyQuotesTask);

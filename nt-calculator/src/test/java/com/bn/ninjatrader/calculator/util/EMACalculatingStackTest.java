@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.calculator.util;
 
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
+import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -10,6 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class EMACalculatingStackTest {
 
+  private final PriceBuilderFactory priceBuilderFactory = new DummyPriceBuilderFactory();
+  
   @Test
   public void testCreateEmptyStack_shouldHaveNanValue() {
     assertThat(EMACalculatingStack.withFixedSize(10).getValue()).isEqualTo(Double.NaN);
@@ -18,38 +21,38 @@ public class EMACalculatingStackTest {
   @Test
   public void testCalculatedValueOfFirstEMA_shouldReturnSimpleAverage() {
     final EMACalculatingStack stack = EMACalculatingStack.withFixedSize(5);
-    stack.addAll(Price.builder().close(1).build(),
-        Price.builder().close(2).build(),
-        Price.builder().close(3).build(),
-        Price.builder().close(4).build(),
-        Price.builder().close(5).build());
+    stack.addAll(priceBuilderFactory.builder().close(1).build(),
+        priceBuilderFactory.builder().close(2).build(),
+        priceBuilderFactory.builder().close(3).build(),
+        priceBuilderFactory.builder().close(4).build(),
+        priceBuilderFactory.builder().close(5).build());
     assertThat(stack.getValue()).isEqualTo(3);
   }
 
   @Test
   public void testCalculatedValueOfSecondEMA_shouldReturnExponentialAverage() {
     final EMACalculatingStack stack = EMACalculatingStack.withFixedSize(5);
-    stack.addAll(Price.builder().close(1).build(),
-        Price.builder().close(2).build(),
-        Price.builder().close(3).build(),
-        Price.builder().close(4).build(),
-        Price.builder().close(5).build(),
-        Price.builder().close(6).build());
+    stack.addAll(priceBuilderFactory.builder().close(1).build(),
+        priceBuilderFactory.builder().close(2).build(),
+        priceBuilderFactory.builder().close(3).build(),
+        priceBuilderFactory.builder().close(4).build(),
+        priceBuilderFactory.builder().close(5).build(),
+        priceBuilderFactory.builder().close(6).build());
     assertThat(stack.getValue()).isEqualTo(4);
   }
 
   @Test
   public void testEmaAfterAddingMultiplePrices_shouldReturnEmaOfLastAddedPrice() {
     final EMACalculatingStack stack = EMACalculatingStack.withFixedSize(5);
-    stack.addAll(Price.builder().close(1).build(),
-        Price.builder().close(2).build(),
-        Price.builder().close(3).build(),
-        Price.builder().close(4).build(),
-        Price.builder().close(5).build(),
-        Price.builder().close(6).build(),
-        Price.builder().close(7).build(),
-        Price.builder().close(8).build(),
-        Price.builder().close(9).build()
+    stack.addAll(priceBuilderFactory.builder().close(1).build(),
+        priceBuilderFactory.builder().close(2).build(),
+        priceBuilderFactory.builder().close(3).build(),
+        priceBuilderFactory.builder().close(4).build(),
+        priceBuilderFactory.builder().close(5).build(),
+        priceBuilderFactory.builder().close(6).build(),
+        priceBuilderFactory.builder().close(7).build(),
+        priceBuilderFactory.builder().close(8).build(),
+        priceBuilderFactory.builder().close(9).build()
     );
     assertThat(stack.getValue()).isEqualTo(7);
   }
@@ -58,10 +61,10 @@ public class EMACalculatingStackTest {
   public void testWithContinueFromEma_shouldCalculateEmaContinuingFromGivenEma() {
     final EMACalculatingStack stack = EMACalculatingStack.withFixedSizeAndPriorValue(5, 10);
 
-    stack.addAll(Price.builder().close(1).build());
+    stack.addAll(priceBuilderFactory.builder().close(1).build());
     assertThat(stack.getValue()).isEqualTo(7);
 
-    stack.addAll(Price.builder().close(2).build());
+    stack.addAll(priceBuilderFactory.builder().close(2).build());
     assertThat(stack.getValue()).isEqualTo(5.333333333);
   }
 }

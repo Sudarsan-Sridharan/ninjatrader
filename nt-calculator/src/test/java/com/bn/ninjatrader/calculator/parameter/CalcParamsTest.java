@@ -1,9 +1,9 @@
 package com.bn.ninjatrader.calculator.parameter;
 
 import com.beust.jcommander.internal.Lists;
-import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.common.data.Value;
-import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.model.deprecated.Value;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.util.TestUtil;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;

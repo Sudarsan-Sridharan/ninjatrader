@@ -1,11 +1,11 @@
 package com.bn.ninjatrader.process.calc;
 
 import com.bn.ninjatrader.calculator.PriceChangeCalculator;
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.model.util.TestUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.request.SaveRequest;
+import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.bn.ninjatrader.process.request.CalcRequest;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -47,19 +47,19 @@ public class CalcPriceChangeProcessTest {
 
   @Test
   public void testProcessOneSymbol_shouldSaveProcessedValuesForThatSymbol() {
-    final ArgumentCaptor<SaveRequest> saveRequestCaptor = ArgumentCaptor.forClass(SaveRequest.class);
+    final ArgumentCaptor<SavePriceRequest> saveRequestCaptor = ArgumentCaptor.forClass(SavePriceRequest.class);
 
     process.process(CalcRequest.forSymbol("MEG").timeFrames(ONE_DAY));
 
     verify(priceDao).save(saveRequestCaptor.capture());
 
     assertThat(saveRequestCaptor.getValue())
-        .isEqualTo(SaveRequest.save("MEG").timeFrame(ONE_DAY).values(processedPriceList));
+        .isEqualTo(SavePriceRequest.forSymbol("MEG").timeframe(ONE_DAY).addPrices(processedPriceList));
   }
 
   @Test
   public void testProcessMultipleSymbolsAndTimeFrames_shouldProcessEachSymbolAndTimeFrame() {
-    final ArgumentCaptor<SaveRequest> saveRequestCaptor = ArgumentCaptor.forClass(SaveRequest.class);
+    final ArgumentCaptor<SavePriceRequest> saveRequestCaptor = ArgumentCaptor.forClass(SavePriceRequest.class);
 
     process.process(CalcRequest.forSymbols("MEG", "BDO", "MBT").allTimeFrames());
 
@@ -68,8 +68,8 @@ public class CalcPriceChangeProcessTest {
 
     // To list of time frames per symbol.
     final Multimap<String, TimeFrame> map = HashMultimap.create();
-    final List<SaveRequest> saveRequests = saveRequestCaptor.getAllValues();
-    for (SaveRequest saveRequest : saveRequests) {
+    final List<SavePriceRequest> saveRequests = saveRequestCaptor.getAllValues();
+    for (SavePriceRequest saveRequest : saveRequests) {
       map.put(saveRequest.getSymbol(), saveRequest.getTimeFrame());
     }
 

@@ -5,7 +5,9 @@ import org.junit.Test;
 
 import java.time.Clock;
 import java.time.LocalDate;
+import java.time.ZoneId;
 
+import static com.bn.ninjatrader.common.util.DateUtil.PH_ZONE_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -77,7 +79,7 @@ public class DateUtilTest {
   @Test
   public void testPhDateNow_shouldReturnPhDateOfToday() {
     final LocalDate now = LocalDate.of(2016, 2, 1);
-    final Clock clock = TestUtil.fixedClock(now);
+    final Clock clock = Clock.fixed(now.atStartOfDay(ZoneId.of(PH_ZONE_ID)).toInstant(), ZoneId.of(PH_ZONE_ID));
     assertThat(DateUtil.phNow(clock)).isEqualTo(now);
   }
 }

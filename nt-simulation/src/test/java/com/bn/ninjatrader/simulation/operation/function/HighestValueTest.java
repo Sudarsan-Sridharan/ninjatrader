@@ -1,10 +1,10 @@
 package com.bn.ninjatrader.simulation.operation.function;
 
-import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.History;
 import com.bn.ninjatrader.simulation.model.World;
+import com.bn.ninjatrader.simulation.util.DummyObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,7 +80,7 @@ public class HighestValueTest {
 
   @Test
   public void testSerializeDeserialize_shouldReturnSameObject() throws IOException {
-    final ObjectMapper om = TestUtil.objectMapper();
+    final ObjectMapper om = DummyObjectMapperProvider.get();
     final HighestValue function = HighestValue.of(PRICE_CLOSE, PRICE_OPEN).fromBarsAgo(1).toBarsAgo(3);
     final String serialized = om.writeValueAsString(function);
     assertThat(om.readValue(serialized, Operation.class)).isEqualTo(function);

@@ -1,9 +1,11 @@
 package com.bn.ninjatrader.calculator;
 
 import com.beust.jcommander.internal.Lists;
-import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.common.data.Value;
-import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.model.deprecated.Value;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
+import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
+import com.bn.ninjatrader.model.util.TestUtil;
 import mockit.Tested;
 import org.testng.annotations.Test;
 
@@ -21,6 +23,8 @@ import static org.testng.Assert.assertTrue;
  */
 public class SMACalculatorTest {
 
+  private final PriceBuilderFactory priceBuilderFactory = new DummyPriceBuilderFactory();
+  
   @Tested
   private SMACalculator calculator;
 
@@ -95,25 +99,26 @@ public class SMACalculatorTest {
   @Test
   public void testCalcWithHighPrecision() {
     // Test 1
-    List<Value> result = calculator.calcForPeriod(withPrices(Price.builder().close(2.92847583).build()), 1);
+    List<Value> result = calculator.calcForPeriod(
+        withPrices(priceBuilderFactory.builder().close(2.92847583).build()), 1);
     assertThat(result).hasSize(1);
     assertThat(result.get(0).getValue()).isEqualTo(2.928476);
 
     // Test 2
-    result = calculator.calcForPeriod(withPrices(Price.builder().close(1.0000000001).build()), 1);
+    result = calculator.calcForPeriod(withPrices(priceBuilderFactory.builder().close(1.0000000001).build()), 1);
     assertThat(result.get(0).getValue()).isEqualTo(1.0);
 
     // Test 3
     result = calculator.calcForPeriod(withPrices(
-        Price.builder().close(1.00001).build(),
-        Price.builder().close(1.00002).build()), 2);
+        priceBuilderFactory.builder().close(1.00001).build(),
+        priceBuilderFactory.builder().close(1.00002).build()), 2);
     assertThat(result.get(0).getValue()).isEqualTo(1.000015);
 
     // Test 3
     result = calculator.calcForPeriod(withPrices(
-        Price.builder().close(1.057839201).build(),
-        Price.builder().close(1.057839202).build(),
-        Price.builder().close(1.057839203).build()
+        priceBuilderFactory.builder().close(1.057839201).build(),
+        priceBuilderFactory.builder().close(1.057839202).build(),
+        priceBuilderFactory.builder().close(1.057839203).build()
     ), 3);
     assertThat(result.get(0).getValue()).isEqualTo(1.057839);
   }

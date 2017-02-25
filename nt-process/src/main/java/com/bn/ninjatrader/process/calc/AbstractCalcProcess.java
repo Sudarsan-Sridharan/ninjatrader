@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.process.calc;
 
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 import com.google.inject.Inject;
@@ -17,7 +17,7 @@ import java.util.List;
 @Singleton
 public abstract class AbstractCalcProcess implements CalcProcess {
 
-  private static final Logger LOG = LoggerFactory.getLogger(CalcMeanProcess.class);
+  private static final Logger LOG = LoggerFactory.getLogger(AbstractCalcProcess.class);
 
   private final PriceDao priceDao;
 

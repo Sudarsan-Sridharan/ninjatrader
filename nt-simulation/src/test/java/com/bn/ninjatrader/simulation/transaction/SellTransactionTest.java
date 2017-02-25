@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.transaction;
 
-import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.simulation.util.DummyObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.junit.Test;
@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SellTransactionTest {
   private static final Logger LOG = LoggerFactory.getLogger(SellTransactionTest.class);
 
-  private final ObjectMapper om = TestUtil.objectMapper();
+  private final ObjectMapper om = DummyObjectMapperProvider.get();
   private final LocalDate now = LocalDate.of(2016, 1, 1);
   private final LocalDate tom = LocalDate.of(2016, 1, 2);
 

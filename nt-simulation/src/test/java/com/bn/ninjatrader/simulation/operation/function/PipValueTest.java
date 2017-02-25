@@ -2,11 +2,11 @@ package com.bn.ninjatrader.simulation.operation.function;
 
 import com.bn.ninjatrader.common.boardlot.BoardLot;
 import com.bn.ninjatrader.common.boardlot.BoardLotTable;
-import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.common.util.TestUtil;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
+import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.World;
+import com.bn.ninjatrader.simulation.util.DummyObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,7 +69,7 @@ public class PipValueTest {
 
   @Test
   public void testSerializeDeserialize_shouldReturnSameObject() throws IOException {
-    final ObjectMapper om = TestUtil.objectMapper();
+    final ObjectMapper om = DummyObjectMapperProvider.get();
     final String serialized = om.writeValueAsString(PipValue.of(3));
     assertThat(om.readValue(serialized, Operation.class)).isEqualTo(PipValue.of(3));
   }

@@ -36,7 +36,6 @@
         <dependency>
             <groupId>com.beachninja</groupId>
             <artifactId>nt-model</artifactId>
-            <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

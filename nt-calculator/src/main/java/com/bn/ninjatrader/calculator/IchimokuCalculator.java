@@ -1,16 +1,11 @@
 package com.bn.ninjatrader.calculator;
 
 import com.bn.ninjatrader.calculator.parameter.IchimokuParameters;
-import com.bn.ninjatrader.common.data.Ichimoku;
-import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.common.data.Value;
-import com.bn.ninjatrader.common.function.ShiftBackward;
-import com.bn.ninjatrader.common.function.ShiftForward;
-import com.bn.ninjatrader.common.function.handler.IchimokuChikouShiftBackwardHandler;
-import com.bn.ninjatrader.common.function.handler.IchimokuSenkouShiftForwardHandler;
-import com.bn.ninjatrader.common.util.DateObjUtil;
+import com.bn.ninjatrader.model.deprecated.Ichimoku;
+import com.bn.ninjatrader.model.deprecated.Value;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.util.DateObjUtil;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,11 +19,11 @@ import java.util.List;
 public class IchimokuCalculator {
   private static final Logger LOG = LoggerFactory.getLogger(IchimokuCalculator.class);
 
-  @Inject
-  private IchimokuSenkouShiftForwardHandler senkouShiftForwardHandler;
-
-  @Inject
-  private IchimokuChikouShiftBackwardHandler chikouShiftBackwardHandler;
+//  @Inject
+//  private IchimokuSenkouShiftForwardHandler senkouShiftForwardHandler;
+//
+//  @Inject
+//  private IchimokuChikouShiftBackwardHandler chikouShiftBackwardHandler;
 
   public List<Ichimoku> calc(final IchimokuParameters parameters) {
     if (parameters.isIncomplete()) {
@@ -56,16 +51,16 @@ public class IchimokuCalculator {
     }
 
     // Shift Chikou backward to past
-    ShiftBackward.forValues(ichimokuList)
-        .period(parameters.getChickouShiftBackPeriods())
-        .handler(chikouShiftBackwardHandler)
-        .execute();
-
-    // Shift Senkou A & B forward to future
-    ShiftForward.forValues(ichimokuList)
-        .period(parameters.getSenkouShiftForwardPeriods())
-        .handler(senkouShiftForwardHandler)
-        .execute();
+//    ShiftBackward.forValues(ichimokuList)
+//        .period(parameters.getChickouShiftBackPeriods())
+//        .handler(chikouShiftBackwardHandler)
+//        .execute();
+//
+//    // Shift Senkou A & B forward to future
+//    ShiftForward.forValues(ichimokuList)
+//        .period(parameters.getSenkouShiftForwardPeriods())
+//        .handler(senkouShiftForwardHandler)
+//        .execute();
 
     return ichimokuList;
   }

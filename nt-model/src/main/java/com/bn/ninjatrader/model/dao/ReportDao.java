@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.model.dao;
 
-import com.bn.ninjatrader.common.data.Report;
+import com.bn.ninjatrader.model.deprecated.Report;
 import com.bn.ninjatrader.model.request.FindReportRequest;
 import com.bn.ninjatrader.model.request.SaveReportRequest;
 

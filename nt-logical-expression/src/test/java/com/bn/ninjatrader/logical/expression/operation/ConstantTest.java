@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.logical.expression.operation;
 
-import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.logical.expression.util.TestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class ConstantTest {
 
   private static final Logger LOG = LoggerFactory.getLogger(ConstantTest.class);
 
-  private final ObjectMapper om = TestUtil.objectMapper();
+  private final ObjectMapper om = TestUtil.om();
 
   @Test
   public void testEqualsWithSameValue_shouldReturnEqual() {

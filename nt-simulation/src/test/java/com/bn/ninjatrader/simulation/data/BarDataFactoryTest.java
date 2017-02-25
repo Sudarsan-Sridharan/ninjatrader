@@ -1,6 +1,8 @@
 package com.bn.ninjatrader.simulation.data;
 
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
+import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.bn.ninjatrader.simulation.calculator.VarCalculator;
 import com.bn.ninjatrader.simulation.model.World;
 import com.google.common.collect.Lists;
@@ -22,7 +24,8 @@ import static org.mockito.Mockito.when;
 public class BarDataFactoryTest {
 
   private final LocalDate now = LocalDate.of(2016, 1, 1);
-  private final Price price = Price.builder().date(now).close(1).build();
+  private final PriceBuilderFactory pbf = new DummyPriceBuilderFactory();
+  private final Price price = pbf.builder().date(now).close(1).build();
 
   private BarDataFactory barDataFactory;
   private World world;

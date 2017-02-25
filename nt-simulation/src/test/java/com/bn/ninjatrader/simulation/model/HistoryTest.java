@@ -1,6 +1,8 @@
 package com.bn.ninjatrader.simulation.model;
 
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
+import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.bn.ninjatrader.simulation.data.BarData;
 import org.junit.Test;
 
@@ -19,10 +21,12 @@ public class HistoryTest {
   private final LocalDate date3 = LocalDate.of(2016, 1, 3);
   private final LocalDate date4 = LocalDate.of(2016, 1, 4);
 
-  private Price price1 = new Price(date1, 1.1, 1.2, 1.3, 1.4, 10000);
-  private Price price2 = new Price(date2, 2.1, 2.2, 2.3, 2.4, 20000);
-  private Price price3 = new Price(date3, 3.1, 3.2, 3.3, 3.4, 30000);
-  private Price price4 = new Price(date4, 4.1, 4.2, 4.3, 4.4, 40000);
+  private final PriceBuilderFactory pbf = new DummyPriceBuilderFactory();
+
+  private Price price1 = pbf.builder().date(date1).open(1.1).high(1.2).low(1.3).close(1.4).volume(10000).build();
+  private Price price2 = pbf.builder().date(date2).open(2.1).high(2.2).low(2.3).close(2.4).volume(20000).build();
+  private Price price3 = pbf.builder().date(date3).open(3.1).high(3.2).low(3.3).close(3.4).volume(30000).build();
+  private Price price4 = pbf.builder().date(date4).open(4.1).high(4.2).low(4.3).close(4.4).volume(40000).build();
 
   @Test
   public void testCreateWithNoHistory_shouldReturnEmpty() {

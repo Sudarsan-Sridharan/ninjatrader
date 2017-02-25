@@ -1,7 +1,6 @@
 package com.bn.ninjatrader.thirdparty.pse;
 
-import com.bn.ninjatrader.common.data.DailyQuote;
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.DailyQuote;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -100,10 +99,6 @@ public class PseQuote {
         .append("C", close)
         .append("V", volume)
         .toString();
-  }
-
-  public Price toPrice() {
-    return Price.builder().open(open).high(high).low(low).close(close).volume((long) volume).build();
   }
 
   public DailyQuote toDailyQuote() {

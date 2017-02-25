@@ -1,9 +1,11 @@
 package com.bn.ninjatrader.service.resource;
 
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.model.request.FindPriceRequest;
+import com.bn.ninjatrader.service.model.PriceRequest;
 import com.bn.ninjatrader.service.model.PriceResponse;
-import com.bn.ninjatrader.service.model.ResourceRequest;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
@@ -16,6 +18,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.time.Clock;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -39,8 +42,13 @@ public class PriceResource extends AbstractDataResource {
   @GET
   @Path("/{symbol}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getPrices(@BeanParam final ResourceRequest req) {
-    final List<Price> prices = priceDao.find(req.toFindRequest(clock));
+  public Response getPrices(@BeanParam final PriceRequest priceRequest) {
+    final FindPriceRequest req = FindPriceRequest.forSymbol(priceRequest.getSymbol())
+        .timeframe(priceRequest.getTimeFrame().orElse(TimeFrame.ONE_DAY))
+        .from(priceRequest.getFrom().orElse(LocalDate.now(clock).minusYears(2)))
+        .to(priceRequest.getTo().orElse(LocalDate.now(clock)));
+
+    final List<Price> prices = priceDao.find(req);
     return Response.ok(createPriceResponse(prices))
         .header("Access-Control-Allow-Origin", "*")
         .header("Access-Control-Allow-Headers", "Content-Type, Authorization")

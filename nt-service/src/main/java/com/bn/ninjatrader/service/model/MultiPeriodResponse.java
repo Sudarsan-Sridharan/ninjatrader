@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.service.model;
 
-import com.bn.ninjatrader.common.data.Value;
+import com.bn.ninjatrader.model.deprecated.Value;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;

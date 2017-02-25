@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.thirdparty.pse;
 
-import com.bn.ninjatrader.common.data.DailyQuote;
+import com.bn.ninjatrader.model.entity.DailyQuote;
 import com.bn.ninjatrader.common.util.DateFormats;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

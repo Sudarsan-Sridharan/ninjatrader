@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.service.task;
 
-import com.bn.ninjatrader.common.util.TestUtil;
+import com.bn.ninjatrader.model.util.TestUtil;
 import com.bn.ninjatrader.process.request.CalcServiceRequest;
 import com.bn.ninjatrader.process.service.CalcService;
 import org.glassfish.jersey.server.ResourceConfig;

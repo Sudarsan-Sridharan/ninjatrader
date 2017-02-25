@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.calculator.util;
 
-import com.bn.ninjatrader.common.data.Price;
-import com.bn.ninjatrader.common.data.Value;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.deprecated.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

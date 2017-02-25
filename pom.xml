@@ -14,6 +14,8 @@
         <module>nt-data-import</module>
         <module>nt-logical-expression</module>
         <module>nt-model</module>
+        <module>nt-model-datastore</module>
+        <module>nt-model-mongo</module>
         <module>nt-server</module>
         <module>nt-process</module>
         <module>nt-service</module>
@@ -70,6 +72,16 @@
             </dependency>
             <dependency>
                 <groupId>com.beachninja</groupId>
+                <artifactId>nt-model-datastore</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.beachninja</groupId>
+                <artifactId>nt-model-mongo</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.beachninja</groupId>
                 <artifactId>nt-process</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -85,13 +97,6 @@
             </dependency>
             <dependency>
                 <groupId>com.beachninja</groupId>
-                <artifactId>nt-common</artifactId>
-                <version>${project.version}</version>
-                <type>test-jar</type>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.beachninja</groupId>
                 <artifactId>nt-thirdparty</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -101,6 +106,21 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <!--App Enginge-->
+            <dependency>
+                <groupId>com.google.appengine</groupId>
+                <artifactId>appengine-api-1.0-sdk</artifactId>
+                <version>${appengine.version}</version>
+            </dependency>
+
+            <!--Objectify-->
+            <dependency>
+                <groupId>com.googlecode.objectify</groupId>
+                <artifactId>objectify</artifactId>
+                <version>${objectify.version}</version>
+            </dependency>
+
+            <!--Jersey-->
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
                 <artifactId>jersey-server</artifactId>
@@ -127,10 +147,30 @@
                 <version>${jersey.version}</version>
             </dependency>
 
+            <!--Tests-->
+            <dependency>
+                <groupId>com.beachninja</groupId>
+                <artifactId>nt-model</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.test-framework.providers</groupId>
                 <artifactId>jersey-test-framework-provider-inmemory</artifactId>
                 <version>${jersey.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.appengine</groupId>
+                <artifactId>appengine-testing</artifactId>
+                <version>${appengine.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.appengine</groupId>
+                <artifactId>appengine-api-stubs</artifactId>
+                <version>${appengine.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -149,22 +189,22 @@
             </plugin>
 
             <!--Convert code to java 7 to work in appengine standard env in the meantime-->
-            <plugin>
-                <groupId>net.orfjackal.retrolambda</groupId>
-                <artifactId>retrolambda-maven-plugin</artifactId>
-                <version>2.5.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>process-main</goal>
-                            <goal>process-test</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <target>1.7</target>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>net.orfjackal.retrolambda</groupId>-->
+                <!--<artifactId>retrolambda-maven-plugin</artifactId>-->
+                <!--<version>2.5.0</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<goals>-->
+                            <!--<goal>process-main</goal>-->
+                            <!--<goal>process-test</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+                <!--<configuration>-->
+                    <!--<target>1.7</target>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 </project>

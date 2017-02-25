@@ -1,10 +1,11 @@
 package com.bn.ninjatrader.dataimport.daily;
 
-import com.bn.ninjatrader.common.data.DailyQuote;
-import com.bn.ninjatrader.common.data.Price;
+import com.bn.ninjatrader.model.entity.DailyQuote;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.common.type.TimeFrame;
+import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.request.SaveRequest;
 import com.bn.ninjatrader.thirdparty.investagrams.InvestagramsService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -28,13 +29,16 @@ public class InvestagramsHistoricalPriceImporter extends AbstractDailyPriceImpor
 
   private final InvestagramsService investagramsService;
   private final PriceDao priceDao;
+  private final PriceBuilderFactory priceBuilderFactory;
 
   @Inject
   public InvestagramsHistoricalPriceImporter(final InvestagramsService investagramsService,
-                                             final PriceDao priceDao) {
-    super(priceDao);
+                                             final PriceDao priceDao,
+                                             final PriceBuilderFactory priceBuilderFactory) {
+    super(priceDao, priceBuilderFactory);
     this.investagramsService = investagramsService;
     this.priceDao = priceDao;
+    this.priceBuilderFactory = priceBuilderFactory;
   }
 
   @Override
@@ -50,9 +54,9 @@ public class InvestagramsHistoricalPriceImporter extends AbstractDailyPriceImpor
   public void importData(final Collection<LocalDate> dates) {
     for (Map.Entry<String, List<Price>> symbolPriceList : toPriceMap(provideDailyQuotes()).entrySet()) {
       LOG.debug("Saved prices for {}", symbolPriceList.getKey());
-      priceDao.save(SaveRequest.save(symbolPriceList.getKey())
-          .timeFrame(TimeFrame.ONE_DAY)
-          .values(symbolPriceList.getValue()));
+      priceDao.save(SavePriceRequest.forSymbol(symbolPriceList.getKey())
+          .timeframe(TimeFrame.ONE_DAY)
+          .addPrices(symbolPriceList.getValue()));
     }
   }
 
@@ -63,7 +67,7 @@ public class InvestagramsHistoricalPriceImporter extends AbstractDailyPriceImpor
       if (symbolMap.get(symbol) == null) {
         symbolMap.put(symbol, Lists.newArrayList());
       }
-      symbolMap.get(symbol).add(dailyQuote.getPrice());
+      symbolMap.get(symbol).add(dailyQuote.getPrice(priceBuilderFactory));
     }
     return symbolMap;
   }

@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.dataimport.daily;
 
-import com.bn.ninjatrader.common.data.DailyQuote;
+import com.bn.ninjatrader.model.entity.DailyQuote;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.thirdparty.psetrader.PseTraderService;
 import com.google.inject.Inject;
@@ -22,8 +23,9 @@ public class PseTraderDailyPriceImporter extends AbstractDailyPriceImporter {
 
   @Inject
   public PseTraderDailyPriceImporter(final PseTraderService pseTraderService,
-                                     final PriceDao priceDao) {
-    super(priceDao);
+                                     final PriceDao priceDao,
+                                     final PriceBuilderFactory priceBuilderFactory) {
+    super(priceDao, priceBuilderFactory);
     this.pseTraderService = pseTraderService;
   }
 
