@@ -7,6 +7,7 @@ import com.bn.ninjatrader.simulation.transaction.Transaction;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 import java.util.Collection;
@@ -78,6 +79,24 @@ public class SimulationReport {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    SimulationReport that = (SimulationReport) o;
+    return Double.compare(that.startingCash, startingCash) == 0 &&
+        Double.compare(that.endingCash, endingCash) == 0 &&
+        Objects.equal(simulationParams, that.simulationParams) &&
+        Objects.equal(transactions, that.transactions) &&
+        Objects.equal(tradeStatistic, that.tradeStatistic) &&
+        Objects.equal(marks, that.marks);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(simulationParams, startingCash, endingCash, transactions, tradeStatistic, marks);
+  }
+
+  @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
         .add("simulationParams", simulationParams)
@@ -136,17 +155,17 @@ public class SimulationReport {
     }
 
     public Builder addMark(final Mark mark) {
-      marks.add(mark);
+      this.marks.add(mark);
       return this;
     }
 
     public Builder addMarks(final Collection<Mark> marks) {
-      marks.addAll(marks);
+      this.marks.addAll(marks);
       return this;
     }
 
     public Builder addMarks(final Mark mark, final Mark ... more) {
-      marks.addAll(Lists.asList(mark, more));
+      this.marks.addAll(Lists.asList(mark, more));
       return this;
     }
 

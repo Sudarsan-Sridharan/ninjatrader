@@ -10,7 +10,7 @@ import com.bn.ninjatrader.simulation.model.Broker;
 import com.bn.ninjatrader.simulation.model.History;
 import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
-import com.bn.ninjatrader.simulation.statement.Statement;
+import com.bn.ninjatrader.simulation.logicexpression.statement.Statement;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
 import com.google.common.collect.Lists;

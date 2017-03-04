@@ -5,7 +5,7 @@ import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import org.junit.Test;
 
-import static com.bn.ninjatrader.simulation.operation.Variables.*;
+import static com.bn.ninjatrader.simulation.logicexpression.Variables.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

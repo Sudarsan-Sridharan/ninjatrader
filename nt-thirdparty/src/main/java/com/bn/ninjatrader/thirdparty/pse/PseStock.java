@@ -2,8 +2,8 @@ package com.bn.ninjatrader.thirdparty.pse;
 
 import com.bn.ninjatrader.model.deprecated.Stock;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 /**
  * Created by Brad on 6/21/16.
@@ -41,6 +41,11 @@ public class PseStock {
     this.name = name;
   }
 
+  @JsonProperty("securityName")
+  public void setSecurityName(String name) {
+    this.name = name;
+  }
+
   public double getPcntChangeClose() {
     return pcntChangeClose;
   }
@@ -57,6 +62,11 @@ public class PseStock {
     this.close = close;
   }
 
+  @JsonProperty("lastTradePrice")
+  public void setLastTradePrice(String close) {
+    this.close = close;
+  }
+
   public String getVolume() {
     return volume;
   }
@@ -65,18 +75,35 @@ public class PseStock {
     this.volume = volume;
   }
 
-  @Override
-  public String toString() {
-    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-        .append("symbol", symbol)
-        .append("name", name)
-        .append("close", close)
-        .append("pcntChange", pcntChangeClose)
-        .append("volume", volume)
-        .toString();
-  }
-
   public Stock toStock() {
     return new Stock(symbol, name);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    PseStock pseStock = (PseStock) o;
+    return Double.compare(pseStock.pcntChangeClose, pcntChangeClose) == 0 &&
+        Objects.equal(symbol, pseStock.symbol) &&
+        Objects.equal(name, pseStock.name) &&
+        Objects.equal(close, pseStock.close) &&
+        Objects.equal(volume, pseStock.volume);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(symbol, name, pcntChangeClose, close, volume);
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("symbol", symbol)
+        .add("name", name)
+        .add("pcntChangeClose", pcntChangeClose)
+        .add("close", close)
+        .add("volume", volume)
+        .toString();
   }
 }

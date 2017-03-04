@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.util.Comparator.comparing;
+
 /**
  * @author bradwee2000@gmail.com
  */
@@ -70,7 +72,9 @@ public class StockScanner {
           .profitPcnt(profitPcnt)
           .lastTransaction(report.getTransactions().get(report.getTransactions().size() - 1))
           .build();
-    }).collect(Collectors.toList());
+    })
+        .sorted(comparing(scanResult -> scanResult.getSymbol()))
+        .collect(Collectors.toList());
 
     return scanResults;
   }

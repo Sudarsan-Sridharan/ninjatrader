@@ -114,7 +114,7 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
 
     SimulationChart.prototype.getViewportTransactionValues = function() {
         var viewportIndexRange = this.config.viewportIndexRange; // array of [from, to]
-        var transactions = this.data.transactions;
+        var transactions = this.data.txns;
         var fromIndex = 0;
         var toIndex = 0;
 

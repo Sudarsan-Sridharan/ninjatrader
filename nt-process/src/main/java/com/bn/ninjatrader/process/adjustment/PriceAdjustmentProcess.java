@@ -1,9 +1,9 @@
 package com.bn.ninjatrader.process.adjustment;
 
 import com.bn.ninjatrader.calculator.PriceAdjustmentCalculator;
-import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.request.FindPriceRequest;
 import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.google.inject.Inject;
@@ -47,14 +47,4 @@ public class PriceAdjustmentProcess {
         .timeframe(TimeFrame.ONE_DAY)
         .addPrices(adjustedPrices));
   }
-
-//  public static void main(String args[]) {
-//    final Injector injector = Guice.createInjector(new NtModelMongoModule());
-//    final PriceAdjustmentProcess process = injector.getInstance(PriceAdjustmentProcess.class);
-//
-//    process.process(PriceAdjustmentRequest.forSymbol("MWIDE")
-//        .from(LocalDate.now().minusYears(100))
-//        .to(LocalDate.of(2013, 7, 15))
-//        .adjustment(Operations.startWith(PriceAdjustmentRequest.PRICE).mult(0.769454545)));
-//  }
 }

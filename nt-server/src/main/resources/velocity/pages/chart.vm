@@ -1,7 +1,7 @@
 <html>
 <head>
     <title>Ninja Trader</title>
-    <script data-main="js/ninjachart2" src="js/lib/require.js"></script>
+    <script data-main="js/chart" src="js/lib/require.js"></script>
     <script>
     </script>
 

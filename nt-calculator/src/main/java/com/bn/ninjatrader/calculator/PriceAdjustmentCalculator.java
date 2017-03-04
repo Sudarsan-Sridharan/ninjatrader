@@ -6,6 +6,7 @@ import com.bn.ninjatrader.logical.expression.model.Data;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class PriceAdjustmentCalculator {
 
   private final PriceBuilderFactory priceBuilderFactory;
 
+  @Inject
   public PriceAdjustmentCalculator(final PriceBuilderFactory priceBuilderFactory) {
     this.priceBuilderFactory = priceBuilderFactory;
   }

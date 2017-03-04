@@ -1,3 +1,3 @@
 requirejs(['./common'], function (common) {
-    requirejs(['app/ninjachart/main']);
+    requirejs(['app/scanner/scanner']);
 });

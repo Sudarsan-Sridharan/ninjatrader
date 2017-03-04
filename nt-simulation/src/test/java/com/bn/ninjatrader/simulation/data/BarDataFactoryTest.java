@@ -12,7 +12,7 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.util.Collections;
 
-import static com.bn.ninjatrader.simulation.operation.Variables.*;
+import static com.bn.ninjatrader.simulation.logicexpression.Variables.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;

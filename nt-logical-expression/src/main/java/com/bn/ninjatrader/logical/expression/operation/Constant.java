@@ -2,6 +2,7 @@ package com.bn.ninjatrader.logical.expression.operation;
 
 import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.logical.expression.model.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 
@@ -15,7 +16,7 @@ public class Constant<T extends Data> implements Operation<T> {
 
   private double value;
 
-  public static final Constant of(final double value) {
+  public static Constant of(final double value) {
     return new Constant(value);
   }
 
@@ -33,6 +34,7 @@ public class Constant<T extends Data> implements Operation<T> {
     return value;
   }
 
+  @JsonIgnore
   @Override
   public Set<Variable> getVariables() {
     return Collections.emptySet();

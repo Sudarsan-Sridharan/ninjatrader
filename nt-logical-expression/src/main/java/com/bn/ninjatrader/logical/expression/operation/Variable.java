@@ -2,6 +2,7 @@ package com.bn.ninjatrader.logical.expression.operation;
 
 import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.logical.expression.model.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
@@ -18,7 +19,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Variable<T extends Data> implements Operation<T> {
 
-  public static final Variable of(final String dataType) {
+  public static Variable of(final String dataType) {
     return new Variable(dataType);
   }
 
@@ -28,7 +29,7 @@ public class Variable<T extends Data> implements Operation<T> {
   @JsonProperty("period")
   private final int period;
 
-  private Variable(final String dataType) {
+  public Variable(final String dataType) {
     this(dataType, 0);
   }
 
@@ -56,6 +57,7 @@ public class Variable<T extends Data> implements Operation<T> {
     return t.get(this);
   }
 
+  @JsonIgnore
   @Override
   public Set<Variable> getVariables() {
     return Sets.newHashSet(this);

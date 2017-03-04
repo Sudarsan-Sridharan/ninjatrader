@@ -1,9 +1,9 @@
 package com.bn.ninjatrader.simulation.order.type;
 
-import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.logical.expression.operation.Constant;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

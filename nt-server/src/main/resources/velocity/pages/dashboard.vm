@@ -1,0 +1,41 @@
+<html>
+<head>
+    <title>Dashboard - Ninja Trader</title>
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+    <script data-main="js/dashboard" src="js/lib/require.js"></script>
+    <script>
+    </script>
+</head>
+
+<body>
+
+<div id="scanner" class="panel">
+    <div class="panelWrap">
+        <div class="panelHeader">
+            <h3 class="panelTitle">Stock Scanner</h3>
+            <div class="panelAction">
+                <button class="refreshBtn">Refresh</button>
+            </div>
+        </div>
+        <div id="scanResult" class="panelContent">Loading...</div>
+    </div>
+</div>
+
+<div id="admin" class="panel">
+    <div class="panelWrap">
+        <div class="panelHeader">
+            <h3 class="panelTitle">Admin Tasks</h3>
+        </div>
+        <div class="panelContent">
+            <button class="importQuotesBtn">Import Quotes</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    var context = {};
+    context.contextPath = "${contextPath}";
+    context.serviceHost = "${serviceHost}";
+</script>
+</body>
+</html>

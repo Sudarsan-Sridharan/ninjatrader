@@ -2,8 +2,8 @@ package com.bn.ninjatrader.simulation.core;
 
 import com.bn.ninjatrader.logical.expression.condition.Conditions;
 import com.bn.ninjatrader.simulation.data.DataType;
-import com.bn.ninjatrader.simulation.operation.Variables;
-import com.bn.ninjatrader.simulation.statement.ConditionalStatement;
+import com.bn.ninjatrader.simulation.logicexpression.Variables;
+import com.bn.ninjatrader.simulation.logicexpression.statement.ConditionalStatement;
 import com.bn.ninjatrader.simulation.util.DummyObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_CLOSE;
-import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_HIGH;
+import static com.bn.ninjatrader.simulation.logicexpression.Variables.PRICE_CLOSE;
+import static com.bn.ninjatrader.simulation.logicexpression.Variables.PRICE_HIGH;
 import static org.assertj.core.api.Assertions.assertThat;
 
 

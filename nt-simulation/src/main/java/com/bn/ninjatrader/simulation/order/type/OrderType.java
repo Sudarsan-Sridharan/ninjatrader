@@ -2,6 +2,7 @@ package com.bn.ninjatrader.simulation.order.type;
 
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.data.BarData;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -25,5 +26,6 @@ public interface OrderType {
 
   double getFulfilledPrice(final BarData onSubmitBarData, final BarData currentBarData);
 
+  @JsonIgnore
   Set<Variable> getVariables();
 }

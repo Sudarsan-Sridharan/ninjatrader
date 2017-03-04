@@ -2,6 +2,7 @@ package com.bn.ninjatrader.logical.expression.condition;
 
 import com.bn.ninjatrader.logical.expression.model.Data;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
@@ -36,6 +37,7 @@ public abstract class MultiCondition<T, S extends Data> implements Condition<S> 
     conditions.addAll(Arrays.asList(more));
   }
 
+  @JsonIgnore
   @Override
   public Set<Variable> getVariables() {
     final Set<Variable> variables = Sets.newHashSet();

@@ -4,6 +4,8 @@ import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,5 +126,43 @@ public class TradeStatistic {
     }
     numOfTrades++;
     totalProfit = NumUtil.plus(totalProfit, transaction.getProfit());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    TradeStatistic that = (TradeStatistic) o;
+    return numOfTrades == that.numOfTrades &&
+        numOfWins == that.numOfWins &&
+        numOfLosses == that.numOfLosses &&
+        Double.compare(that.totalProfit, totalProfit) == 0 &&
+        Double.compare(that.totalGain, totalGain) == 0 &&
+        Double.compare(that.totalLosses, totalLosses) == 0 &&
+        Objects.equal(maxGainTxn, that.maxGainTxn) &&
+        Objects.equal(maxPcntGainTxn, that.maxPcntGainTxn) &&
+        Objects.equal(maxLossTxn, that.maxLossTxn) &&
+        Objects.equal(maxPcntLossTxn, that.maxPcntLossTxn);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(numOfTrades, numOfWins, numOfLosses, totalProfit, totalGain, totalLosses, maxGainTxn, maxPcntGainTxn, maxLossTxn, maxPcntLossTxn);
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("numOfTrades", numOfTrades)
+        .add("numOfWins", numOfWins)
+        .add("numOfLosses", numOfLosses)
+        .add("totalProfit", totalProfit)
+        .add("totalGain", totalGain)
+        .add("totalLosses", totalLosses)
+        .add("maxGainTxn", maxGainTxn)
+        .add("maxPcntGainTxn", maxPcntGainTxn)
+        .add("maxLossTxn", maxLossTxn)
+        .add("maxPcntLossTxn", maxPcntLossTxn)
+        .toString();
   }
 }

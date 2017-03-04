@@ -1,7 +1,6 @@
 package com.bn.ninjatrader.server.page;
 
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
+import com.bn.ninjatrader.server.util.HtmlWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,14 +13,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
 
 /**
  * Created by Brad on 4/26/16.
  */
 @Singleton
-@Path("/")
+@Path("/chart")
 public class ChartPage {
   private static final Logger LOG = LoggerFactory.getLogger(ChartPage.class);
 
@@ -29,10 +26,10 @@ public class ChartPage {
   @Produces(MediaType.TEXT_HTML)
   public String showChart(@Context final HttpServletRequest req)
       throws ServletException, IOException {
-    final Writer writer = new StringWriter();
-    final VelocityContext context = new VelocityContext();
-    context.put("contextPath", req.getContextPath());
-    Velocity.mergeTemplate("velocity/pages/chart.vm", "UTF-8", context, writer);
-    return writer.toString();
+
+    return HtmlWriter.withTemplatePath("velocity/pages/chart.vm")
+        .put("contextPath", req.getContextPath())
+        .put("serviceHost", "http://localhost:8080")
+        .write();
   }
 }

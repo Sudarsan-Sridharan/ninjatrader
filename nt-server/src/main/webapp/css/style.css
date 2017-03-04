@@ -1,0 +1,79 @@
+body {
+    font-family: Arial;
+}
+a {
+    text-decoration:none;
+}
+a, a:visited {
+    color:#00d;
+}
+a:hover {
+    text-decoration:underline;
+}
+
+.panel {
+    float:left;
+    margin: 15px;
+    min-width:250px;
+    min-height:100px;
+    background: white;
+    border: 1px solid #eee;
+    display: inline-block;
+    box-shadow: 0px 4px 10px #aaa;
+}
+.panelTitle {
+    color:#444;
+    float:left;
+    margin:0;
+}
+.panelWrap {
+    margin:15px;
+}
+.panelAction {
+    font-size:12px;
+    float:right;
+}
+.panel button {
+    padding: 0;
+    cursor: hand;
+    background: none;
+    display: inline;
+    border: none;
+    color: #00d;
+}
+.panel button:disabled {
+    color:#808080;
+    text-decoration:none;
+    cursor:default;
+}
+.panel button:hover {
+    text-decoration:underline;
+}
+.panelHeader {
+    margin-bottom: 15px;
+}
+.panelHeader:after {
+    clear:both;
+    display:block;
+    content:'';
+}
+.panelContent, .panelContent table {
+    font-size:12px;
+}
+
+#scanResult th {
+    color:#444;
+}
+#scanResult td {
+    border-bottom: 1px solid #eee;
+    padding: 7px 10px;
+}
+#scanResult .buy .txnType {
+    color: darkgreen;
+}
+#scanResult .sell .txnType {
+    color: darkred;
+}
+#scanResult td.price, #scanResult td.profit {
+    text-align:right;
+}

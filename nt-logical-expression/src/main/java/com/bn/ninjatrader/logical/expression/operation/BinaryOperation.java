@@ -2,6 +2,7 @@ package com.bn.ninjatrader.logical.expression.operation;
 
 import com.bn.ninjatrader.logical.expression.model.Data;
 import com.bn.ninjatrader.logical.expression.operator.Operator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
@@ -55,6 +56,7 @@ public class BinaryOperation<T extends Data> implements Operation<T> {
     return operator.exec(lhs, rhs, t);
   }
 
+  @JsonIgnore
   @Override
   public Set<Variable> getVariables() {
     final Set<Variable> set = Sets.newHashSet(lhs.getVariables());

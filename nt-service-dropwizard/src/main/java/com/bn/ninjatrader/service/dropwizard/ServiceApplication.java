@@ -5,7 +5,9 @@ import com.bn.ninjatrader.process.guice.NtProcessModule;
 import com.bn.ninjatrader.service.dropwizard.health.ServiceHealthCheck;
 import com.bn.ninjatrader.service.guice.NtServiceModule;
 import com.bn.ninjatrader.service.provider.LocalDateParamConverterProvider;
-import com.bn.ninjatrader.service.resource.*;
+import com.bn.ninjatrader.service.provider.ObjectMapperContextResolver;
+import com.bn.ninjatrader.service.resource.PriceResource;
+import com.bn.ninjatrader.service.resource.SimulationResource;
 import com.bn.ninjatrader.service.task.*;
 import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
 import com.google.inject.Guice;
@@ -46,6 +48,9 @@ public class ServiceApplication extends Application<ServiceConfig> {
   @Inject
   private ImportPSETraderDailyQuotesTask importPSETraderDailyQuotesTask;
 
+  @Inject
+  private ObjectMapperContextResolver objectMapperContextResolver;
+
   @Override
   public void run(final ServiceConfig serviceConfig, final Environment env) throws Exception {
     env.healthChecks().register("health", serviceHealthCheck);
@@ -66,6 +71,9 @@ public class ServiceApplication extends Application<ServiceConfig> {
     jersey.register(importPriceTask);
     jersey.register(importPSEDailyQuotesTask);
     jersey.register(importPSETraderDailyQuotesTask);
+
+    // ObjectMapper
+    jersey.register(objectMapperContextResolver);
   }
 
   private void setupFilters(final ServletEnvironment servlet) {

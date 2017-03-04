@@ -2,6 +2,7 @@ package com.bn.ninjatrader.logical.expression.condition;
 
 import com.bn.ninjatrader.logical.expression.model.Data;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Collections;
 import java.util.Set;
@@ -25,6 +26,7 @@ public class TrueCondition<T extends Data> implements Condition<T> {
     return true;
   }
 
+  @JsonIgnore
   @Override
   public Set<Variable> getVariables() {
     return Collections.emptySet();

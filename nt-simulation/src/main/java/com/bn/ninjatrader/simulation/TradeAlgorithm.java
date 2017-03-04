@@ -3,18 +3,18 @@ package com.bn.ninjatrader.simulation;
 import com.bn.ninjatrader.logical.expression.condition.Conditions;
 import com.bn.ninjatrader.logical.expression.operation.Operations;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
+import com.bn.ninjatrader.simulation.logicexpression.operation.*;
+import com.bn.ninjatrader.simulation.logicexpression.statement.*;
 import com.bn.ninjatrader.simulation.model.Marker;
-import com.bn.ninjatrader.simulation.operation.function.*;
 import com.bn.ninjatrader.simulation.order.OrderConfig;
 import com.bn.ninjatrader.simulation.order.type.AtPrice;
 import com.bn.ninjatrader.simulation.order.type.OrderTypes;
-import com.bn.ninjatrader.simulation.statement.*;
 import com.google.inject.Singleton;
 
 import java.time.LocalDate;
 
 import static com.bn.ninjatrader.logical.expression.condition.Conditions.*;
-import static com.bn.ninjatrader.simulation.operation.Variables.*;
+import static com.bn.ninjatrader.simulation.logicexpression.Variables.*;
 
 /**
  * @author bradwee2000@gmail.com
@@ -113,8 +113,8 @@ public class TradeAlgorithm {
             ))
         )
 
-        // Buy Condition -- EMA bounce (price bounce from EMA 50)
-        .addStatement(ConditionalStatement.withName("Bounce from EMA 50")
+        // Buy Condition -- With 5% risk
+        .addStatement(ConditionalStatement.withName("Buy with 5% risk")
             .condition(Conditions.and(
                 lte(PcntChangeValue.of(Operations.startWith(PRICE_HIGH).plus(PipValue.of(BUY_PIPS_BUFFER)), LowestValue.of(PRICE_LOW).fromBarsAgo(6)), MAX_BUY_RISK),
                 gt(EMA.withPeriod(18), 0), // EMA 18 > 0. to make sure we have data.
@@ -126,7 +126,8 @@ public class TradeAlgorithm {
                 BuyOrderStatement.builder()
                     .orderType(AtPrice.of(Operations.startWith(PRICE_HIGH).plus(PipValue.of(BUY_PIPS_BUFFER))))
                     .orderConfig(OrderConfig.withBarsFromNow(1).expireAfterNumOfBars(1))
-                    .build()
+                    .build(),
+                MarkStatement.withColor("green").marker(Marker.ARROW_TOP)
                 )
             )
         )

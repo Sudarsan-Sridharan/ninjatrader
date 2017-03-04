@@ -22,6 +22,7 @@ define(["d3"], function(d3) {
     };
 
     SimulationMeta.prototype.show = function(priceData, query) {
+
         // Nothing to do.
     };
 
@@ -81,8 +82,8 @@ define(["d3"], function(d3) {
 
         // Build data map by date
         this._dataByDateMap = [];
-        for (var i in data.transactions) {
-            var tnx = data.transactions[i];
+        for (var i in data.txns) {
+            var tnx = data.txns[i];
             this._dataByDateMap[tnx.dt] = tnx;
         }
     }

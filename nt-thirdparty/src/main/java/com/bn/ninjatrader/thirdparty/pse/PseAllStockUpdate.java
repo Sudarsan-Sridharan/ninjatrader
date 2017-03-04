@@ -15,7 +15,8 @@ public class PseAllStockUpdate {
 
   private List<PseStock> stocks;
 
-  public PseAllStockUpdate(LocalDateTime lastUpdateDate, List<PseStock> stocks) {
+  public PseAllStockUpdate(final LocalDateTime lastUpdateDate,
+                           final List<PseStock> stocks) {
     this.lastUpdateDate = lastUpdateDate;
     this.stocks = stocks;
   }

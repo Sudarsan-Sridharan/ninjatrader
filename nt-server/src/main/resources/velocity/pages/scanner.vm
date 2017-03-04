@@ -1,16 +1,22 @@
 <html>
 <head>
     <title>Ninja Trader</title>
-    <script data-main="js/scan" src="js/lib/require.js"></script>
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+    <script data-main="js/scanner" src="js/lib/require.js"></script>
     <script>
     </script>
 </head>
 
 <body>
 
-<a href="#">Refresh</a>
+<a href="#" id="refresh">Refresh</a>
 
 <div id="scanResult"></div>
 
+<script>
+    var context = {};
+    context.contextPath = "${contextPath}";
+    context.serviceHost = "${serviceHost}";
+</script>
 </body>
 </html>

@@ -4,6 +4,7 @@ import com.bn.ninjatrader.logical.expression.model.Data;
 import com.bn.ninjatrader.logical.expression.operator.InequalityOperator;
 import com.bn.ninjatrader.logical.expression.operation.Operation;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
@@ -52,6 +53,7 @@ public class BasicCondition<T extends Data> implements Condition<T> {
     return operator.isMatch(lhsValue, rhsValue);
   }
 
+  @JsonIgnore
   @Override
   public Set<Variable> getVariables() {
     final Set<Variable> variables = Sets.newHashSet(lhs.getVariables());

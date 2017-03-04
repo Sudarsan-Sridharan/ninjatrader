@@ -7,8 +7,8 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_CLOSE;
-import static com.bn.ninjatrader.simulation.operation.Variables.PRICE_OPEN;
+import static com.bn.ninjatrader.simulation.logicexpression.Variables.PRICE_CLOSE;
+import static com.bn.ninjatrader.simulation.logicexpression.Variables.PRICE_OPEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
