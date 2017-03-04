@@ -1,6 +1,8 @@
-define(['jquery', 'require', '../scanner/scanner'], function ($, require, Scanner) {
+define(['jquery', 'require', '../scanner/scanner', '../status/status'], function ($, require, Scanner, Status) {
 
     $(document).ready(function() {
+
+        var status = new Status("#status");
 
         // Stock Scanner Panel
         var scanner = new Scanner("#scanner .panelContent");
@@ -18,14 +20,22 @@ define(['jquery', 'require', '../scanner/scanner'], function ($, require, Scanne
             $(this).prop("disabled", true);
             var importQuotesBtn = $(this);
 
+            var statusItem = status.show("Importing quotes...");
+
             $.ajax({
                 url: context.serviceHost + "/task/import-pse-trader-quotes",
                 type: "POST",
                 dataType: "json",
                 contentType: "application/x-www-form-urlencoded; charset=utf-8"
+            }).done(function() {
+                statusItem.msg("Successfully imported quotes.").quickShow();
+            }).fail(function(e) {
+                statusItem.msg("Failed to import quotes: " + e.statusText).quickShow();
             }).always(function() {
                 importQuotesBtn.prop("disabled", false);
             });
         });
+
+
     });
 });

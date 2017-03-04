@@ -77,3 +77,30 @@ a:hover {
 #scanResult td.price, #scanResult td.profit {
     text-align:right;
 }
+
+#status {
+    position: fixed;
+    z-index: 999;
+    bottom: 10px;
+}
+.statusItem {
+    font-size: 14px;
+    background: #333;
+    color: white;
+    padding: 10px 15px;
+    margin: 8px;
+    min-width: 250px;
+}
+.statusItem:after {
+    display: block;
+    clear: both;
+    content: '';
+}
+.statusItem .close {
+    float: left;
+    margin-right: 10px;
+    cursor: hand;
+}
+.statusItem .msg {
+    float: left;
+}
