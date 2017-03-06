@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
-import com.googlecode.objectify.annotation.Id;
 import org.jongo.marshall.jackson.oid.MongoId;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
@@ -24,10 +23,7 @@ public abstract class AbstractDocument<T> implements Comparable<AbstractDocument
 
   @MongoId
   @MongoObjectId
-  public String mongoId;
-
-  @Id
-  public String id;
+  private String mongoId;
 
   @JsonProperty(QueryParam.SYMBOL)
   private String symbol;
@@ -49,7 +45,6 @@ public abstract class AbstractDocument<T> implements Comparable<AbstractDocument
   }
 
   public AbstractDocument(final String symbol, final int year, final TimeFrame timeFrame) {
-    this.id = id(symbol, year, timeFrame);
     this.symbol = symbol;
     this.year = year;
     this.timeFrame = timeFrame;
@@ -102,7 +97,6 @@ public abstract class AbstractDocument<T> implements Comparable<AbstractDocument
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
-        .add("id", id)
         .add("symbol", symbol)
         .add("timeFrame", timeFrame)
         .add("year", year)

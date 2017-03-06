@@ -6,7 +6,7 @@ import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.ReportDao;
 import com.bn.ninjatrader.model.mongo.client.DbClient;
 import com.bn.ninjatrader.model.mongo.annotation.*;
-import com.bn.ninjatrader.model.mongo.dao.PriceDaoMongo;
+import com.bn.ninjatrader.model.mongo.dao.MongoPriceDao;
 import com.bn.ninjatrader.model.mongo.dao.ReportDaoMongo;
 import com.bn.ninjatrader.model.mongo.factory.PriceBuilderFactoryMongo;
 import com.google.inject.AbstractModule;
@@ -27,6 +27,7 @@ public class NtModelMongoModule extends AbstractModule {
   public static final String ICHIMOKU_COLLECTION = "ichimoku";
   public static final String MEAN_COLLECTION = "mean";
   public static final String PRICE_COLLECTION = "price";
+  public static final String TRADE_ALGO_COLLECTION = "trade_algo";
   public static final String SMA_COLLECTION = "sma";
   public static final String EMA_COLLECTION = "ema";
   public static final String RSI_COLLECTION = "rsi";
@@ -47,13 +48,14 @@ public class NtModelMongoModule extends AbstractModule {
   protected void configure() {
     install(new NtClockModule());
 
-    bind(PriceDao.class).to(PriceDaoMongo.class);
+    bind(PriceDao.class).to(MongoPriceDao.class);
     bind(ReportDao.class).to(ReportDaoMongo.class);
     bind(PriceBuilderFactory.class).to(PriceBuilderFactoryMongo.class);
 
     bindAnnotatedToCollection(SettingsCollection.class, SETTINGS_COLLECTION);
     bindAnnotatedToCollection(ReportCollection.class, REPORT_COLLECTION);
     bindAnnotatedToCollection(PriceCollection.class, PRICE_COLLECTION);
+    bindAnnotatedToCollection(TradeAlgorithmCollection.class, TRADE_ALGO_COLLECTION);
     bindAnnotatedToCollection(IchimokuCollection.class, ICHIMOKU_COLLECTION);
     bindAnnotatedToCollection(MeanCollection.class, MEAN_COLLECTION);
     bindAnnotatedToCollection(SMACollection.class, SMA_COLLECTION);

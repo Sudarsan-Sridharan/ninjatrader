@@ -10,17 +10,17 @@ import com.googlecode.objectify.annotation.Entity;
  */
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PriceMongoDocument extends AbstractDocument<Price> {
+public class MongoPriceDocument extends AbstractDocument<Price> {
 
-  public PriceMongoDocument() {
+  public MongoPriceDocument() {
     super();
   }
 
-  public PriceMongoDocument(final String symbol, final int year) {
+  public MongoPriceDocument(final String symbol, final int year) {
     super(symbol, year);
   }
 
-  public PriceMongoDocument(final String symbol, final int year, final TimeFrame timeFrame) {
+  public MongoPriceDocument(final String symbol, final int year, final TimeFrame timeFrame) {
     super(symbol, year, timeFrame);
   }
 }

@@ -9,7 +9,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 @Singleton
 public class IdGenerator {
 
-  private static final int ID_LENGTH = 20;
+  private static final int ID_LENGTH = 8;
 
   public String createId() {
     return RandomStringUtils.randomAlphanumeric(ID_LENGTH);

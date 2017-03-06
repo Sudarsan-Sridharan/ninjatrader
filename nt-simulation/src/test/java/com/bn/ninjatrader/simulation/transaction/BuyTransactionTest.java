@@ -1,8 +1,8 @@
 package com.bn.ninjatrader.simulation.transaction;
 
-import com.bn.ninjatrader.simulation.util.DummyObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BuyTransactionTest {
   private static final Logger LOG = LoggerFactory.getLogger(BuyTransactionTest.class);
 
-  private final ObjectMapper om = DummyObjectMapperProvider.get();
+  private final ObjectMapper om = new ObjectMapper();
   private final LocalDate now = LocalDate.of(2016, 1, 1);
   private final LocalDate tomorrow = LocalDate.of(2016, 1, 2);
 
@@ -71,7 +71,7 @@ public class BuyTransactionTest {
     set.add(diff4);
     set.add(diff5);
 
-    assertThat(set).hasSize(6).containsOnly(orig, diff1, diff2, diff3, diff4, diff5);
+    Assertions.assertThat(set).hasSize(6).containsOnly(orig, diff1, diff2, diff3, diff4, diff5);
   }
 
   @Test

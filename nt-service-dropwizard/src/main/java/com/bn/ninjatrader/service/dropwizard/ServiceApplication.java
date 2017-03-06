@@ -3,7 +3,6 @@ package com.bn.ninjatrader.service.dropwizard;
 import com.bn.ninjatrader.model.mongo.guice.NtModelMongoModule;
 import com.bn.ninjatrader.process.guice.NtProcessModule;
 import com.bn.ninjatrader.service.dropwizard.health.ServiceHealthCheck;
-import com.bn.ninjatrader.service.guice.NtServiceModule;
 import com.bn.ninjatrader.service.provider.LocalDateParamConverterProvider;
 import com.bn.ninjatrader.service.provider.ObjectMapperContextResolver;
 import com.bn.ninjatrader.service.resource.PriceResource;
@@ -84,7 +83,6 @@ public class ServiceApplication extends Application<ServiceConfig> {
   public static void main(String[] args) throws Exception {
     final Injector injector = Guice.createInjector(
         new NtModelMongoModule(),
-        new NtServiceModule(),
         new NtProcessModule(),
         new NtSimulationModule()
     );

@@ -29,8 +29,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created by Brad on 5/4/16.
  */
-public class PriceDaoMongoTest {
-  private static final Logger LOG = LoggerFactory.getLogger(PriceDaoMongoTest.class);
+public class MongoPriceDaoTest {
+  private static final Logger LOG = LoggerFactory.getLogger(MongoPriceDaoTest.class);
 
   private static final LocalDate now = LocalDate.of(2016, 1, 1);
   private static final LocalDate tomorrow = now.plusDays(1);
@@ -45,7 +45,7 @@ public class PriceDaoMongoTest {
   private final Price price2 = pbf.builder().date(tomorrow)
       .open(2.1).high(2.2).low(2.0).close(2.1).volume(2000).build();
 
-  private PriceDaoMongo priceDao;
+  private MongoPriceDao priceDao;
 
   @BeforeClass
   public static void setup() {
@@ -62,7 +62,7 @@ public class PriceDaoMongoTest {
 
   @Before
   public void before() {
-    priceDao = injector.getInstance(PriceDaoMongo.class);
+    priceDao = injector.getInstance(MongoPriceDao.class);
     priceDao.getMongoCollection().remove();
   }
 

@@ -66,5 +66,7 @@ define(['jquery', 'require', './ninjachart', './model/query'], function ($, requ
             .setPeriods("ema", [18, 50, 100, 200])
             .setPeriods("rsi", [14])
         );
+
+        document.title = symbol + " | Beach Ninja Trader";
     }
 });

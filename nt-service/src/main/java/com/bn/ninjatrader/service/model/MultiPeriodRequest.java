@@ -89,16 +89,4 @@ public class MultiPeriodRequest {
         .append("to", to)
         .build();
   }
-
-  public Collection<FindRequest> toFindRequest(final Clock clock) {
-    List<FindRequest> requests = Lists.newArrayList();
-    for (int period : periods) {
-      requests.add(FindRequest.findSymbol(symbol)
-          .period(period)
-          .timeframe(Optional.ofNullable(timeFrame).orElse(TimeFrame.ONE_DAY))
-          .from(Optional.ofNullable(from).orElse(DateUtil.phNow(clock).minusYears(1)))
-          .to(Optional.ofNullable(to).orElse(DateUtil.phNow(clock))));
-    }
-    return requests;
-  }
 }

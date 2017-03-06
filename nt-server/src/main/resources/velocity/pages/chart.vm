@@ -1,10 +1,7 @@
 <html>
 <head>
-    <title>Ninja Trader</title>
+    <title>Beach Ninja Trader</title>
     <script data-main="js/chart" src="js/lib/require.js"></script>
-    <script>
-    </script>
-
     #chartstyle()
 </head>
 

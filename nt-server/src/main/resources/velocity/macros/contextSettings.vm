@@ -1,0 +1,11 @@
+#macro(contextSettings)
+<script>
+    var context = {};
+    #if (${contextPath})
+    context.contextPath = "${contextPath}";
+    #end
+    #if (${serviceHost})
+    context.serviceHost = "${serviceHost}";
+    #end
+</script>
+#end

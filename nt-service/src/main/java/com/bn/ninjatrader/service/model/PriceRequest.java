@@ -1,7 +1,6 @@
 package com.bn.ninjatrader.service.model;
 
 import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.model.request.FindRequest;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.slf4j.Logger;
@@ -9,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
-import java.time.Clock;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -63,13 +61,6 @@ public class PriceRequest {
 
   public void setTo(final LocalDate to) {
     this.to = to;
-  }
-
-  public FindRequest toFindRequest(final Clock clock) {
-    return FindRequest.findSymbol(symbol)
-        .timeframe(getTimeFrame().orElse(TimeFrame.ONE_DAY))
-        .from(getFrom().orElse(LocalDate.now(clock).minusYears(2)))
-        .to(getTo().orElse(LocalDate.now(clock)));
   }
 
   @Override

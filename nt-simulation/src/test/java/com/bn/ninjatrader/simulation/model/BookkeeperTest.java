@@ -1,6 +1,7 @@
-package com.bn.ninjatrader.simulation.transaction;
+package com.bn.ninjatrader.simulation.model;
 
-import com.bn.ninjatrader.simulation.model.Bookkeeper;
+import com.bn.ninjatrader.simulation.transaction.Transaction;
+import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import org.junit.Before;
 import org.junit.Test;
 

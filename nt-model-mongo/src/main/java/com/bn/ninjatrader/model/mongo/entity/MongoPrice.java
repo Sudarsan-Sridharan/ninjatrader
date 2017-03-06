@@ -15,7 +15,7 @@ import java.time.LocalDate;
 /**
  * @author bradwee2000@gmail.com
  */
-public class PriceMongo implements Price {
+public class MongoPrice implements Price {
 
   public static final PriceBuilderMongo builder() {
     return new PriceBuilderMongo();
@@ -44,7 +44,7 @@ public class PriceMongo implements Price {
   @JsonDeserialize(using = NtLocalDateDeserializer.class)
   private LocalDate date;
 
-  public PriceMongo(@JsonSerialize(using = NtLocalDateSerializer.class)
+  public MongoPrice(@JsonSerialize(using = NtLocalDateSerializer.class)
                     @JsonDeserialize(using = NtLocalDateDeserializer.class)
                     @JsonProperty("d") final LocalDate date,
                     @JsonProperty("o") final double open,

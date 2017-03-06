@@ -9,7 +9,7 @@ import com.bn.ninjatrader.model.mongo.annotation.PriceCollection;
 import com.bn.ninjatrader.model.request.FindPriceRequest;
 import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.mongo.document.PriceMongoDocument;
+import com.bn.ninjatrader.model.mongo.document.MongoPriceDocument;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 import com.bn.ninjatrader.model.mongo.util.Queries;
 import com.google.common.collect.Lists;
@@ -34,13 +34,13 @@ import static com.bn.ninjatrader.model.mongo.util.QueryParam.*;
  * Created by Brad on 4/30/16.
  */
 @Singleton
-public class PriceDaoMongo extends AbstractDao implements PriceDao {
-  private static final Logger LOG = LoggerFactory.getLogger(PriceDaoMongo.class);
+public class MongoPriceDao extends AbstractDao implements PriceDao {
+  private static final Logger LOG = LoggerFactory.getLogger(MongoPriceDao.class);
 
   private final Clock clock;
 
   @Inject
-  public PriceDaoMongo(@PriceCollection final MongoCollection priceCollection,
+  public MongoPriceDao(@PriceCollection final MongoCollection priceCollection,
                        final Clock clock) {
     super(priceCollection);
     this.clock = clock;
@@ -54,15 +54,15 @@ public class PriceDaoMongo extends AbstractDao implements PriceDao {
     final LocalDate fromDate = req.getFromDate();
     final LocalDate toDate = req.getToDate();
 
-    final List<PriceMongoDocument> priceDataList = Lists.newArrayList(getMongoCollection()
+    final List<MongoPriceDocument> priceDataList = Lists.newArrayList(getMongoCollection()
         .find(Queries.FIND_BY_SYMBOL_TIMEFRAME_YEAR_RANGE, req.getSymbol(),
             req.getTimeFrame(),
             fromDate.getYear(),
             toDate.getYear())
-        .as(PriceMongoDocument.class).iterator());
+        .as(MongoPriceDocument.class).iterator());
     final List<Price> prices = Lists.newArrayList();
 
-    for (final PriceMongoDocument priceData : priceDataList) {
+    for (final MongoPriceDocument priceData : priceDataList) {
       prices.addAll(priceData.getData());
     }
 
@@ -131,9 +131,9 @@ public class PriceDaoMongo extends AbstractDao implements PriceDao {
     final int thisYear = LocalDate.now(clock).getYear();
     final Set<String> symbols = Sets.newHashSet();
 
-    try (final MongoCursor<PriceMongoDocument> cursor = getMongoCollection()
+    try (final MongoCursor<MongoPriceDocument> cursor = getMongoCollection()
             .find(Queries.FIND_BY_TIMEFRAME_YEAR, TimeFrame.ONE_DAY, thisYear)
-            .as(PriceMongoDocument.class)) {
+            .as(MongoPriceDocument.class)) {
       while (cursor.hasNext()) {
         symbols.add(cursor.next().getSymbol());
       }

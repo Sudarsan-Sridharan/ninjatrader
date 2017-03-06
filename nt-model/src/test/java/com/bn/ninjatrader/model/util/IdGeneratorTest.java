@@ -16,7 +16,7 @@ public class IdGeneratorTest {
 
   @Test
   public void testIdLength() {
-    assertThat(idGenerator.createId()).hasSize(20);
+    assertThat(idGenerator.createId()).hasSize(8);
   }
 
   @Test
@@ -24,6 +24,7 @@ public class IdGeneratorTest {
     Set<String> ids = Sets.newHashSet();
     for (int i = 0; i < 1000; i++) {
       ids.add(idGenerator.createId());
+      System.out.println(idGenerator.createId());
     }
     assertThat(ids).hasSize(1000);
   }

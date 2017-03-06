@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Dashboard - Ninja Trader</title>
+    <title>Dashboard - Beach Ninja Trader</title>
     <link rel="stylesheet" href="css/style.css" type="text/css">
     <script data-main="js/dashboard" src="js/lib/require.js"></script>
     <script>
@@ -34,10 +34,6 @@
 
 <div id="status"></div>
 
-<script>
-    var context = {};
-    context.contextPath = "${contextPath}";
-    context.serviceHost = "${serviceHost}";
-</script>
+#contextSettings()
 </body>
 </html>

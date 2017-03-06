@@ -2,7 +2,7 @@ package com.bn.ninjatrader.model.mongo.builder;
 
 import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.entity.PriceBuilder;
-import com.bn.ninjatrader.model.mongo.entity.PriceMongo;
+import com.bn.ninjatrader.model.mongo.entity.MongoPrice;
 
 import java.time.LocalDate;
 
@@ -116,6 +116,6 @@ public class PriceBuilderMongo implements PriceBuilder {
 
   @Override
   public Price build() {
-    return new PriceMongo(date, open, high, low, close, change, volume);
+    return new MongoPrice(date, open, high, low, close, change, volume);
   } 
 }
