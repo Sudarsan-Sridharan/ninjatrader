@@ -26,7 +26,7 @@
         </dependency>
         <dependency>
             <groupId>com.beachninja</groupId>
-            <artifactId>nt-model</artifactId>
+            <artifactId>nt-model-mongo</artifactId>
         </dependency>
         <dependency>
             <groupId>com.beachninja</groupId>
@@ -57,6 +57,7 @@
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>com.beachninja</groupId>

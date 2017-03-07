@@ -3,7 +3,7 @@ package com.bn.ninjatrader.simulation.scanner;
 import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.simulation.Simulator;
-import com.bn.ninjatrader.simulation.TradeAlgorithm;
+import com.bn.ninjatrader.simulation.GoldenAlgorithm;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
@@ -29,13 +29,13 @@ public class StockScanner {
 
   private final Simulator simulator;
   private final PriceDao priceDao;
-  private final TradeAlgorithm algo;
+  private final GoldenAlgorithm algo;
   private final Clock clock;
 
   @Inject
   public StockScanner(final Simulator simulator,
                       final PriceDao priceDao,
-                      final TradeAlgorithm algo,
+                      final GoldenAlgorithm algo,
                       final Clock clock) {
     this.simulator = simulator;
     this.priceDao = priceDao;

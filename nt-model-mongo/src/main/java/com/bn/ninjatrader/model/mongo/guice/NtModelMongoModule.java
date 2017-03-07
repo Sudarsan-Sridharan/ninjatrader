@@ -1,13 +1,13 @@
 package com.bn.ninjatrader.model.mongo.guice;
 
-import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.common.guice.NtClockModule;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.dao.ReportDao;
-import com.bn.ninjatrader.model.mongo.client.DbClient;
+import com.bn.ninjatrader.model.dao.TradeAlgorithmDao;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.model.mongo.annotation.*;
+import com.bn.ninjatrader.model.mongo.client.DbClient;
 import com.bn.ninjatrader.model.mongo.dao.MongoPriceDao;
-import com.bn.ninjatrader.model.mongo.dao.ReportDaoMongo;
+import com.bn.ninjatrader.model.mongo.dao.MongoTradeAlgorithmDao;
 import com.bn.ninjatrader.model.mongo.factory.PriceBuilderFactoryMongo;
 import com.google.inject.AbstractModule;
 import org.jongo.MongoCollection;
@@ -49,7 +49,7 @@ public class NtModelMongoModule extends AbstractModule {
     install(new NtClockModule());
 
     bind(PriceDao.class).to(MongoPriceDao.class);
-    bind(ReportDao.class).to(ReportDaoMongo.class);
+    bind(TradeAlgorithmDao.class).to(MongoTradeAlgorithmDao.class);
     bind(PriceBuilderFactory.class).to(PriceBuilderFactoryMongo.class);
 
     bindAnnotatedToCollection(SettingsCollection.class, SETTINGS_COLLECTION);

@@ -24,7 +24,7 @@ public class HtmlWriter {
     this.templatePath = templatePath;
   }
 
-  public HtmlWriter put(final String key, final String value) {
+  public HtmlWriter put(final String key, final Object value) {
     context.put(key, value);
     return this;
   }

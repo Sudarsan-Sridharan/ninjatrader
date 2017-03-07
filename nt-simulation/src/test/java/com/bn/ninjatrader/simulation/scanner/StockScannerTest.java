@@ -3,7 +3,7 @@ package com.bn.ninjatrader.simulation.scanner;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.util.TestUtil;
 import com.bn.ninjatrader.simulation.Simulator;
-import com.bn.ninjatrader.simulation.TradeAlgorithm;
+import com.bn.ninjatrader.simulation.GoldenAlgorithm;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
 import com.bn.ninjatrader.simulation.model.TradeStatistic;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
@@ -31,7 +31,7 @@ public class StockScannerTest {
   private final LocalDate now = LocalDate.of(2016, 2, 1);
   private Simulator simulator;
   private PriceDao priceDao;
-  private TradeAlgorithm algo;
+  private GoldenAlgorithm algo;
   private SimulationReport simulationReport;
   private SimulationParams simulationParams;
   private TradeStatistic tradeStatistic;
@@ -43,7 +43,7 @@ public class StockScannerTest {
   public void before() {
     simulator = mock(Simulator.class);
     priceDao = mock(PriceDao.class);
-    algo = mock(TradeAlgorithm.class);
+    algo = mock(GoldenAlgorithm.class);
     simulationReport = mock(SimulationReport.class);
     simulationParams = mock(SimulationParams.class);
     tradeStatistic = mock(TradeStatistic.class);

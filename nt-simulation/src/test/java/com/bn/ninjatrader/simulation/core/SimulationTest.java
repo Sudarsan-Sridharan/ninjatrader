@@ -36,8 +36,9 @@ public class SimulationTest {
   private final BarData bar1 = BarData.builder().price(price1).index(0).build();
   private final BarData bar2 = BarData.builder().price(price2).index(1).build();
 
+  private final SimTradeAlgorithm algorithm = SimTradeAlgorithm.builder().build();
   private final SimulationParams params = SimulationParams.builder()
-      .startingCash(100000).from(date1).to(date2).symbol("MEG").build();
+      .startingCash(100000).from(date1).to(date2).symbol("MEG").algorithm(algorithm).build();
 
   private Account account;
   private Portfolio portfolio;

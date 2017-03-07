@@ -5,12 +5,8 @@ import com.bn.ninjatrader.simulation.calculator.VarCalculator;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
 import com.bn.ninjatrader.simulation.listener.BrokerListener;
-import com.bn.ninjatrader.simulation.model.Account;
-import com.bn.ninjatrader.simulation.model.Broker;
-import com.bn.ninjatrader.simulation.model.History;
-import com.bn.ninjatrader.simulation.model.World;
+import com.bn.ninjatrader.simulation.model.*;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
-import com.bn.ninjatrader.simulation.logicexpression.statement.Statement;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
 import com.google.common.collect.Lists;
@@ -40,8 +36,7 @@ public class Simulation implements BrokerListener {
   private final History history;
   private final Map<String, List<Price>> priceDatastore;
   private final List<VarCalculator> varCalculators = Lists.newArrayList();
-
-  private final List<Statement> statements;
+  private final SimTradeAlgorithm algorithm;
 
   private int barIndex;
 
@@ -54,6 +49,7 @@ public class Simulation implements BrokerListener {
     checkNotNull(world.getPrices(), "World.Prices must not be null.");
     checkArgument(world.getPrices().size() > 0, "World.Prices must not be empty.");
     checkArgument(simulationParams.getStartingCash() > 0, "Starting cash must be > 0.");
+    checkNotNull(simulationParams.getAlgorithm(), "algorithm must not be null.");
 
     this.world = world;
     this.account = world.getAccount();
@@ -61,8 +57,8 @@ public class Simulation implements BrokerListener {
     this.priceDatastore = world.getPrices();
     this.history = world.getHistory();
     this.simulationParams = simulationParams;
-    this.statements = simulationParams.getStatements();
     this.barDataFactory = barDataFactory;
+    this.algorithm = simulationParams.getAlgorithm();
 
     broker.addListeners(this, account);
   }
@@ -83,9 +79,7 @@ public class Simulation implements BrokerListener {
   }
 
   private void processBar(final BarData barData) {
-    for (final Statement statement : statements) {
-      statement.run(barData);
-    }
+    algorithm.getPlay().run(barData);
     broker.processPendingOrders(barData);
   }
 
@@ -127,12 +121,13 @@ public class Simulation implements BrokerListener {
 
   @Override
   public void onFulfilledBuy(final BuyTransaction transaction, final BarData barData) {
-    simulationParams.getOnBuyFulfilledStatement().run(barData);
+    algorithm.getOnBuyFulfilled().run(barData);
   }
+
 
   @Override
   public void onFulfilledSell(final SellTransaction transaction, final BarData barData) {
-    simulationParams.getOnSellFulfilledStatement().run(barData);
+    algorithm.getOnSellFulfilled().run(barData);
   }
 
   /**

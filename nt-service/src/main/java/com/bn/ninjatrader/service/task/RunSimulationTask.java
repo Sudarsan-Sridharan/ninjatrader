@@ -1,7 +1,8 @@
 package com.bn.ninjatrader.service.task;
 
 import com.bn.ninjatrader.simulation.Simulator;
-import com.bn.ninjatrader.simulation.TradeAlgorithm;
+import com.bn.ninjatrader.simulation.core.SimulationRequest;
+import com.bn.ninjatrader.simulation.exception.TradeAlgorithmIdNotFoundException;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -12,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.time.Clock;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -23,15 +23,15 @@ import java.time.format.DateTimeFormatter;
 @Path("/task/simulation")
 public class RunSimulationTask {
   private static final Logger LOG = LoggerFactory.getLogger(RunSimulationTask.class);
+  private static final String ERROR_SYM_PARAM_REQUIRED = "symbol parameter is required.";
+  private static final String ERROR_ALGO_ID_PARAM_REQUIRED = "algoId parameter is required.";
+  private static final String ERROR_ALGO_ID_NOT_FOUND = "algoId is not found.";
 
   private final Simulator simulator;
-  private final Clock clock;
 
   @Inject
-  public RunSimulationTask(final Simulator simulator,
-                           final Clock clock) {
+  public RunSimulationTask(final Simulator simulator) {
     this.simulator = simulator;
-    this.clock = clock;
   }
 
   @GET
@@ -39,22 +39,30 @@ public class RunSimulationTask {
   @Produces(MediaType.APPLICATION_JSON)
   public Response runSimulation(@QueryParam("from") final String basicIsoFromDate,
                                 @QueryParam("to") final String basicIsoToDate,
-                                @QueryParam("symbol") final String symbol) {
+                                @QueryParam("symbol") final String symbol,
+                                @QueryParam("algoId") final String algoId) {
+    // Preconditions
     if (StringUtils.isEmpty(symbol)) {
-      throw new BadRequestException("symbol parameter is required.");
+      throw new BadRequestException(ERROR_SYM_PARAM_REQUIRED);
+    }
+    if (StringUtils.isEmpty(algoId)) {
+      throw new BadRequestException(ERROR_ALGO_ID_PARAM_REQUIRED);
     }
 
-    final LocalDate from = StringUtils.isEmpty(basicIsoFromDate) ?
-        LocalDate.now(clock).minusYears(2) :
+    // Get from and to dates
+    final LocalDate from = StringUtils.isEmpty(basicIsoFromDate) ? null :
         LocalDate.parse(basicIsoFromDate, DateTimeFormatter.BASIC_ISO_DATE);
 
-    final LocalDate to = StringUtils.isEmpty(basicIsoToDate) ?
-        LocalDate.now(clock) :
+    final LocalDate to = StringUtils.isEmpty(basicIsoToDate) ? null :
         LocalDate.parse(basicIsoToDate, DateTimeFormatter.BASIC_ISO_DATE);
 
-    final SimulationReport report = simulator.play(TradeAlgorithm.newInstance()
-        .from(from).to(to).forSymbol(symbol).build());
-
-    return Response.ok(report).build();
+    // Play simulation
+    try {
+      final SimulationReport report = simulator.play(SimulationRequest.withSymbol(symbol)
+          .from(from).to(to).tradeAlgorithmId(algoId));
+      return Response.ok(report).build();
+    } catch (final TradeAlgorithmIdNotFoundException e) {
+      throw new BadRequestException(ERROR_ALGO_ID_NOT_FOUND);
+    }
   }
 }

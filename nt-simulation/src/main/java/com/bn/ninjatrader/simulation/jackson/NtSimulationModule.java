@@ -17,7 +17,6 @@ public class NtSimulationModule extends SimpleModule {
         new NamedType(PipValue.class, "pip"),
         new NamedType(PropertyValue.class, "property"),
         new NamedType(HistoryValue.class, "history")
-
     );
   }
 }

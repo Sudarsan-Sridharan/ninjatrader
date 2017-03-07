@@ -37,9 +37,10 @@ define(['jquery', 'require', './ninjachart', './model/query'], function ($, requ
 
         // Check symbol from query param, use it if found.
         var queryParamSymbol = $.queryParam("symbol");
+        var queryParamAlgoId = $.queryParam("algoId");
         if (queryParamSymbol) {
             var symbol = queryParamSymbol.toUpperCase();
-            showChart(symbol, "ONE_DAY");
+            showChart(symbol, "ONE_DAY", queryParamAlgoId);
             symbolInput.val(symbol);
         }
     });
@@ -49,7 +50,7 @@ define(['jquery', 'require', './ninjachart', './model/query'], function ($, requ
      * @param symbol
      * @param timeframe
      */
-    function showChart(symbol, timeframe) {
+    function showChart(symbol, timeframe, algoId) {
         var symbol = symbol.toUpperCase();
         var from = new Date();
         var to = new Date().toDbFormat();
@@ -65,6 +66,7 @@ define(['jquery', 'require', './ninjachart', './model/query'], function ($, requ
             .setPeriods("sma", [20])
             .setPeriods("ema", [18, 50, 100, 200])
             .setPeriods("rsi", [14])
+            .setAlgoId(algoId)
         );
 
         document.title = symbol + " | Beach Ninja Trader";

@@ -1,18 +1,20 @@
 package com.bn.ninjatrader.simulation.core;
 
 import com.bn.ninjatrader.common.boardlot.BoardLotTable;
-import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.logical.expression.condition.Conditions;
-import com.bn.ninjatrader.model.request.FindPriceRequest;
 import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.request.FindPriceRequest;
 import com.bn.ninjatrader.simulation.calculator.VarCalculatorFactory;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
-import com.bn.ninjatrader.simulation.model.Broker;
-import com.bn.ninjatrader.simulation.model.BrokerFactory;
-import com.bn.ninjatrader.simulation.model.World;
 import com.bn.ninjatrader.simulation.logicexpression.statement.BuyOrderStatement;
 import com.bn.ninjatrader.simulation.logicexpression.statement.ConditionalStatement;
+import com.bn.ninjatrader.simulation.logicexpression.statement.MultiStatement;
 import com.bn.ninjatrader.simulation.logicexpression.statement.SellOrderStatement;
+import com.bn.ninjatrader.simulation.model.Broker;
+import com.bn.ninjatrader.simulation.model.BrokerFactory;
+import com.bn.ninjatrader.simulation.model.SimTradeAlgorithm;
+import com.bn.ninjatrader.simulation.model.World;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,12 +61,14 @@ public class SimulationFactoryTest {
 
     params = SimulationParams.builder().symbol("MEG").from(from).to(to)
         .startingCash(100000)
-        .addStatement(ConditionalStatement.builder()
-            .condition(Conditions.gt(PRICE_CLOSE, 30))
-            .then(BuyOrderStatement.builder().build()).build())
-        .addStatement(ConditionalStatement.builder()
-            .condition(Conditions.gt(PRICE_CLOSE, 50))
-            .then(SellOrderStatement.builder().build()).build())
+        .algorithm(SimTradeAlgorithm.builder().play(MultiStatement.of(
+            ConditionalStatement.builder()
+                .condition(Conditions.gt(PRICE_CLOSE, 30))
+                .then(BuyOrderStatement.builder().build()).build(),
+            ConditionalStatement.builder()
+                .condition(Conditions.gt(PRICE_CLOSE, 50))
+                .then(SellOrderStatement.builder().build()).build()))
+            .build())
         .build();
 
     when(priceDao.find(any())).thenReturn(randomPrices(NUM_OF_PRICES));

@@ -5,7 +5,7 @@ define(['jquery', 'require', '../scanner/scanner', '../status/status'], function
         var status = new Status("#status");
 
         // Stock Scanner Panel
-        var scanner = new Scanner("#scanner .panelContent");
+        var scanner = new Scanner("#scanner .panelContent", "#scanner .algo");
         scanner.scan();
         $("#scanner .refreshBtn").click(function() {
             $("#scanner .panelAction button").prop("disabled", true);

@@ -3,8 +3,7 @@ package com.bn.ninjatrader.simulation.core;
 import com.bn.ninjatrader.common.util.NtLocalDateDeserializer;
 import com.bn.ninjatrader.common.util.NtLocalDateSerializer;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
-import com.bn.ninjatrader.simulation.logicexpression.statement.EmptyStatement;
-import com.bn.ninjatrader.simulation.logicexpression.statement.Statement;
+import com.bn.ninjatrader.simulation.model.SimTradeAlgorithm;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,15 +11,13 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by Brad on 8/3/16.
@@ -49,20 +46,14 @@ public class SimulationParams {
   @JsonProperty("startingCash")
   private double startingCash;
 
-  @JsonProperty("statements")
-  private final List<Statement> statements = Lists.newArrayList();
-
-  @JsonProperty("onBuyFulfilledStatement")
-  private Statement onBuyFulfilledStatement;
-
-  @JsonProperty("onSellFulfilledStatement")
-  private Statement onSellFulfilledStatement;
+  @JsonProperty("algorithm")
+  private SimTradeAlgorithm algorithm;
 
   @JsonIgnore
-  private final Set<Variable> variables = Sets.newHashSet();
+  private Set<Variable> variables;
 
   @JsonIgnore
-  private final Set<String> dataTypes = Sets.newHashSet();
+  private Set<String> dataTypes;
 
   public SimulationParams() {}
 
@@ -70,26 +61,12 @@ public class SimulationParams {
                           final LocalDate toDate,
                           final String symbol,
                           final double startingCash,
-                          final List<Statement> statements,
-                          final Statement onBuyFulfilledStatement,
-                          final Statement onSellFulfilledStatement) {
+                          final SimTradeAlgorithm algorithm) {
     this.fromDate = fromDate;
     this.toDate = toDate;
     this.symbol = symbol;
     this.startingCash = startingCash;
-    this.statements.addAll(statements);
-    this.onBuyFulfilledStatement = onBuyFulfilledStatement;
-    this.onSellFulfilledStatement = onSellFulfilledStatement;
-
-    variables.addAll(onBuyFulfilledStatement.getVariables());
-    variables.addAll(onSellFulfilledStatement.getVariables());
-
-    for (final Statement statement : statements) {
-      variables.addAll(statement.getVariables());
-    }
-    for (final Variable variable : variables) {
-      dataTypes.add(variable.getDataType());
-    }
+    this.algorithm = algorithm;
   }
 
   public LocalDate getFromDate() {
@@ -124,37 +101,45 @@ public class SimulationParams {
     this.startingCash = startingCash;
   }
 
-  public List<Statement> getStatements() {
-    return Lists.newArrayList(statements);
+  public SimTradeAlgorithm getAlgorithm() {
+    return algorithm;
   }
 
-  public Statement getOnBuyFulfilledStatement() {
-    return onBuyFulfilledStatement;
+  @JsonIgnore
+  public Set<Variable> getVariables() {
+    if (variables == null) {
+      variables = Sets.newHashSet(algorithm.getVariables());
+    }
+    return variables;
   }
 
-  public Statement getOnSellFulfilledStatement() {
-    return onSellFulfilledStatement;
+  @JsonIgnore
+  public Set<String> getDataTypes() {
+    if (dataTypes == null) {
+      dataTypes = getVariables().stream()
+          .map(variable -> variable.getDataType())
+          .collect(Collectors.toSet());
+    }
+    return dataTypes;
   }
 
   @Override
-  public boolean equals(final Object obj) {
-    if (obj == null || !(obj instanceof SimulationParams)) {
-      return false;
-    }
-    if (obj == this) {
-      return true;
-    }
-    final SimulationParams rhs = (SimulationParams) obj;
-    return Objects.equal(fromDate, rhs.fromDate)
-        && Objects.equal(toDate, rhs.toDate)
-        && Objects.equal(symbol, rhs.symbol)
-        && Objects.equal(startingCash, rhs.startingCash)
-        && Objects.equal(statements, rhs.statements);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    SimulationParams params = (SimulationParams) o;
+    return Double.compare(params.startingCash, startingCash) == 0 &&
+        Objects.equal(fromDate, params.fromDate) &&
+        Objects.equal(toDate, params.toDate) &&
+        Objects.equal(symbol, params.symbol) &&
+        Objects.equal(algorithm, params.algorithm) &&
+        Objects.equal(variables, params.variables) &&
+        Objects.equal(dataTypes, params.dataTypes);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(fromDate, toDate, symbol, startingCash, statements);
+    return Objects.hashCode(fromDate, toDate, symbol, startingCash, algorithm, variables, dataTypes);
   }
 
   @Override
@@ -164,18 +149,10 @@ public class SimulationParams {
         .add("toDate", toDate)
         .add("symbol", symbol)
         .add("startingCash", startingCash)
-        .add("statements", statements)
+        .add("algorithm", algorithm)
+        .add("variables", variables)
+        .add("dataTypes", dataTypes)
         .toString();
-  }
-
-  @JsonIgnore
-  public Set<Variable> getVariables() {
-    return variables;
-  }
-
-  @JsonIgnore
-  public Set<String> getDataTypes() {
-    return dataTypes;
   }
 
   /**
@@ -186,9 +163,7 @@ public class SimulationParams {
     private LocalDate toDate;
     private String symbol;
     private double startingCash;
-    private final List<Statement> statements = Lists.newArrayList();
-    private Statement onBuyFulfilledStatement = EmptyStatement.instance();
-    private Statement onSellFulfilledStatement = EmptyStatement.instance();
+    private SimTradeAlgorithm algorithm;
 
     public Builder from(final LocalDate fromDate) {
       this.fromDate = fromDate;
@@ -206,29 +181,14 @@ public class SimulationParams {
       this.startingCash = startingCash;
       return this;
     }
-    public Builder addStatement(final Statement statement) {
-      this.statements.add(statement);
+
+    public Builder algorithm(final SimTradeAlgorithm algorithm) {
+      this.algorithm = algorithm;
       return this;
     }
-    public Builder addStatements(final Collection<Statement> statements) {
-      this.statements.addAll(statements);
-      return this;
-    }
-    public Builder addStatements(final Statement statement, final Statement ... more) {
-      this.statements.addAll(Lists.asList(statement, more));
-      return this;
-    }
-    public Builder onBuyFulfilledStatement(final Statement onBuyFulfilledStatement) {
-      this.onBuyFulfilledStatement = onBuyFulfilledStatement;
-      return this;
-    }
-    public Builder onSellfulfilledStatement(final Statement onSellFulfilledStatement) {
-      this.onSellFulfilledStatement = onSellFulfilledStatement;
-      return this;
-    }
+
     public SimulationParams build() {
-      return new SimulationParams(fromDate, toDate, symbol, startingCash, statements,
-          onBuyFulfilledStatement, onSellFulfilledStatement);
+      return new SimulationParams(fromDate, toDate, symbol, startingCash, algorithm);
     }
   }
 }

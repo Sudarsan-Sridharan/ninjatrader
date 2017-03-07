@@ -1,7 +1,8 @@
 define(['jquery'], function ($) {
 
-    function Scanner(divId) {
-        this.container = $(divId);
+    function Scanner(containerId, algoSelector) {
+        this.container = $(containerId);
+        this.algoSelector = $(algoSelector);
         this.ajaxUrl = "/task/scanner/run";
     }
 
@@ -21,11 +22,13 @@ define(['jquery'], function ($) {
         var th = $("<tr><th>Symbol</th><th>1yr Profit</th><th>Action</th><th>Date</th><th>Price</th></tr>")
         table.append(th);
 
+        var algoId = this.algoSelector.val();
+
         for (var i in scanResults) {
             var result = scanResults[i];
             var txn = result.lastTxn;
             var tr = $('<tr class="' + txn.type +'"></tr>');
-            var link = '<a href="/chart?symbol=' + result.symbol + '" target="_blank">' + result.symbol + '</a>';
+            var link = '<a href="/chart?&algoId=' + algoId + '&symbol=' + result.symbol + '" target="_blank">' + result.symbol + '</a>';
 
             var txnDate = this._formatDate(txn.dt);
             var profit = Math.trunc(result.profit).toLocaleString();

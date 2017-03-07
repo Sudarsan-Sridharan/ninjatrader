@@ -1,8 +1,7 @@
 package com.bn.ninjatrader.service.task;
 
-import com.bn.ninjatrader.model.util.TestUtil;
 import com.bn.ninjatrader.simulation.Simulator;
-import com.bn.ninjatrader.simulation.core.SimulationParams;
+import com.bn.ninjatrader.simulation.core.SimulationRequest;
 import com.bn.ninjatrader.simulation.model.TradeStatistic;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -16,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
-import java.time.Clock;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,18 +27,16 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class RunSimulationTaskTest extends JerseyTest {
   private static final Logger LOG = LoggerFactory.getLogger(RunSimulationTaskTest.class);
 
-  private static final LocalDate now = LocalDate.of(2016, 2, 10);
-  private static final Clock clock = TestUtil.fixedClock(now);
   private static final Simulator simulator = mock(Simulator.class);
 
   @Captor
-  private ArgumentCaptor<SimulationParams> paramsCaptor;
+  private ArgumentCaptor<SimulationRequest> requestCaptor;
 
   private SimulationReport simulationReport;
 
   @Override
   protected Application configure() {
-    final RunSimulationTask task = new RunSimulationTask(simulator, clock);
+    final RunSimulationTask task = new RunSimulationTask(simulator);
     return new ResourceConfig().register(task);
   }
 
@@ -56,13 +52,14 @@ public class RunSimulationTaskTest extends JerseyTest {
         .tradeStatistics(new TradeStatistic())
         .build();
 
-    when(simulator.play(any(SimulationParams.class))).thenReturn(simulationReport);
+    when(simulator.play(any(SimulationRequest.class))).thenReturn(simulationReport);
   }
 
   @Test
   public void testRun_shouldReturnSimulationReport() {
     final SimulationReport report = target("/task/simulation/run")
         .queryParam("symbol", "MEG")
+        .queryParam("algoId", "algoId")
         .request()
         .get(SimulationReport.class);
 
@@ -72,23 +69,34 @@ public class RunSimulationTaskTest extends JerseyTest {
   }
 
   @Test
-  public void testRunWithNoInputDate_shouldRunProcessWith2YearsData() {
+  public void testRunWithParams_shouldUseGivenParams() {
     target("/task/simulation/run")
         .queryParam("symbol", "MEG")
+        .queryParam("from", "20160101")
+        .queryParam("to", "20161231")
+        .queryParam("algoId", "dtRKje03")
         .request().get();
 
-    verify(simulator).play(paramsCaptor.capture());
+    verify(simulator).play(requestCaptor.capture());
 
-    final SimulationParams params = paramsCaptor.getValue();
-
-    assertThat(params.getSymbol()).isEqualTo("MEG");
-    assertThat(params.getFromDate()).isEqualTo(now.minusYears(2));
-    assertThat(params.getToDate()).isEqualTo(now);
+    final SimulationRequest req = requestCaptor.getValue();
+    assertThat(req.getSymbol()).isEqualTo("MEG");
+    assertThat(req.getFrom()).isEqualTo(LocalDate.of(2016, 1, 1));
+    assertThat(req.getTo()).isEqualTo(LocalDate.of(2016, 12, 31));
+    assertThat(req.getTradeAlgorithmId()).isEqualTo("dtRKje03");
   }
 
   @Test
-  public void testRunWithNoSymbolParam_shouldReturnBadRequestError() {
+  public void testRunWithNoInputSymbol_shouldReturn400Error() {
     final Response response = target("/task/simulation/run").request().get();
+    assertThat(response.getStatus()).isEqualTo(400);
+  }
+
+  @Test
+  public void testRunWithNoInputAlgoId_shouldReturn400Error() {
+    final Response response = target("/task/simulation/run")
+        .queryParam("symbol", "MEG")
+        .request().get();
     assertThat(response.getStatus()).isEqualTo(400);
   }
 }

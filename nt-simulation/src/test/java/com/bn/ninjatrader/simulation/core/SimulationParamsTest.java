@@ -1,9 +1,5 @@
 package com.bn.ninjatrader.simulation.core;
 
-import com.bn.ninjatrader.logical.expression.condition.Conditions;
-import com.bn.ninjatrader.simulation.data.DataType;
-import com.bn.ninjatrader.simulation.logicexpression.Variables;
-import com.bn.ninjatrader.simulation.logicexpression.statement.ConditionalStatement;
 import com.bn.ninjatrader.simulation.util.DummyObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -12,8 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static com.bn.ninjatrader.simulation.logicexpression.Variables.PRICE_CLOSE;
-import static com.bn.ninjatrader.simulation.logicexpression.Variables.PRICE_HIGH;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -22,26 +16,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class SimulationParamsTest {
   private static final Logger LOG = LoggerFactory.getLogger(SimulationParamsTest.class);
-
-  @Test
-  public void testGetVariables_shouldReturnAllVariables() {
-    final SimulationParams params = SimulationParams.builder()
-        .addStatement(ConditionalStatement.builder().condition(Conditions.eq(Variables.PRICE_CLOSE, 1.0)).build())
-        .addStatement(ConditionalStatement.builder().condition(Conditions.lt(Variables.PRICE_HIGH, 100)).build())
-        .build();
-
-    assertThat(params.getVariables()).containsExactlyInAnyOrder(PRICE_CLOSE, PRICE_HIGH);
-  }
-
-  @Test
-  public void testGetDataTypes_shouldReturnAllDataTypes() {
-    final SimulationParams params = SimulationParams.builder()
-        .addStatement(ConditionalStatement.builder().condition(Conditions.eq(Variables.PRICE_CLOSE, 1.0)).build())
-        .addStatement(ConditionalStatement.builder().condition(Conditions.lt(Variables.PRICE_HIGH, 100)).build())
-        .build();
-
-    assertThat(params.getDataTypes()).contains(DataType.PRICE_CLOSE, DataType.PRICE_HIGH);
-  }
 
   @Test
   public void testSerializeDeserialize_shouldProduceEqualObject() throws IOException {

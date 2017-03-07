@@ -70,9 +70,8 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
     };
 
     SimulationChart.prototype.getFullAjaxUrl = function(query) {
-        return this.config.contextPath + "/task/simulation/run?symbol=" + query.symbol;
-        // return this.config.contextPath + this.ajaxUrl + "/" + this.reportId;
-    };                                       
+        return this.config.contextPath + "/task/simulation/run?algoId=" + query.algoId + "&symbol=" + query.symbol;
+    };
 
     SimulationChart.prototype._printBuySell = function(transactions) {
         if (!transactions || transactions.length <= 0) return;
