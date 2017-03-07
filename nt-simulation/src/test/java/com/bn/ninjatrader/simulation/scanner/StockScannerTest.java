@@ -5,8 +5,10 @@ import com.bn.ninjatrader.model.util.TestUtil;
 import com.bn.ninjatrader.simulation.Simulator;
 import com.bn.ninjatrader.simulation.GoldenAlgorithm;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
+import com.bn.ninjatrader.simulation.core.SimulationRequest;
 import com.bn.ninjatrader.simulation.model.TradeStatistic;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
+import com.bn.ninjatrader.simulation.service.SimTradeAlgorithmService;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.google.common.collect.Sets;
@@ -35,6 +37,7 @@ public class StockScannerTest {
   private SimulationReport simulationReport;
   private SimulationParams simulationParams;
   private TradeStatistic tradeStatistic;
+  private SimTradeAlgorithmService simTradeAlgorithmService;
   private Clock clock = TestUtil.fixedClock(now);
 
   private StockScanner stockScanner;
@@ -47,17 +50,18 @@ public class StockScannerTest {
     simulationReport = mock(SimulationReport.class);
     simulationParams = mock(SimulationParams.class);
     tradeStatistic = mock(TradeStatistic.class);
+    simTradeAlgorithmService = mock(SimTradeAlgorithmService.class);
 
     when(priceDao.findAllSymbols()).thenReturn(Sets.newHashSet("MEG"));
     when(algo.forSymbol(anyString())).thenReturn(SimulationParams.builder());
     when(simulator.play(any(SimulationParams.class))).thenReturn(simulationReport);
 
-    stockScanner = new StockScanner(simulator, priceDao, algo, clock);
+    stockScanner = new StockScanner(simulator, priceDao, simTradeAlgorithmService, clock);
   }
 
   @Test
   public void testScan_shouldRunSimulationOnAllSymbols() {
-    when(simulator.play(any(SimulationParams.class)))
+    when(simulator.play(any(SimulationRequest.class)))
         .thenReturn(SimulationReport.builder()
             .startingCash(100000)
             .params(simulationParams)
@@ -67,7 +71,7 @@ public class StockScannerTest {
     when(tradeStatistic.getTotalProfit()).thenReturn(200000d);
     when(simulationParams.getSymbol()).thenReturn("MEG");
 
-    final List<ScanResult> scanResults = stockScanner.scan();
+    final List<ScanResult> scanResults = stockScanner.scan("algoId");
     assertThat(scanResults).hasSize(1);
 
     final ScanResult scanResult = scanResults.get(0);

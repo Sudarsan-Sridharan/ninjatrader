@@ -1,28 +1,25 @@
 define(['jquery'], function ($) {
 
-    function Scanner(containerId, algoSelector) {
+    function Scanner(containerId) {
         this.container = $(containerId);
-        this.algoSelector = $(algoSelector);
-        this.ajaxUrl = "/task/scanner/run";
+        this.ajaxUrl = "/task/scanner/run?algoId=";
     }
 
-    Scanner.prototype.scan = function(scanCompleteCallback) {
+    Scanner.prototype.scan = function(algoId, scanCompleteCallback) {
         var that = this;
-        $.get(context.serviceHost + that.ajaxUrl)
+        $.get(context.serviceHost + that.ajaxUrl + algoId)
             .done(function(data) {
-                that._displayResults(data);
+                that._displayResults(data, algoId);
                 if (scanCompleteCallback) {
                     scanCompleteCallback();
                 }
             });
     }
 
-    Scanner.prototype._displayResults = function(scanResults) {
+    Scanner.prototype._displayResults = function(scanResults, algoId) {
         var table = $('<table cellpadding="0" cellspacing="0"></table>');
         var th = $("<tr><th>Symbol</th><th>1yr Profit</th><th>Action</th><th>Date</th><th>Price</th></tr>")
         table.append(th);
-
-        var algoId = this.algoSelector.val();
 
         for (var i in scanResults) {
             var result = scanResults[i];

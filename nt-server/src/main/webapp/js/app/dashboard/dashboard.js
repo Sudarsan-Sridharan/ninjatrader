@@ -1,18 +1,19 @@
 define(['jquery', 'require', '../scanner/scanner', '../status/status'], function ($, require, Scanner, Status) {
 
     $(document).ready(function() {
-
         var status = new Status("#status");
 
         // Stock Scanner Panel
-        var scanner = new Scanner("#scanner .panelContent", "#scanner .algo");
-        scanner.scan();
+        var scanner = new Scanner("#scanner .panelContent");
+        var algoSelector = $("#scanner .algo");
+
+        scanner.scan(algoSelector.val());
         $("#scanner .refreshBtn").click(function() {
             $("#scanner .panelAction button").prop("disabled", true);
             var scanCompleteCallback = function() {
                 $("#scanner .panelAction button").prop("disabled", false);
             };
-            scanner.scan(scanCompleteCallback);
+            scanner.scan(algoSelector.val(), scanCompleteCallback);
         });
 
         // Admin Panel
@@ -35,7 +36,6 @@ define(['jquery', 'require', '../scanner/scanner', '../status/status'], function
                 importQuotesBtn.prop("disabled", false);
             });
         });
-
 
     });
 });

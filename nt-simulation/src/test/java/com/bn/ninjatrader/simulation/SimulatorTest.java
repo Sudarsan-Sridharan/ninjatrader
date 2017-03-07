@@ -1,8 +1,5 @@
 package com.bn.ninjatrader.simulation;
 
-import com.bn.ninjatrader.model.dao.TradeAlgorithmDao;
-import com.bn.ninjatrader.model.entity.TradeAlgorithm;
-import com.bn.ninjatrader.model.request.FindTradeAlgorithmRequest;
 import com.bn.ninjatrader.model.util.TestUtil;
 import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
@@ -11,7 +8,7 @@ import com.bn.ninjatrader.simulation.core.SimulationRequest;
 import com.bn.ninjatrader.simulation.jackson.SimObjectMapperProvider;
 import com.bn.ninjatrader.simulation.model.SimTradeAlgorithm;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.bn.ninjatrader.simulation.service.SimTradeAlgorithmService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -19,7 +16,6 @@ import org.mockito.Captor;
 
 import java.time.Clock;
 import java.time.LocalDate;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -42,7 +38,7 @@ public class SimulatorTest {
   private SimulationFactory simulationFactory;
   private Simulation simulation;
   private SimulationReport simulationReport;
-  private TradeAlgorithmDao tradeAlgorithmDao;
+  private SimTradeAlgorithmService simTradeAlgorithmService;
 
   private Simulator simulator;
 
@@ -52,9 +48,9 @@ public class SimulatorTest {
     simulationFactory = mock(SimulationFactory.class);
     simulation = mock(Simulation.class);
     simulationReport = mock(SimulationReport.class);
-    tradeAlgorithmDao = mock(TradeAlgorithmDao.class);
+    simTradeAlgorithmService = mock(SimTradeAlgorithmService.class);
 
-    simulator = new Simulator(simulationFactory, tradeAlgorithmDao, clock, omProvider);
+    simulator = new Simulator(simulationFactory, clock, simTradeAlgorithmService);
 
     when(simulationFactory.create(any(SimulationParams.class))).thenReturn(simulation);
     when(simulation.play()).thenReturn(simulationReport);
@@ -66,13 +62,9 @@ public class SimulatorTest {
   }
 
   @Test
-  public void testPlayWithRequestParams_shouldCreateSimParamsBasedOnRequestParams()
-      throws JsonProcessingException {
+  public void testPlayWithRequestParams_shouldCreateSimParamsBasedOnRequestParams() {
     final SimTradeAlgorithm algo = SimTradeAlgorithm.builder().build();
-    final String algoJson = omProvider.get().writeValueAsString(algo);
-
-    when(tradeAlgorithmDao.findOne(any(FindTradeAlgorithmRequest.class)))
-        .thenReturn(Optional.of(TradeAlgorithm.builder().id("ID").userId("TESTER").algorithm(algoJson).build()));
+    when(simTradeAlgorithmService.findById(anyString())).thenReturn(algo);
 
     // Play
     simulator.play(SimulationRequest.withSymbol("MEG").from(now).to(tomorrow).tradeAlgorithmId("algoId"));

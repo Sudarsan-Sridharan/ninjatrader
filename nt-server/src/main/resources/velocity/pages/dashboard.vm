@@ -19,7 +19,7 @@
                 <option value="$algo.id">$algo.description</option>
                 #end
                 </select>
-                <button class="refreshBtn">Refresh</button>
+                <button class="refreshBtn">Scan</button>
             </div>
         </div>
         <div id="scanResult" class="panelContent">Loading...</div>

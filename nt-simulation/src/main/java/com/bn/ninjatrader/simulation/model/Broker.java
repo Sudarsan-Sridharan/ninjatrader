@@ -46,8 +46,8 @@ public class Broker {
     checkNotNull(order, "order must not be null.");
     checkNotNull(barData, "barData must not be null.");
 
-    LOG.info("{} - Submit {} order at price [{}]", order.getOrderDate(), order.getTransactionType(),
-        order.getOrderType().getFulfilledPrice(barData, barData));
+//    LOG.info("{} - Submit {} order at price [{}]", order.getOrderDate(), order.getTransactionType(),
+//        order.getOrderType().getFulfilledPrice(barData, barData));
 
     pendingOrders.add(PendingOrder.of(order, barData));
   }
@@ -65,10 +65,10 @@ public class Broker {
         fulfillOrder(pendingOrder, barData);
         fulfilledOrders.add(pendingOrder);
       } else if (pendingOrder.isExpired(barData)) {
-        LOG.info("{} - Expired {} order submitted on {}",
-            barData.getPrice().getDate(),
-            pendingOrder.getTransactionType(),
-            pendingOrder.getSubmittedBarData().getPrice().getDate());
+//        LOG.info("{} - Expired {} order submitted on {}",
+//            barData.getPrice().getDate(),
+//            pendingOrder.getTransactionType(),
+//            pendingOrder.getSubmittedBarData().getPrice().getDate());
         fulfilledOrders.add(pendingOrder);
       }
     }
@@ -88,8 +88,8 @@ public class Broker {
 
     publishToListeners(transaction, barData);
 
-    LOG.info("{} - Processed {} order at price [{}]", barData.getPrice().getDate(), tnxType,
-        orderType.getFulfilledPrice(pendingOrder.getSubmittedBarData(), barData));
+//    LOG.info("{} - Processed {} order at price [{}]", barData.getPrice().getDate(), tnxType,
+//        orderType.getFulfilledPrice(pendingOrder.getSubmittedBarData(), barData));
   }
 
   public boolean hasPendingOrder() {

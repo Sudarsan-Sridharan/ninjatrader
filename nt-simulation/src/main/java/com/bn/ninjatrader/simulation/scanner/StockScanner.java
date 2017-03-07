@@ -3,9 +3,9 @@ package com.bn.ninjatrader.simulation.scanner;
 import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.simulation.Simulator;
-import com.bn.ninjatrader.simulation.GoldenAlgorithm;
-import com.bn.ninjatrader.simulation.core.SimulationParams;
+import com.bn.ninjatrader.simulation.core.SimulationRequest;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
+import com.bn.ninjatrader.simulation.service.SimTradeAlgorithmService;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -29,30 +29,30 @@ public class StockScanner {
 
   private final Simulator simulator;
   private final PriceDao priceDao;
-  private final GoldenAlgorithm algo;
   private final Clock clock;
+  private final SimTradeAlgorithmService simTradeAlgorithmService;
 
   @Inject
   public StockScanner(final Simulator simulator,
                       final PriceDao priceDao,
-                      final GoldenAlgorithm algo,
+                      final SimTradeAlgorithmService simTradeAlgorithmService,
                       final Clock clock) {
     this.simulator = simulator;
     this.priceDao = priceDao;
-    this.algo = algo;
+    this.simTradeAlgorithmService = simTradeAlgorithmService;
     this.clock = clock;
   }
 
-  public List<ScanResult> scan() {
+  public List<ScanResult> scan(final String algoId) {
     final LocalDate from = LocalDate.now(clock).minusYears(1);
     final LocalDate to = LocalDate.now(clock);
     final Set<String> symbols = priceDao.findAllSymbols();
+
+    // Collect reports for each symbol.
     final List<SimulationReport> reports =  symbols.parallelStream()
-        .map(symbol -> {
-          final SimulationParams params = algo.forSymbol(symbol).from(from).to(to).build();
-          return simulator.play(params);
-        })
-        .filter(report -> {
+        .map(symbol -> simulator.play(SimulationRequest.withSymbol(symbol)
+            .from(from).to(to).tradeAlgorithmId(algoId))
+        ).filter(report -> {
           if (!report.getTransactions().isEmpty()) {
             final Transaction txn = report.getTransactions().get(report.getTransactions().size()-1);
             if (txn.getDate().plusDays(4).isAfter(to)) {
@@ -60,9 +60,9 @@ public class StockScanner {
             }
           }
           return false;
-        })
-        .collect(Collectors.toList());
+        }).collect(Collectors.toList());
 
+    // Scan each report and collect their last transaction
     final List<ScanResult> scanResults = reports.stream().map(report -> {
       final double profit = report.getTradeStatistic().getTotalProfit();
       final double profitPcnt = NumUtil.divide(profit, report.getStartingCash());

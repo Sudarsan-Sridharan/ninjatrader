@@ -1,25 +1,19 @@
 package com.bn.ninjatrader.simulation;
 
-import com.bn.ninjatrader.model.dao.TradeAlgorithmDao;
-import com.bn.ninjatrader.model.entity.TradeAlgorithm;
-import com.bn.ninjatrader.model.request.FindTradeAlgorithmRequest;
 import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
 import com.bn.ninjatrader.simulation.core.SimulationRequest;
-import com.bn.ninjatrader.simulation.exception.TradeAlgorithmIdNotFoundException;
-import com.bn.ninjatrader.simulation.jackson.SimObjectMapperProvider;
 import com.bn.ninjatrader.simulation.model.SimTradeAlgorithm;
 import com.bn.ninjatrader.simulation.printer.SimulationReportPrinter;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.bn.ninjatrader.simulation.service.SimTradeAlgorithmService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -34,20 +28,17 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class Simulator {
   private static final Logger LOG = LoggerFactory.getLogger(Simulator.class);
 
-  private SimulationFactory simulationFactory;
-  private TradeAlgorithmDao tradeAlgorithmDao;
-  private Clock clock;
-  private ObjectMapper om;
+  private final SimulationFactory simulationFactory;
+  private final SimTradeAlgorithmService simTradeAlgorithmService;
+  private final Clock clock;
 
   @Inject
   public Simulator(final SimulationFactory simulationFactory,
-                   final TradeAlgorithmDao tradeAlgorithmDao,
                    final Clock clock,
-                   final SimObjectMapperProvider omProvider) {
+                   final SimTradeAlgorithmService simTradeAlgorithmService) {
     this.simulationFactory = simulationFactory;
-    this.tradeAlgorithmDao = tradeAlgorithmDao;
+    this.simTradeAlgorithmService = simTradeAlgorithmService;
     this.clock = clock;
-    this.om = omProvider.get();
   }
 
   @Deprecated
@@ -70,7 +61,7 @@ public class Simulator {
     final double startingCash = req.getStartingCash() == 0d ? 100_000.0 : req.getStartingCash();
 
     // Read algorithm from json
-    final SimTradeAlgorithm algo = findTradeAlgorithm(req.getTradeAlgorithmId());
+    final SimTradeAlgorithm algo = simTradeAlgorithmService.findById(req.getTradeAlgorithmId());
 
     // Build simulation parameters
     final SimulationParams params = SimulationParams.builder()
@@ -82,28 +73,6 @@ public class Simulator {
 
     // Play and return result
     return play(params);
-  }
-
-  /**
-   * Find SimTradeAlgorithm given its ID.
-   * Data is stored as json, so need to convert it to object.
-   */
-  private SimTradeAlgorithm findTradeAlgorithm(final String tradeAlgorithmId) {
-    // Find TradeAlgorithm
-    final Optional<TradeAlgorithm> foundAlgo =
-        tradeAlgorithmDao.findOne(FindTradeAlgorithmRequest.withTradeAlgorithmId(tradeAlgorithmId));
-
-    // Throw error if algorithm not found.
-    if (!foundAlgo.isPresent()) {
-      throw new TradeAlgorithmIdNotFoundException(tradeAlgorithmId);
-    }
-
-    // Read algorithm from json
-    try {
-      return om.readValue(foundAlgo.get().getAlgorithm(), SimTradeAlgorithm.class);
-    } catch (final IOException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   private static void permute(final Simulator simulator) {
