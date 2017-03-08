@@ -51,7 +51,7 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
         };
 
         this._meta = new SimulationMeta(config);
-        panel.meta.addMeta(this._meta);
+        panel.addMeta(this._meta);
     }
 
     SimulationChart.prototype = Object.create(AbstractChart.prototype);

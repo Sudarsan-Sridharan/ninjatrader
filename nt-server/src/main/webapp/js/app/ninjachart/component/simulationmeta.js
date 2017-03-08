@@ -12,17 +12,25 @@ define(["d3", "../util/format"], function(d3, Format) {
         this.shares = this.addField(this.tnxMeta, "shares:", "shares");
         this.value = this.addField(this.tnxMeta, "value:", "value");
         this.profitPcnt = this.addField(this.tnxMeta, "profit:", "profitPcnt");
-    };
+    }
 
     SimulationMeta.prototype.addField = function(selection, label, name) {
-        selection.append("span").classed("metaLabel", 1).html(label);
-        return selection.append("span")
-            .classed("metaValue", true)
-            .classed(name, true);
+        var field = selection.append("span").classed("metaField", true);
+        field.append("span").classed("metaLabel", true).html(label);
+        field.append("span").classed("metaValue", true).classed(name, true);
+        field.value = function(value) {
+            this.select(".metaValue").html(value);
+        };
+        field.show = function() {
+            this.style("display", "inline");
+        };
+        field.hide = function() {
+            this.style("display", "none");
+        };
+        return field;
     };
 
     SimulationMeta.prototype.show = function(priceData, query) {
-
         // Nothing to do.
     };
 
@@ -32,17 +40,17 @@ define(["d3", "../util/format"], function(d3, Format) {
 
     SimulationMeta.prototype.showMeta = function(tnx) {
         this.tnxTypeLabel.html(tnx.tnxType);
-        this.price.html(Format.price(tnx.price));
-        this.shares.html(tnx.shares);
-        this.value.html(Format.price(tnx.value));
+        this.price.value(Format.price(tnx.price));
+        this.shares.value(tnx.shares);
+        this.value.value(Format.price(tnx.value));
 
         // Sell transactions have profit, show only if it's available.
         if (tnx.profitPcnt)  {
             var profitPcnt = Math.round(tnx.profitPcnt * 10000) / 100; // convert from 1.0 to 100%
-            this.profitPcnt.style("visibility", "visible");
-            this.profitPcnt.html(profitPcnt + "%")
+            this.profitPcnt.show();
+            this.profitPcnt.value(profitPcnt + "%");
         } else {
-            this.profitPcnt.style("visibility", "hidden");
+            this.profitPcnt.hide();
         }
 
         this.main.style("display", "block")
@@ -75,7 +83,7 @@ define(["d3", "../util/format"], function(d3, Format) {
 
     SimulationMeta.prototype.hideMeta = function() {
         this.main.style("display", "none");
-    }
+    };
 
     SimulationMeta.prototype.setData = function(data) {
         this._data = data;

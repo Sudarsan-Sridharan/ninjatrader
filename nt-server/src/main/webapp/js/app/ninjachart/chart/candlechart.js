@@ -12,7 +12,7 @@ define(["d3", "require", "./abstractchart", "../component/stockmeta"], function(
         this.candleWidth = config.columnWidth - this.candleMargin * 2;
 
         this._meta = new StockMeta(config);
-        panel.meta.addMeta(this._meta);
+        panel.addMeta(this._meta);
 
         this._init();
     }
