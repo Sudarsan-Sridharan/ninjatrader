@@ -1,4 +1,5 @@
-define(["d3"], function(d3) {
+define(["d3", "../util/format"], function(d3, Format) {
+
     function StockMeta(config) {
         this.config = config;
         this.main = d3.select(document.createElementNS(d3.namespaces.xhtml, "div"))
@@ -30,11 +31,11 @@ define(["d3"], function(d3) {
     };
 
     StockMeta.prototype.meta = function(price) {
-        this.open.html(price.o);
-        this.high.html(price.h);
-        this.low.html(price.l);
-        this.close.html(price.c);
-        this.volume.html(price.v);
+        this.open.html(Format.price(price.o));
+        this.high.html(Format.price(price.h));
+        this.low.html(Format.price(price.l));
+        this.close.html(Format.price(price.c));
+        this.volume.html(Format.price(price.v));
         this.priceMeta.classed("up", price.c > price.o)
             .classed("down", price.o > price.c);
     };

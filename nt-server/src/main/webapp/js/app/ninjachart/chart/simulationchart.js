@@ -35,7 +35,6 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
                 path += "l" + (-config.columnWidth / 2) + "," + (-config.columnWidth); // move diagonally to middle
                 path += "Z"; // close
                 return path;
-
             } else { // Arrow Top
                 var x = config.xByDate(mark.date);
                 if(isNaN(x)) return "";
@@ -49,7 +48,7 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
 
         this._getMarkColor = function(mark) {
             return mark.color;
-        }
+        };
 
         this._meta = new SimulationMeta(config);
         panel.meta.addMeta(this._meta);
@@ -81,11 +80,11 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
         transaction.enter()
             .append("path")
             .attr("d", this._getTransactionPath)
-            .attr("class", this._getClass)
+            .attr("class", this._getClass);
 
         transaction.merge(transaction)
             .attr("d", this._getTransactionPath)
-            .attr("class", this._getClass)
+            .attr("class", this._getClass);
 
         transaction.exit()
             .remove();
@@ -118,7 +117,7 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
         var toIndex = 0;
 
         for (var i in transactions) {
-            var txnIndex = this.config.indexByDate(transactions[i].dt)
+            var txnIndex = this.config.indexByDate(transactions[i].dt);
 
             // If transaction is beyond price date range, ignore it and continue with others
             if (!txnIndex) continue;

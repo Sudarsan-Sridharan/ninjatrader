@@ -43,8 +43,8 @@ define(["require",
             // .addChart(new IchimokuChart(this.config, this.mainChartPanel))
             // .addChart(new SMAChart(this.config, this.mainChartPanel))
             .addChart(new EMAChart(this.config, this.mainChartPanel))
-            .addChart(new SimulationChart(this.config, this.mainChartPanel).setReportId("SAMPLE_REPORT"))
-            .addMeta(new StockMeta(this.config));
+            .addChart(new SimulationChart(this.config, this.mainChartPanel).setReportId("SAMPLE_REPORT"));
+
         this.addPanel(this.mainChartPanel);
 
         // var newPanel = new ChartPanel(this.config, this.layout.createPanel());

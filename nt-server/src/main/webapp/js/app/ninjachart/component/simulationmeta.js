@@ -1,4 +1,4 @@
-define(["d3"], function(d3) {
+define(["d3", "../util/format"], function(d3, Format) {
     function SimulationMeta(config) {
         this.config = config;
         this._data = null;
@@ -32,9 +32,9 @@ define(["d3"], function(d3) {
 
     SimulationMeta.prototype.showMeta = function(tnx) {
         this.tnxTypeLabel.html(tnx.tnxType);
-        this.price.html(tnx.price);
+        this.price.html(Format.price(tnx.price));
         this.shares.html(tnx.shares);
-        this.value.html(tnx.value);
+        this.value.html(Format.price(tnx.value));
 
         // Sell transactions have profit, show only if it's available.
         if (tnx.profitPcnt)  {

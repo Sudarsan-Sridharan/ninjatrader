@@ -18,7 +18,7 @@ define(['jquery'], function ($) {
 
     Scanner.prototype._displayResults = function(scanResults, algoId) {
         var table = $('<table cellpadding="0" cellspacing="0"></table>');
-        var th = $("<tr><th>Symbol</th><th>1yr Profit</th><th>Action</th><th>Date</th><th>Price</th></tr>")
+        var th = $("<tr><th>Symbol</th><th>1yr Profit</th><th>Action</th><th>Price</th></tr>")
         table.append(th);
 
         for (var i in scanResults) {
@@ -33,7 +33,6 @@ define(['jquery'], function ($) {
             tr.append('<td class="symbol">' + link + '</td>');
             tr.append('<td class="profit">' + profit + '</td>');
             tr.append('<td class="txnType">' + txn.tnxType + '</td>');
-            tr.append('<td class="date">' + txnDate + '</td>');
             tr.append('<td class="price">' + txn.price + '</td>');
 
             table.append(tr);

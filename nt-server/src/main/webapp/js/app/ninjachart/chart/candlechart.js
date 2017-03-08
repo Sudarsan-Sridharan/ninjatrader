@@ -1,6 +1,7 @@
-define(["d3", "require", "./abstractchart"], function(d3, require) {
+define(["d3", "require", "./abstractchart", "../component/stockmeta"], function(d3, require) {
 
     var AbstractChart = require("./abstractchart");
+    var StockMeta = require("../component/stockmeta");
 
     function CandleChart(config, panel) {
         AbstractChart.call(this, config, panel, "", "candles");
@@ -9,6 +10,9 @@ define(["d3", "require", "./abstractchart"], function(d3, require) {
         this.bars = this.main.append("g").classed("bars", true);
         this.candleMargin = config.columnWidth * 0.25;
         this.candleWidth = config.columnWidth - this.candleMargin * 2;
+
+        this._meta = new StockMeta(config);
+        panel.meta.addMeta(this._meta);
 
         this._init();
     }
