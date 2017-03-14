@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.service.task;
 
+import com.bn.ninjatrader.simulation.scanner.ScanRequest;
 import com.bn.ninjatrader.simulation.scanner.ScanResult;
 import com.bn.ninjatrader.simulation.scanner.StockScanner;
 import com.google.inject.Inject;
@@ -20,6 +21,7 @@ import java.util.List;
 @Path("/task/scanner")
 public class RunStockScannerTask {
   private static final Logger LOG = LoggerFactory.getLogger(RunStockScannerTask.class);
+  private static final int DEFAULT_DAYS = 4;
 
   private final StockScanner stockScanner;
 
@@ -31,12 +33,15 @@ public class RunStockScannerTask {
   @GET
   @Path("/run")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response runScanner(@QueryParam("algoId") final String algoId) {
+  public Response runScanner(@QueryParam("algoId") final String algoId,
+                             @QueryParam("days") final int days) {
     if (StringUtils.isEmpty(algoId)) {
       throw new BadRequestException("algoId parameter is required.");
     }
 
-    final List<ScanResult> scanResults = stockScanner.scan(algoId);
+    final int numOfDays = days == 0 ? DEFAULT_DAYS : days;
+
+    final List<ScanResult> scanResults = stockScanner.scan(ScanRequest.withAlgoId(algoId).days(numOfDays));
     return Response.ok(scanResults).build();
   }
 }

@@ -15,15 +15,15 @@ import javax.ws.rs.core.MediaType;
  * Created by Brad on 4/26/16.
  */
 @Singleton
-@Path("/chart")
-public class ChartPage {
-  private static final Logger LOG = LoggerFactory.getLogger(ChartPage.class);
-  private static final String TEMPLATE_PATH = "velocity/pages/chart.vm";
+@Path("/algorithm")
+public class AlgorithmPage {
+  private static final Logger LOG = LoggerFactory.getLogger(AlgorithmPage.class);
+  private static final String TEMPLATE_PATH = "velocity/pages/algorithm.vm";
 
   private final HtmlWriterFactory htmlWriterFactory;
 
   @Inject
-  public ChartPage(final HtmlWriterFactory htmlWriterFactory) {
+  public AlgorithmPage(final HtmlWriterFactory htmlWriterFactory) {
     this.htmlWriterFactory = htmlWriterFactory;
   }
 

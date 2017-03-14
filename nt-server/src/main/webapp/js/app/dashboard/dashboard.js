@@ -1,23 +1,59 @@
 define(['jquery', 'require', '../scanner/scanner', '../status/status'], function ($, require, Scanner, Status) {
 
-    $(document).ready(function() {
-        var status = new Status("#status");
+    function Dashboard() {
+        this.status = new Status("#status");
+    }
 
-        // Stock Scanner Panel
-        var scanner = new Scanner("#scanner .panelContent");
-        var algoSelector = $("#scanner .algo");
+    /**
+     * Initialize scanner panel
+     * @param id of container
+     */
+    Dashboard.prototype.initScanner = function(id) {
+        var scanner = new Scanner(id + " .panelContent");
+        var scanButton = $(id + " .refreshBtn");
+        var algoSelector = $(id + " .algo");
+        var daySelector = $(id + " .days");
+        
+        
 
-        scanner.scan(algoSelector.val());
-        $("#scanner .refreshBtn").click(function() {
-            $("#scanner .panelAction button").prop("disabled", true);
-            var scanCompleteCallback = function() {
-                $("#scanner .panelAction button").prop("disabled", false);
-            };
-            scanner.scan(algoSelector.val(), scanCompleteCallback);
+        scanner.disable = function() {
+            scanButton.prop("disabled", true);
+            algoSelector.prop("disabled", true);
+            daySelector.prop("disabled", true);
+        };
+        scanner.enable = function() {
+            scanButton.prop("disabled", false);
+            algoSelector.prop("disabled", false);
+            daySelector.prop("disabled", false);
+        };
+        scanner.blockAndScan = function() {
+            scanner.disable();
+            scanner.scan(algoSelector.val(), daySelector.val(), scanner.enable);
+        };
+
+        // Scan on load
+        scanner.blockAndScan();
+
+        // Scan on button click
+        scanButton.click(function() {
+            scanner.blockAndScan();
         });
 
-        // Admin Panel
-        $("#admin .importQuotesBtn").click(function() {
+        // Scan on algo change
+        algoSelector.change(function() {
+            scanner.blockAndScan();
+        });
+
+        // Scan on day change
+        daySelector.change(function() {
+            scanner.blockAndScan();
+        });
+    };
+
+    Dashboard.prototype.initAdminTaskPanel = function(id) {
+        var status = this.status;
+
+        $(id + " .importQuotesBtn").click(function() {
             $(this).prop("disabled", true);
             var importQuotesBtn = $(this);
 
@@ -36,6 +72,14 @@ define(['jquery', 'require', '../scanner/scanner', '../status/status'], function
                 importQuotesBtn.prop("disabled", false);
             });
         });
+    };
 
+    $(document).ready(function() {
+        var dashboard = new Dashboard();
+        dashboard.initScanner("#scanner");
+        dashboard.initScanner("#scanner2");
+        dashboard.initAdminTaskPanel("#admin");
     });
+
+    return Dashboard;
 });

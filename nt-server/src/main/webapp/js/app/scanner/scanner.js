@@ -2,12 +2,12 @@ define(['jquery'], function ($) {
 
     function Scanner(containerId) {
         this.container = $(containerId);
-        this.ajaxUrl = "/task/scanner/run?algoId=";
+        this.ajaxUrl = "/task/scanner/run";
     }
 
-    Scanner.prototype.scan = function(algoId, scanCompleteCallback) {
+    Scanner.prototype.scan = function(algoId, days, scanCompleteCallback) {
         var that = this;
-        $.get(context.serviceHost + that.ajaxUrl + algoId)
+        $.get(context.serviceHost + that.ajaxUrl + "?algoId=" + algoId + "&days=" + days)
             .done(function(data) {
                 that._displayResults(data, algoId);
                 if (scanCompleteCallback) {
@@ -18,7 +18,7 @@ define(['jquery'], function ($) {
 
     Scanner.prototype._displayResults = function(scanResults, algoId) {
         var table = $('<table cellpadding="0" cellspacing="0"></table>');
-        var th = $("<tr><th>Symbol</th><th>1yr Profit</th><th>Action</th><th>Price</th></tr>")
+        var th = $("<tr><th>Symbol</th><th>1yr Profit</th><th>Action</th><th>Date</th><th>Price</th></tr>")
         table.append(th);
 
         for (var i in scanResults) {
@@ -33,6 +33,7 @@ define(['jquery'], function ($) {
             tr.append('<td class="symbol">' + link + '</td>');
             tr.append('<td class="profit">' + profit + '</td>');
             tr.append('<td class="txnType">' + txn.tnxType + '</td>');
+            tr.append('<td class="date">' + txnDate + '</td>');
             tr.append('<td class="price">' + txn.price + '</td>');
 
             table.append(tr);

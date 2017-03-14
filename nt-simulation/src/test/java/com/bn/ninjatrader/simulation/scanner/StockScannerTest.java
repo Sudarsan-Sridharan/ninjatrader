@@ -3,12 +3,10 @@ package com.bn.ninjatrader.simulation.scanner;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.util.TestUtil;
 import com.bn.ninjatrader.simulation.Simulator;
-import com.bn.ninjatrader.simulation.GoldenAlgorithm;
 import com.bn.ninjatrader.simulation.core.SimulationParams;
 import com.bn.ninjatrader.simulation.core.SimulationRequest;
 import com.bn.ninjatrader.simulation.model.TradeStatistic;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
-import com.bn.ninjatrader.simulation.service.SimTradeAlgorithmService;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.google.common.collect.Sets;
@@ -21,7 +19,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,13 +28,11 @@ import static org.mockito.Mockito.when;
 public class StockScannerTest {
 
   private final LocalDate now = LocalDate.of(2016, 2, 1);
+
   private Simulator simulator;
   private PriceDao priceDao;
-  private GoldenAlgorithm algo;
-  private SimulationReport simulationReport;
   private SimulationParams simulationParams;
   private TradeStatistic tradeStatistic;
-  private SimTradeAlgorithmService simTradeAlgorithmService;
   private Clock clock = TestUtil.fixedClock(now);
 
   private StockScanner stockScanner;
@@ -46,17 +41,12 @@ public class StockScannerTest {
   public void before() {
     simulator = mock(Simulator.class);
     priceDao = mock(PriceDao.class);
-    algo = mock(GoldenAlgorithm.class);
-    simulationReport = mock(SimulationReport.class);
     simulationParams = mock(SimulationParams.class);
     tradeStatistic = mock(TradeStatistic.class);
-    simTradeAlgorithmService = mock(SimTradeAlgorithmService.class);
 
     when(priceDao.findAllSymbols()).thenReturn(Sets.newHashSet("MEG"));
-    when(algo.forSymbol(anyString())).thenReturn(SimulationParams.builder());
-    when(simulator.play(any(SimulationParams.class))).thenReturn(simulationReport);
 
-    stockScanner = new StockScanner(simulator, priceDao, simTradeAlgorithmService, clock);
+    stockScanner = new StockScanner(simulator, priceDao, clock);
   }
 
   @Test
@@ -67,11 +57,11 @@ public class StockScannerTest {
             .params(simulationParams)
             .tradeStatistics(tradeStatistic)
             .addTransaction(BuyTransaction.buy().symbol("MEG").date(now).build())
+            .endingCash(300000)
             .build());
-    when(tradeStatistic.getTotalProfit()).thenReturn(200000d);
     when(simulationParams.getSymbol()).thenReturn("MEG");
 
-    final List<ScanResult> scanResults = stockScanner.scan("algoId");
+    final List<ScanResult> scanResults = stockScanner.scan(ScanRequest.withAlgoId("algoId"));
     assertThat(scanResults).hasSize(1);
 
     final ScanResult scanResult = scanResults.get(0);

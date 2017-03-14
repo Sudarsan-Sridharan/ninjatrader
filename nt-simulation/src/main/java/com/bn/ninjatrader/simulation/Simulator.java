@@ -54,7 +54,7 @@ public class Simulator {
     checkArgument(!StringUtils.isEmpty(req.getTradeAlgorithmId()), "tradeAlgorithmId must not be empty.");
 
     // Prepare date range defaults if not given.
-    final LocalDate from = Optional.ofNullable(req.getFrom()).orElse(LocalDate.now(clock).minusYears(2));
+    final LocalDate from = Optional.ofNullable(req.getFrom()).orElse(LocalDate.now(clock).minusYears(1));
     final LocalDate to = Optional.ofNullable(req.getTo()).orElse(LocalDate.now(clock));
 
     // Prepare starting cash default if not given.

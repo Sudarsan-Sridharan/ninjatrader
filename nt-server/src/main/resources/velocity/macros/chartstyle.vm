@@ -164,5 +164,9 @@
     .ninjaChart .simulation .buy {
         stroke:green;
     }
+    .ninjaChart .volume .vBars {
+        opacity: 0.4;
+        fill: skyblue;
+    }
 </style>
 #end

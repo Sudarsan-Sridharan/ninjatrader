@@ -10,6 +10,9 @@ a, a:visited {
 a:hover {
     text-decoration:underline;
 }
+select {
+    background:none;
+}
 
 .panel {
     float:left;
@@ -23,15 +26,13 @@ a:hover {
 }
 .panelTitle {
     color:#444;
-    float:left;
-    margin:0;
+    margin:0 0 10px 0;
 }
 .panelWrap {
     margin:15px;
 }
 .panelAction {
     font-size:12px;
-    float:right;
 }
 .panel button {
     padding: 0;

@@ -24,7 +24,8 @@ import java.util.Set;
     @JsonSubTypes.Type(value = SetPropertyStatement.class, name = "setProp"),
     @JsonSubTypes.Type(value = MarkStatement.class, name = "mark"),
     @JsonSubTypes.Type(value = MultiStatement.class, name = "multi"),
-    @JsonSubTypes.Type(value = EmptyStatement.class, name = "empty")
+    @JsonSubTypes.Type(value = EmptyStatement.class, name = "empty"),
+    @JsonSubTypes.Type(value = LogStatement.class, name = "log"),
 })
 public interface Statement {
 

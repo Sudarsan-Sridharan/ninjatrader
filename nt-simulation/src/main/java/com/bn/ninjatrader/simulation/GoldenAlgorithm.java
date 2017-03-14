@@ -28,10 +28,10 @@ public class GoldenAlgorithm {
   }
 
   private int PULLBACK_MIN_BAR = 2;
-  private int PULLBACK_NUM_OF_BARS = 5;
+  private int PULLBACK_NUM_OF_BARS = 4;
   private int BUY_PIPS_BUFFER = 2;
   private int SELL_PIPS_BUFFER = 2;
-  private double PULLBACK_SENSITIVITY = 0.01;
+  private double PULLBACK_SENSITIVITY = 0.005;
   private double MAX_BUY_RISK = 0.05;
   private LocalDate from = LocalDate.now().minusYears(10);
   private LocalDate to = LocalDate.now();
@@ -88,6 +88,7 @@ public class GoldenAlgorithm {
                 ConditionalStatement.withName("Initialize")
                     .condition(eq(BAR_INDEX, 1))
                     .then(SetPropertyStatement.builder()
+                        .add("IS_TAKE_PROFIT_ON", 1)
                         .add("PULLBACK", 0)
                         .add("TRAILING_STOP", 0)
                         .add("TOP", 0)
@@ -98,9 +99,11 @@ public class GoldenAlgorithm {
                     .condition(Conditions.and(
                         eq(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(PULLBACK_MIN_BAR), LowestValue.of(PRICE_LOW).fromBarsAgo(PULLBACK_NUM_OF_BARS)),
                         lt(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(PULLBACK_MIN_BAR), HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(PULLBACK_NUM_OF_BARS)),
+                        gte(PcntChangeValue.of(PRICE_LOW, HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(PULLBACK_MIN_BAR)), PULLBACK_SENSITIVITY),
                         Conditions.or(
-                            gte(PcntChangeValue.of(PRICE_LOW, HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(PULLBACK_MIN_BAR)), PULLBACK_SENSITIVITY),
-                            gte(PcntChangeValue.of(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(4), HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(PULLBACK_MIN_BAR)), PULLBACK_SENSITIVITY)
+                            gte(PcntChangeValue.of(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(3), HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(PULLBACK_MIN_BAR)), PULLBACK_SENSITIVITY),
+                            gte(PcntChangeValue.of(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(4), HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(PULLBACK_MIN_BAR)), PULLBACK_SENSITIVITY),
+                            gte(PcntChangeValue.of(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(6), HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(PULLBACK_MIN_BAR)), PULLBACK_SENSITIVITY)
                         )
                     ))
                     .then(MultiStatement.of(
@@ -127,7 +130,15 @@ public class GoldenAlgorithm {
                             .orderType(AtPrice.of(Operations.startWith(PRICE_HIGH).plus(PipValue.of(BUY_PIPS_BUFFER))))
                             .orderConfig(OrderConfig.withBarsFromNow(1).expireAfterNumOfBars(1))
                             .build(),
-                        MarkStatement.withColor("green").marker(Marker.ARROW_TOP)
+                        MarkStatement.withColor("green").marker(Marker.ARROW_TOP),
+                        ConditionalStatement.withName("Turn of take profit if bought too high")
+                            .condition(gte(PcntChangeValue.of(Operations.startWith(PRICE_HIGH).plus(PipValue.of(BUY_PIPS_BUFFER)), EMA.withPeriod(18)), 0.16))
+                            .then(SetPropertyStatement.builder()
+                                .add("IS_TAKE_PROFIT_ON", 0)
+                                .build())
+                            .otherwise(SetPropertyStatement.builder()
+                                .add("IS_TAKE_PROFIT_ON", 1)
+                                .build())
                         )
                     ),
 
@@ -146,6 +157,7 @@ public class GoldenAlgorithm {
                         .otherwise(MultiStatement.of(
                             SellOrderStatement.builder() // Sell at price N pips below trailing stop
                                 .orderType(AtPrice.of(Operations.startWith(PropertyValue.of("TRAILING_STOP")).minus(PipValue.of(SELL_PIPS_BUFFER))))
+                                .orderConfig(OrderConfig.withExpireAfterNumOfBars(2))
                                 .build()
                         ))
                     ),
@@ -153,14 +165,15 @@ public class GoldenAlgorithm {
                 // If price above EMA 18 by over 16%
                 ConditionalStatement.withName("Take Profit")
                     .condition(Conditions.and(
+                        eq(PropertyValue.of("IS_TAKE_PROFIT_ON"), 1),
                         gte(Operations.startWith(PRICE_HIGH).minus(EMA.withPeriod(18)).div(EMA.withPeriod(18)), 0.16)
                     ))
                     .then(MultiStatement.of(
                         SellOrderStatement.builder()
-                            .orderType(AtPrice.of(Operations.startWith(EMA.withPeriod(18)).mult(1.16)))
+                            .orderType(AtPrice.of(HighestValue.of(PRICE_LOW, Operations.startWith(EMA.withPeriod(18)).mult(1.16))))
+                            .orderConfig(OrderConfig.withExpireAfterNumOfBars(2))
                             .build()
-                        )
-                    )
+                    ))
 
                 // Set TRAILING STOP Upon Buy
             )).onBuyFulfilled(MultiStatement.of(
@@ -170,96 +183,6 @@ public class GoldenAlgorithm {
             )).build()
         );
 
-//        // Initialize
-//        .addStatement(ConditionalStatement.withName("Initialize")
-//            .condition(eq(BAR_INDEX, 1))
-//            .then(SetPropertyStatement.builder()
-//                .add("PULLBACK", 0)
-//                .add("TRAILING_STOP", 0)
-//                .add("TOP", 0)
-//                .build())
-//        )
-//
-//        // Pullback Condition - if higher than trailing stop, move trailing stop up.
-//        .addStatement(ConditionalStatement.withName("Pullback")
-//            .condition(Conditions.and(
-//                eq(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(PULLBACK_MIN_BAR), LowestValue.of(PRICE_LOW).fromBarsAgo(PULLBACK_NUM_OF_BARS)),
-//                lt(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(PULLBACK_MIN_BAR), HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(PULLBACK_NUM_OF_BARS)),
-//                Conditions.or(
-//                    gte(PcntChangeValue.of(PRICE_LOW, HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(PULLBACK_MIN_BAR)), PULLBACK_SENSITIVITY),
-//                    gte(PcntChangeValue.of(HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(4), HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(PULLBACK_MIN_BAR)), PULLBACK_SENSITIVITY)
-//                )
-//            ))
-//            .then(MultiStatement.of(
-//                SetPropertyStatement.builder()
-//                    .add("PULLBACK", HistoryValue.of(PRICE_LOW).inNumOfBarsAgo(PULLBACK_MIN_BAR))
-//                    .build(),
-//                ConditionalStatement.withName("Move Trailing Stop Higher")
-//                    .condition(gt(PropertyValue.of("PULLBACK"), PropertyValue.of("TRAILING_STOP")))
-//                    .then(SetPropertyStatement.builder().add("TRAILING_STOP", PropertyValue.of("PULLBACK")).build()),
-//                MarkStatement.withColor("blue").numOfBarsAgo(PULLBACK_MIN_BAR).marker(Marker.ARROW_BOTTOM)
-//            ))
-//        )
-//
-//        // Buy Condition -- With 5% risk
-//        .addStatement(ConditionalStatement.withName("Buy with 5% risk")
-//            .condition(Conditions.and(
-//                lte(PcntChangeValue.of(Operations.startWith(PRICE_HIGH).plus(PipValue.of(BUY_PIPS_BUFFER)), LowestValue.of(PRICE_LOW).fromBarsAgo(6)), MAX_BUY_RISK),
-//                gt(EMA.withPeriod(18), 0), // EMA 18 > 0. to make sure we have data.
-//                Conditions.or(
-//                    gt(PRICE_CLOSE, EMA.withPeriod(18)) // Price above EMA 18
-//                )
-//            ))
-//            .then(MultiStatement.of(
-//                BuyOrderStatement.builder()
-//                    .orderType(AtPrice.of(Operations.startWith(PRICE_HIGH).plus(PipValue.of(BUY_PIPS_BUFFER))))
-//                    .orderConfig(OrderConfig.withBarsFromNow(1).expireAfterNumOfBars(1))
-//                    .build(),
-//                MarkStatement.withColor("green").marker(Marker.ARROW_TOP)
-//                )
-//            )
-//        )
-//
-//        // Price Below Trailing Stop -- Sell
-//        .addStatement(ConditionalStatement.withName("Sell")
-//            .condition(Conditions.or(
-//                lt(PRICE_LOW, Operations.startWith(PropertyValue.of("TRAILING_STOP")).minus(PipValue.of(SELL_PIPS_BUFFER)))
-//            ))
-//            .then(ConditionalStatement.withName("Check if gap down")
-//                .condition(lt(PRICE_HIGH, Operations.startWith(PropertyValue.of("TRAILING_STOP")).minus(PipValue.of(SELL_PIPS_BUFFER))))
-//                .then(
-//                    SellOrderStatement.builder() // Protection from gap down.
-//                        .orderType(OrderTypes.marketClose())
-//                        .build()
-//                )
-//                .otherwise(MultiStatement.of(
-//                    SellOrderStatement.builder() // Sell at price N pips below trailing stop
-//                        .orderType(AtPrice.of(Operations.startWith(PropertyValue.of("TRAILING_STOP")).minus(PipValue.of(SELL_PIPS_BUFFER))))
-//                        .build()
-//                ))
-//            )
-//        )
-//
-//        // If price above EMA 18 by over 16%
-//        .addStatement(ConditionalStatement.withName("Take Profit")
-//            .condition(Conditions.and(
-//                gte(Operations.startWith(PRICE_HIGH).minus(EMA.withPeriod(18)).div(EMA.withPeriod(18)), 0.16)
-//            ))
-//            .then(MultiStatement.of(
-//                SellOrderStatement.builder()
-//                    .orderType(AtPrice.of(Operations.startWith(EMA.withPeriod(18)).mult(1.16)))
-//                    .build()
-//                )
-//            )
-//        )
-//
-//        // TRAILING STOP Upon Buy
-//        .onBuyFulfilledStatement(MultiStatement.of(
-//            SetPropertyStatement.builder()
-//                .add("TRAILING_STOP", LowestValue.of(PRICE_LOW).fromBarsAgo(6))
-//                .build()
-//            )
-//        );
     return paramsBuilder;
   }
 }

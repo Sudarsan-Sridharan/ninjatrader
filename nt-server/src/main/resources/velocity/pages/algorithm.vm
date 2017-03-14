@@ -1,0 +1,10 @@
+<html>
+<head>
+    <title>Beach Ninja Trader</title>
+    <script data-main="js/chart" src="js/lib/require.js"></script>
+</head>
+
+<body>
+
+</body>
+</html>

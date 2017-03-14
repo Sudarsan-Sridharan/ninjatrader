@@ -7,6 +7,7 @@ define(["require",
     "./chart/rsichart",
     "./chart/simulationchart",
     "./chart/smachart",
+    "./chart/volumechart",
     "./component/chartmeta",
     "./component/chartpanel",
     "./component/datexaxis",
@@ -22,6 +23,7 @@ define(["require",
     var SimulationChart = require("./chart/simulationchart");
     var SMAChart = require("./chart/smachart");
     var EMAChart = require("./chart/emachart");
+    var VolumeChart = require("./chart/volumechart");
     var ChartMeta = require("./component/chartmeta");
     var ChartPanel = require("./component/chartpanel");
     var DateXAxis = require("./component/datexaxis");
@@ -39,6 +41,7 @@ define(["require",
         this.chartPanels = [];
         this.mainChartPanel = new ChartPanel(this.config, this.layout.createPanel());
         this.mainChartPanel
+            .addChart(new VolumeChart(this.config, this.mainChartPanel))
             .addChart(new CandleChart(this.config, this.mainChartPanel))
             // .addChart(new IchimokuChart(this.config, this.mainChartPanel))
             // .addChart(new SMAChart(this.config, this.mainChartPanel))

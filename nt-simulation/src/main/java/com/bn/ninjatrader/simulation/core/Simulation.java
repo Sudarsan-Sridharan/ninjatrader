@@ -103,10 +103,6 @@ public class Simulation implements BrokerListener {
     return report;
   }
 
-  public SimulationParams getSimulationParams() {
-    return simulationParams;
-  }
-
   public Account getAccount() {
     return account;
   }

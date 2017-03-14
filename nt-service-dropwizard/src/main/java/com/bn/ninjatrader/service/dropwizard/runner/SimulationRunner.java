@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.time.LocalDate;
+import java.util.function.Consumer;
 
 /**
  * @author bradwee2000@gmail.com
@@ -50,8 +51,9 @@ public class SimulationRunner {
     final SimulationParams params = GoldenAlgorithm.newInstance()
         .from(from)
         .to(to)
-        .maxBuyRisk(0.05)
-        .forSymbol("ALCO").build();
+        .maxBuyRisk(0.18)
+        .sellPipsBuffer(10)
+        .forSymbol("DD").build();
 
     final SimTradeAlgorithm algorithm = params.getAlgorithm();
 
@@ -59,13 +61,27 @@ public class SimulationRunner {
 
     printer.printReport(report);
 
+//    simTradeAlgorithmService.save(SaveSimTradeAlgoRequest.withAlgorithm(algorithm)
+//        .tradeAlgorithmId("RISKON")
+//        .userId("ADMIN")
+//        .description("10% Risk On!!"));
+
+//    simTradeAlgorithmService.save(SaveSimTradeAlgoRequest.withAlgorithm(algorithm)
+//        .tradeAlgorithmId("ADMIN")
+//        .userId("ADMIN")
+//        .description("Secret Sauce"));
+
     simTradeAlgorithmService.save(SaveSimTradeAlgoRequest.withAlgorithm(algorithm)
-        .tradeAlgorithmId("ADMIN")
+        .tradeAlgorithmId("testalgo")
         .userId("ADMIN")
-        .description("Secret Sauce"));
+        .description("Test Algo"));
   }
 
   public static void main(final String args[]) {
+    Consumer<Integer> consumer = y -> System.out.println("lalalala " + y);
+
+    consumer.accept(1);
+
     final Injector injector = Guice.createInjector(
         new NtModelMongoModule(),
         new NtSimulationModule());

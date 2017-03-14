@@ -32,6 +32,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <appengine.version>1.9.49</appengine.version>
         <objectify.version>5.1.14</objectify.version>
+        <archaius.version>2.1.11</archaius.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -103,6 +104,23 @@
                 <groupId>com.beachninja</groupId>
                 <artifactId>nt-simulation</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <!--Archaius-->
+            <dependency>
+                <groupId>com.netflix.archaius</groupId>
+                <artifactId>archaius2-api</artifactId>
+                <version>${archaius.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netflix.archaius</groupId>
+                <artifactId>archaius2-core</artifactId>
+                <version>${archaius.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netflix.archaius</groupId>
+                <artifactId>archaius2-guice</artifactId>
+                <version>${archaius.version}</version>
             </dependency>
 
             <!--App Enginge-->
