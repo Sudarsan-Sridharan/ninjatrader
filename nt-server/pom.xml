@@ -64,12 +64,12 @@
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity</artifactId>
         </dependency>
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
-
 
         <!-- Test dependencies -->
         <dependency>
@@ -90,5 +90,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 </project>

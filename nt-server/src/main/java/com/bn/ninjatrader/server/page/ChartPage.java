@@ -18,7 +18,7 @@ import javax.ws.rs.core.MediaType;
 @Path("/chart")
 public class ChartPage {
   private static final Logger LOG = LoggerFactory.getLogger(ChartPage.class);
-  private static final String TEMPLATE_PATH = "velocity/pages/chart.vm";
+  private static final String TEMPLATE_PATH = "/velocity/pages/chart.vm";
 
   private final HtmlWriterFactory htmlWriterFactory;
 

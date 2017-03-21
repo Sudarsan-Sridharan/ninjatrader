@@ -3,10 +3,13 @@ package com.bn.ninjatrader.model.mongo.client;
 import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.jackson.PriceDeserializer;
 import com.bn.ninjatrader.model.jackson.PriceSerializer;
+import com.bn.ninjatrader.model.mongo.annotation.MongoDatabaseName;
+import com.bn.ninjatrader.model.mongo.annotation.MongoHost;
 import com.bn.ninjatrader.model.mongo.factory.PriceBuilderFactoryMongo;
 import com.bn.ninjatrader.model.mongo.guice.NtModelMongoModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.inject.Inject;
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
@@ -39,6 +42,13 @@ public class DbClient {
   private Jongo jongo;
 
   private DbClient() {}
+
+  @Inject
+  public DbClient(@MongoHost final String host,
+                  @MongoDatabaseName final String databaseName) {
+    this.host = host;
+    this.dbName = databaseName;
+  }
 
   public DbClient connect() {
     final MongoClient mongoClient = new MongoClient(host,

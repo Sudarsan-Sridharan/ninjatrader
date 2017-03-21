@@ -27,13 +27,16 @@
 
     <properties>
         <bom.version>1.0-SNAPSHOT</bom.version>
+        <appengine.version>1.9.49</appengine.version>
+        <archaius.version>2.1.11</archaius.version>
+        <dropwizard.version>1.0.3</dropwizard.version>
         <jersey.version>2.25.1</jersey.version>
+        <jetty.version>9.3.2.v20150730</jetty.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <appengine.version>1.9.49</appengine.version>
         <objectify.version>5.1.14</objectify.version>
-        <archaius.version>2.1.11</archaius.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <servlet.version>3.1.0</servlet.version>
     </properties>
 
     <dependencyManagement>
@@ -162,6 +165,27 @@
                 <groupId>org.glassfish.jersey.media</groupId>
                 <artifactId>jersey-media-json-jackson</artifactId>
                 <version>${jersey.version}</version>
+            </dependency>
+
+            <!--TODO Not provided by dropwizard server?-->
+            <!--Servlet-->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${servlet.version}</version>
+            </dependency>
+
+
+            <!--Dropwizard-->
+            <dependency>
+                <groupId>io.dropwizard</groupId>
+                <artifactId>dropwizard-core</artifactId>
+                <version>${dropwizard.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.dropwizard</groupId>
+                <artifactId>dropwizard-assets</artifactId>
+                <version>${dropwizard.version}</version>
             </dependency>
 
             <!--Tests-->

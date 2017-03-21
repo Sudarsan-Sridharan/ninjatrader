@@ -65,6 +65,7 @@
             <h3 class="panelTitle">Admin Tasks</h3>
         </div>
         <div class="panelContent">
+            <button class="refreshAllBtn">Refresh All</button>
             <button class="importQuotesBtn">Import Quotes</button>
         </div>
     </div>

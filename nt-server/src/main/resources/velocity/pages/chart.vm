@@ -17,5 +17,6 @@
 
 <div id="chart"></div>
 
+#contextSettings()
 </body>
 </html>

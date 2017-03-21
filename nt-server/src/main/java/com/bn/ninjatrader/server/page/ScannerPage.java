@@ -21,13 +21,14 @@ import java.io.IOException;
 @Path("/scanner")
 public class ScannerPage {
   private static final Logger LOG = LoggerFactory.getLogger(ScannerPage.class);
+  private static final String TEMPLATE_PATH = "/velocity/pages/scanner.vm";
 
   @GET
   @Produces(MediaType.TEXT_HTML)
   public String showScanResults(@Context final HttpServletRequest req)
       throws ServletException, IOException {
 
-    return HtmlWriter.withTemplatePath("velocity/pages/scanner.vm")
+    return HtmlWriter.withTemplatePath(TEMPLATE_PATH)
         .put("contextPath", req.getContextPath())
         .put("serviceHost", "http://localhost:8080")
         .write();

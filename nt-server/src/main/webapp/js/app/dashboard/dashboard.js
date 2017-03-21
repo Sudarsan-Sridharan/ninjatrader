@@ -13,8 +13,6 @@ define(['jquery', 'require', '../scanner/scanner', '../status/status'], function
         var scanButton = $(id + " .refreshBtn");
         var algoSelector = $(id + " .algo");
         var daySelector = $(id + " .days");
-        
-        
 
         scanner.disable = function() {
             scanButton.prop("disabled", true);

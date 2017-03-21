@@ -12,8 +12,10 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import io.dropwizard.Application;
+import io.dropwizard.configuration.ResourceConfigurationSourceProvider;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
 import io.dropwizard.jetty.setup.ServletEnvironment;
+import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 
@@ -43,6 +45,11 @@ public class ServiceApplication extends Application<ServiceConfig> {
   private ImportPSETraderDailyQuotesTask importPSETraderDailyQuotesTask;
   @Inject
   private ObjectMapperContextResolver objectMapperContextResolver;
+
+  @Override
+  public void initialize(Bootstrap<ServiceConfig> bootstrap) {
+    bootstrap.setConfigurationSourceProvider(new ResourceConfigurationSourceProvider());
+  }
 
   @Override
   public void run(final ServiceConfig serviceConfig, final Environment env) throws Exception {
@@ -82,9 +89,8 @@ public class ServiceApplication extends Application<ServiceConfig> {
     final ServiceApplication serviceApplication = injector.getInstance(ServiceApplication.class);
 
     if (args.length == 0) {
-      args = new String[] {"server"};
+      args = new String[] {"server", "service-config.yaml"};
     }
-
     serviceApplication.run(args);
   }
 }

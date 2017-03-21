@@ -41,6 +41,21 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
 
+        <!--Archaius-->
+        <dependency>
+            <groupId>com.netflix.archaius</groupId>
+            <artifactId>archaius2-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.netflix.archaius</groupId>
+            <artifactId>archaius2-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.netflix.archaius</groupId>
+            <artifactId>archaius2-guice</artifactId>
+        </dependency>
+
+        <!--Test-->
         <dependency>
             <groupId>com.beachninja</groupId>
             <artifactId>nt-model</artifactId>

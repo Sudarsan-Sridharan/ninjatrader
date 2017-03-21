@@ -8,7 +8,7 @@ define(["d3", "require", "./util/date", "./util/color"], function(d3, require) {
 
     function Config(container) {
         this.container = container;
-        this.contextPath = "http://localhost:8080";
+        this.contextPath = context.serviceHost; // Global var. See contextSettings.vm
         this.chartWidth = 2000;
         this.chartHeight = 500;
         this.columnWidth = 8;

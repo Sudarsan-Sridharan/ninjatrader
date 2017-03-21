@@ -105,3 +105,8 @@ select {
 .statusItem .msg {
     float: left;
 }
+
+#admin button {
+    display: block;
+    margin: 10px 0;
+}

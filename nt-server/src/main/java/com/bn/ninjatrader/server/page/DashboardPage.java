@@ -22,7 +22,7 @@ import java.util.List;
 @Path("/")
 public class DashboardPage {
   private static final Logger LOG = LoggerFactory.getLogger(DashboardPage.class);
-  private static final String TEMPLATE_PATH = "velocity/pages/dashboard.vm";
+  private static final String TEMPLATE_PATH = "/velocity/pages/dashboard.vm";
 
   private final TradeAlgorithmDao tradeAlgorithmDao;
   private final HtmlWriterFactory htmlWriterFactory;
@@ -37,6 +37,8 @@ public class DashboardPage {
   @GET
   @Produces(MediaType.TEXT_HTML)
   public String showDashboard() {
+
+    //TODO remove. Keep daos in Service only.
     final List<TradeAlgorithm> algos = tradeAlgorithmDao.find(FindTradeAlgorithmRequest.withUserId("ADMIN"));
 
     return htmlWriterFactory.createWithTemplate(TEMPLATE_PATH)
