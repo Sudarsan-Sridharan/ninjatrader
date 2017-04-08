@@ -34,7 +34,7 @@ import static com.bn.ninjatrader.model.mongo.util.QueryParam.*;
  * Created by Brad on 4/30/16.
  */
 @Singleton
-public class MongoPriceDao extends AbstractDao implements PriceDao {
+public class MongoPriceDao extends MongoAbstractDao implements PriceDao {
   private static final Logger LOG = LoggerFactory.getLogger(MongoPriceDao.class);
 
   private final Clock clock;

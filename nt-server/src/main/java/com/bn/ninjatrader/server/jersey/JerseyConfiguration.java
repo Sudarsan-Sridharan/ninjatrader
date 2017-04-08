@@ -1,6 +1,5 @@
 package com.bn.ninjatrader.server.jersey;
 
-import com.bn.ninjatrader.model.mongo.guice.NtModelMongoModule;
 import com.bn.ninjatrader.server.guice.NtArchaiusModule;
 import com.bn.ninjatrader.server.page.AlgorithmPage;
 import com.bn.ninjatrader.server.page.ChartPage;
@@ -17,8 +16,7 @@ public class JerseyConfiguration extends ResourceConfig {
 
   public JerseyConfiguration() {
     final Injector injector = Guice.createInjector(
-        new NtArchaiusModule(),
-        new NtModelMongoModule());
+        new NtArchaiusModule());
     register(injector.getInstance(AlgorithmPage.class));
     register(injector.getInstance(ChartPage.class));
     register(injector.getInstance(DashboardPage.class));

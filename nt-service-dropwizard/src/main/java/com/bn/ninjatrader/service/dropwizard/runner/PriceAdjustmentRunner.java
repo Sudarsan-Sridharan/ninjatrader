@@ -18,9 +18,9 @@ public class PriceAdjustmentRunner {
     final Injector injector = Guice.createInjector(new NtModelMongoModule());
     final PriceAdjustmentProcess process = injector.getInstance(PriceAdjustmentProcess.class);
 
-    process.process(PriceAdjustmentRequest.forSymbol("LOTO")
+    process.process(PriceAdjustmentRequest.forSymbol("UBP")
         .from(LocalDate.now().minusYears(100))
-        .to(LocalDate.of(2016, 6, 8))
-        .adjustment(Operations.startWith(PriceAdjustmentRequest.PRICE).div(1.5)));
+        .to(LocalDate.of(2014, 11, 12))
+        .adjustment(Operations.startWith(PriceAdjustmentRequest.PRICE).mult(20).div(33)));
   }
 }

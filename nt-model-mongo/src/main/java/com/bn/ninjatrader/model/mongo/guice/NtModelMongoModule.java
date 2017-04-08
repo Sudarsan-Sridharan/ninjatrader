@@ -3,12 +3,16 @@ package com.bn.ninjatrader.model.mongo.guice;
 import com.bn.ninjatrader.common.guice.NtClockModule;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.TradeAlgorithmDao;
+import com.bn.ninjatrader.model.dao.UserDao;
 import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.model.mongo.annotation.PriceCollection;
+import com.bn.ninjatrader.model.mongo.annotation.StockCollection;
 import com.bn.ninjatrader.model.mongo.annotation.TradeAlgorithmCollection;
+import com.bn.ninjatrader.model.mongo.annotation.UserCollection;
 import com.bn.ninjatrader.model.mongo.client.DbClient;
 import com.bn.ninjatrader.model.mongo.dao.MongoPriceDao;
 import com.bn.ninjatrader.model.mongo.dao.MongoTradeAlgorithmDao;
+import com.bn.ninjatrader.model.mongo.dao.MongoUserDao;
 import com.bn.ninjatrader.model.mongo.factory.PriceBuilderFactoryMongo;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -25,16 +29,10 @@ public class NtModelMongoModule extends AbstractModule {
 
   private static final Logger LOG = LoggerFactory.getLogger(NtModelMongoModule.class);
 
-  public static final String SETTINGS_COLLECTION = "settings";
-  public static final String ICHIMOKU_COLLECTION = "ichimoku";
-  public static final String MEAN_COLLECTION = "mean";
+  public static final String USER_COLLECTION = "user";
   public static final String PRICE_COLLECTION = "price";
-  public static final String TRADE_ALGO_COLLECTION = "trade_algo";
-  public static final String SMA_COLLECTION = "sma";
-  public static final String EMA_COLLECTION = "ema";
-  public static final String RSI_COLLECTION = "rsi";
   public static final String STOCK_COLLECTION = "stock";
-  public static final String REPORT_COLLECTION = "report";
+  public static final String TRADE_ALGO_COLLECTION = "trade_algo";
 
   private DbClient dbClient;
 
@@ -49,26 +47,11 @@ public class NtModelMongoModule extends AbstractModule {
     install(new NtClockModule());
     install(new ArchaiusModule());
 
+    bind(UserDao.class).to(MongoUserDao.class);
     bind(PriceDao.class).to(MongoPriceDao.class);
     bind(TradeAlgorithmDao.class).to(MongoTradeAlgorithmDao.class);
     bind(PriceBuilderFactory.class).to(PriceBuilderFactoryMongo.class);
-
-//    bindAnnotatedToCollection(SettingsCollection.class, SETTINGS_COLLECTION);
-//    bindAnnotatedToCollection(ReportCollection.class, REPORT_COLLECTION);
-//    bindAnnotatedToCollection(PriceCollection.class, PRICE_COLLECTION);
-//    bindAnnotatedToCollection(TradeAlgorithmCollection.class, TRADE_ALGO_COLLECTION);
-//    bindAnnotatedToCollection(IchimokuCollection.class, ICHIMOKU_COLLECTION);
-//    bindAnnotatedToCollection(MeanCollection.class, MEAN_COLLECTION);
-//    bindAnnotatedToCollection(SMACollection.class, SMA_COLLECTION);
-//    bindAnnotatedToCollection(EMACollection.class, EMA_COLLECTION);
-//    bindAnnotatedToCollection(RSICollection.class, RSI_COLLECTION);
-//    bindAnnotatedToCollection(StockCollection.class, STOCK_COLLECTION);
   }
-
-//  private void bindAnnotatedToCollection(final Class<? extends Annotation> annotation, final String collectionName) {
-//    final MongoCollection collection = dbClient.getMongoCollection(collectionName);
-//    bind(MongoCollection.class).annotatedWith(annotation).toInstance(collection);
-//  }
 
   @Provides
   private DbClient provideDbClient(final Config config) {
@@ -84,14 +67,24 @@ public class NtModelMongoModule extends AbstractModule {
   @Provides
   @PriceCollection
   private MongoCollection providePriceCollection(final DbClient dbClient) {
-    final MongoCollection collection = dbClient.getMongoCollection(PRICE_COLLECTION);
-    return collection;
+    return dbClient.getMongoCollection(PRICE_COLLECTION);
+  }
+
+  @Provides
+  @UserCollection
+  private MongoCollection provideUserCollection(final DbClient dbClient) {
+    return dbClient.getMongoCollection(USER_COLLECTION);
   }
 
   @Provides
   @TradeAlgorithmCollection
   private MongoCollection provideTradeAlgoCollection(final DbClient dbClient) {
-    final MongoCollection collection = dbClient.getMongoCollection(TRADE_ALGO_COLLECTION);
-    return collection;
+    return dbClient.getMongoCollection(TRADE_ALGO_COLLECTION);
+  }
+
+  @Provides
+  @StockCollection
+  private MongoCollection provideStockCollection(final DbClient dbClient) {
+    return dbClient.getMongoCollection(STOCK_COLLECTION);
   }
 }

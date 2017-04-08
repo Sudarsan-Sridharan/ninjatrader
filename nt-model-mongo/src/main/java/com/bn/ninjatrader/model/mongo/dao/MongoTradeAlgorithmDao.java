@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @author bradwee2000@gmail.com
  */
 @Singleton
-public class MongoTradeAlgorithmDao extends AbstractDao implements TradeAlgorithmDao {
+public class MongoTradeAlgorithmDao extends MongoAbstractDao implements TradeAlgorithmDao {
 
   @Inject
   public MongoTradeAlgorithmDao(@TradeAlgorithmCollection final MongoCollection mongoCollection) {

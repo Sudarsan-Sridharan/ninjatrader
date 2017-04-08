@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by Brad on 7/28/16.
  */
-public class SettingsDao extends AbstractDao {
+public class SettingsDao extends MongoAbstractDao {
   private static final Logger LOG = LoggerFactory.getLogger(SettingsDao.class);
 
   @Inject

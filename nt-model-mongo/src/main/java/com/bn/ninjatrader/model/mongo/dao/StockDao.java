@@ -18,11 +18,11 @@ import java.util.Optional;
  * Created by Brad on 4/30/16.
  */
 @Singleton
-public class StockDao extends AbstractDao {
+public class StockDao extends MongoAbstractDao {
   private static final Logger LOG = LoggerFactory.getLogger(StockDao.class);
 
   @Inject
-  public StockDao(@StockCollection MongoCollection mongoCollection) {
+  public StockDao(@StockCollection final MongoCollection mongoCollection) {
     super(mongoCollection);
     mongoCollection.ensureIndex(
             String.format("{%s : 1}", QueryParam.SYMBOL), "{unique: true}");

@@ -25,7 +25,7 @@ define(['jquery'], function ($) {
             var result = scanResults[i];
             var txn = result.lastTxn;
             var tr = $('<tr class="' + txn.type +'"></tr>');
-            var link = '<a href="/chart?&algoId=' + algoId + '&symbol=' + result.symbol + '" target="_blank">' + result.symbol + '</a>';
+            var link = '<a href="chart?&algoId=' + algoId + '&symbol=' + result.symbol + '" target="_blank">' + result.symbol + '</a>';
 
             var txnDate = this._formatDate(txn.dt);
             var profit = Math.trunc(result.profit).toLocaleString();
