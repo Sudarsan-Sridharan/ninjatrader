@@ -1,8 +1,6 @@
 package com.bn.ninjatrader.model.dao;
 
 import com.bn.ninjatrader.model.entity.TradeAlgorithm;
-import com.bn.ninjatrader.model.request.FindTradeAlgorithmRequest;
-import com.bn.ninjatrader.model.request.SaveTradeAlgorithmRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,9 +10,9 @@ import java.util.Optional;
  */
 public interface TradeAlgorithmDao {
 
-  List<TradeAlgorithm> save(final SaveTradeAlgorithmRequest request);
+  void save(final TradeAlgorithm tradeAlgorithm);
 
-  List<TradeAlgorithm> find(final FindTradeAlgorithmRequest request);
+  List<TradeAlgorithm> findByUserId(final String userId);
 
-  Optional<TradeAlgorithm> findOne(final FindTradeAlgorithmRequest request);
+  Optional<TradeAlgorithm> findByTradeAlgorithmId(final String algoId);
 }

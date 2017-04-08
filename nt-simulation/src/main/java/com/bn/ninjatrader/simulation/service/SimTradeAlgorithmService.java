@@ -3,8 +3,6 @@ package com.bn.ninjatrader.simulation.service;
 import com.bn.ninjatrader.model.dao.TradeAlgorithmDao;
 import com.bn.ninjatrader.model.entity.TradeAlgorithm;
 import com.bn.ninjatrader.model.entity.TradeAlgorithmFactory;
-import com.bn.ninjatrader.model.request.FindTradeAlgorithmRequest;
-import com.bn.ninjatrader.model.request.SaveTradeAlgorithmRequest;
 import com.bn.ninjatrader.simulation.exception.TradeAlgorithmIdNotFoundException;
 import com.bn.ninjatrader.simulation.jackson.SimObjectMapperProvider;
 import com.bn.ninjatrader.simulation.model.SimTradeAlgorithm;
@@ -42,7 +40,7 @@ public class SimTradeAlgorithmService {
    */
   public SimTradeAlgorithm findById(final String algoId) {
     final Optional<TradeAlgorithm> found =
-        tradeAlgorithmDao.findOne(FindTradeAlgorithmRequest.withTradeAlgorithmId(algoId));
+        tradeAlgorithmDao.findByTradeAlgorithmId(algoId);
 
     if (!found.isPresent()) {
       throw new TradeAlgorithmIdNotFoundException(algoId);
@@ -74,7 +72,7 @@ public class SimTradeAlgorithmService {
           .userId(req.getUserId()).algorithm(jsonAlgo).description(req.getDescription()).build();
 
       // Save
-      tradeAlgorithmDao.save(SaveTradeAlgorithmRequest.addEntity(tradeAlgorithm));
+      tradeAlgorithmDao.save(tradeAlgorithm);
 
       return tradeAlgorithm;
     } catch (JsonProcessingException e) {

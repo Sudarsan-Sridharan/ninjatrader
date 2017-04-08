@@ -1,3 +1,6 @@
+#docker build -t nt-server .
+# docker run -d -p8080:8080 -e "service.host=http://192.168.99.100:9000" nt-server
+
 FROM tomcat:8-jre8
 MAINTAINER bradwee2000@gmail.com
 

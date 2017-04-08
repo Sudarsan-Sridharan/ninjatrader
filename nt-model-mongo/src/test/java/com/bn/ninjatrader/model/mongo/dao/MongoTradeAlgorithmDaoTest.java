@@ -2,8 +2,6 @@ package com.bn.ninjatrader.model.mongo.dao;
 
 import com.bn.ninjatrader.model.entity.TradeAlgorithm;
 import com.bn.ninjatrader.model.mongo.guice.NtModelTestModule;
-import com.bn.ninjatrader.model.request.FindTradeAlgorithmRequest;
-import com.bn.ninjatrader.model.request.SaveTradeAlgorithmRequest;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.junit.Before;
@@ -11,8 +9,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,7 +19,7 @@ public class MongoTradeAlgorithmDaoTest {
   private static final Logger LOG = LoggerFactory.getLogger(MongoTradeAlgorithmDaoTest.class);
 
   private final TradeAlgorithm algo = TradeAlgorithm.builder()
-      .id("test").userId("sys").algorithm("{ sample algorithm }").build();
+      .id("test").userId("sys").description("desc").algorithm("{ sample algorithm }").build();
 
   private static Injector injector;
 
@@ -42,40 +38,26 @@ public class MongoTradeAlgorithmDaoTest {
 
   @Test
   public void testSaveAndFind_shouldReturnEqualObject() {
-    final List<TradeAlgorithm> saved = dao.save(SaveTradeAlgorithmRequest.addEntity(algo));
+    dao.save(algo);
 
-    assertThat(saved).containsExactly(algo);
+    assertThat(dao.findByTradeAlgorithmId("test")).hasValue(algo);
+    assertThat(dao.findByUserId("sys")).containsExactly(algo);
 
-    assertThat(dao.find(FindTradeAlgorithmRequest.withUserId("sys"))).containsExactly(algo);
-    assertThat(dao.findOne(FindTradeAlgorithmRequest.withTradeAlgorithmId("test"))).hasValue(algo);
-
-    assertThat(dao.find(FindTradeAlgorithmRequest.withUserId("non-existing"))).isEmpty();
-    assertThat(dao.find(FindTradeAlgorithmRequest.withTradeAlgorithmId("non-existing"))).isEmpty();
+    assertThat(dao.findByTradeAlgorithmId("non-existing")).isEmpty();
+    assertThat(dao.findByUserId("non-existing")).isEmpty();
   }
 
   @Test
-  public void testOverwrite_shouldOverwriteOldRecordWithNew() {
-    final TradeAlgorithm overwrite = TradeAlgorithm.builder()
-        .id("test").userId("sys").algorithm("{ sample overwritten algorithm }").build();
+  public void testUpdate_shouldUpdateInDb() {
+    final TradeAlgorithm updatedAlgo = TradeAlgorithm.builder()
+        .id("test").userId("sys").algorithm("{ sample overwritten algorithm }").description("").build();
 
     // Save old algorithm
-    dao.save(SaveTradeAlgorithmRequest.addEntity(algo));
+    dao.save(algo);
 
-    // Overwrite old with new
-    dao.save(SaveTradeAlgorithmRequest.addEntity(overwrite));
+    // Update with new details
+    dao.save(updatedAlgo);
 
-    assertThat(dao.findOne(FindTradeAlgorithmRequest.withTradeAlgorithmId("test"))).hasValue(overwrite);
-  }
-
-  @Test
-  public void testSaveMultiple_shouldSaveAll() {
-    final TradeAlgorithm algo2 = TradeAlgorithm.builder()
-        .id("test2").userId("sys").algorithm("{ sample algorithm 2 }").build();
-    final TradeAlgorithm overwrite = TradeAlgorithm.builder()
-        .id("test").userId("sys").algorithm("{ sample overwritten algorithm }").build();
-
-    dao.save(SaveTradeAlgorithmRequest.addEntities(algo, algo2, overwrite));
-
-    assertThat(dao.find(FindTradeAlgorithmRequest.withUserId("sys"))).containsExactlyInAnyOrder(algo2, overwrite);
+    assertThat(dao.findByTradeAlgorithmId("test")).hasValue(updatedAlgo);
   }
 }

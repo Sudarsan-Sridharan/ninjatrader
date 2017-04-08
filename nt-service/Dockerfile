@@ -1,3 +1,6 @@
+# docker build -t nt-service .
+# docker run -d -p9000:9000 -p9001:9001 -e "mongo.host=192.168.99.100:32768" nt-service
+
 FROM tomcat:8-jre8
 MAINTAINER bradwee2000@gmail.com
 

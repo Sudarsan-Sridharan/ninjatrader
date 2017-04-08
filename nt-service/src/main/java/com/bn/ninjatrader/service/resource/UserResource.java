@@ -41,7 +41,7 @@ public class UserResource {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response createUser(final CreateUserRequest req) {
+  public Response postUser(final CreateUserRequest req) {
     final User user = userFactory.create()
         .username(req.getUsername())
         .firstname(req.getFirstname())

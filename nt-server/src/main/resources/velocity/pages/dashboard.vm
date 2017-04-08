@@ -14,11 +14,7 @@
         <div class="panelHeader">
             <h3 class="panelTitle">Stock Scanner</h3>
             <div class="panelAction">
-                <select class="algo">
-                #foreach($algo in $tradeAlgorithms)
-                <option value="$algo.id">$algo.description</option>
-                #end
-                </select>
+                <select class="algo"></select>
                 <select class="days">
                     <option value="1">Today</option>
                     <option value="2">2 days ago</option>

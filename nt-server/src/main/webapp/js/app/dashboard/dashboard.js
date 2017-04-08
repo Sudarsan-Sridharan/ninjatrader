@@ -72,10 +72,30 @@ define(['jquery', 'require', '../scanner/scanner', '../status/status'], function
         });
     };
 
+    Dashboard.prototype.initAlgo = function(callback) {
+        $.get(context.serviceHost + "/algos")
+            .done(function(data) {
+                var algoDropdown = $("select.algo").empty();
+                for(var i in data) {
+                    var algo = data[i];
+                    var option = $('<option></option>').attr("value", algo.id).text(algo.description);
+                    algoDropdown.append(option);
+                }
+
+                if (callback) {
+                    callback();
+                }
+            });
+    };
+
     $(document).ready(function() {
         var dashboard = new Dashboard();
-        dashboard.initScanner("#scanner");
-        dashboard.initScanner("#scanner2");
+
+        dashboard.initAlgo(function() {
+            dashboard.initScanner("#scanner");
+            dashboard.initScanner("#scanner2");
+        });
+
         dashboard.initAdminTaskPanel("#admin");
     });
 

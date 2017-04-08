@@ -6,6 +6,8 @@ import com.bn.ninjatrader.service.dropwizard.health.ServiceHealthCheck;
 import com.bn.ninjatrader.service.provider.LocalDateParamConverterProvider;
 import com.bn.ninjatrader.service.provider.ObjectMapperContextResolver;
 import com.bn.ninjatrader.service.resource.PriceResource;
+import com.bn.ninjatrader.service.resource.TradeAlgorithmResource;
+import com.bn.ninjatrader.service.resource.UserResource;
 import com.bn.ninjatrader.service.task.*;
 import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
 import com.google.inject.Guice;
@@ -29,8 +31,14 @@ public class ServiceApplication extends Application<ServiceConfig> {
 
   @Inject
   private ServiceHealthCheck serviceHealthCheck;
+
   @Inject
   private PriceResource priceResource;
+  @Inject
+  private TradeAlgorithmResource tradeAlgorithmResource;
+  @Inject
+  private UserResource userResource;
+
   @Inject
   private CalcTask calcTask;
   @Inject
@@ -62,6 +70,9 @@ public class ServiceApplication extends Application<ServiceConfig> {
 
   private void setupResources(final JerseyEnvironment jersey) {
     jersey.register(priceResource);
+    jersey.register(tradeAlgorithmResource);
+    jersey.register(userResource);
+
 
     // Maintenance tasks
     jersey.register(calcTask);

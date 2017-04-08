@@ -5,24 +5,18 @@ import com.google.common.base.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.FormParam;
-
 /**
  * @author bradwee2000@gmail.com
  */
 public class CreateUserRequest {
   private static final Logger LOG = LoggerFactory.getLogger(CreateUserRequest.class);
 
-  @FormParam("username")
   private String username;
 
-  @FormParam("firstname")
   private String firstname;
 
-  @FormParam("from")
   private String lastname;
 
-  @FormParam("email")
   private String email;
 
   public String getUsername() {

@@ -3,8 +3,6 @@ package com.bn.ninjatrader.simulation.service;
 import com.bn.ninjatrader.model.dao.TradeAlgorithmDao;
 import com.bn.ninjatrader.model.entity.TradeAlgorithm;
 import com.bn.ninjatrader.model.entity.TradeAlgorithmFactory;
-import com.bn.ninjatrader.model.request.FindTradeAlgorithmRequest;
-import com.bn.ninjatrader.model.request.SaveTradeAlgorithmRequest;
 import com.bn.ninjatrader.simulation.jackson.SimObjectMapperProvider;
 import com.bn.ninjatrader.simulation.logicexpression.statement.EmptyStatement;
 import com.bn.ninjatrader.simulation.model.SimTradeAlgorithm;
@@ -15,9 +13,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author bradwee2000@gmail.com
@@ -51,7 +47,7 @@ public class SimTradeAlgorithmServiceTest {
         .description("sample")
         .tradeAlgorithmId("algoId"));
 
-    verify(tradeAlgorithmDao).save(any(SaveTradeAlgorithmRequest.class));
+    verify(tradeAlgorithmDao).save(any(TradeAlgorithm.class));
 
     assertThat(tradeAlgorithm).isNotNull();
     assertThat(tradeAlgorithm.getDescription()).isEqualTo("sample");
@@ -64,7 +60,7 @@ public class SimTradeAlgorithmServiceTest {
   public void testFind_shouldReturnSimTradeAlgorithm() {
     final TradeAlgorithm tradeAlgorithm = TradeAlgorithm.builder()
         .algorithm(jsonAlgo).userId("test").id("algoId").build();
-    when(tradeAlgorithmDao.findOne(any(FindTradeAlgorithmRequest.class))).thenReturn(Optional.of(tradeAlgorithm));
+    when(tradeAlgorithmDao.findByTradeAlgorithmId("algoId")).thenReturn(Optional.of(tradeAlgorithm));
 
     final SimTradeAlgorithm simTradeAlgorithm = service.findById("algoId");
 

@@ -7,6 +7,8 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.jongo.marshall.jackson.oid.MongoId;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -15,6 +17,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MongoTradeAlgorithmDocument {
+  private static final Logger LOG = LoggerFactory.getLogger(MongoTradeAlgorithmDocument.class);
 
   public static final MongoTradeAlgorithmDocument copyFrom(final TradeAlgorithm algo) {
     checkNotNull(algo, "algo must not be null.");
@@ -51,32 +54,16 @@ public class MongoTradeAlgorithmDocument {
     return tradeAlgorithmId;
   }
 
-  public void setTradeAlgorithmId(String tradeAlgorithmId) {
-    this.tradeAlgorithmId = tradeAlgorithmId;
-  }
-
   public String getUserId() {
     return userId;
-  }
-
-  public void setUserId(String userId) {
-    this.userId = userId;
   }
 
   public String getDescription() {
     return description;
   }
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
   public String getTradeAlgorithm() {
     return tradeAlgorithm;
-  }
-
-  public void setTradeAlgorithm(String tradeAlgorithm) {
-    this.tradeAlgorithm = tradeAlgorithm;
   }
 
   public TradeAlgorithm toTradeAlgorithm() {
@@ -109,8 +96,8 @@ public class MongoTradeAlgorithmDocument {
     return MoreObjects.toStringHelper(this)
         .add("tradeAlgorithmId", tradeAlgorithmId)
         .add("userId", userId)
-        .add("description", description)
-        .add("tradeAlgorithm", tradeAlgorithm)
+        .add("desc", description)
+        .add("algo", tradeAlgorithm)
         .toString();
   }
 }

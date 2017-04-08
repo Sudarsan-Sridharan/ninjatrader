@@ -5,16 +5,13 @@ import com.bn.ninjatrader.model.entity.TradeAlgorithm;
 import com.bn.ninjatrader.model.mongo.annotation.TradeAlgorithmCollection;
 import com.bn.ninjatrader.model.mongo.document.MongoTradeAlgorithmDocument;
 import com.bn.ninjatrader.model.mongo.util.Queries;
-import com.bn.ninjatrader.model.request.FindTradeAlgorithmRequest;
-import com.bn.ninjatrader.model.request.SaveTradeAlgorithmRequest;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.apache.commons.lang3.StringUtils;
-import org.jongo.Find;
-import org.jongo.FindOne;
 import org.jongo.MongoCollection;
 import org.jongo.MongoCursor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,6 +23,9 @@ import java.util.stream.Collectors;
  */
 @Singleton
 public class MongoTradeAlgorithmDao extends MongoAbstractDao implements TradeAlgorithmDao {
+  private static final Logger LOG = LoggerFactory.getLogger(MongoTradeAlgorithmDao.class);
+  private static final String FIND_BY_ALGO_ID = "{ algoId: # }";
+  private static final String FIND_BY_USER_ID = "{ userId: # }";
 
   @Inject
   public MongoTradeAlgorithmDao(@TradeAlgorithmCollection final MongoCollection mongoCollection) {
@@ -34,49 +34,32 @@ public class MongoTradeAlgorithmDao extends MongoAbstractDao implements TradeAlg
   }
 
   @Override
-  public List<TradeAlgorithm> save(final SaveTradeAlgorithmRequest request) {
-    request.getTradeAlgorithms().stream()
-        .map(algo -> MongoTradeAlgorithmDocument.copyFrom(algo))
-        .forEach(algo -> getMongoCollection()
-            .update("{ algoId: # }", algo.getTradeAlgorithmId())
-            .upsert()
-            .with(algo)
-        );
-    return request.getTradeAlgorithms();
+  public void save(final TradeAlgorithm algo) {
+    final MongoTradeAlgorithmDocument doc = MongoTradeAlgorithmDocument.copyFrom(algo);
+    getMongoCollection().update(FIND_BY_ALGO_ID, doc.getTradeAlgorithmId()).upsert().with(doc);
   }
 
   @Override
-  public List<TradeAlgorithm> find(final FindTradeAlgorithmRequest request) {
-    // Create query based on parameters
-    final Find find;
-    if (!StringUtils.isEmpty(request.getTradeAlgorithmId())) {
-      find = getMongoCollection().find("{ algoId: # }", request.getTradeAlgorithmId());
-    } else {
-      find = getMongoCollection().find("{ userId: # }", request.getUserId());
-    }
+  public Optional<TradeAlgorithm> findByTradeAlgorithmId(final String algoId) {
+    final Optional<MongoTradeAlgorithmDocument> foundDoc = Optional.ofNullable(getMongoCollection()
+        .findOne(FIND_BY_ALGO_ID, algoId).as(MongoTradeAlgorithmDocument.class));
 
-    // Convert documents to TradeAlgorithm objects
-    try (final MongoCursor<MongoTradeAlgorithmDocument> cursor = find.as(MongoTradeAlgorithmDocument.class)) {
+    return foundDoc.map(doc -> doc.toTradeAlgorithm());
+  }
+
+  @Override
+  public List<TradeAlgorithm> findByUserId(final String userId) {
+    try (final MongoCursor<MongoTradeAlgorithmDocument> cursor =
+             getMongoCollection().find(FIND_BY_USER_ID, userId)
+                 .as(MongoTradeAlgorithmDocument.class)) {
+
       return Lists.newArrayList(cursor.iterator()).stream()
           .map(algo -> algo.toTradeAlgorithm())
+          .sorted((algo1, algo2) -> algo1.getDescription().compareTo(algo2.getDescription()))
           .collect(Collectors.toList());
+
     } catch (final IOException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  @Override
-  public Optional<TradeAlgorithm> findOne(final FindTradeAlgorithmRequest request) {
-    // Create query based on parameters
-    final FindOne find;
-    if (!StringUtils.isEmpty(request.getTradeAlgorithmId())) {
-      find = getMongoCollection().findOne("{ algoId: # }", request.getTradeAlgorithmId());
-    } else {
-      find = getMongoCollection().findOne("{ userId: # }", request.getUserId());
-    }
-
-    // Convert document to TradeAlgorithm object
-    final MongoTradeAlgorithmDocument doc = find.as(MongoTradeAlgorithmDocument.class);
-    return doc == null ? Optional.empty() : Optional.ofNullable(doc.toTradeAlgorithm());
   }
 }
