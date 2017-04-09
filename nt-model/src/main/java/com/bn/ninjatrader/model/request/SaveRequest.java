@@ -70,16 +70,7 @@ public class SaveRequest<T> {
     return values != null && !values.isEmpty();
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (obj == null || !(obj instanceof SaveRequest)) { return false; }
-    if (obj == this) { return true; }
-    final SaveRequest rhs = (SaveRequest) obj;
-    return Objects.equal(symbol, rhs.symbol)
-        && Objects.equal(timeFrame, rhs.timeFrame)
-        && Objects.equal(period, rhs.period)
-        && Objects.equal(values, rhs.values);
-  }
+
 
   @Override
   public int hashCode() {

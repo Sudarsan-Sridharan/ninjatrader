@@ -4,7 +4,6 @@ import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
-import com.bn.ninjatrader.model.request.FindPriceRequest;
 import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.bn.ninjatrader.model.util.TestUtil;
 import com.bn.ninjatrader.service.model.PriceResponse;
@@ -13,7 +12,6 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import javax.ws.rs.NotFoundException;
@@ -22,7 +20,6 @@ import java.time.LocalDate;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
@@ -38,17 +35,19 @@ public class PriceResourceTest extends AbstractJerseyTest {
       .date(date1).open(1).high(2).low(3).close(4).volume(10000).build();
   private static final Price price2 = priceBuilderFactory.builder()
       .date(date2).open(5).high(6).low(7).close(8).volume(20000).build();
-  private static final Clock fixedClock = TestUtil.fixedClock(date1);
+  private static final Clock clock = TestUtil.fixedClock(date1);
 
   @Override
   protected ResourceConfig configureResource(final ResourceConfig resourceConfig) {
-    return resourceConfig.register(new PriceResource(priceDao, fixedClock));
+    return resourceConfig.register(new PriceResource(priceDao, clock));
   }
 
   @Before
   public void before() {
-    when(priceDao.find(any(FindPriceRequest.class)))
-        .thenReturn(Lists.newArrayList(price1, price2));
+    reset(priceDao);
+
+    when(priceDao.findPrices()).thenReturn(mock(PriceDao.FindPricesOperation.class, RETURNS_SELF));
+    when(priceDao.findPrices().now()).thenReturn(Lists.newArrayList(price1, price2));
   }
 
   @After
@@ -79,34 +78,25 @@ public class PriceResourceTest extends AbstractJerseyTest {
         .request()
         .get(PriceResponse.class);
 
-    final ArgumentCaptor<FindPriceRequest> captor = ArgumentCaptor.forClass(FindPriceRequest.class);
-    verify(priceDao, times(1)).find(captor.capture());
-
-    final FindPriceRequest FindPriceRequest = captor.getValue();
-    assertThat(FindPriceRequest.getSymbol()).isEqualTo("BDO");
-    assertThat(FindPriceRequest.getTimeFrame()).isEqualTo(TimeFrame.ONE_WEEK);
-    assertThat(FindPriceRequest.getFromDate()).isEqualTo(LocalDate.of(2016, 1, 1));
-    assertThat(FindPriceRequest.getToDate()).isEqualTo(LocalDate.of(2017, 12, 31));
+    verify(priceDao.findPrices()).withSymbol("BDO");
+    verify(priceDao.findPrices()).withTimeFrame(TimeFrame.ONE_WEEK);
+    verify(priceDao.findPrices()).from(LocalDate.of(2016, 1, 1));
+    verify(priceDao.findPrices()).to(LocalDate.of(2017, 12, 31));
   }
 
   @Test
-  public void testDefaultQueryParams() {
+  public void testGetWithNoQueryParams_shouldUserDefaultValues() {
     target("/price/MBT").request().get(PriceResponse.class);
 
-    final ArgumentCaptor<FindPriceRequest> captor = ArgumentCaptor.forClass(FindPriceRequest.class);
-    verify(priceDao, times(1)).find(captor.capture());
-
-    final FindPriceRequest FindPriceRequest = captor.getValue();
-    assertThat(FindPriceRequest.getSymbol()).isEqualTo("MBT");
-    assertThat(FindPriceRequest.getTimeFrame()).isEqualTo(TimeFrame.ONE_DAY);
-    assertThat(FindPriceRequest.getFromDate()).isEqualTo(LocalDate.now(fixedClock).minusYears(2));
-    assertThat(FindPriceRequest.getToDate()).isEqualTo(LocalDate.now(fixedClock));
+    verify(priceDao.findPrices()).withSymbol("MBT");
+    verify(priceDao.findPrices()).withTimeFrame(TimeFrame.ONE_DAY);
+    verify(priceDao.findPrices()).from(LocalDate.now(clock).minusYears(2));
+    verify(priceDao.findPrices()).to(LocalDate.now(clock));
   }
 
   @Test
   public void testWithNoPricesFound() {
-    when(priceDao.find(any(FindPriceRequest.class)))
-        .thenReturn(Collections.emptyList());
+    when(priceDao.findPrices().now()).thenReturn(Collections.emptyList());
 
     final PriceResponse priceResponse = target("/price/MBT").request().get(PriceResponse.class);
 

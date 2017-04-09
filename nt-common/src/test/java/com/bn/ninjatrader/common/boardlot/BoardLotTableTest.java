@@ -1,8 +1,9 @@
 package com.bn.ninjatrader.common.boardlot;
 
-import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertEquals;
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Brad on 8/18/16.
@@ -39,7 +40,7 @@ public class BoardLotTableTest {
   }
 
   private void assertBoardLotTickAndLot(BoardLot boardLot, double tick, int lotSize) {
-    assertEquals(boardLot.getTick(), tick);
-    assertEquals(boardLot.getLotSize(), lotSize);
+    assertThat(boardLot.getTick()).isEqualTo(tick);
+    assertThat(boardLot.getLotSize()).isEqualTo(lotSize);
   }
 }

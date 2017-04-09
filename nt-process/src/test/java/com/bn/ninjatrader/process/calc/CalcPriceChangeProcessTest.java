@@ -1,11 +1,11 @@
 package com.bn.ninjatrader.process.calc;
 
 import com.bn.ninjatrader.calculator.PriceChangeCalculator;
-import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.model.util.TestUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.request.SavePriceRequest;
+import com.bn.ninjatrader.model.util.TestUtil;
 import com.bn.ninjatrader.process.request.CalcRequest;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -19,7 +19,6 @@ import java.util.List;
 
 import static com.bn.ninjatrader.common.type.TimeFrame.ONE_DAY;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
@@ -41,7 +40,8 @@ public class CalcPriceChangeProcessTest {
     priceDao = mock(PriceDao.class);
     process = new CalcPriceChangeProcess(calculator, priceDao);
 
-    when(priceDao.find(any())).thenReturn(priceList);
+    when(priceDao.findPrices()).thenReturn(mock(PriceDao.FindPricesOperation.class, RETURNS_SELF));
+    when(priceDao.findPrices().now()).thenReturn(priceList);
     when(calculator.calc(priceList)).thenReturn(processedPriceList);
   }
 

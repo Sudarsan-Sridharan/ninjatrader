@@ -1,17 +1,15 @@
 package com.bn.ninjatrader.model.mongo.dao;
 
-import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.model.util.DateObjUtil;
 import com.bn.ninjatrader.common.util.DateUtil;
 import com.bn.ninjatrader.common.util.FixedList;
-import com.bn.ninjatrader.model.mongo.annotation.PriceCollection;
-import com.bn.ninjatrader.model.request.FindPriceRequest;
-import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.mongo.annotation.PriceCollection;
 import com.bn.ninjatrader.model.mongo.document.MongoPriceDocument;
-import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 import com.bn.ninjatrader.model.mongo.util.Queries;
+import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
+import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -27,6 +25,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.bn.ninjatrader.model.mongo.util.QueryParam.*;
 
@@ -49,26 +48,8 @@ public class MongoPriceDao extends MongoAbstractDao implements PriceDao {
             "{unique: true}");
   }
 
-  @Override
-  public List<Price> find(final FindPriceRequest req) {
-    final LocalDate fromDate = req.getFromDate();
-    final LocalDate toDate = req.getToDate();
-
-    final List<MongoPriceDocument> priceDataList = Lists.newArrayList(getMongoCollection()
-        .find(Queries.FIND_BY_SYMBOL_TIMEFRAME_YEAR_RANGE, req.getSymbol(),
-            req.getTimeFrame(),
-            fromDate.getYear(),
-            toDate.getYear())
-        .as(MongoPriceDocument.class).iterator());
-    final List<Price> prices = Lists.newArrayList();
-
-    for (final MongoPriceDocument priceData : priceDataList) {
-      prices.addAll(priceData.getData());
-    }
-
-    DateObjUtil.trimToDateRange(prices, fromDate, toDate);
-
-    return prices;
+  public FindPricesOperation findPrices() {
+    return new FindPricesOperation(getMongoCollection());
   }
 
   @Override
@@ -150,10 +131,11 @@ public class MongoPriceDao extends MongoAbstractDao implements PriceDao {
     LocalDate toDate = request.getBeforeDate().minusDays(1);
 
     do {
-      final List<Price> resultsPerYear = find(FindPriceRequest.forSymbol(request.getSymbol())
-          .timeframe(request.getTimeFrame())
+      final List<Price> resultsPerYear = findPrices().withSymbol(request.getSymbol())
+          .withTimeFrame(request.getTimeFrame())
           .from(fromDate)
-          .to(toDate));
+          .to(toDate)
+          .now();
       bars.clear();
       bars.addAll(resultsPerYear);
       fromDate = fromDate.minusYears(1);
@@ -162,5 +144,65 @@ public class MongoPriceDao extends MongoAbstractDao implements PriceDao {
     } while (bars.size() < request.getNumOfValues() && fromDate.isAfter(MINIMUM_FROM_DATE));
 
     return bars;
+  }
+
+  /**
+   * Builder for finding prices operation
+   */
+  public static final class FindPricesOperation implements PriceDao.FindPricesOperation {
+    private final MongoCollection mongoCollection;
+    private String symbol;
+    private LocalDate from;
+    private LocalDate to;
+    private TimeFrame timeFrame = TimeFrame.ONE_DAY;
+
+    public FindPricesOperation(final MongoCollection mongoCollection) {
+      this.mongoCollection = mongoCollection;
+    }
+
+    @Override
+    public FindPricesOperation withSymbol(final String symbol) {
+      this.symbol = symbol;
+      return this;
+    }
+
+    @Override
+    public FindPricesOperation from(final LocalDate from) {
+      this.from = from;
+      return this;
+    }
+
+    @Override
+    public FindPricesOperation to(final LocalDate to) {
+      this.to = to;
+      return this;
+    }
+
+    @Override
+    public FindPricesOperation withTimeFrame(final TimeFrame timeFrame) {
+      this.timeFrame = timeFrame;
+      return this;
+    }
+
+    @Override
+    public List<Price> now() {
+      try (final MongoCursor<MongoPriceDocument> cursor = mongoCollection
+          .find(Queries.FIND_BY_SYMBOL_TIMEFRAME_YEAR_RANGE, symbol,
+              timeFrame,
+              from.getYear(),
+              to.getYear())
+          .as(MongoPriceDocument.class)) {
+
+        final List<Price> prices = Lists.newArrayList(cursor.iterator()).stream()
+            .flatMap(doc -> doc.getData().stream())
+            .filter(d -> !d.getDate().isBefore(from) && !d.getDate().isAfter(to))
+            .sorted()
+            .collect(Collectors.toList());
+
+        return prices;
+      } catch (final IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
   }
 }

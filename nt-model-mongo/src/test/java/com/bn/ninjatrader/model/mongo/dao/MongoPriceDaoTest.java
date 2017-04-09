@@ -6,7 +6,6 @@ import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.model.mongo.factory.PriceBuilderFactoryMongo;
 import com.bn.ninjatrader.model.mongo.guice.NtModelTestModule;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
-import com.bn.ninjatrader.model.request.FindPriceRequest;
 import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.bn.ninjatrader.model.util.TestUtil;
 import com.google.common.collect.Lists;
@@ -69,12 +68,12 @@ public class MongoPriceDaoTest {
   @Test
   public void testFindByDateRange_shouldRetrievePricesWithinDateRange() {
     priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(Lists.newArrayList(price1, price2)));
-
-    assertThat(priceDao.find(FindPriceRequest.forSymbol("MEG").from(now).to(now))).containsExactly(price1);
-    assertThat(priceDao.find(FindPriceRequest.forSymbol("MEG").from(tomorrow).to(tomorrow))).containsExactly(price2);
-    assertThat(priceDao.find(FindPriceRequest.forSymbol("MEG").from(now).to(tomorrow))).containsExactly(price1, price2);
-    assertThat(priceDao.find(FindPriceRequest.forSymbol("MEG").from(now).to(nextYear))).containsExactly(price1, price2);
-    assertThat(priceDao.find(FindPriceRequest.forSymbol("MEG").from(nextYear).to(nextYear))).isEmpty();
+    
+    assertThat(priceDao.findPrices().withSymbol("MEG").from(now).to(now).now()).containsExactly(price1);
+    assertThat(priceDao.findPrices().withSymbol("MEG").from(tomorrow).to(tomorrow).now()).containsExactly(price2);
+    assertThat(priceDao.findPrices().withSymbol("MEG").from(now).to(tomorrow).now()).containsExactly(price1, price2);
+    assertThat(priceDao.findPrices().withSymbol("MEG").from(now).to(nextYear).now()).containsExactly(price1, price2);
+    assertThat(priceDao.findPrices().withSymbol("MEG").from(nextYear).to(nextYear).now()).isEmpty();
   }
 
   @Test
@@ -82,8 +81,8 @@ public class MongoPriceDaoTest {
     priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(Lists.newArrayList(price1)));
     priceDao.save(SavePriceRequest.forSymbol("BDO").addPrices(Lists.newArrayList(price2)));
 
-    assertThat(priceDao.find(FindPriceRequest.forSymbol("MEG").from(now).to(tomorrow))).containsExactly(price1);
-    assertThat(priceDao.find(FindPriceRequest.forSymbol("BDO").from(now).to(tomorrow))).containsExactly(price2);
+    assertThat(priceDao.findPrices().withSymbol("MEG").from(now).to(tomorrow).now()).containsExactly(price1);
+    assertThat(priceDao.findPrices().withSymbol("BDO").from(now).to(tomorrow).now()).containsExactly(price2);
   }
 
   @Test
@@ -97,7 +96,8 @@ public class MongoPriceDaoTest {
   @Test
   public void testSort_shouldSortPricesByDate() {
     priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(Lists.newArrayList(price2, price1)));
-    assertThat(priceDao.find(FindPriceRequest.forSymbol("MEG").from(now).to(now.plusDays(1)))).containsExactly(price1, price2);
+    assertThat(priceDao.findPrices().withSymbol("MEG").from(now).to(now.plusDays(1)).now())
+        .containsExactly(price1, price2);
   }
 
   @Test
@@ -120,7 +120,7 @@ public class MongoPriceDaoTest {
     // Save set 2 prices. price4 overwrites price3
     priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(price1, price4, price5));
 
-    assertThat(priceDao.find(FindPriceRequest.forSymbol("MEG").from(now).to(now.plusDays(3))))
+    assertThat(priceDao.findPrices().withSymbol("MEG").from(now).to(now.plusDays(3)).now())
         .containsExactly(price1, price2, price4, price5);
   }
 
@@ -152,7 +152,7 @@ public class MongoPriceDaoTest {
     priceDao.removeByDates(SavePriceRequest.forSymbol("MEG"), removeDates);
 
     // Verify results. 3 removed, 3 remaining
-    assertThat(priceDao.find(FindPriceRequest.forSymbol("MEG").from(year2014).to(price6.getDate())))
+    assertThat(priceDao.findPrices().withSymbol("MEG").from(year2014).to(price6.getDate()).now())
         .containsExactly(price3, price4, price5);
   }
 
@@ -233,9 +233,11 @@ public class MongoPriceDaoTest {
     priceDao.save(SavePriceRequest.forSymbol("MEG").timeframe(TimeFrame.ONE_DAY).addPrices(price1));
     priceDao.save(SavePriceRequest.forSymbol("MEG").timeframe(TimeFrame.ONE_WEEK).addPrices(price2));
 
-    assertThat(priceDao.find(FindPriceRequest.forSymbol("MEG").timeframe(TimeFrame.ONE_DAY).from(now).to(now.plusDays(1))))
+    assertThat(priceDao.findPrices().withSymbol("MEG").withTimeFrame(TimeFrame.ONE_DAY)
+        .from(now).to(now.plusDays(1)).now())
         .containsExactly(price1);
-    assertThat(priceDao.find(FindPriceRequest.forSymbol("MEG").timeframe(TimeFrame.ONE_WEEK).from(now).to(now.plusDays(1))))
+    assertThat(priceDao.findPrices().withSymbol("MEG").withTimeFrame(TimeFrame.ONE_WEEK)
+        .from(now).to(now.plusDays(1)).now())
         .containsExactly(price2);
   }
 

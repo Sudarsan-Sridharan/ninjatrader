@@ -1,13 +1,13 @@
 package com.bn.ninjatrader.model.request;
 
-import com.beust.jcommander.internal.Sets;
 import com.bn.ninjatrader.common.type.TimeFrame;
-import org.testng.annotations.Test;
+import com.google.common.collect.Sets;
+import org.junit.Test;
 
 import java.time.LocalDate;
 import java.util.Set;
 
-import static com.bn.ninjatrader.model.request.FindBeforeDateRequest.*;
+import static com.bn.ninjatrader.model.request.FindBeforeDateRequest.builder;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -63,7 +63,7 @@ public class FindBeforeDateRequestTest {
 
   @Test
   public void testHashCode_shouldReturnDiffHashCodeIfNotEqual() {
-    Set<FindBeforeDateRequest> set = Sets.newHashSet();
+    final Set<FindBeforeDateRequest> set = Sets.newHashSet();
     set.add(builder().symbol("MEG").build());
     set.add(builder().symbol("BDO").build());
     set.add(builder().timeFrame(TimeFrame.ONE_DAY).build());

@@ -1,11 +1,10 @@
 package com.bn.ninjatrader.simulation.core;
 
 import com.bn.ninjatrader.common.boardlot.BoardLotTable;
-import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
-import com.bn.ninjatrader.model.request.FindPriceRequest;
 import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 import com.bn.ninjatrader.simulation.calculator.VarCalculatorFactory;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
@@ -48,10 +47,6 @@ public class SimulationFactory {
   public Simulation create(final SimulationParams params) {
     checkNotNull(params, "SimulationParams must not be null");
 
-    final FindPriceRequest findRequest = FindPriceRequest.forSymbol(params.getSymbol())
-        .from(params.getFromDate())
-        .to(params.getToDate());
-
     // Find biggest period in the algorithm
     int biggestPeriod = 0;
     for (Variable variable : params.getVariables()) {
@@ -60,7 +55,8 @@ public class SimulationFactory {
       }
     }
 
-    final List<Price> priceList = priceDao.find(findRequest);
+    final List<Price> priceList = priceDao.findPrices().withSymbol(params.getSymbol())
+        .from(params.getFromDate()).to(params.getToDate()).now();
 
     // TODO use factory
     final Account account = new Account(new Portfolio(), new Bookkeeper(), new TradeStatistic(), params.getStartingCash());

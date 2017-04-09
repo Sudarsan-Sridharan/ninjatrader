@@ -4,7 +4,6 @@ import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.logical.expression.condition.Conditions;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.model.request.FindPriceRequest;
 import com.bn.ninjatrader.simulation.calculator.VarCalculatorFactory;
 import com.bn.ninjatrader.simulation.data.BarDataFactory;
 import com.bn.ninjatrader.simulation.logicexpression.statement.BuyOrderStatement;
@@ -27,9 +26,7 @@ import java.util.List;
 import static com.bn.ninjatrader.model.util.TestUtil.randomPrices;
 import static com.bn.ninjatrader.simulation.logicexpression.Variables.PRICE_CLOSE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 /**
@@ -71,7 +68,8 @@ public class SimulationFactoryTest {
             .build())
         .build();
 
-    when(priceDao.find(any())).thenReturn(randomPrices(NUM_OF_PRICES));
+    when(priceDao.findPrices()).thenReturn(mock(PriceDao.FindPricesOperation.class, RETURNS_SELF));
+    when(priceDao.findPrices().now()).thenReturn(randomPrices(NUM_OF_PRICES));
     when(brokerFactory.createBroker()).thenReturn(broker);
   }
 
@@ -81,7 +79,7 @@ public class SimulationFactoryTest {
     final List<Price> prices = Lists.newArrayList(mock(Price.class));
 
     when(brokerFactory.createBroker()).thenReturn(broker);
-    when(priceDao.find(any(FindPriceRequest.class))).thenReturn(prices);
+    when(priceDao.findPrices().now()).thenReturn(prices);
 
     final SimulationFactory factory =
         new SimulationFactory(varCalculatorFactory, priceDao, brokerFactory, barDataFactory, boardLotTable);

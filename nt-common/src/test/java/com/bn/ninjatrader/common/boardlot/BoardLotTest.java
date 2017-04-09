@@ -1,10 +1,9 @@
 package com.bn.ninjatrader.common.boardlot;
 
-import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Brad on 8/18/16.
@@ -15,20 +14,20 @@ public class BoardLotTest {
 
   @Test
   public void testCreate() {
-    assertEquals(boardLot.getMinPrice(), 0.0001);
-    assertEquals(boardLot.getMaxPrice(), 0.9999);
-    assertEquals(boardLot.getTick(), 0.0001);
-    assertEquals(boardLot.getLotSize(), 1000);
+    assertThat(boardLot.getMinPrice()).isEqualTo(0.0001);
+    assertThat(boardLot.getMaxPrice()).isEqualTo(0.9999);
+    assertThat(boardLot.getTick()).isEqualTo(0.0001);
+    assertThat(boardLot.getLotSize()).isEqualTo(1000);
   }
 
   @Test
   public void testIsMatch() {
-    assertTrue(boardLot.isPriceMatch(0.0001));
-    assertTrue(boardLot.isPriceMatch(0.9999));
-    assertTrue(boardLot.isPriceMatch(0.000101));
-    assertTrue(boardLot.isPriceMatch(0.999899));
+    assertThat(boardLot.isPriceMatch(0.0001)).isTrue();
+    assertThat(boardLot.isPriceMatch(0.9999)).isTrue();
+    assertThat(boardLot.isPriceMatch(0.000101)).isTrue();
+    assertThat(boardLot.isPriceMatch(0.999899)).isTrue();
 
-    assertFalse(boardLot.isPriceMatch(0.000099));
-    assertFalse(boardLot.isPriceMatch(1));
+    assertThat(boardLot.isPriceMatch(0.000099)).isFalse();
+    assertThat(boardLot.isPriceMatch(1)).isFalse();
   }
 }

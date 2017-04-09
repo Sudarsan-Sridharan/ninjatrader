@@ -1,14 +1,13 @@
 package com.bn.ninjatrader.model.datastore.dao;
 
+import com.bn.ninjatrader.common.type.TimeFrame;
+import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.model.datastore.document.PriceDocument;
 import com.bn.ninjatrader.model.datastore.entity.PriceDatastore;
 import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.model.util.DateObjUtil;
-import com.bn.ninjatrader.model.datastore.document.PriceDocument;
-import com.bn.ninjatrader.model.request.FindPriceRequest;
-import com.bn.ninjatrader.model.request.SavePriceRequest;
-import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
+import com.bn.ninjatrader.model.request.SavePriceRequest;
+import com.bn.ninjatrader.model.util.DateObjUtil;
 import com.google.common.collect.*;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -18,10 +17,12 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Clock;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.google.appengine.repackaged.com.google.api.client.util.Preconditions.checkNotNull;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
@@ -89,35 +90,8 @@ public class PriceDaoDatastore implements PriceDao {
   }
 
   @Override
-  public List<Price> find(final FindPriceRequest request) {
-    checkNotNull(request, "FindPriceRequest must not be null.");
-    checkNotNull(request.getSymbol(), "FindPriceRequest.symbol must not be null.");
-    checkNotNull(request.getFromDate(), "FindPriceRequest.fromDate must not be null.");
-    checkNotNull(request.getToDate(), "FindPriceRequest.toDate must not be null.");
-
-    final int fromYear = request.getFromDate().getYear();
-    final int toYear = request.getToDate().getYear();
-
-    // Create keys for each year
-    final List<Key<PriceDocument>> keys = Lists.newArrayList();
-    for (int i = fromYear; i <= toYear; i++) {
-      keys.add(Key.create(PriceDocument.class, PriceDocument.id(request.getSymbol(), i, request.getTimeFrame())));
-    }
-
-    // Find documents
-    final Map<Key<PriceDocument>, PriceDocument> results = ofy().load().keys(keys);
-
-    // Collect prices from each document
-    final List<Price> prices = Lists.newArrayList();
-    for (final PriceDocument document : results.values()) {
-      prices.addAll(document.getData());
-    }
-
-    Collections.sort(prices);
-
-    DateObjUtil.trimToDateRange(prices, request.getFromDate(), request.getToDate());
-
-    return prices;
+  public FindPricesOperation findPrices() {
+    return new FindPricesOperation();
   }
 
   @Override
@@ -126,7 +100,7 @@ public class PriceDaoDatastore implements PriceDao {
     final Set<String> symbols = Sets.newHashSet();
 
     final List<PriceDocument> documents = ofy().load().type(PriceDocument.class).filter("year = ", thisYear).list();
-    for (PriceDocument document : documents) {
+    for (final PriceDocument document : documents) {
       symbols.add(document.getSymbol());
     }
     return symbols;
@@ -139,5 +113,64 @@ public class PriceDaoDatastore implements PriceDao {
 
   private Key<PriceDocument> createKey(final String symbol, final int year, final TimeFrame timeFrame) {
     return Key.create(PriceDocument.class, PriceDocument.id(symbol, year, timeFrame));
+  }
+
+  /**
+   * Builder for finding prices operation
+   */
+  public static final class FindPricesOperation implements PriceDao.FindPricesOperation {
+    private String symbol;
+    private LocalDate from;
+    private LocalDate to;
+    private TimeFrame timeFrame = TimeFrame.ONE_DAY;
+
+    @Override
+    public FindPricesOperation withSymbol(final String symbol) {
+      this.symbol = symbol;
+      return this;
+    }
+
+    @Override
+    public FindPricesOperation from(final LocalDate from) {
+      this.from = from;
+      return this;
+    }
+
+    @Override
+    public FindPricesOperation to(final LocalDate to) {
+      this.to = to;
+      return this;
+    }
+
+    @Override
+    public FindPricesOperation withTimeFrame(final TimeFrame timeFrame) {
+      this.timeFrame = timeFrame;
+      return this;
+    }
+
+    @Override
+    public List<Price> now() {
+      final int fromYear = from.getYear();
+      final int toYear = to.getYear();
+
+      // Create keys for each year
+      final List<Key<PriceDocument>> keys = Lists.newArrayList();
+      for (int i = fromYear; i <= toYear; i++) {
+        keys.add(Key.create(PriceDocument.class, PriceDocument.id(symbol, i, timeFrame)));
+      }
+
+      // Find documents
+      final Map<Key<PriceDocument>, PriceDocument> documents = ofy().load().keys(keys);
+
+      // Collect prices from each document
+      final List<Price> prices = documents.values()
+          .stream().flatMap(doc -> doc.getData().stream())
+          .sorted()
+          .collect(Collectors.toList());
+
+      DateObjUtil.trimToDateRange(prices, from, to);
+
+      return prices;
+    }
   }
 }

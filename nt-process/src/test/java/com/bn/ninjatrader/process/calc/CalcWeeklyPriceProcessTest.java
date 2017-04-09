@@ -2,13 +2,12 @@ package com.bn.ninjatrader.process.calc;
 
 import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.calculator.WeeklyPriceCalculator;
+import com.bn.ninjatrader.common.type.TimeFrame;
+import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
-import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
-import com.bn.ninjatrader.model.request.FindPriceRequest;
 import com.bn.ninjatrader.model.request.SavePriceRequest;
-import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.bn.ninjatrader.process.request.CalcRequest;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,28 +51,26 @@ public class CalcWeeklyPriceProcessTest {
     priceDao = mock(PriceDao.class);
     process = new CalcWeeklyPriceProcess(calculator, priceDao);
 
-    when(priceDao.find(any())).thenReturn(Collections.emptyList());
+    when(priceDao.findPrices()).thenReturn(mock(PriceDao.FindPricesOperation.class, RETURNS_SELF));
+    when(priceDao.findPrices().now()).thenReturn(Collections.emptyList());
     when(calculator.calc(any())).thenReturn(Lists.newArrayList(weeklyPrice1, weeklyPrice2, weeklyPrice3));
   }
 
   @Test
   public void testProcessBars_shouldAdjustFromDateToStartOfWeek() {
-    final ArgumentCaptor<FindPriceRequest> FindPriceRequestCaptor = ArgumentCaptor.forClass(FindPriceRequest.class);
-
     process.process(CalcRequest.forSymbol("MEG").from(fromDate).to(toDate));
 
-    verify(priceDao).find(FindPriceRequestCaptor.capture());
-    final FindPriceRequest FindPriceRequest = FindPriceRequestCaptor.getValue();
-    assertThat(FindPriceRequest.getSymbol()).isEqualTo("MEG");
-    assertThat(FindPriceRequest.getFromDate()).isEqualTo(LocalDate.of(2016, 2, 1));
-    assertThat(FindPriceRequest.getToDate()).isEqualTo(LocalDate.of(2016, 2, 10));
+    verify(priceDao.findPrices()).withSymbol("MEG");
+    verify(priceDao.findPrices()).from(LocalDate.of(2016, 2, 1));
+    verify(priceDao.findPrices()).to(LocalDate.of(2016, 2, 10));
   }
 
   @Test
   public void testCalcWithMultipleSymbols_shouldCalcForEachGivenSymbol() {
     process.process(CalcRequest.forSymbols("MEG", "BDO").from(fromDate).to(toDate));
 
-    verify(priceDao, times(2)).find(any(FindPriceRequest.class));
+    verify(priceDao.findPrices()).withSymbol("MEG");
+    verify(priceDao.findPrices()).withSymbol("BDO");
 
     verify(priceDao, times(2)).save(any(SavePriceRequest.class));
   }

@@ -1,12 +1,11 @@
 package com.bn.ninjatrader.process.calc;
 
 import com.bn.ninjatrader.calculator.PriceChangeCalculator;
-import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.model.request.FindPriceRequest;
-import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
+import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.bn.ninjatrader.process.request.CalcRequest;
 import com.bn.ninjatrader.process.util.CalcProcessNames;
 import com.google.inject.Inject;
@@ -48,7 +47,8 @@ public class CalcPriceChangeProcess extends AbstractCalcProcess implements CalcP
             .build());
         final LocalDate toDate = calcRequest.getToDate();
 
-        List<Price> priceList = priceDao.find(FindPriceRequest.forSymbol(symbol).timeframe(timeFrame).from(fromDate).to(toDate));
+        List<Price> priceList = priceDao.findPrices().withSymbol(symbol).withTimeFrame(timeFrame)
+            .from(fromDate).to(toDate).now();
         priceList = calculator.calc(priceList);
 
         priceDao.save(SavePriceRequest.forSymbol(symbol).timeframe(timeFrame).addPrices(priceList));

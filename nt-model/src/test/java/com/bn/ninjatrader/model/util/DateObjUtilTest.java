@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.model.util;
 
-import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.model.deprecated.Value;
+import com.google.common.collect.Lists;
 import org.junit.Test;
 
 import java.time.LocalDate;

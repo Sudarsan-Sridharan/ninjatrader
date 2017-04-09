@@ -1,11 +1,10 @@
 package com.bn.ninjatrader.service.migrate;
 
-import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.model.request.FindPriceRequest;
-import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.datastore.dao.PriceDaoDatastore;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.bn.ninjatrader.service.model.PriceRequest;
 import com.bn.ninjatrader.service.model.PriceResponse;
 import com.bn.ninjatrader.service.resource.AbstractDataResource;
@@ -47,13 +46,12 @@ public class PriceResource2 extends AbstractDataResource {
   @GET
   @Path("/migrate/{symbol}")
   @Produces(MediaType.TEXT_HTML)
-  public String migrate(@BeanParam final PriceRequest priceRequest) {
-    final FindPriceRequest req = FindPriceRequest.forSymbol(priceRequest.getSymbol())
-        .timeframe(priceRequest.getTimeFrame().orElse(TimeFrame.ONE_DAY))
-        .from(priceRequest.getFrom().orElse(LocalDate.now(getClock()).minusYears(2)))
-        .to(priceRequest.getTo().orElse(LocalDate.now(getClock())));
-
-    final List<Price> prices = priceDao.find(req);
+  public String migrate(@BeanParam final PriceRequest req) {
+    final List<Price> prices = priceDao.findPrices().withSymbol(req.getSymbol())
+        .withTimeFrame(req.getTimeFrame().orElse(TimeFrame.ONE_DAY))
+        .from(req.getFrom().orElse(LocalDate.now(getClock()).minusYears(2)))
+        .to(req.getTo().orElse(LocalDate.now(getClock())))
+        .now();
 
     LOG.info("Prices for {} - {}", req.getSymbol(), prices);
     priceDaoGae.save(SavePriceRequest.forSymbol(req.getSymbol()).addPrices(prices));
@@ -81,7 +79,10 @@ public class PriceResource2 extends AbstractDataResource {
     }
 
     for (final String symbol: symols) {
-      final List<Price> prices = priceDao.find(FindPriceRequest.forSymbol(symbol).from(LocalDate.now().minusYears(200)).to(LocalDate.now()));
+      final List<Price> prices = priceDao.findPrices().withSymbol(symbol)
+          .from(LocalDate.now().minusYears(200))
+          .to(LocalDate.now())
+          .now();
       priceDaoGae.save(SavePriceRequest.forSymbol(symbol).addPrices(prices));
       LOG.info("Prices for {} - {}", symbol, prices.size());
     }
@@ -91,12 +92,12 @@ public class PriceResource2 extends AbstractDataResource {
   @GET
   @Path("/list/{symbol}")
   @Produces(MediaType.APPLICATION_JSON)
-  public PriceResponse getPrices(@BeanParam final PriceRequest priceRequest) {
-    final FindPriceRequest req = FindPriceRequest.forSymbol(priceRequest.getSymbol())
-        .timeframe(priceRequest.getTimeFrame().orElse(TimeFrame.ONE_DAY))
-        .from(priceRequest.getFrom().orElse(LocalDate.now(getClock()).minusYears(2)))
-        .to(priceRequest.getTo().orElse(LocalDate.now(getClock())));
-    final List<Price> prices = priceDao.find(req);
+  public PriceResponse getPrices(@BeanParam final PriceRequest req) {
+    final List<Price> prices = priceDao.findPrices().withSymbol(req.getSymbol())
+        .withTimeFrame(req.getTimeFrame().orElse(TimeFrame.ONE_DAY))
+        .from(req.getFrom().orElse(LocalDate.now(getClock()).minusYears(2)))
+        .to(req.getTo().orElse(LocalDate.now(getClock())))
+        .now();
     return createPriceResponse(prices);
   }
 

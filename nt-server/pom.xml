@@ -14,27 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>com.beachninja</groupId>
-            <artifactId>nt-calculator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.beachninja</groupId>
             <artifactId>nt-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.beachninja</groupId>
-            <artifactId>nt-data-import</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.beachninja</groupId>
-            <artifactId>nt-model-mongo</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.beachninja</groupId>
-            <artifactId>nt-process</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.beachninja</groupId>
-            <artifactId>nt-service</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.inject.extensions</groupId>
@@ -82,11 +62,6 @@
         <dependency>
             <groupId>org.jmockit</groupId>
             <artifactId>jmockit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.common.util;
 
-import com.beust.jcommander.internal.Lists;
+import com.google.common.collect.Lists;
 import org.junit.Test;
 
 import java.time.Clock;
