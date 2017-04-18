@@ -1,15 +1,8 @@
 package com.bn.ninjatrader.logical.expression.operation;
 
-import com.bn.ninjatrader.common.util.NumUtil;
-import com.bn.ninjatrader.logical.expression.model.Data;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.collect.Sets;
-
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -17,24 +10,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author bradwee2000@gmail.com
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Variable<T extends Data> implements Operation<T> {
+public class Variable {
 
   public static Variable of(final String dataType) {
     return new Variable(dataType);
   }
 
-  @JsonProperty("dataType")
   private final String dataType;
 
-  @JsonProperty("period")
   private final int period;
 
   public Variable(final String dataType) {
     this(dataType, 0);
   }
 
-  private Variable(@JsonProperty("dataType") final String dataType,
-                   @JsonProperty("period") final int period) {
+  private Variable(final String dataType,
+                   final int period) {
     checkNotNull(dataType, "DataType must not be null.");
     this.dataType = dataType;
     this.period = period;
@@ -52,15 +43,11 @@ public class Variable<T extends Data> implements Operation<T> {
     return new Variable(dataType, period);
   }
 
-  @Override
-  public double getValue(final T t) {
-    return t.get(this);
-  }
-
-  @JsonIgnore
-  @Override
-  public Set<Variable> getVariables() {
-    return Sets.newHashSet(this);
+  public String getName() {
+    if (period != 0) {
+      return dataType + period;
+    }
+    return dataType;
   }
 
   @Override
@@ -80,10 +67,5 @@ public class Variable<T extends Data> implements Operation<T> {
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this).add("dataType", dataType).add("period", period).toString();
-  }
-
-  @Override
-  public String toString(final T t) {
-    return String.valueOf(NumUtil.trim(getValue(t), 4));
   }
 }

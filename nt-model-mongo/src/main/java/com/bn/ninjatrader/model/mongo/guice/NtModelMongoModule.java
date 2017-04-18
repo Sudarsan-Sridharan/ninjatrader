@@ -2,7 +2,7 @@ package com.bn.ninjatrader.model.mongo.guice;
 
 import com.bn.ninjatrader.common.guice.NtClockModule;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.dao.TradeAlgorithmDao;
+import com.bn.ninjatrader.model.dao.AlgorithmDao;
 import com.bn.ninjatrader.model.dao.UserDao;
 import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.model.mongo.annotation.PriceCollection;
@@ -11,7 +11,7 @@ import com.bn.ninjatrader.model.mongo.annotation.TradeAlgorithmCollection;
 import com.bn.ninjatrader.model.mongo.annotation.UserCollection;
 import com.bn.ninjatrader.model.mongo.client.DbClient;
 import com.bn.ninjatrader.model.mongo.dao.MongoPriceDao;
-import com.bn.ninjatrader.model.mongo.dao.MongoTradeAlgorithmDao;
+import com.bn.ninjatrader.model.mongo.dao.MongoAlgorithmDao;
 import com.bn.ninjatrader.model.mongo.dao.MongoUserDao;
 import com.bn.ninjatrader.model.mongo.factory.PriceBuilderFactoryMongo;
 import com.google.inject.AbstractModule;
@@ -49,7 +49,7 @@ public class NtModelMongoModule extends AbstractModule {
 
     bind(UserDao.class).to(MongoUserDao.class);
     bind(PriceDao.class).to(MongoPriceDao.class);
-    bind(TradeAlgorithmDao.class).to(MongoTradeAlgorithmDao.class);
+    bind(AlgorithmDao.class).to(MongoAlgorithmDao.class);
     bind(PriceBuilderFactory.class).to(PriceBuilderFactoryMongo.class);
   }
 

@@ -1,10 +1,9 @@
 package com.bn.ninjatrader.dataimport.daily;
 
+import com.bn.ninjatrader.common.type.TimeFrame;
+import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.entity.DailyQuote;
 import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
-import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.model.request.SavePriceRequest;
-import com.bn.ninjatrader.model.dao.PriceDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,9 +56,10 @@ public abstract class AbstractDailyPriceImporter {
         continue;
       }
 
-      priceDao.save(SavePriceRequest.forSymbol(quote.getSymbol())
-          .timeframe(TimeFrame.ONE_DAY)
-          .addPrice(quote.getPrice(priceBuilderFactory)));
+      priceDao.savePrices(quote.getPrice(priceBuilderFactory))
+          .withSymbol(quote.getSymbol())
+          .withTimeFrame(TimeFrame.ONE_DAY)
+          .now();
     }
   }
 

@@ -4,7 +4,6 @@ import com.bn.ninjatrader.calculator.PriceAdjustmentCalculator;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
@@ -35,15 +34,19 @@ public class PriceAdjustmentProcess {
     checkNotNull(request, "request must not be null.");
     checkNotNull(request.getOperation(), "request.adjustment must not be null.");
 
-    final List<Price> prices = priceDao.findPrices().withSymbol(request.getSymbol())
-        .from(request.getFromDate()).to(request.getToDate()).now();
+    final List<Price> prices = priceDao.findPrices()
+        .withSymbol(request.getSymbol())
+        .from(request.getFromDate())
+        .to(request.getToDate())
+        .now();
 
     final List<Price> adjustedPrices = calculator.calc(prices, request.getOperation());
 
     adjustedPrices.forEach(price -> LOG.info("{}", price));
 
-    priceDao.save(SavePriceRequest.forSymbol(request.getSymbol())
-        .timeframe(TimeFrame.ONE_DAY)
-        .addPrices(adjustedPrices));
+    priceDao.savePrices(adjustedPrices)
+        .withSymbol(request.getSymbol())
+        .withTimeFrame(TimeFrame.ONE_DAY)
+        .now();
   }
 }

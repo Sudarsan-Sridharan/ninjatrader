@@ -5,7 +5,6 @@ import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.common.util.DateUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.bn.ninjatrader.model.util.DateObjUtil;
 import com.bn.ninjatrader.process.request.CalcRequest;
 import com.bn.ninjatrader.process.util.CalcProcessNames;
@@ -46,9 +45,9 @@ public class CalcWeeklyPriceProcess implements CalcProcess {
 
       DateObjUtil.trimToDateRange(weeklyPrices, calcRequest.getFromDate(), calcRequest.getToDate());
       if (!weeklyPrices.isEmpty()) {
-        priceDao.save(SavePriceRequest.forSymbol(symbol)
-            .timeframe(TimeFrame.ONE_WEEK)
-            .addPrices(weeklyPrices));
+        priceDao.savePrices(weeklyPrices).withSymbol(symbol)
+            .withTimeFrame(TimeFrame.ONE_WEEK)
+            .now();
       }
     }
   }

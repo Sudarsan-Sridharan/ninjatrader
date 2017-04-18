@@ -2,7 +2,7 @@ package com.bn.ninjatrader.simulation.order.cancel;
 
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Broker;
-import com.bn.ninjatrader.simulation.model.World;
+import com.bn.ninjatrader.simulation.model.SimContext;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
 import com.bn.ninjatrader.simulation.util.DummyObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 public class CancelAllTest {
 
   private BarData barData;
-  private World world;
+  private SimContext simContext;
   private Broker broker;
   private PendingOrder pendingOrder1;
   private PendingOrder pendingOrder2;
@@ -32,13 +32,13 @@ public class CancelAllTest {
   @Before
   public void before() {
     barData = mock(BarData.class);
-    world = mock(World.class);
+    simContext = mock(SimContext.class);
     broker = mock(Broker.class);
     pendingOrder1 = mock(PendingOrder.class);
     pendingOrder2 = mock(PendingOrder.class);
 
-    when(barData.getWorld()).thenReturn(world);
-    when(world.getBroker()).thenReturn(broker);
+    when(barData.getSimContext()).thenReturn(simContext);
+    when(simContext.getBroker()).thenReturn(broker);
     when(broker.getPendingOrders()).thenReturn(Lists.newArrayList(pendingOrder1, pendingOrder2));
   }
 

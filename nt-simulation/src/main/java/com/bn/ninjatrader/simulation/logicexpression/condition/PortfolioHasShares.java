@@ -4,7 +4,7 @@ import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.model.Portfolio;
-import com.bn.ninjatrader.simulation.model.World;
+import com.bn.ninjatrader.simulation.model.SimContext;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Collections;
@@ -28,8 +28,8 @@ public class PortfolioHasShares implements SimulationCondition {
 
   @Override
   public boolean isMatch(final BarData barData) {
-    final World world = barData.getWorld();
-    final Account account = world.getAccount();
+    final SimContext simContext = barData.getSimContext();
+    final Account account = simContext.getAccount();
     final Portfolio portfolio = account.getPortfolio();
     return !portfolio.isEmpty();
   }

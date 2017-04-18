@@ -54,8 +54,6 @@ public class AccountTest {
 
     account.onFulfilledBuy(buyTxn, barData);
 
-    assertThat(account.getLiquidCash()).isEqualTo(90000d);
-
     verify(bookkeeper).keep(buyTxn);
   }
 
@@ -68,11 +66,7 @@ public class AccountTest {
 
     account.onFulfilledSell(sellTxn, barData);
 
-    assertThat(account.getLiquidCash()).isEqualTo(110000d);
-
-    verify(portfolio).clear();
     verify(bookkeeper).keep(sellTxn);
     verify(tradeStatistic).collectStats(sellTxn);
-
   }
 }

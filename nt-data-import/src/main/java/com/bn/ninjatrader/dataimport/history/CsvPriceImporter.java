@@ -1,12 +1,11 @@
 package com.bn.ninjatrader.dataimport.history;
 
-import com.bn.ninjatrader.model.entity.DailyQuote;
-import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.dataimport.history.parser.CsvDataParser;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.request.SavePriceRequest;
+import com.bn.ninjatrader.model.entity.DailyQuote;
+import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
@@ -30,7 +29,7 @@ import java.util.Set;
 public class CsvPriceImporter {
 
   private static final Logger LOG = LoggerFactory.getLogger(CsvPriceImporter.class);
-  private static final String[] SUPPORTED_FORMATS = new String[] {"csv"};
+  private static final String[] SUPPORTED_FORMATS = new String[]{"csv"};
   private static final String DEFAULT_DIR = "/Users/a-/Downloads/stock/";
 
   private final CsvDataParser parser;
@@ -65,6 +64,7 @@ public class CsvPriceImporter {
 
   /**
    * Convert List of prices to document and execute.
+   *
    * @param quotes
    */
   public void save(final Collection<DailyQuote> quotes) {
@@ -76,16 +76,7 @@ public class CsvPriceImporter {
 
     for (final Map.Entry<String, Collection<Price>> perSymbol : symbolMultimap.asMap().entrySet()) {
       final String symbol = perSymbol.getKey();
-      priceDao.save(SavePriceRequest.forSymbol(symbol).timeframe(TimeFrame.ONE_DAY).addPrices(perSymbol.getValue()));
+      priceDao.savePrices(perSymbol.getValue()).withSymbol(symbol).withTimeFrame(TimeFrame.ONE_DAY).now();
     }
   }
-
-//  public static void main(String args[]) throws Exception {
-//    final Injector injector = Guice.createInjector(
-//        new NtModelMongoModule()
-//    );
-//
-//    final CsvPriceImporter app = injector.getInstance(CsvPriceImporter.class);
-//    app.importPrices();
-//  }
 }

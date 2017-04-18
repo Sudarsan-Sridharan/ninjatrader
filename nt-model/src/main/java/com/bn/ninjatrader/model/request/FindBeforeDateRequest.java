@@ -19,18 +19,15 @@ public class FindBeforeDateRequest {
 
   private final String symbol;
   private final TimeFrame timeFrame;
-  private final int period;
   private final LocalDate beforeDate;
   private final int numOfValues;
 
   private FindBeforeDateRequest(final String symbol,
                                 final TimeFrame timeFrame,
-                                final int period,
                                 final LocalDate beforeDate,
                                 final int numOfValues) {
     this.symbol = symbol;
     this.timeFrame = timeFrame;
-    this.period = period;
     this.beforeDate = beforeDate;
     this.numOfValues = numOfValues;
   }
@@ -39,9 +36,6 @@ public class FindBeforeDateRequest {
     return symbol;
   }
 
-  public int getPeriod() {
-    return period;
-  }
 
   public TimeFrame getTimeFrame() {
     return timeFrame;
@@ -60,7 +54,6 @@ public class FindBeforeDateRequest {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
         .append("symbol", symbol)
         .append("timeFrame", timeFrame)
-        .append("period", period)
         .append("beforeDate", beforeDate)
         .append("numOfValues", numOfValues)
         .toString();
@@ -80,7 +73,6 @@ public class FindBeforeDateRequest {
     return new EqualsBuilder()
         .append(symbol, rhs.symbol)
         .append(timeFrame, rhs.timeFrame)
-        .append(period, rhs.period)
         .append(beforeDate, rhs.beforeDate)
         .append(numOfValues, rhs.numOfValues)
         .isEquals();
@@ -91,7 +83,6 @@ public class FindBeforeDateRequest {
     return new HashCodeBuilder()
         .append(symbol)
         .append(timeFrame)
-        .append(period)
         .append(beforeDate)
         .append(numOfValues)
         .toHashCode();
@@ -103,7 +94,6 @@ public class FindBeforeDateRequest {
   public static final class FindBeforeDateRequestBuilder {
     private String symbol;
     private TimeFrame timeFrame;
-    private int period;
     private LocalDate beforeDate;
     private int numOfValues;
 
@@ -114,11 +104,6 @@ public class FindBeforeDateRequest {
 
     public FindBeforeDateRequestBuilder timeFrame(final TimeFrame timeFrame) {
       this.timeFrame = timeFrame;
-      return this;
-    }
-
-    public FindBeforeDateRequestBuilder period(final int period) {
-      this.period = period;
       return this;
     }
 
@@ -133,7 +118,7 @@ public class FindBeforeDateRequest {
     }
 
     public FindBeforeDateRequest build() {
-      return new FindBeforeDateRequest(symbol, timeFrame, period, beforeDate, numOfValues);
+      return new FindBeforeDateRequest(symbol, timeFrame, beforeDate, numOfValues);
     }
   }
 }

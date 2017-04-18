@@ -1,6 +1,5 @@
 package com.bn.ninjatrader.simulation.report;
 
-import com.bn.ninjatrader.simulation.core.SimulationParams;
 import com.bn.ninjatrader.simulation.model.Mark;
 import com.bn.ninjatrader.simulation.model.TradeStatistic;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
@@ -22,8 +21,8 @@ public class SimulationReport {
     return new Builder();
   }
 
-  @JsonProperty("params")
-  private final SimulationParams simulationParams;
+  @JsonProperty("symbol")
+  private final String symbol;
 
   @JsonProperty("startingCash")
   private final double startingCash;
@@ -40,13 +39,13 @@ public class SimulationReport {
   @JsonProperty("marks")
   private final List<Mark> marks;
 
-  public SimulationReport(@JsonProperty("params") final SimulationParams simulationParams,
+  public SimulationReport(@JsonProperty("symbol") final String symbol,
                           @JsonProperty("startingCash") final double startingCash,
                           @JsonProperty("endingCash") final double endingCash,
                           @JsonProperty("txns") final List<Transaction> transactions,
                           @JsonProperty("stats") final TradeStatistic tradeStatistic,
                           @JsonProperty("marks") final List<Mark> marks) {
-    this.simulationParams = simulationParams;
+    this.symbol = symbol;
     this.startingCash = startingCash;
     this.endingCash = endingCash;
     this.transactions = Lists.newArrayList(transactions);
@@ -54,8 +53,8 @@ public class SimulationReport {
     this.marks = Lists.newArrayList(marks);
   }
 
-  public SimulationParams getSimulationParams() {
-    return simulationParams;
+  public String getSymbol() {
+    return symbol;
   }
 
   public double getStartingCash() {
@@ -85,7 +84,7 @@ public class SimulationReport {
     SimulationReport that = (SimulationReport) o;
     return Double.compare(that.startingCash, startingCash) == 0 &&
         Double.compare(that.endingCash, endingCash) == 0 &&
-        Objects.equal(simulationParams, that.simulationParams) &&
+        Objects.equal(symbol, that.symbol) &&
         Objects.equal(transactions, that.transactions) &&
         Objects.equal(tradeStatistic, that.tradeStatistic) &&
         Objects.equal(marks, that.marks);
@@ -93,13 +92,13 @@ public class SimulationReport {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(simulationParams, startingCash, endingCash, transactions, tradeStatistic, marks);
+    return Objects.hashCode(symbol, startingCash, endingCash, transactions, tradeStatistic, marks);
   }
 
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
-        .add("simulationParams", simulationParams)
+        .add("symbol", symbol)
         .add("startingCash", startingCash)
         .add("endingCash", endingCash)
         .add("transactions", transactions)
@@ -112,15 +111,15 @@ public class SimulationReport {
    * Builder
    */
   public static final class Builder {
-    private SimulationParams simulationParams;
+    private String symbol;
     private double startingCash;
     private double endingCash;
     private List<Transaction> transactions = Lists.newArrayList();
     private TradeStatistic tradeStatistic;
     private List<Mark> marks = Lists.newArrayList();
 
-    public Builder params(final SimulationParams params) {
-      this.simulationParams = params;
+    public Builder symbol(final String symbol) {
+      this.symbol = symbol;
       return this;
     }
 
@@ -170,7 +169,7 @@ public class SimulationReport {
     }
 
     public SimulationReport build() {
-      return new SimulationReport(simulationParams, startingCash, endingCash, transactions, tradeStatistic, marks);
+      return new SimulationReport(symbol, startingCash, endingCash, transactions, tradeStatistic, marks);
     }
   }
 }

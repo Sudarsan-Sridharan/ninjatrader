@@ -5,7 +5,6 @@ import com.bn.ninjatrader.model.datastore.document.PriceDocument;
 import com.bn.ninjatrader.model.datastore.factory.PriceBuilderFactoryDatastore;
 import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
-import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.bn.ninjatrader.model.util.TestUtil;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -67,7 +66,7 @@ public class PriceDaoDatastoreTest {
 
   @Test
   public void testSaveAndFind_shouldSaveAndReturnSortedPrices() {
-    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(price2, price1));
+    priceDao.savePrices(price2, price1).withSymbol("MEG").now();
 
     // Find prices
     final List<Price> prices = priceDao.findPrices().withSymbol("MEG")
@@ -82,7 +81,7 @@ public class PriceDaoDatastoreTest {
 
   @Test
   public void testSavePricesWithDiffYears_shouldSaveToEachDocumentPerYear() {
-    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(price1, price2, price3, price4));
+    priceDao.savePrices(price1, price2, price3, price4).withSymbol("MEG").now();
 
     // Find all prices
     final List<Price> prices = priceDao.findPrices().withSymbol("MEG").from(now).to(nextYear).now();
@@ -94,7 +93,7 @@ public class PriceDaoDatastoreTest {
   @Test
   public void testFindPricesWithinDateRange_shouldReturnPricesWithinDateRangeOnly() {
     // Save all prices
-    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(price1, price2, price3, price4));
+    priceDao.savePrices(price1, price2, price3, price4).withSymbol("MEG").now();
 
     assertThat(priceDao.findPrices().withSymbol("MEG").from(now).to(now).now())
         .containsExactly(price1);
@@ -112,10 +111,10 @@ public class PriceDaoDatastoreTest {
   @Test
   public void testSaveWithOverwrite_shouldNotContainDuplicatePricesWithEqualDate() {
     // Save prices
-    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(price1, price2));
+    priceDao.savePrices(price1, price2).withSymbol("MEG").now();
 
     // Overwrite price2
-    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(price2, price3));
+    priceDao.savePrices(price2, price3).withSymbol("MEG").now();
 
     assertThat(priceDao.findPrices().withSymbol("MEG").from(now).to(nextMonth).now())
         .containsExactly(price1, price2, price3);
@@ -124,7 +123,7 @@ public class PriceDaoDatastoreTest {
   @Test
   public void testFindNonExistingPrices_shouldReturnEmpty() {
     // Save prices
-    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(price1, price2));
+    priceDao.savePrices(price1, price2).withSymbol("MEG").now();
 
     assertThat(priceDao.findPrices().withSymbol("BDO").from(now).to(now).now()).isEmpty();
   }
@@ -132,8 +131,8 @@ public class PriceDaoDatastoreTest {
   @Test
   public void testFindWithDiffSymbol_shouldReturnPricesForGivenSymbol() {
     // Save prices
-    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(price1, price2));
-    priceDao.save(SavePriceRequest.forSymbol("BDO").addPrices(price2, price3));
+    priceDao.savePrices(price1, price2).withSymbol("MEG").now();
+    priceDao.savePrices(price2, price3).withSymbol("BDO").now();
 
     assertThat(priceDao.findPrices().withSymbol("MEG").from(now).to(nextYear).now())
         .containsExactly(price1, price2);
@@ -144,8 +143,8 @@ public class PriceDaoDatastoreTest {
   @Test
   public void testFindWithDiffTimeframe_shouldReturnPricesForGivenTimeframe() {
     // Save prices
-    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(price1, price2));
-    priceDao.save(SavePriceRequest.forSymbol("MEG").timeframe(TimeFrame.ONE_WEEK).addPrices(price2, price3));
+    priceDao.savePrices(price1, price2).withSymbol("MEG").now();
+    priceDao.savePrices(price2, price3).withSymbol("MEG").withTimeFrame(TimeFrame.ONE_WEEK).now();
 
     assertThat(priceDao.findPrices().withSymbol("MEG").from(now).to(nextYear).now())
         .containsExactly(price1, price2);
@@ -155,9 +154,9 @@ public class PriceDaoDatastoreTest {
 
   @Test
   public void testFindAllSymbols_shouldReturnAllSymbolsOfCurrentYear() {
-    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(price1));
-    priceDao.save(SavePriceRequest.forSymbol("BDO").addPrices(price2));
-    priceDao.save(SavePriceRequest.forSymbol("TEL").addPrices(price4)); // price of next year
+    priceDao.savePrices(price1).withSymbol("MEG").now();
+    priceDao.savePrices(price2).withSymbol("BDO").now();
+    priceDao.savePrices(price4).withSymbol("TEL").now(); // price of next year
 
     assertThat(priceDao.findAllSymbols()).containsExactlyInAnyOrder("MEG", "BDO");
   }

@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Created by Brad on 8/18/16.
  */
-public class DataMap implements Map<Variable, Double> {
+public class DataMap implements Map<Variable, Object> {
   private static final Logger LOG = LoggerFactory.getLogger(DataMap.class);
   private static final String DATA_TYPE_NOT_EXIST_ERROR = "Value does not exist for the DataType: %s";
 
@@ -27,34 +27,53 @@ public class DataMap implements Map<Variable, Double> {
     return new DataMap();
   }
 
-  private Map<Variable, Double> variableMap = Maps.newHashMap();
+  private Map<Variable, Object> variableMap = Maps.newHashMap();
 
-  public DataMap addData(final Variable key, Double value) {
+  private Map<String, Object> bindings = Maps.newHashMap();
+
+  public DataMap addData(final Variable key, Object value) {
     variableMap.put(key, value);
+    bindings.put(key.getName(), value);
     return this;
   }
 
   @Override
-  public Double put(Variable key, Double value) {
+  public Object put(Variable key, Object value) {
+    bindings.put(key.getName(), value);
     return variableMap.put(key, value);
   }
 
-  public Double put(Variable key, double value) {
+  public Object put(Variable key, double value) {
     return put(key, Double.valueOf(value));
   }
 
   @Override
-  public void putAll(Map<? extends Variable, ? extends Double> dataMap) {
+  public void putAll(Map<? extends Variable, ? extends Object> dataMap) {
+    for (Entry<? extends Variable, ? extends Object> e : dataMap.entrySet()) {
+      bindings.put(e.getKey().getName(), e.getValue());
+    }
     this.variableMap.putAll(dataMap);
   }
 
   @Override
-  public Double get(Object key) {
+  public Object get(Object key) {
     if (variableMap.containsKey(key)) {
       return variableMap.get(key);
     } else {
       throw new IllegalArgumentException(String.format(DATA_TYPE_NOT_EXIST_ERROR, key));
     }
+  }
+
+  public Object get2(String key) {
+    if (bindings.containsKey(key)) {
+      return bindings.get(key);
+    } else {
+      throw new IllegalArgumentException(String.format(DATA_TYPE_NOT_EXIST_ERROR, key));
+    }
+  }
+
+  public Map<String, Object> getBindings() {
+    return bindings;
   }
 
   @Override
@@ -78,11 +97,11 @@ public class DataMap implements Map<Variable, Double> {
   }
 
   @Override
-  public Double remove(Object key) {
+  public Object remove(Object key) {
     return variableMap.remove(key);
   }
 
-  public Map<Variable, Double> toMap() {
+  public Map<Variable, Object> toMap() {
     return variableMap;
   }
 
@@ -97,12 +116,12 @@ public class DataMap implements Map<Variable, Double> {
   }
 
   @Override
-  public Collection<Double> values() {
+  public Collection<Object> values() {
     return variableMap.values();
   }
 
   @Override
-  public Set<Entry<Variable, Double>> entrySet() {
+  public Set<Entry<Variable, Object>> entrySet() {
     return variableMap.entrySet();
   }
 

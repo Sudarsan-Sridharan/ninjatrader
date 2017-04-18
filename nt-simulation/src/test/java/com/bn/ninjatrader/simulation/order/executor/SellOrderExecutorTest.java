@@ -7,7 +7,7 @@ import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.model.Portfolio;
-import com.bn.ninjatrader.simulation.model.World;
+import com.bn.ninjatrader.simulation.model.SimContext;
 import com.bn.ninjatrader.simulation.order.BuyOrder;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
@@ -36,7 +36,7 @@ public class SellOrderExecutorTest {
   private final PendingOrder pendingOrder = PendingOrder.of(order, submittedBarData);
 
   private BarData barData;
-  private World world;
+  private SimContext simContext;
   private Account account;
   private Portfolio portfolio;
   private BoardLotTable boardLotTable;
@@ -45,15 +45,15 @@ public class SellOrderExecutorTest {
   @Before
   public void setup() {
     barData = mock(BarData.class);
-    world = mock(World.class);
+    simContext = mock(SimContext.class);
     account = mock(Account.class);
     portfolio = mock(Portfolio.class);
     boardLotTable = mock(BoardLotTable.class);
 
     when(barData.getPrice()).thenReturn(price);
-    when(barData.getWorld()).thenReturn(world);
+    when(barData.getSimContext()).thenReturn(simContext);
     when(barData.getSymbol()).thenReturn("MEG");
-    when(world.getAccount()).thenReturn(account);
+    when(simContext.getAccount()).thenReturn(account);
     when(account.getPortfolio()).thenReturn(portfolio);
 
     executor = new SellOrderExecutor(boardLotTable);

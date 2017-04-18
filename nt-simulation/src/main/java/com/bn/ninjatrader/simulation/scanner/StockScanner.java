@@ -2,11 +2,19 @@ package com.bn.ninjatrader.simulation.scanner;
 
 import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.simulation.Simulator;
+import com.bn.ninjatrader.model.dao.AlgorithmDao;
+import com.bn.ninjatrader.model.entity.TradeAlgorithm;
+import com.bn.ninjatrader.model.mongo.guice.NtModelMongoModule;
+import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationRequest;
+import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
+import com.bn.ninjatrader.simulation.script.AlgorithmScript;
+import com.bn.ninjatrader.simulation.script.AlgorithmScriptFactory;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
+import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,16 +34,22 @@ import static java.util.Comparator.comparing;
 public class StockScanner {
   private static final Logger LOG = LoggerFactory.getLogger(StockScanner.class);
 
-  private final Simulator simulator;
+  private final SimulationFactory simulationFactory;
   private final PriceDao priceDao;
+  private final AlgorithmDao tradeAlgorithmDao;
+  private final AlgorithmScriptFactory algorithmScriptFactory;
   private final Clock clock;
 
   @Inject
-  public StockScanner(final Simulator simulator,
+  public StockScanner(final SimulationFactory simulationFactory,
                       final PriceDao priceDao,
+                      final AlgorithmDao tradeAlgorithmDao,
+                      final AlgorithmScriptFactory algorithmScriptFactory,
                       final Clock clock) {
-    this.simulator = simulator;
+    this.simulationFactory = simulationFactory;
     this.priceDao = priceDao;
+    this.tradeAlgorithmDao = tradeAlgorithmDao;
+    this.algorithmScriptFactory = algorithmScriptFactory;
     this.clock = clock;
   }
 
@@ -43,11 +57,14 @@ public class StockScanner {
     final LocalDate from = LocalDate.now(clock).minusYears(1);
     final LocalDate to = LocalDate.now(clock);
     final Set<String> symbols = priceDao.findAllSymbols();
+    final TradeAlgorithm tradeAlgorithm = tradeAlgorithmDao.findByTradeAlgorithmId(req.getAlgoId())
+        .orElseThrow(() -> new IllegalStateException("tradeAlgorithmID is not found"));
+    final AlgorithmScript algoScript = algorithmScriptFactory.create(tradeAlgorithm);
 
     // Collect reports for each symbol.
-    final List<SimulationReport> reports =  symbols.parallelStream()
-        .map(symbol -> simulator.play(SimulationRequest.withSymbol(symbol)
-            .from(from).to(to).tradeAlgorithmId(req.getAlgoId()))
+    final List<SimulationReport> reports =  symbols.stream()
+        .map(symbol -> simulationFactory.create(SimulationRequest.withSymbol(symbol)
+            .from(from).to(to).algorithmScript(algoScript)).play()
         ).filter(report -> {
           if (!report.getTransactions().isEmpty()) {
             final Transaction txn = report.getTransactions().get(report.getTransactions().size()-1);
@@ -63,7 +80,7 @@ public class StockScanner {
       final double profit = report.getEndingCash() - report.getStartingCash();
       final double profitPcnt = NumUtil.divide(profit, report.getStartingCash());
       return ScanResult.builder()
-          .symbol(report.getSimulationParams().getSymbol())
+          .symbol(report.getSymbol())
           .profit(profit)
           .profitPcnt(profitPcnt)
           .lastTransaction(report.getTransactions().get(report.getTransactions().size() - 1))
@@ -73,5 +90,17 @@ public class StockScanner {
         .collect(Collectors.toList());
 
     return scanResults;
+  }
+
+  public static void main(String args[]) {
+    System.setProperty("mongo.host", "192.168.99.100:32768");
+    System.setProperty("mongo.database.name", "ninja_trader");
+
+    Injector injector = Guice.createInjector(
+        new NtModelMongoModule(),
+        new NtSimulationModule()
+        );
+
+    List<ScanResult> results = injector.getInstance(StockScanner.class).scan(ScanRequest.withAlgoId("ADMIN").days(1));
   }
 }

@@ -70,7 +70,7 @@ public class LowestValue implements Operation<BarData> {
 
   @Override
   public double getValue(final BarData barData) {
-    final History history = barData.getWorld().getHistory();
+    final History history = barData.getSimContext().getHistory();
     double lowest = Double.MAX_VALUE;
 
     int from = Math.min(fromBarsAgo, toBarsAgo);

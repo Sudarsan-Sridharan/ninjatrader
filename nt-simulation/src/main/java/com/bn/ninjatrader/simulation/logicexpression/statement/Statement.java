@@ -17,15 +17,9 @@ import java.util.Set;
     property = "_t"
 )
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = BuyOrderStatement.class, name = "buy"),
-    @JsonSubTypes.Type(value = SellOrderStatement.class, name = "sell"),
     @JsonSubTypes.Type(value = CancelOrderStatement.class, name = "cancel"),
-    @JsonSubTypes.Type(value = ConditionalStatement.class, name = "cond"),
-    @JsonSubTypes.Type(value = SetPropertyStatement.class, name = "setProp"),
-    @JsonSubTypes.Type(value = MarkStatement.class, name = "mark"),
     @JsonSubTypes.Type(value = MultiStatement.class, name = "multi"),
-    @JsonSubTypes.Type(value = EmptyStatement.class, name = "empty"),
-    @JsonSubTypes.Type(value = LogStatement.class, name = "log"),
+
 })
 public interface Statement {
 

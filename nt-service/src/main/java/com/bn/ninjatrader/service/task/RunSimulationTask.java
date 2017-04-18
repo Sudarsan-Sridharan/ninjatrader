@@ -1,9 +1,12 @@
 package com.bn.ninjatrader.service.task;
 
-import com.bn.ninjatrader.simulation.Simulator;
+import com.bn.ninjatrader.simulation.core.Simulation;
+import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationRequest;
 import com.bn.ninjatrader.simulation.exception.TradeAlgorithmIdNotFoundException;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
+import com.bn.ninjatrader.simulation.script.AlgorithmScript;
+import com.bn.ninjatrader.simulation.service.AlgorithmService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.apache.commons.lang3.StringUtils;
@@ -27,11 +30,14 @@ public class RunSimulationTask {
   private static final String ERROR_ALGO_ID_PARAM_REQUIRED = "algoId parameter is required.";
   private static final String ERROR_ALGO_ID_NOT_FOUND = "algoId is not found.";
 
-  private final Simulator simulator;
+  private final SimulationFactory simulationFactory;
+  private final AlgorithmService algorithmService;
 
   @Inject
-  public RunSimulationTask(final Simulator simulator) {
-    this.simulator = simulator;
+  public RunSimulationTask(final SimulationFactory simulationFactory,
+                           final AlgorithmService algorithmService) {
+    this.simulationFactory = simulationFactory;
+    this.algorithmService = algorithmService;
   }
 
   @GET
@@ -56,10 +62,14 @@ public class RunSimulationTask {
     final LocalDate to = StringUtils.isEmpty(basicIsoToDate) ? null :
         LocalDate.parse(basicIsoToDate, DateTimeFormatter.BASIC_ISO_DATE);
 
+    // Get Algorithm
+    final AlgorithmScript script = algorithmService.findById(algoId);
+
     // Play simulation
     try {
-      final SimulationReport report = simulator.play(SimulationRequest.withSymbol(symbol)
-          .from(from).to(to).tradeAlgorithmId(algoId));
+      final Simulation simulation = simulationFactory.create(SimulationRequest.withSymbol(symbol)
+          .from(from).to(to).algorithmScript(script));
+      final SimulationReport report = simulation.play();
       return Response.ok(report).build();
     } catch (final TradeAlgorithmIdNotFoundException e) {
       throw new BadRequestException(ERROR_ALGO_ID_NOT_FOUND);

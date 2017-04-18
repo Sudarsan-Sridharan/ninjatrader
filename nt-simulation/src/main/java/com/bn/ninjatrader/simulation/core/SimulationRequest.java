@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.simulation.core;
 
+import com.bn.ninjatrader.simulation.script.AlgorithmScript;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
@@ -18,7 +19,7 @@ public class SimulationRequest {
   private String symbol;
   private LocalDate from;
   private LocalDate to;
-  private String tradeAlgorithmId;
+  private AlgorithmScript algorithmScript;
 
   private SimulationRequest(final String symbol) {
     this.symbol = symbol;
@@ -39,8 +40,8 @@ public class SimulationRequest {
     return this;
   }
 
-  public SimulationRequest tradeAlgorithmId(final String tradeAlgorithmId) {
-    this.tradeAlgorithmId = tradeAlgorithmId;
+  public SimulationRequest algorithmScript(final AlgorithmScript algorithmScript) {
+    this.algorithmScript = algorithmScript;
     return this;
   }
 
@@ -56,8 +57,8 @@ public class SimulationRequest {
     return to;
   }
 
-  public String getTradeAlgorithmId() {
-    return tradeAlgorithmId;
+  public AlgorithmScript getAlgorithmScript() {
+    return algorithmScript;
   }
 
   public double getStartingCash() {
@@ -73,12 +74,12 @@ public class SimulationRequest {
         Objects.equal(symbol, that.symbol) &&
         Objects.equal(from, that.from) &&
         Objects.equal(to, that.to) &&
-        Objects.equal(tradeAlgorithmId, that.tradeAlgorithmId);
+        Objects.equal(algorithmScript, that.algorithmScript);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(startingCash, symbol, from, to, tradeAlgorithmId);
+    return Objects.hashCode(startingCash, symbol, from, to, algorithmScript);
   }
 
   @Override
@@ -88,7 +89,7 @@ public class SimulationRequest {
         .add("symbol", symbol)
         .add("from", from)
         .add("to", to)
-        .add("tradeAlgorithmId", tradeAlgorithmId)
+        .add("algorithm", algorithmScript)
         .toString();
   }
 }

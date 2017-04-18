@@ -24,13 +24,11 @@ public class FindBeforeDateRequestTest {
         .timeFrame(TimeFrame.ONE_WEEK)
         .numOfValues(1000)
         .beforeDate(now)
-        .period(100)
         .build();
     assertThat(request.getSymbol()).isEqualTo("MEG");
     assertThat(request.getTimeFrame()).isEqualTo(TimeFrame.ONE_WEEK);
     assertThat(request.getNumOfValues()).isEqualTo(1000);
     assertThat(request.getBeforeDate()).isEqualTo(now);
-    assertThat(request.getPeriod()).isEqualTo(100);
   }
 
   @Test
@@ -43,8 +41,6 @@ public class FindBeforeDateRequestTest {
         .isEqualTo(builder().numOfValues(16).build());
     assertThat(builder().beforeDate(now).build())
         .isEqualTo(builder().beforeDate(now).build());
-    assertThat(builder().period(20).build())
-        .isEqualTo(builder().period(20).build());
   }
 
   @Test
@@ -57,8 +53,6 @@ public class FindBeforeDateRequestTest {
         .isNotEqualTo(builder().numOfValues(100).build());
     assertThat(builder().beforeDate(now).build())
         .isNotEqualTo(builder().beforeDate(now.plusDays(1)).build());
-    assertThat(builder().period(10).build())
-        .isNotEqualTo(builder().period(21).build());
   }
 
   @Test
@@ -72,8 +66,6 @@ public class FindBeforeDateRequestTest {
     set.add(builder().numOfValues(2).build());
     set.add(builder().beforeDate(now).build());
     set.add(builder().beforeDate(now.plusDays(1)).build());
-    set.add(builder().period(10).build());
-    set.add(builder().period(11).build());
-    assertThat(set).hasSize(10);
+    assertThat(set).hasSize(8);
   }
 }

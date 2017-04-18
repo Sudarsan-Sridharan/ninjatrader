@@ -7,7 +7,8 @@ import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
-import com.bn.ninjatrader.simulation.model.World;
+import com.bn.ninjatrader.simulation.model.Portfolio;
+import com.bn.ninjatrader.simulation.model.SimContext;
 import com.bn.ninjatrader.simulation.order.BuyOrder;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -38,23 +40,26 @@ public class BuyOrderExecutorTest {
   private final PendingOrder pendingOrder = PendingOrder.of(order, submittedBarData);
 
   private BoardLotTable boardLotTable;
-  private World world;
+  private SimContext simContext;
   private Account account;
   private BarData barData;
+  private Portfolio portfolio;
 
   private BuyOrderExecutor executor;
 
   @Before
   public void setup() {
     barData = mock(BarData.class);
-    world = mock(World.class);
+    simContext = mock(SimContext.class);
     account = mock(Account.class);
     boardLotTable = mock(BoardLotTable.class);
+    portfolio = mock(Portfolio.class);
 
-    when(barData.getWorld()).thenReturn(world);
+    when(barData.getSimContext()).thenReturn(simContext);
     when(barData.getPrice()).thenReturn(price);
-    when(world.getAccount()).thenReturn(account);
+    when(simContext.getAccount()).thenReturn(account);
     when(boardLotTable.getBoardLot(anyDouble())).thenReturn(boardLot);
+    when(account.getPortfolio()).thenReturn(portfolio);
 
     executor = new BuyOrderExecutor(boardLotTable);
   }
@@ -69,5 +74,8 @@ public class BuyOrderExecutorTest {
     assertThat(transaction.getNumOfShares()).isEqualTo(100000);
     assertThat(transaction.getTransactionType()).isEqualTo(TransactionType.BUY);
     assertThat(transaction.getValue()).isEqualTo(100000.0);
+
+    verify(account).addCash(-100000);
+    verify(portfolio).add(transaction);
   }
 }

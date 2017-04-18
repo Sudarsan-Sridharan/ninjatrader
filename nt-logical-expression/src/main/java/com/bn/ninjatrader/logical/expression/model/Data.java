@@ -7,5 +7,5 @@ import com.bn.ninjatrader.logical.expression.operation.Variable;
  */
 public interface Data {
 
-  Double get(final Variable variable);
+  Object get(final Variable variable);
 }

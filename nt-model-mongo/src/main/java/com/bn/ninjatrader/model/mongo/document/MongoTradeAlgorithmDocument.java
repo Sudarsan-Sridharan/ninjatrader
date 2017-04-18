@@ -29,7 +29,7 @@ public class MongoTradeAlgorithmDocument {
   private String mongoId;
 
   @JsonProperty("algoId")
-  private String tradeAlgorithmId;
+  private String algorithmId;
 
   @JsonProperty("userId")
   private String userId;
@@ -38,40 +38,56 @@ public class MongoTradeAlgorithmDocument {
   private String description;
 
   @JsonProperty("algo")
-  private String tradeAlgorithm;
+  private String algorithm;
 
-  public MongoTradeAlgorithmDocument(@JsonProperty("algoId") final String tradeAlgorithmId,
+  public MongoTradeAlgorithmDocument(@JsonProperty("algoId") final String algorithmId,
                                      @JsonProperty("userId") final String userId,
                                      @JsonProperty("desc") final String description,
-                                     @JsonProperty("algo") final String tradeAlgorithm) {
-    this.tradeAlgorithmId = tradeAlgorithmId;
+                                     @JsonProperty("algo") final String algorithm) {
+    this.algorithmId = algorithmId;
     this.userId = userId;
     this.description = description;
-    this.tradeAlgorithm = tradeAlgorithm;
+    this.algorithm = algorithm;
   }
 
-  public String getTradeAlgorithmId() {
-    return tradeAlgorithmId;
+  public String getAlgorithmId() {
+    return algorithmId;
+  }
+
+  public void setAlgorithmId(String algorithmId) {
+    this.algorithmId = algorithmId;
   }
 
   public String getUserId() {
     return userId;
   }
 
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
+
   public String getDescription() {
     return description;
   }
 
-  public String getTradeAlgorithm() {
-    return tradeAlgorithm;
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public String getAlgorithm() {
+    return algorithm;
+  }
+
+  public void setAlgorithm(String algorithm) {
+    this.algorithm = algorithm;
   }
 
   public TradeAlgorithm toTradeAlgorithm() {
     return TradeAlgorithm.builder()
-        .id(tradeAlgorithmId)
+        .algoId(algorithmId)
         .userId(userId)
         .description(description)
-        .algorithm(tradeAlgorithm)
+        .algorithm(algorithm)
         .build();
   }
 
@@ -80,24 +96,24 @@ public class MongoTradeAlgorithmDocument {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     MongoTradeAlgorithmDocument that = (MongoTradeAlgorithmDocument) o;
-    return Objects.equal(tradeAlgorithmId, that.tradeAlgorithmId) &&
+    return Objects.equal(algorithmId, that.algorithmId) &&
         Objects.equal(userId, that.userId) &&
         Objects.equal(description, that.description) &&
-        Objects.equal(tradeAlgorithm, that.tradeAlgorithm);
+        Objects.equal(algorithm, that.algorithm);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(tradeAlgorithmId, userId, description, tradeAlgorithm);
+    return Objects.hashCode(algorithmId, userId, description, algorithm);
   }
 
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
-        .add("tradeAlgorithmId", tradeAlgorithmId)
+        .add("algorithmId", algorithmId)
         .add("userId", userId)
         .add("desc", description)
-        .add("algo", tradeAlgorithm)
+        .add("algo", algorithm)
         .toString();
   }
 }

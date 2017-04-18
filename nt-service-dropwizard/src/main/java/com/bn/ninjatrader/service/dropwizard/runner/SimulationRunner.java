@@ -1,25 +1,28 @@
 package com.bn.ninjatrader.service.dropwizard.runner;
 
-import com.bn.ninjatrader.model.dao.TradeAlgorithmDao;
+import com.bn.ninjatrader.model.dao.AlgorithmDao;
+import com.bn.ninjatrader.model.entity.TradeAlgorithm;
 import com.bn.ninjatrader.model.mongo.guice.NtModelMongoModule;
-import com.bn.ninjatrader.simulation.GoldenAlgorithm;
-import com.bn.ninjatrader.simulation.Simulator;
-import com.bn.ninjatrader.simulation.core.SimulationParams;
+import com.bn.ninjatrader.simulation.core.Simulation;
+import com.bn.ninjatrader.simulation.core.SimulationFactory;
+import com.bn.ninjatrader.simulation.core.SimulationRequest;
 import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
-import com.bn.ninjatrader.simulation.model.SimTradeAlgorithm;
 import com.bn.ninjatrader.simulation.printer.SimulationReportPrinter;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
-import com.bn.ninjatrader.simulation.service.SaveSimTradeAlgoRequest;
-import com.bn.ninjatrader.simulation.service.SimTradeAlgorithmService;
+import com.bn.ninjatrader.simulation.script.AlgorithmScript;
+import com.bn.ninjatrader.simulation.script.GroovyAlgorithmScript;
+import com.bn.ninjatrader.simulation.service.AlgorithmService;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.time.LocalDate;
-import java.util.function.Consumer;
 
 /**
  * @author bradwee2000@gmail.com
@@ -28,60 +31,57 @@ import java.util.function.Consumer;
 public class SimulationRunner {
   private static final Logger LOG = LoggerFactory.getLogger(SimulationRunner.class);
 
-  private final Simulator simulator;
+  private final SimulationFactory simulationFactory;
   private final SimulationReportPrinter printer;
-  private final TradeAlgorithmDao tradeAlgorithmDao;
-  private final SimTradeAlgorithmService simTradeAlgorithmService;
+  private final AlgorithmDao tradeAlgorithmDao;
+  private final AlgorithmService algorithmService;
 
   @Inject
-  public SimulationRunner(final Simulator simulator,
+  public SimulationRunner(final SimulationFactory simulationFactory,
                           final SimulationReportPrinter printer,
-                          final TradeAlgorithmDao tradeAlgorithmDao,
-                          final SimTradeAlgorithmService simTradeAlgorithmService) {
-    this.simulator = simulator;
+                          final AlgorithmDao tradeAlgorithmDao,
+                          final AlgorithmService algorithmService) {
+    this.simulationFactory = simulationFactory;
     this.printer = printer;
     this.tradeAlgorithmDao = tradeAlgorithmDao;
-    this.simTradeAlgorithmService = simTradeAlgorithmService;
+    this.algorithmService = algorithmService;
   }
 
-  public void run() {
+  public void run() throws IOException {
     final LocalDate to = LocalDate.now();
     final LocalDate from = to.minusYears(10);
 
-    final SimulationParams params = GoldenAlgorithm.newInstance()
-        .from(from)
-        .to(to)
-        .maxBuyRisk(0.18)
-        .sellPipsBuffer(10)
-        .forSymbol("DD").build();
+    final String scriptText = IOUtils.toString(SimulationRunner.class.getResourceAsStream("/SecretSauce.groovy"), Charset.forName("UTF-8"));
+    final AlgorithmScript algorithm = new GroovyAlgorithmScript(scriptText);
 
-    final SimTradeAlgorithm algorithm = params.getAlgorithm();
+    final SimulationRequest req = SimulationRequest.withSymbol("MEG").from(from).to(to).algorithmScript(algorithm);
 
-    final SimulationReport report = simulator.play(params);
+    final Simulation simulation = simulationFactory.create(req);
+
+    final SimulationReport report = simulation.play();
 
     printer.printReport(report);
 
-//    simTradeAlgorithmService.save(SaveSimTradeAlgoRequest.withAlgorithm(algorithm)
-//        .tradeAlgorithmId("RISKON")
-//        .userId("ADMIN")
-//        .description("10% Risk On!!"));
 
-//    simTradeAlgorithmService.save(SaveSimTradeAlgoRequest.withAlgorithm(algorithm)
+
+    tradeAlgorithmDao.save(TradeAlgorithm.builder().algorithm(scriptText)
+        .userId("ADMIN")
+        .algoId("RISKON")
+        .description("10% Risk On!!")
+        .build());
+
+//    simTradeAlgorithmService.save(SaveSimTradeAlgoRequest.withScriptText(scriptText)
 //        .tradeAlgorithmId("ADMIN")
 //        .userId("ADMIN")
 //        .description("Secret Sauce"));
 
-    simTradeAlgorithmService.save(SaveSimTradeAlgoRequest.withAlgorithm(algorithm)
-        .tradeAlgorithmId("testalgo")
-        .userId("ADMIN")
-        .description("Test Algo"));
+//    simTradeAlgorithmService.save(SaveSimTradeAlgoRequest.withAlgorithm(algorithm)
+//        .tradeAlgorithmId("testalgo")
+//        .userId("ADMIN")
+//        .description("Test Algo"));
   }
 
-  public static void main(final String args[]) {
-    Consumer<Integer> consumer = y -> System.out.println("lalalala " + y);
-
-    consumer.accept(1);
-
+  public static void main(final String args[]) throws IOException {
     final Injector injector = Guice.createInjector(
         new NtModelMongoModule(),
         new NtSimulationModule());

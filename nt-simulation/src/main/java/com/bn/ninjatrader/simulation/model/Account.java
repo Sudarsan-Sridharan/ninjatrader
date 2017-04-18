@@ -69,15 +69,11 @@ public class Account implements BrokerListener {
 
   @Override
   public void onFulfilledBuy(final BuyTransaction txn, final BarData barData) {
-    portfolio.add(txn);
-    addCash(-txn.getValue());
     bookkeeper.keep(txn);
   }
 
   @Override
   public void onFulfilledSell(final SellTransaction txn, final BarData barData) {
-    addCash(txn.getValue());
-    portfolio.clear();
     bookkeeper.keep(txn);
     tradeStatistic.collectStats(txn);
   }

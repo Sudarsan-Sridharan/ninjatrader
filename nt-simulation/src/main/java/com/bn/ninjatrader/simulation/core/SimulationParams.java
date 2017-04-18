@@ -3,7 +3,7 @@ package com.bn.ninjatrader.simulation.core;
 import com.bn.ninjatrader.common.util.NtLocalDateDeserializer;
 import com.bn.ninjatrader.common.util.NtLocalDateSerializer;
 import com.bn.ninjatrader.logical.expression.operation.Variable;
-import com.bn.ninjatrader.simulation.model.SimTradeAlgorithm;
+import com.bn.ninjatrader.simulation.script.AlgorithmScript;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -17,7 +17,8 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by Brad on 8/3/16.
@@ -47,7 +48,7 @@ public class SimulationParams {
   private double startingCash;
 
   @JsonProperty("algorithm")
-  private SimTradeAlgorithm algorithm;
+  private AlgorithmScript algorithm;
 
   @JsonIgnore
   private Set<Variable> variables;
@@ -61,7 +62,7 @@ public class SimulationParams {
                           final LocalDate toDate,
                           final String symbol,
                           final double startingCash,
-                          final SimTradeAlgorithm algorithm) {
+                          final AlgorithmScript algorithm) {
     this.fromDate = fromDate;
     this.toDate = toDate;
     this.symbol = symbol;
@@ -101,26 +102,17 @@ public class SimulationParams {
     this.startingCash = startingCash;
   }
 
-  public SimTradeAlgorithm getAlgorithm() {
+  public AlgorithmScript getAlgorithm() {
     return algorithm;
   }
 
   @JsonIgnore
   public Set<Variable> getVariables() {
+    checkNotNull(algorithm, "algorithm must not be null.");
     if (variables == null) {
       variables = Sets.newHashSet(algorithm.getVariables());
     }
     return variables;
-  }
-
-  @JsonIgnore
-  public Set<String> getDataTypes() {
-    if (dataTypes == null) {
-      dataTypes = getVariables().stream()
-          .map(variable -> variable.getDataType())
-          .collect(Collectors.toSet());
-    }
-    return dataTypes;
   }
 
   @Override
@@ -163,7 +155,7 @@ public class SimulationParams {
     private LocalDate toDate;
     private String symbol;
     private double startingCash;
-    private SimTradeAlgorithm algorithm;
+    private AlgorithmScript algorithm;
 
     public Builder from(final LocalDate fromDate) {
       this.fromDate = fromDate;
@@ -182,7 +174,7 @@ public class SimulationParams {
       return this;
     }
 
-    public Builder algorithm(final SimTradeAlgorithm algorithm) {
+    public Builder algorithm(final AlgorithmScript algorithm) {
       this.algorithm = algorithm;
       return this;
     }

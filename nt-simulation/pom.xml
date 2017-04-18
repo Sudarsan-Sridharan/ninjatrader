@@ -26,11 +26,15 @@
         </dependency>
         <dependency>
             <groupId>com.beachninja</groupId>
-            <artifactId>nt-model-datastore</artifactId>
+            <artifactId>nt-model-mongo</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.inject.extensions</groupId>
             <artifactId>guice-assistedinject</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
         </dependency>
 
         <!-- Test dependencies -->

@@ -1,34 +1,35 @@
 package com.bn.ninjatrader.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * @author bradwee2000@gmail.com
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TradeAlgorithm {
   public static final Builder builder() {
     return new Builder();
   }
 
+  @JsonProperty("algorithmId")
   private final String id;
 
+  @JsonProperty("userId")
   private final String userId;
 
+  @JsonProperty("algorithm")
   private final String algorithm;
 
+  @JsonProperty("description")
   private final String description;
 
-  public TradeAlgorithm(final String id,
-                        final String userId,
-                        final String algorithm,
-                        final String description) {
-    checkNotNull(id, "id must not be null.");
-    checkNotNull(userId, "userId must not be null.");
-    checkNotNull(algorithm, "algorithm must not be null.");
-
+  public TradeAlgorithm(@JsonProperty("algorithmId") final String id,
+                        @JsonProperty("userId") final String userId,
+                        @JsonProperty("algorithm") final String algorithm,
+                        @JsonProperty("description") final String description) {
     this.id = id;
     this.userId = userId;
     this.algorithm = algorithm;
@@ -86,7 +87,7 @@ public class TradeAlgorithm {
     private String algorithm;
     private String description;
 
-    public Builder id(final String id) {
+    public Builder algoId(final String id) {
       this.id = id;
       return this;
     }

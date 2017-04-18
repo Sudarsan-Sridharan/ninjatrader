@@ -10,6 +10,15 @@ public class Variables {
 
   public static final Variable BAR_INDEX = Variable.of(DataType.BAR_INDEX);
 
+  public static final Variable BROKER = Variable.of(DataType.BROKER);
+  public static final Variable HISTORY = Variable.of(DataType.HISTORY);
+  public static final Variable MARKERS = Variable.of(DataType.MARKERS);
+  public static final Variable BOARDLOT = Variable.of(DataType.BOARDLOT);
+  public static final Variable ACCOUNT = Variable.of(DataType.ACCOUNT);
+  public static final Variable PORTFOLIO = Variable.of(DataType.PORTFOLIO);
+
+  public static final Variable SYMBOL = Variable.of(DataType.SYMBOL);
+  public static final Variable DATE = Variable.of(DataType.DATE);
   public static final Variable PRICE_OPEN = Variable.of(DataType.PRICE_OPEN);
   public static final Variable PRICE_HIGH = Variable.of(DataType.PRICE_HIGH);
   public static final Variable PRICE_LOW = Variable.of(DataType.PRICE_LOW);

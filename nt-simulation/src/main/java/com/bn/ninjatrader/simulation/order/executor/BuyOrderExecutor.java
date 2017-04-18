@@ -38,12 +38,17 @@ public class BuyOrderExecutor extends OrderExecutor {
     final double boughtPrice = orderType.getFulfilledPrice(submittedBarData, barData);
     final long numOfShares = getNumOfSharesCanBuyWithAmount(buyOrder.getCashAmount(), boughtPrice);
 
-    return Transaction.buy()
+    final BuyTransaction txn = Transaction.buy()
         .symbol(buyOrder.getSymbol())
         .date(barData.getPrice().getDate())
         .price(boughtPrice)
         .shares(numOfShares)
         .barIndex(barData.getIndex())
         .build();
+
+    barData.getSimContext().getAccount().addCash(-txn.getValue());
+    barData.getSimContext().getAccount().getPortfolio().add(txn);
+
+    return txn;
   }
 }

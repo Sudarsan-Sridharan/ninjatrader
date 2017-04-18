@@ -177,6 +177,16 @@ public class PortfolioTest {
   }
 
   @Test
+  public void testCommitAndFulfillAllSharesOfStock_shouldRemoveItemFromPortfolio() {
+    portfolio.add(Transaction.buy().symbol("MEG").price(1).shares(10000).build());
+
+    portfolio.commitShares("MEG", 10000);
+    portfolio.fulfillCommittedShares("MEG", 10000);
+
+    assertThat(portfolio.isEmpty());
+  }
+
+  @Test
   public void testTotalEquityValue_shouldReturnSumOfAllItemEquityValues() {
     assertThat(portfolio.getTotalEquityValue()).isEqualTo(0);
 

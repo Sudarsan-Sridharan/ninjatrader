@@ -11,6 +11,9 @@ import com.bn.ninjatrader.simulation.order.SellOrder;
 import com.bn.ninjatrader.simulation.order.executor.BuyOrderExecutor;
 import com.bn.ninjatrader.simulation.order.executor.OrderExecutor;
 import com.bn.ninjatrader.simulation.order.executor.SellOrderExecutor;
+import com.bn.ninjatrader.simulation.order.processor.BuyOrderRequestProcessor;
+import com.bn.ninjatrader.simulation.order.processor.OrderRequestProcessor;
+import com.bn.ninjatrader.simulation.order.processor.SellOrderRequestProcessor;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
@@ -43,21 +46,30 @@ public class BrokerTest {
   private Broker broker;
   private BuyOrderExecutor buyOrderExecutor;
   private SellOrderExecutor sellOrderExecutor;
+  private BuyOrderRequestProcessor buyOrderRequestProcessor;
+  private SellOrderRequestProcessor sellOrderRequestProcessor;
   private BrokerListener brokerListener;
 
   private Map<TransactionType, OrderExecutor> orderExecutors;
+  private Map<TransactionType, OrderRequestProcessor> orderRequestProcessors;
 
   @Before
   public void setup() {
     buyOrderExecutor = mock(BuyOrderExecutor.class);
     sellOrderExecutor = mock(SellOrderExecutor.class);
+    buyOrderRequestProcessor = mock(BuyOrderRequestProcessor.class);
+    sellOrderRequestProcessor = mock(SellOrderRequestProcessor.class);
     brokerListener = mock(BrokerListener.class);
 
     orderExecutors = Maps.newHashMap();
     orderExecutors.put(TransactionType.BUY, buyOrderExecutor);
     orderExecutors.put(TransactionType.SELL, sellOrderExecutor);
 
-    broker = new Broker(orderExecutors);
+    orderRequestProcessors = Maps.newHashMap();
+    orderRequestProcessors.put(TransactionType.BUY, buyOrderRequestProcessor);
+    orderRequestProcessors.put(TransactionType.SELL, sellOrderRequestProcessor);
+
+    broker = new Broker(orderExecutors, orderRequestProcessors);
     broker.addListener(brokerListener);
   }
 

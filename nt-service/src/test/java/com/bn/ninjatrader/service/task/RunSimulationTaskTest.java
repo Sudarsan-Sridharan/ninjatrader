@@ -1,9 +1,12 @@
 package com.bn.ninjatrader.service.task;
 
-import com.bn.ninjatrader.simulation.Simulator;
+import com.bn.ninjatrader.simulation.core.Simulation;
+import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationRequest;
 import com.bn.ninjatrader.simulation.model.TradeStatistic;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
+import com.bn.ninjatrader.simulation.script.AlgorithmScript;
+import com.bn.ninjatrader.simulation.service.AlgorithmService;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Before;
@@ -27,7 +30,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class RunSimulationTaskTest extends JerseyTest {
   private static final Logger LOG = LoggerFactory.getLogger(RunSimulationTaskTest.class);
 
-  private static final Simulator simulator = mock(Simulator.class);
+  private static final SimulationFactory simulationFactory = mock(SimulationFactory.class);
+  private static final AlgorithmService algorithmService = mock(AlgorithmService.class);
 
   @Captor
   private ArgumentCaptor<SimulationRequest> requestCaptor;
@@ -36,23 +40,28 @@ public class RunSimulationTaskTest extends JerseyTest {
 
   @Override
   protected Application configure() {
-    final RunSimulationTask task = new RunSimulationTask(simulator);
+    final RunSimulationTask task = new RunSimulationTask(simulationFactory, algorithmService);
     return new ResourceConfig().register(task);
   }
 
   @Before
   public void before() {
-    reset(simulator);
+    reset(simulationFactory);
+    reset(algorithmService);
 
     initMocks(this);
 
     simulationReport = SimulationReport.builder()
-        .startingCash(100000)
-        .endingCash(200000)
+        .startingCash(100_000)
+        .endingCash(200_000)
         .tradeStatistics(new TradeStatistic())
         .build();
 
-    when(simulator.play(any(SimulationRequest.class))).thenReturn(simulationReport);
+    final Simulation simulation = mock(Simulation.class);
+
+    when(algorithmService.findById(anyString())).thenReturn(mock(AlgorithmScript.class));
+    when(simulationFactory.create(any())).thenReturn(simulation);
+    when(simulation.play()).thenReturn(simulationReport);
   }
 
   @Test
@@ -77,13 +86,13 @@ public class RunSimulationTaskTest extends JerseyTest {
         .queryParam("algoId", "dtRKje03")
         .request().get();
 
-    verify(simulator).play(requestCaptor.capture());
+    verify(simulationFactory).create(requestCaptor.capture());
 
     final SimulationRequest req = requestCaptor.getValue();
     assertThat(req.getSymbol()).isEqualTo("MEG");
     assertThat(req.getFrom()).isEqualTo(LocalDate.of(2016, 1, 1));
     assertThat(req.getTo()).isEqualTo(LocalDate.of(2016, 12, 31));
-    assertThat(req.getTradeAlgorithmId()).isEqualTo("dtRKje03");
+    assertThat(req.getAlgorithmScript()).isNotNull();
   }
 
   @Test

@@ -41,6 +41,10 @@
             <artifactId>jersey-server</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity</artifactId>
         </dependency>

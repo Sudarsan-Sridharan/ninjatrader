@@ -3,7 +3,7 @@ package com.bn.ninjatrader.simulation.logicexpression.condition;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.model.Portfolio;
-import com.bn.ninjatrader.simulation.model.World;
+import com.bn.ninjatrader.simulation.model.SimContext;
 import com.bn.ninjatrader.simulation.util.DummyObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
@@ -24,19 +24,19 @@ public class PortfolioHasSharesTest {
   private final PortfolioHasShares portfolioHasShares = PortfolioHasShares.instance();
 
   private BarData barData;
-  private World world;
+  private SimContext simContext;
   private Account account;
   private Portfolio portfolio;
 
   @Before
   public void before() {
     barData = mock(BarData.class);
-    world = mock(World.class);
+    simContext = mock(SimContext.class);
     account = mock(Account.class);
     portfolio = mock(Portfolio.class);
 
-    when(barData.getWorld()).thenReturn(world);
-    when(world.getAccount()).thenReturn(account);
+    when(barData.getSimContext()).thenReturn(simContext);
+    when(simContext.getAccount()).thenReturn(account);
     when(account.getPortfolio()).thenReturn(portfolio);
   }
 

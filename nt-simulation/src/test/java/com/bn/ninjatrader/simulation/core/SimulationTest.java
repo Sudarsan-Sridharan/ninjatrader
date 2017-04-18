@@ -3,10 +3,11 @@ package com.bn.ninjatrader.simulation.core;
 import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
-import com.bn.ninjatrader.simulation.calculator.VarCalculator;
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.data.BarDataFactory;
+import com.bn.ninjatrader.simulation.data.BarProducer;
 import com.bn.ninjatrader.simulation.model.*;
+import com.bn.ninjatrader.simulation.script.AlgorithmScript;
+import com.bn.ninjatrader.simulation.script.ScriptRunner;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,18 +37,16 @@ public class SimulationTest {
   private final BarData bar1 = BarData.builder().price(price1).index(0).build();
   private final BarData bar2 = BarData.builder().price(price2).index(1).build();
 
-  private final SimTradeAlgorithm algorithm = SimTradeAlgorithm.builder().build();
-  private final SimulationParams params = SimulationParams.builder()
-      .startingCash(100000).from(date1).to(date2).symbol("MEG").algorithm(algorithm).build();
-
+  private AlgorithmScript algorithm;
+  private SimulationRequest simRequest;
   private Account account;
   private Portfolio portfolio;
   private Bookkeeper bookkeeper;
   private Broker broker;
-  private BarDataFactory barDataFactory;
+  private BarProducer barProducer;
   private History history;
-  private VarCalculator varCalculator;
-  private World world;
+  private SimContext simContext;
+  private ScriptRunner scriptRunner;
 
   private Simulation simulation;
 
@@ -57,21 +56,24 @@ public class SimulationTest {
     portfolio = mock(Portfolio.class);
     bookkeeper = mock(Bookkeeper.class);
     broker = mock(Broker.class);
-    barDataFactory = mock(BarDataFactory.class);
+    barProducer = mock(BarProducer.class);
     history = mock(History.class);
-    varCalculator = mock(VarCalculator.class);
+    algorithm = mock(AlgorithmScript.class);
+    scriptRunner = mock(ScriptRunner.class);
+
+    simRequest = SimulationRequest.withSymbol("MEG")
+        .startingCash(100000).from(date1).to(date2).algorithmScript(algorithm);
 
     when(account.getBookkeeper()).thenReturn(bookkeeper);
     when(account.getPortfolio()).thenReturn(portfolio);
     when(account.getLiquidCash()).thenReturn(100000d);
     when(portfolio.isEmpty()).thenReturn(true);
-    when(barDataFactory.create(anyString(), any(Price.class), anyInt(), any(World.class), anyList()))
-        .thenReturn(bar1, bar2);
+    when(barProducer.nextBar(anyString(), any(Price.class), any(SimContext.class))).thenReturn(bar1, bar2);
+    when(algorithm.newRunner()).thenReturn(scriptRunner);
 
-    world = World.builder().account(account).broker(broker).pricesForSymbol("MEG", prices).history(history).build();
+    simContext = SimContext.builder().account(account).broker(broker).pricesForSymbol("MEG", prices).history(history).build();
 
-    simulation = new Simulation(world, params, barDataFactory);
-    simulation.addVarCalculators(Lists.newArrayList(varCalculator));
+    simulation = new Simulation(simContext, simRequest, barProducer);
   }
 
   @Test
@@ -79,8 +81,8 @@ public class SimulationTest {
     simulation.play();
 
     // Should forSymbol bar data twice. One for each price.
-    verify(barDataFactory).create("MEG", price1, 0,  world, Lists.newArrayList(varCalculator));
-    verify(barDataFactory).create("MEG", price2, 1, world, Lists.newArrayList(varCalculator));
+    verify(barProducer).nextBar("MEG", price1, simContext);
+    verify(barProducer).nextBar("MEG", price2, simContext);
   }
 
   @Test

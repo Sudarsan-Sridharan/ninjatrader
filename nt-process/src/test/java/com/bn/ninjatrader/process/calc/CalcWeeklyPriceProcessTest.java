@@ -6,17 +6,14 @@ import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
-import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.bn.ninjatrader.process.request.CalcRequest;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 import java.time.LocalDate;
 import java.util.Collections;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -51,6 +48,7 @@ public class CalcWeeklyPriceProcessTest {
     priceDao = mock(PriceDao.class);
     process = new CalcWeeklyPriceProcess(calculator, priceDao);
 
+    when(priceDao.savePrices(any())).thenReturn(mock(PriceDao.SavePricesOperation.class, RETURNS_SELF));
     when(priceDao.findPrices()).thenReturn(mock(PriceDao.FindPricesOperation.class, RETURNS_SELF));
     when(priceDao.findPrices().now()).thenReturn(Collections.emptyList());
     when(calculator.calc(any())).thenReturn(Lists.newArrayList(weeklyPrice1, weeklyPrice2, weeklyPrice3));
@@ -72,18 +70,15 @@ public class CalcWeeklyPriceProcessTest {
     verify(priceDao.findPrices()).withSymbol("MEG");
     verify(priceDao.findPrices()).withSymbol("BDO");
 
-    verify(priceDao, times(2)).save(any(SavePriceRequest.class));
+    verify(priceDao.savePrices(any())).withSymbol("MEG");
+    verify(priceDao.savePrices(any())).withSymbol("BDO");
   }
 
   @Test
   public void testSaveOnlyValuesWithinRequestedDates() {
-    final ArgumentCaptor<SavePriceRequest> saveRequestCaptor = ArgumentCaptor.forClass(SavePriceRequest.class);
-
     process.process(CalcRequest.forSymbol("MEG").from(fromDate).to(toDate));
 
-    verify(priceDao).save(saveRequestCaptor.capture());
-    final SavePriceRequest saveRequest = saveRequestCaptor.getValue();
-    assertThat(saveRequest.getPrices()).containsExactly(weeklyPrice2);
-    assertThat(saveRequest.getTimeFrame()).isEqualTo(TimeFrame.ONE_WEEK);
+    verify(priceDao).savePrices(Lists.newArrayList(weeklyPrice2));
+    verify(priceDao.savePrices(any())).withTimeFrame(TimeFrame.ONE_WEEK);
   }
 }

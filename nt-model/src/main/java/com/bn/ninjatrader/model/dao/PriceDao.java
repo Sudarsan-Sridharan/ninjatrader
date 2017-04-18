@@ -3,9 +3,9 @@ package com.bn.ninjatrader.model.dao;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
-import com.bn.ninjatrader.model.request.SavePriceRequest;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -14,7 +14,9 @@ import java.util.Set;
  */
 public interface PriceDao {
 
-  void save(final SavePriceRequest req);
+  SavePricesOperation savePrices(final Collection<Price> prices);
+
+  SavePricesOperation savePrices(final Price price, final Price ... more);
 
   FindPricesOperation findPrices();
 
@@ -36,5 +38,17 @@ public interface PriceDao {
     FindPricesOperation withTimeFrame(final TimeFrame timeFrame);
 
     List<Price> now();
+  }
+
+  /**
+   * Builder interface for saving prices
+   */
+  interface SavePricesOperation {
+
+    SavePricesOperation withSymbol(final String symbol);
+
+    SavePricesOperation withTimeFrame(final TimeFrame timeFrame);
+
+    void now();
   }
 }

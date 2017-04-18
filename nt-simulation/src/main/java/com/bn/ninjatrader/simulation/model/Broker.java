@@ -1,11 +1,16 @@
 package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.simulation.annotation.OrderExecutors;
+import com.bn.ninjatrader.simulation.annotation.OrderRequestProcessors;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.listener.BrokerListener;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
 import com.bn.ninjatrader.simulation.order.executor.OrderExecutor;
+import com.bn.ninjatrader.simulation.order.processor.OrderRequestProcessor;
+import com.bn.ninjatrader.simulation.order.request.BuyOrderRequest;
+import com.bn.ninjatrader.simulation.order.request.OrderRequest;
+import com.bn.ninjatrader.simulation.order.request.SellOrderRequest;
 import com.bn.ninjatrader.simulation.order.type.OrderType;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
@@ -23,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -34,12 +40,16 @@ public class Broker {
   private final List<PendingOrder> pendingOrders = Lists.newArrayList();
   private final Map<TransactionType, Transaction> lastTransactions = Maps.newHashMap();
   private final List<BrokerListener> listeners = Lists.newArrayList();
-
   private final Map<TransactionType, OrderExecutor> orderExecutors;
+  private final Map<TransactionType, OrderRequestProcessor> orderRequestProcessors;
+
+  private BarData currentBar;
 
   @Inject
-  public Broker(@OrderExecutors final Map<TransactionType, OrderExecutor> orderExecutors) {
+  public Broker(@OrderExecutors final Map<TransactionType, OrderExecutor> orderExecutors,
+                @OrderRequestProcessors final Map<TransactionType, OrderRequestProcessor> orderRequestProcessors) {
     this.orderExecutors = orderExecutors;
+    this.orderRequestProcessors = orderRequestProcessors;
   }
 
   public void submitOrder(final Order order, final BarData barData) {
@@ -52,8 +62,15 @@ public class Broker {
     pendingOrders.add(PendingOrder.of(order, barData));
   }
 
+  public void submitOrder(final OrderRequest req) {
+    checkArgument(orderRequestProcessors.containsKey(req.getTxnType()),
+        "No processor found for TransactionType [%s]", req.getTxnType());
+    final OrderRequestProcessor processor = orderRequestProcessors.get(req.getTxnType());
+    final Order order = processor.process(req, currentBar);
+    pendingOrders.add(PendingOrder.of(order, currentBar));
+  }
+
   public void processPendingOrders(final BarData barData) {
-    checkNotNull(barData, "barData must not be null.");
 
     if (pendingOrders.isEmpty()) {
       return;
@@ -112,7 +129,7 @@ public class Broker {
     return Optional.ofNullable(lastTransactions.get(transactionType));
   }
 
-  public void publishToListeners(final Transaction transaction, final BarData barData) {
+  private void publishToListeners(final Transaction transaction, final BarData barData) {
     for (final BrokerListener listener : listeners) {
       switch(transaction.getTransactionType()) {
         case SELL: listener.onFulfilledSell((SellTransaction) transaction, barData); break;
@@ -131,8 +148,25 @@ public class Broker {
     this.listeners.addAll(Lists.asList(listener1, listener2, more));
   }
 
+  public BuyOrderRequest buyOrder() {
+    return new BuyOrderRequest(this);
+  }
+
+  public SellOrderRequest sellOrder() {
+    return new SellOrderRequest(this);
+  }
+
+  public void setCurrentBar(final BarData currentBar) {
+    this.currentBar = currentBar;
+  }
+
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this).toString();
+    return MoreObjects.toStringHelper(this)
+        .add("pendingOrders", pendingOrders)
+        .add("lastTransactions", lastTransactions)
+        .add("listeners", listeners)
+        .add("orderExecutors", orderExecutors)
+        .toString();
   }
 }

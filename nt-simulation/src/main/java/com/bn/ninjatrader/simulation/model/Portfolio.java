@@ -49,7 +49,12 @@ public class Portfolio {
 
   public void fulfillCommittedShares(final String symbol, final long shares) {
     checkArgument(portfolioItems.containsKey(symbol), SYMBOL_NOT_EXIST_ERROR_MSG, symbol);
-    portfolioItems.put(symbol, portfolioItems.get(symbol).fulfillCommittedShares(shares));
+    final PortfolioItem item = portfolioItems.get(symbol).fulfillCommittedShares(shares);
+    if (item.getTotalShares() == 0) {
+      portfolioItems.remove(item.getSymbol());
+    } else {
+      portfolioItems.put(symbol, portfolioItems.get(symbol).fulfillCommittedShares(shares));
+    }
   }
 
   public boolean contains(final String symbol) {

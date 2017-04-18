@@ -1,10 +1,23 @@
 <html>
 <head>
     <title>Beach Ninja Trader</title>
-    <script data-main="js/chart" src="js/lib/require.js"></script>
+    <script data-main="js/algorithm" src="js/lib/require.js"></script>
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+    #chartstyle()
 </head>
 
 <body>
+    <div id="algoEditor">
+        <form>
+            <input type="hidden" name="algoId" value="">
+            <label for="description">Name:</label>
+            <input name="description" class="description" type="text" maxlength="100" size="20">
+            <button class="submitBtn">Save</button>
+            <div id="codeEditor"></div>
+        </form>
+    </div>
 
+    <div id="status"></div>
+    #contextSettings()
 </body>
 </html>

@@ -18,7 +18,7 @@ import javax.ws.rs.core.MediaType;
 @Path("/algorithm")
 public class AlgorithmPage {
   private static final Logger LOG = LoggerFactory.getLogger(AlgorithmPage.class);
-  private static final String TEMPLATE_PATH = "WEB-INF/velocity/pages/algorithm.vm";
+  private static final String TEMPLATE_PATH = "/velocity/pages/algorithm.vm";
 
   private final HtmlWriterFactory htmlWriterFactory;
 

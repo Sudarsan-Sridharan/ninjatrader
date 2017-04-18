@@ -21,10 +21,9 @@ public class IdGeneratorTest {
 
   @Test
   public void testIdIsUnique() {
-    Set<String> ids = Sets.newHashSet();
+    final Set<String> ids = Sets.newHashSet();
     for (int i = 0; i < 1000; i++) {
       ids.add(idGenerator.createId());
-      System.out.println(idGenerator.createId());
     }
     assertThat(ids).hasSize(1000);
   }

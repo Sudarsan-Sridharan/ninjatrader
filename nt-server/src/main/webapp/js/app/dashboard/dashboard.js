@@ -73,7 +73,7 @@ define(['jquery', 'require', '../scanner/scanner', '../status/status'], function
     };
 
     Dashboard.prototype.initAlgo = function(callback) {
-        $.get(context.serviceHost + "/algos")
+        $.get(context.serviceHost + "/algorithms")
             .done(function(data) {
                 var algoDropdown = $("select.algo").empty();
                 for(var i in data) {

@@ -1,12 +1,14 @@
 package com.bn.ninjatrader.simulation.scanner;
 
 import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.model.dao.AlgorithmDao;
+import com.bn.ninjatrader.model.entity.TradeAlgorithm;
 import com.bn.ninjatrader.model.util.TestUtil;
-import com.bn.ninjatrader.simulation.Simulator;
-import com.bn.ninjatrader.simulation.core.SimulationParams;
-import com.bn.ninjatrader.simulation.core.SimulationRequest;
+import com.bn.ninjatrader.simulation.core.Simulation;
+import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.model.TradeStatistic;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
+import com.bn.ninjatrader.simulation.script.AlgorithmScriptFactory;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.google.common.collect.Sets;
@@ -16,9 +18,11 @@ import org.junit.Test;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -29,37 +33,42 @@ public class StockScannerTest {
 
   private final LocalDate now = LocalDate.of(2016, 2, 1);
 
-  private Simulator simulator;
+  private SimulationFactory simulationFactory;
+  private Simulation simulation;
   private PriceDao priceDao;
-  private SimulationParams simulationParams;
+  private AlgorithmDao tradeAlgorithmDao;
   private TradeStatistic tradeStatistic;
+  private AlgorithmScriptFactory algorithmScriptFactory;
   private Clock clock = TestUtil.fixedClock(now);
 
   private StockScanner stockScanner;
 
   @Before
   public void before() {
-    simulator = mock(Simulator.class);
+    simulationFactory = mock(SimulationFactory.class);
+    simulation = mock(Simulation.class);
     priceDao = mock(PriceDao.class);
-    simulationParams = mock(SimulationParams.class);
+    tradeAlgorithmDao = mock(AlgorithmDao.class);
     tradeStatistic = mock(TradeStatistic.class);
+    algorithmScriptFactory = mock(AlgorithmScriptFactory.class);
 
     when(priceDao.findAllSymbols()).thenReturn(Sets.newHashSet("MEG"));
+    when(simulationFactory.create(any())).thenReturn(simulation);
 
-    stockScanner = new StockScanner(simulator, priceDao, clock);
+    stockScanner = new StockScanner(simulationFactory, priceDao, tradeAlgorithmDao, algorithmScriptFactory, clock);
   }
 
   @Test
   public void testScan_shouldRunSimulationOnAllSymbols() {
-    when(simulator.play(any(SimulationRequest.class)))
+    when(tradeAlgorithmDao.findByTradeAlgorithmId(anyString())).thenReturn(Optional.of(mock(TradeAlgorithm.class)));
+    when(simulation.play())
         .thenReturn(SimulationReport.builder()
             .startingCash(100000)
-            .params(simulationParams)
+            .symbol("MEG")
             .tradeStatistics(tradeStatistic)
             .addTransaction(BuyTransaction.buy().symbol("MEG").date(now).build())
             .endingCash(300000)
             .build());
-    when(simulationParams.getSymbol()).thenReturn("MEG");
 
     final List<ScanResult> scanResults = stockScanner.scan(ScanRequest.withAlgoId("algoId"));
     assertThat(scanResults).hasSize(1);

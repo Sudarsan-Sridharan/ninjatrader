@@ -2,7 +2,7 @@ package com.bn.ninjatrader.simulation.order.cancel;
 
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Broker;
-import com.bn.ninjatrader.simulation.model.World;
+import com.bn.ninjatrader.simulation.model.SimContext;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.base.MoreObjects;
@@ -22,8 +22,8 @@ public class CancelAll implements CancelType {
 
   @Override
   public List<PendingOrder> findPendingOrdersToCancel(final BarData barData) {
-    final World world = barData.getWorld();
-    final Broker broker = world.getBroker();
+    final SimContext simContext = barData.getSimContext();
+    final Broker broker = simContext.getBroker();
     return broker.getPendingOrders();
   }
 

@@ -1,6 +1,5 @@
 package com.bn.ninjatrader.simulation.order.type;
 
-import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
@@ -51,11 +50,6 @@ public class AtPriceTest {
     assertThat(AtPrice.of(5).getFulfilledPrice(submittedBarData, currentBarData)).isEqualTo(5);
     assertThat(AtPrice.of(2).getFulfilledPrice(submittedBarData, currentBarData)).isEqualTo(2);
     assertThat(AtPrice.of(3.00001).getFulfilledPrice(submittedBarData, currentBarData)).isEqualTo(3.00001);
-  }
-
-  @Test
-  public void testGetVariables_shouldReturnOperationVariables() {
-    assertThat(AtPrice.of(Variable.of("DataType")).getVariables()).containsExactly(Variable.of("DataType"));
   }
 
   @Test

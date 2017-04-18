@@ -4,20 +4,18 @@ import com.bn.ninjatrader.dataimport.history.CsvPriceImporter;
 import com.bn.ninjatrader.dataimport.history.parser.CsvDataParser;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.entity.DailyQuote;
-import com.bn.ninjatrader.model.entity.PriceBuilder;
+import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
-import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
+import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
@@ -29,8 +27,7 @@ public class CsvPriceImporterTest {
 
   private CsvDataParser parser;
   private PriceDao priceDao;
-  private PriceBuilderFactory priceBuilderFactory;
-  private PriceBuilder priceBuilder;
+  private PriceBuilderFactory priceFactory;
 
   private CsvPriceImporter importer;
 
@@ -48,32 +45,25 @@ public class CsvPriceImporterTest {
   public void before() {
     parser = mock(CsvDataParser.class);
     priceDao = mock(PriceDao.class);
-    priceBuilderFactory = new DummyPriceBuilderFactory();
+    priceFactory = new DummyPriceBuilderFactory();
 
-    importer = new CsvPriceImporter(parser, priceDao, priceBuilderFactory);
+    when(priceDao.savePrices(any())).thenReturn(mock(PriceDao.SavePricesOperation.class, RETURNS_SELF));
+
+    importer = new CsvPriceImporter(parser, priceDao, priceFactory);
   }
 
   @Test
   public void testSaveDifferentSymbols_shouldSaveQuotesForEachSymbol() {
-    final ArgumentCaptor<SavePriceRequest> requestCaptor = ArgumentCaptor.forClass(SavePriceRequest.class);
     importer.save(Lists.newArrayList(quote1, quote2, quote3, quote4, quote5));
 
-    verify(priceDao, times(2)).save(requestCaptor.capture());
+    final List<Price> bdoExpectedPrices = Lists.newArrayList(quote3.getPrice(priceFactory),
+        quote4.getPrice(priceFactory));
 
-    final SavePriceRequest saveBdoRequest = requestCaptor.getAllValues().get(0);
+    final List<Price> megExpectedPrices = Lists.newArrayList(quote1.getPrice(priceFactory),
+        quote2.getPrice(priceFactory), quote5.getPrice(priceFactory));
 
-    assertThat(saveBdoRequest.getSymbol()).isEqualTo("BDO");
-    assertThat(saveBdoRequest.getPrices())
-        .containsExactly(
-            quote3.getPrice(priceBuilderFactory),
-            quote4.getPrice(priceBuilderFactory));
+    verify(priceDao.savePrices(bdoExpectedPrices)).withSymbol("BDO");
 
-    final SavePriceRequest saveMegRequest = requestCaptor.getAllValues().get(1);
-    assertThat(saveMegRequest.getSymbol()).isEqualTo("MEG");
-    assertThat(saveMegRequest.getPrices())
-        .containsExactly(
-            quote1.getPrice(priceBuilderFactory),
-            quote2.getPrice(priceBuilderFactory),
-            quote5.getPrice(priceBuilderFactory));
+    verify(priceDao.savePrices(megExpectedPrices)).withSymbol("MEG");
   }
 }

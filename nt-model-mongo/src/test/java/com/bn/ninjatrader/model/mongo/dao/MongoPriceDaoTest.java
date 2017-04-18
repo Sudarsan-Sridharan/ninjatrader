@@ -6,9 +6,7 @@ import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.model.mongo.factory.PriceBuilderFactoryMongo;
 import com.bn.ninjatrader.model.mongo.guice.NtModelTestModule;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
-import com.bn.ninjatrader.model.request.SavePriceRequest;
 import com.bn.ninjatrader.model.util.TestUtil;
-import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -67,7 +65,7 @@ public class MongoPriceDaoTest {
 
   @Test
   public void testFindByDateRange_shouldRetrievePricesWithinDateRange() {
-    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(Lists.newArrayList(price1, price2)));
+    priceDao.savePrices(price1, price2).withSymbol("MEG").now();
     
     assertThat(priceDao.findPrices().withSymbol("MEG").from(now).to(now).now()).containsExactly(price1);
     assertThat(priceDao.findPrices().withSymbol("MEG").from(tomorrow).to(tomorrow).now()).containsExactly(price2);
@@ -78,8 +76,8 @@ public class MongoPriceDaoTest {
 
   @Test
   public void testFindBySymbol_shouldRetrievePricesWithMatchingSymbol() {
-    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(Lists.newArrayList(price1)));
-    priceDao.save(SavePriceRequest.forSymbol("BDO").addPrices(Lists.newArrayList(price2)));
+    priceDao.savePrices(price1).withSymbol("MEG").now();
+    priceDao.savePrices(price2).withSymbol("BDO").now();
 
     assertThat(priceDao.findPrices().withSymbol("MEG").from(now).to(tomorrow).now()).containsExactly(price1);
     assertThat(priceDao.findPrices().withSymbol("BDO").from(now).to(tomorrow).now()).containsExactly(price2);
@@ -87,15 +85,15 @@ public class MongoPriceDaoTest {
 
   @Test
   public void testFindAllSymbols_shouldReturnAllSymbols() {
-    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(Lists.newArrayList(price1)));
-    priceDao.save(SavePriceRequest.forSymbol("BDO").addPrices(Lists.newArrayList(price2)));
+    priceDao.savePrices(price1).withSymbol("MEG").now();
+    priceDao.savePrices(price2).withSymbol("BDO").now();
 
     assertThat(priceDao.findAllSymbols()).containsOnly("MEG", "BDO");
   }
 
   @Test
   public void testSort_shouldSortPricesByDate() {
-    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(Lists.newArrayList(price2, price1)));
+    priceDao.savePrices(price2, price1).withSymbol("MEG").now();
     assertThat(priceDao.findPrices().withSymbol("MEG").from(now).to(now.plusDays(1)).now())
         .containsExactly(price1, price2);
   }
@@ -115,45 +113,13 @@ public class MongoPriceDaoTest {
         .open(5.1).high(5.2).low(5.3).close(5.4).volume(5000).build();
 
     // Save set 1 prices
-    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(price3, price2, price1));
+    priceDao.savePrices(price3, price2, price1).withSymbol("MEG").now();
 
     // Save set 2 prices. price4 overwrites price3
-    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(price1, price4, price5));
+    priceDao.savePrices(price1, price4, price5).withSymbol("MEG").now();
 
     assertThat(priceDao.findPrices().withSymbol("MEG").from(now).to(now.plusDays(3)).now())
         .containsExactly(price1, price2, price4, price5);
-  }
-
-  @Test
-  public void testRemoveByDates_shouldRemovePricesWithGivenDates() {
-    // Year 2014
-    final LocalDate year2014 = LocalDate.of(2014, 1, 1);
-    final Price price1 = pbf.builder().date(year2014).open(1.1).high(1.2).low(1.0).close(1.1).build();
-
-    // Year 2015
-    final LocalDate year2015 = LocalDate.of(2015, 1, 1);
-    final LocalDate nextDay2015 = year2015.plusDays(1);
-    final Price price2 = pbf.builder().date(year2015).open(2.1).high(2.2).low(2.0).close(2.1).build();
-    final Price price3 = pbf.builder().date(nextDay2015).open(3.1).high(3.2).low(3.3).close(3.4).build();
-
-    // Year 2016
-    final LocalDate year2016 = LocalDate.of(2016, 12, 29);
-    final LocalDate nextDay2016 = year2016.plusDays(1);
-    final LocalDate next2Days2016 = year2016.plusDays(2);
-    final Price price4 = pbf.builder().date(year2016).open(4.1).high(4.2).low(4.3).close(4.4).build();
-    final Price price5 = pbf.builder().date(nextDay2016).open(5.1).high(5.2).low(5.3).close(5.4).build();
-    final Price price6 = pbf.builder().date(next2Days2016).open(6.1).high(6.2).low(6.3).close(6.4).build();
-
-    // Save prices
-    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(price1, price2, price3, price4, price5, price6));
-
-    // Remove by dates
-    final List<LocalDate> removeDates = Lists.newArrayList(price2.getDate(), price6.getDate(), price1.getDate());
-    priceDao.removeByDates(SavePriceRequest.forSymbol("MEG"), removeDates);
-
-    // Verify results. 3 removed, 3 remaining
-    assertThat(priceDao.findPrices().withSymbol("MEG").from(year2014).to(price6.getDate()).now())
-        .containsExactly(price3, price4, price5);
   }
 
   @Test
@@ -162,7 +128,7 @@ public class MongoPriceDaoTest {
     final Price priceTomorrow = pbf.builder().date(tomorrow).close(2).build();
     final Price priceNextMonth = pbf.builder().date(nextMonth).close(3).build();
 
-    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(priceNow, priceTomorrow, priceNextMonth));
+    priceDao.savePrices(priceNow, priceTomorrow, priceNextMonth).withSymbol("MEG").now();
 
     assertThat(priceDao.findBeforeDate(FindBeforeDateRequest.builder()
         .symbol("MEG").timeFrame(TimeFrame.ONE_DAY).numOfValues(1).beforeDate(now).build()))
@@ -179,7 +145,7 @@ public class MongoPriceDaoTest {
   public void testFindNBarsBeforeDateWithLotsOfBars_shouldReturnPricesBeforeGivenDate() {
     final List<Price> dbPrices = TestUtil.randomPricesForDateRange(now.minusYears(1), now);
 
-    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(dbPrices));
+    priceDao.savePrices(dbPrices).withSymbol("MEG").now();
 
     // Test with 30 bars
     List<Price> result = priceDao.findBeforeDate(FindBeforeDateRequest.builder()
@@ -214,7 +180,7 @@ public class MongoPriceDaoTest {
   public void testFindNBarsBeforeDateWithMultipleYears_shouldReturnPricesBeforeGivenDate() {
     final List<Price> prices = TestUtil.randomPricesForDateRange(now.minusYears(2), now);
 
-    priceDao.save(SavePriceRequest.forSymbol("MEG").addPrices(prices));
+    priceDao.savePrices(prices).withSymbol("MEG").now();
 
     // Test with 400 bars
     final List<Price> result = priceDao.findBeforeDate(FindBeforeDateRequest.builder()
@@ -230,8 +196,8 @@ public class MongoPriceDaoTest {
 
   @Test
   public void testSaveFindWithMultipleTimeFrames_shouldSaveOnGivenTimeframe() {
-    priceDao.save(SavePriceRequest.forSymbol("MEG").timeframe(TimeFrame.ONE_DAY).addPrices(price1));
-    priceDao.save(SavePriceRequest.forSymbol("MEG").timeframe(TimeFrame.ONE_WEEK).addPrices(price2));
+    priceDao.savePrices(price1).withSymbol("MEG").withTimeFrame(TimeFrame.ONE_DAY).now();
+    priceDao.savePrices(price2).withSymbol("MEG").withTimeFrame(TimeFrame.ONE_WEEK).now();
 
     assertThat(priceDao.findPrices().withSymbol("MEG").withTimeFrame(TimeFrame.ONE_DAY)
         .from(now).to(now.plusDays(1)).now())
