@@ -3,7 +3,7 @@ package com.bn.ninjatrader.service.task;
 import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationRequest;
-import com.bn.ninjatrader.simulation.exception.TradeAlgorithmIdNotFoundException;
+import com.bn.ninjatrader.simulation.exception.AlgorithmIdNotFoundException;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.script.AlgorithmScript;
 import com.bn.ninjatrader.simulation.service.AlgorithmService;
@@ -71,7 +71,7 @@ public class RunSimulationTask {
           .from(from).to(to).algorithmScript(script));
       final SimulationReport report = simulation.play();
       return Response.ok(report).build();
-    } catch (final TradeAlgorithmIdNotFoundException e) {
+    } catch (final AlgorithmIdNotFoundException e) {
       throw new BadRequestException(ERROR_ALGO_ID_NOT_FOUND);
     }
   }

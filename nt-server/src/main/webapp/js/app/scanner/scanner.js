@@ -1,4 +1,6 @@
-define(['jquery'], function ($) {
+define(['jquery', 'boardlot'], function ($, BoardLot) {
+
+
 
     function Scanner(containerId) {
         this.container = $(containerId);
@@ -10,6 +12,8 @@ define(['jquery'], function ($) {
         $.get(context.serviceHost + that.ajaxUrl + "?algoId=" + algoId + "&days=" + days)
             .done(function(data) {
                 that._displayResults(data, algoId);
+            })
+            .always(function() {
                 if (scanCompleteCallback) {
                     scanCompleteCallback();
                 }
@@ -29,12 +33,13 @@ define(['jquery'], function ($) {
 
             var txnDate = this._formatDate(txn.dt);
             var profit = Math.trunc(result.profit).toLocaleString();
+            var decimalPlaces = BoardLot.getDecimalPlaces(txn.price);
 
             tr.append('<td class="symbol">' + link + '</td>');
             tr.append('<td class="profit">' + profit + '</td>');
             tr.append('<td class="txnType">' + txn.tnxType + '</td>');
             tr.append('<td class="date">' + txnDate + '</td>');
-            tr.append('<td class="price">' + txn.price + '</td>');
+            tr.append('<td class="price">' + txn.price.toFixed(decimalPlaces) + '</td>');
 
             table.append(tr);
         }

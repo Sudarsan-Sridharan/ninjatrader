@@ -37,10 +37,7 @@ define(['jquery', 'jquerySerializeJson', 'ace', '../status/status'], function ($
     };
 
     AlgoEditor.prototype.save = function() {
-        var algoId = this.algoId;
-        var description = this.description;
         var statusMsg = this.status.show("Saving...");
-
         var formObj = this.form.serializeJSON();
         formObj.algorithm = this.editor.getValue();
 
@@ -51,8 +48,6 @@ define(['jquery', 'jquerySerializeJson', 'ace', '../status/status'], function ($
             data: JSON.stringify(formObj),
             dataType: 'json',
             success: function(data) {
-                algoId.val(data.id);
-                description.val(data.description);
                 statusMsg.remove();
             }
         });

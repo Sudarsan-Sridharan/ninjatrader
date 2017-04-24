@@ -7,6 +7,7 @@ import com.bn.ninjatrader.model.entity.TradeAlgorithm;
 import com.bn.ninjatrader.model.mongo.guice.NtModelMongoModule;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationRequest;
+import com.bn.ninjatrader.simulation.exception.AlgorithmIdNotFoundException;
 import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.script.AlgorithmScript;
@@ -58,7 +59,7 @@ public class StockScanner {
     final LocalDate to = LocalDate.now(clock);
     final Set<String> symbols = priceDao.findAllSymbols();
     final TradeAlgorithm tradeAlgorithm = tradeAlgorithmDao.findByTradeAlgorithmId(req.getAlgoId())
-        .orElseThrow(() -> new IllegalStateException("tradeAlgorithmID is not found"));
+        .orElseThrow(() -> new AlgorithmIdNotFoundException(req.getAlgoId()));
     final AlgorithmScript algoScript = algorithmScriptFactory.create(tradeAlgorithm);
 
     // Collect reports for each symbol.

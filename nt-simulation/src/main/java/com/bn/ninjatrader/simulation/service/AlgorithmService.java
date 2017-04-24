@@ -2,7 +2,7 @@ package com.bn.ninjatrader.simulation.service;
 
 import com.bn.ninjatrader.model.dao.AlgorithmDao;
 import com.bn.ninjatrader.model.entity.TradeAlgorithm;
-import com.bn.ninjatrader.simulation.exception.TradeAlgorithmIdNotFoundException;
+import com.bn.ninjatrader.simulation.exception.AlgorithmIdNotFoundException;
 import com.bn.ninjatrader.simulation.script.AlgorithmScriptFactory;
 import com.bn.ninjatrader.simulation.script.AlgorithmScript;
 import com.google.inject.Inject;
@@ -30,7 +30,7 @@ public class AlgorithmService {
    */
   public AlgorithmScript findById(final String algoId) {
     final TradeAlgorithm algorithm = tradeAlgorithmDao.findByTradeAlgorithmId(algoId)
-        .orElseThrow(() -> new TradeAlgorithmIdNotFoundException(algoId));
+        .orElseThrow(() -> new AlgorithmIdNotFoundException(algoId));
 
     final AlgorithmScript script = scriptFactory.create(algorithm);
 

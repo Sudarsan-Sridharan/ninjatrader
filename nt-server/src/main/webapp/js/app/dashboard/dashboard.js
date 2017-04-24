@@ -29,9 +29,6 @@ define(['jquery', 'require', '../scanner/scanner', '../status/status'], function
             scanner.scan(algoSelector.val(), daySelector.val(), scanner.enable);
         };
 
-        // Scan on load
-        scanner.blockAndScan();
-
         // Scan on button click
         scanButton.click(function() {
             scanner.blockAndScan();
@@ -78,7 +75,7 @@ define(['jquery', 'require', '../scanner/scanner', '../status/status'], function
                 var algoDropdown = $("select.algo").empty();
                 for(var i in data) {
                     var algo = data[i];
-                    var option = $('<option></option>').attr("value", algo.id).text(algo.description);
+                    var option = $('<option></option>').attr("value", algo.algorithmId).text(algo.description);
                     algoDropdown.append(option);
                 }
 

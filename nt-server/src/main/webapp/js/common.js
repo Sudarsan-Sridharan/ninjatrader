@@ -5,7 +5,8 @@ requirejs.config({
         jquery: 'jquery.min',
         jquerySerializeJson: 'jquery.serializejson.min',
         ace: 'ace/ace',
-        d3: 'd3.min'
+        d3: 'd3.min',
+        boardLot: 'boardlot'
     },
 
     shim: {
