@@ -3,6 +3,7 @@ package com.bn.ninjatrader.simulation.model;
 import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
+import com.bn.ninjatrader.simulation.core.SimulationRequest;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.listener.BrokerListener;
 import com.bn.ninjatrader.simulation.order.BuyOrder;
@@ -69,7 +70,7 @@ public class BrokerTest {
     orderRequestProcessors.put(TransactionType.BUY, buyOrderRequestProcessor);
     orderRequestProcessors.put(TransactionType.SELL, sellOrderRequestProcessor);
 
-    broker = new Broker(orderExecutors, orderRequestProcessors);
+    broker = new Broker(orderExecutors, orderRequestProcessors, mock(SimulationRequest.class));
     broker.addListener(brokerListener);
   }
 

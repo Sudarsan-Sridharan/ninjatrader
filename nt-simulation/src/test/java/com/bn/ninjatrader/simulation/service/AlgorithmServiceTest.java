@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.simulation.service;
 
 import com.bn.ninjatrader.model.dao.AlgorithmDao;
-import com.bn.ninjatrader.model.entity.TradeAlgorithm;
+import com.bn.ninjatrader.model.entity.Algorithm;
 import com.bn.ninjatrader.simulation.script.AlgorithmScriptFactory;
 import com.bn.ninjatrader.simulation.script.AlgorithmScript;
 import org.junit.Before;
@@ -31,9 +31,9 @@ public class AlgorithmServiceTest {
 
   @Test
   public void testFind_shouldReturnSimTradeAlgorithm() {
-    final TradeAlgorithm tradeAlgorithm = TradeAlgorithm.builder()
+    final Algorithm algorithm = Algorithm.builder()
         .algorithm("SAMPLE_SCRIPT").userId("test").algoId("algoId").build();
-    when(tradeAlgorithmDao.findByTradeAlgorithmId("algoId")).thenReturn(Optional.of(tradeAlgorithm));
+    when(tradeAlgorithmDao.findByAlgorithmId("algoId")).thenReturn(Optional.of(algorithm));
 
     final AlgorithmScript script = service.findById("algoId");
   }

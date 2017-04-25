@@ -9,7 +9,7 @@ import com.google.common.base.Objects;
  * @author bradwee2000@gmail.com
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TradeAlgorithm {
+public class Algorithm {
   public static final Builder builder() {
     return new Builder();
   }
@@ -26,10 +26,10 @@ public class TradeAlgorithm {
   @JsonProperty("description")
   private final String description;
 
-  public TradeAlgorithm(@JsonProperty("algorithmId") final String id,
-                        @JsonProperty("userId") final String userId,
-                        @JsonProperty("algorithm") final String algorithm,
-                        @JsonProperty("description") final String description) {
+  public Algorithm(@JsonProperty("algorithmId") final String id,
+                   @JsonProperty("userId") final String userId,
+                   @JsonProperty("algorithm") final String algorithm,
+                   @JsonProperty("description") final String description) {
     this.id = id;
     this.userId = userId;
     this.algorithm = algorithm;
@@ -56,7 +56,7 @@ public class TradeAlgorithm {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    TradeAlgorithm that = (TradeAlgorithm) o;
+    Algorithm that = (Algorithm) o;
     return Objects.equal(id, that.id) &&
         Objects.equal(userId, that.userId) &&
         Objects.equal(algorithm, that.algorithm) &&
@@ -107,8 +107,8 @@ public class TradeAlgorithm {
       return this;
     }
 
-    public TradeAlgorithm build() {
-      return new TradeAlgorithm(id, userId, algorithm, description);
+    public Algorithm build() {
+      return new Algorithm(id, userId, algorithm, description);
     }
   }
 }

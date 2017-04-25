@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.service.dropwizard.runner;
 
 import com.bn.ninjatrader.model.dao.AlgorithmDao;
-import com.bn.ninjatrader.model.entity.TradeAlgorithm;
+import com.bn.ninjatrader.model.entity.Algorithm;
 import com.bn.ninjatrader.model.mongo.guice.NtModelMongoModule;
 import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
@@ -64,7 +64,7 @@ public class SimulationRunner {
 
 
 
-    tradeAlgorithmDao.save(TradeAlgorithm.builder().algorithm(scriptText)
+    tradeAlgorithmDao.save(Algorithm.builder().algorithm(scriptText)
         .userId("ADMIN")
         .algoId("RISKON")
         .description("10% Risk On!!")

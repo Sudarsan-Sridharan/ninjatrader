@@ -2,6 +2,7 @@ package com.bn.ninjatrader.simulation.binding;
 
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.annotation.VarCalculatorMap;
+import com.bn.ninjatrader.simulation.exception.VariableUnknownException;
 import com.bn.ninjatrader.simulation.logicexpression.Variables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -29,14 +30,18 @@ public class BindingFactory {
   }
 
   public BindingProvider createForVariable(final Variable variable) {
-    try {
       if (varCalculatorMap.containsKey(variable.getDataType())) {
-        return (BindingProvider) varCalculatorMap.get(variable.getDataType())
-            .getConstructor(int.class)
-            .newInstance(variable.getPeriod());
+        return createNewInstanceForVariable(variable);
       } else {
-        throw new IllegalArgumentException(String.format("Variable [%s] not supported.", variable));
+        throw new VariableUnknownException(variable);
       }
+  }
+
+  private BindingProvider createNewInstanceForVariable(final Variable variable) {
+    try {
+      return (BindingProvider) varCalculatorMap.get(variable.getDataType())
+          .getConstructor(int.class)
+          .newInstance(variable.getPeriod());
     } catch (final Exception e) {
       throw new RuntimeException(e);
     }

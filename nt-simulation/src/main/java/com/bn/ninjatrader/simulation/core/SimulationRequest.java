@@ -20,6 +20,7 @@ public class SimulationRequest {
   private LocalDate from;
   private LocalDate to;
   private AlgorithmScript algorithmScript;
+  private boolean isDebug;
 
   private SimulationRequest(final String symbol) {
     this.symbol = symbol;
@@ -45,6 +46,11 @@ public class SimulationRequest {
     return this;
   }
 
+  public SimulationRequest isDebug(final boolean isDebug) {
+    this.isDebug = isDebug;
+    return this;
+  }
+
   public String getSymbol() {
     return symbol;
   }
@@ -65,12 +71,17 @@ public class SimulationRequest {
     return startingCash;
   }
 
+  public boolean isDebug() {
+    return isDebug;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     SimulationRequest that = (SimulationRequest) o;
     return Double.compare(that.startingCash, startingCash) == 0 &&
+        isDebug == that.isDebug &&
         Objects.equal(symbol, that.symbol) &&
         Objects.equal(from, that.from) &&
         Objects.equal(to, that.to) &&
@@ -79,7 +90,7 @@ public class SimulationRequest {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(startingCash, symbol, from, to, algorithmScript);
+    return Objects.hashCode(startingCash, symbol, from, to, algorithmScript, isDebug);
   }
 
   @Override
@@ -89,7 +100,8 @@ public class SimulationRequest {
         .add("symbol", symbol)
         .add("from", from)
         .add("to", to)
-        .add("algorithm", algorithmScript)
+        .add("algorithmScript", algorithmScript)
+        .add("isDebug", isDebug)
         .toString();
   }
 }

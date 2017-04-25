@@ -2,6 +2,7 @@ package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.simulation.annotation.OrderExecutors;
 import com.bn.ninjatrader.simulation.annotation.OrderRequestProcessors;
+import com.bn.ninjatrader.simulation.core.SimulationRequest;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.listener.BrokerListener;
 import com.bn.ninjatrader.simulation.order.Order;
@@ -20,13 +21,11 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -36,28 +35,40 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class Broker {
   private static final Logger LOG = LoggerFactory.getLogger(Broker.class);
+  private static final String SUBMIT_ORDER_LOG = "%s - Submit %s order at price [%s]";
+  private static final String EXPIRED_ORDER_LOG = "%s - Expired %s order submitted on %s";
+  private static final String PROCESSED_ORDER_LOG = "%s - Processed %s order at price [%s]";
 
   private final List<PendingOrder> pendingOrders = Lists.newArrayList();
   private final Map<TransactionType, Transaction> lastTransactions = Maps.newHashMap();
   private final List<BrokerListener> listeners = Lists.newArrayList();
   private final Map<TransactionType, OrderExecutor> orderExecutors;
   private final Map<TransactionType, OrderRequestProcessor> orderRequestProcessors;
+  private final List<String> logs;
+  private final boolean isDebug;
 
   private BarData currentBar;
 
   @Inject
   public Broker(@OrderExecutors final Map<TransactionType, OrderExecutor> orderExecutors,
-                @OrderRequestProcessors final Map<TransactionType, OrderRequestProcessor> orderRequestProcessors) {
+                @OrderRequestProcessors final Map<TransactionType, OrderRequestProcessor> orderRequestProcessors,
+                @Assisted final SimulationRequest request) {
     this.orderExecutors = orderExecutors;
     this.orderRequestProcessors = orderRequestProcessors;
+    this.isDebug = request.isDebug();
+    this.logs = isDebug ? Lists.newArrayList() : Collections.emptyList();
   }
 
   public void submitOrder(final Order order, final BarData barData) {
     checkNotNull(order, "order must not be null.");
     checkNotNull(barData, "barData must not be null.");
 
-//    LOG.info("{} - Submit {} order at price [{}]", order.getOrderDate(), order.getTransactionType(),
-//        order.getOrderType().getFulfilledPrice(barData, barData));
+    if (isDebug) {
+      logs.add(String.format(SUBMIT_ORDER_LOG,
+          order.getOrderDate(),
+          order.getTransactionType(),
+          order.getOrderType().getFulfilledPrice(barData, barData)));
+    }
 
     pendingOrders.add(PendingOrder.of(order, barData));
   }
@@ -67,6 +78,14 @@ public class Broker {
         "No processor found for TransactionType [%s]", req.getTxnType());
     final OrderRequestProcessor processor = orderRequestProcessors.get(req.getTxnType());
     final Order order = processor.process(req, currentBar);
+
+    if (isDebug) {
+      logs.add(String.format(SUBMIT_ORDER_LOG,
+          order.getOrderDate(),
+          order.getTransactionType(),
+          order.getOrderType().getFulfilledPrice(currentBar, currentBar)));
+    }
+
     pendingOrders.add(PendingOrder.of(order, currentBar));
   }
 
@@ -82,10 +101,13 @@ public class Broker {
         fulfillOrder(pendingOrder, barData);
         fulfilledOrders.add(pendingOrder);
       } else if (pendingOrder.isExpired(barData)) {
-//        LOG.info("{} - Expired {} order submitted on {}",
-//            barData.getPrice().getDate(),
-//            pendingOrder.getTransactionType(),
-//            pendingOrder.getSubmittedBarData().getPrice().getDate());
+
+        if (isDebug) {
+          logs.add(String.format(EXPIRED_ORDER_LOG,
+            barData.getPrice().getDate(),
+            pendingOrder.getTransactionType(),
+            pendingOrder.getSubmittedBarData().getPrice().getDate()));
+        }
         fulfilledOrders.add(pendingOrder);
       }
     }
@@ -105,8 +127,12 @@ public class Broker {
 
     publishToListeners(transaction, barData);
 
-//    LOG.info("{} - Processed {} order at price [{}]", barData.getPrice().getDate(), tnxType,
-//        orderType.getFulfilledPrice(pendingOrder.getSubmittedBarData(), barData));
+    if (isDebug) {
+      logs.add(String.format(PROCESSED_ORDER_LOG,
+          barData.getPrice().getDate(),
+          tnxType,
+          orderType.getFulfilledPrice(pendingOrder.getSubmittedBarData(), barData)));
+    }
   }
 
   public boolean hasPendingOrder() {
@@ -158,6 +184,10 @@ public class Broker {
 
   public void setCurrentBar(final BarData currentBar) {
     this.currentBar = currentBar;
+  }
+
+  public List<String> getLogs() {
+    return logs;
   }
 
   @Override

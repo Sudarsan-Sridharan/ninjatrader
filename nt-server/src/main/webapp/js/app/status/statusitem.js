@@ -16,12 +16,18 @@ define(['jquery'], function ($) {
         });
     }
 
-    StatusItem.prototype.show = function() {
+    StatusItem.prototype.show = function(msg) {
+        if (msg) {
+            this.msg(msg);
+        }
         this.parentContainer.append(this.container);
         return this;
     };
 
-    StatusItem.prototype.quickShow = function() {
+    StatusItem.prototype.quickShow = function(msg) {
+        if (msg) {
+            this.msg(msg);
+        }
         this.parentContainer.append(this.container);
         var that = this;
         setTimeout(function() {

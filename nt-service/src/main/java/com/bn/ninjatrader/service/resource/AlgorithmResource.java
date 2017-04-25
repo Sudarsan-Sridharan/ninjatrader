@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.service.resource;
 
 import com.bn.ninjatrader.model.dao.AlgorithmDao;
-import com.bn.ninjatrader.model.entity.TradeAlgorithm;
+import com.bn.ninjatrader.model.entity.Algorithm;
 import com.bn.ninjatrader.service.model.CreateAlgorithmRequest;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -32,14 +32,14 @@ public class AlgorithmResource {
   @GET
   public Response getAllTradeAlgorithm() {
     // TODO get userId from jwt from auth header
-    final List<TradeAlgorithm> algos = algoDao.findByUserId("ADMIN");
+    final List<Algorithm> algos = algoDao.findByUserId("ADMIN");
     return Response.ok(algos).build();
   }
 
   @GET
   @Path("/{algoId}")
   public Response getTradeAlgorithmById(@PathParam("algoId") final String algoId) {
-    final TradeAlgorithm algo = algoDao.findByTradeAlgorithmId(algoId)
+    final Algorithm algo = algoDao.findByAlgorithmId(algoId)
         .orElseThrow(() -> new NotFoundException("algoId is not found."));
     return Response.ok(algo).build();
   }
@@ -47,15 +47,22 @@ public class AlgorithmResource {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   public Response postTradeAlgorithm(final CreateAlgorithmRequest req) {
-    final TradeAlgorithm algo = TradeAlgorithm.builder()
+    final Algorithm algo = Algorithm.builder()
         .algoId(req.getAlgoId())
         .userId("ADMIN") // TODO get userId from jwt from auth header
         .algorithm(req.getAlgorithm())
         .description(req.getDescription())
         .build();
 
-    final TradeAlgorithm savedAlgorithm = algoDao.save(algo);
+    final Algorithm savedAlgorithm = algoDao.save(algo);
 
     return Response.ok(savedAlgorithm).build();
+  }
+
+  @DELETE
+  @Path("/{algoId}")
+  public Response deleteTradeAlgorithm(@PathParam("algoId") final String algoId) {
+    algoDao.delete(algoId);
+    return Response.ok().build();
   }
 }

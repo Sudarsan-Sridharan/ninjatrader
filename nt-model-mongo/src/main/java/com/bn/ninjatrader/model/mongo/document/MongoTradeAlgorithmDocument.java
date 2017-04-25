@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.model.mongo.document;
 
-import com.bn.ninjatrader.model.entity.TradeAlgorithm;
+import com.bn.ninjatrader.model.entity.Algorithm;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
@@ -19,7 +19,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class MongoTradeAlgorithmDocument {
   private static final Logger LOG = LoggerFactory.getLogger(MongoTradeAlgorithmDocument.class);
 
-  public static final MongoTradeAlgorithmDocument copyFrom(final TradeAlgorithm algo) {
+  public static final MongoTradeAlgorithmDocument copyFrom(final Algorithm algo) {
     checkNotNull(algo, "algo must not be null.");
     return new MongoTradeAlgorithmDocument(algo.getId(), algo.getUserId(), algo.getDescription(), algo.getAlgorithm());
   }
@@ -82,8 +82,8 @@ public class MongoTradeAlgorithmDocument {
     this.algorithm = algorithm;
   }
 
-  public TradeAlgorithm toTradeAlgorithm() {
-    return TradeAlgorithm.builder()
+  public Algorithm toTradeAlgorithm() {
+    return Algorithm.builder()
         .algoId(algorithmId)
         .userId(userId)
         .description(description)

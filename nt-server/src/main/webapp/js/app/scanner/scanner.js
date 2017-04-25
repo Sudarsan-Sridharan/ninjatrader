@@ -1,7 +1,5 @@
 define(['jquery', 'boardlot'], function ($, BoardLot) {
-
-
-
+    
     function Scanner(containerId) {
         this.container = $(containerId);
         this.ajaxUrl = "/task/scanner/run";

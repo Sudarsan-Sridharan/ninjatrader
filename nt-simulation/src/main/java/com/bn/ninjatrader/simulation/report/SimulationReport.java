@@ -39,18 +39,28 @@ public class SimulationReport {
   @JsonProperty("marks")
   private final List<Mark> marks;
 
+  @JsonProperty("brokerLogs")
+  private final List<String> brokerLogs;
+
+  @JsonProperty("error")
+  private final String error;
+
   public SimulationReport(@JsonProperty("symbol") final String symbol,
                           @JsonProperty("startingCash") final double startingCash,
                           @JsonProperty("endingCash") final double endingCash,
                           @JsonProperty("txns") final List<Transaction> transactions,
                           @JsonProperty("stats") final TradeStatistic tradeStatistic,
-                          @JsonProperty("marks") final List<Mark> marks) {
+                          @JsonProperty("marks") final List<Mark> marks,
+                          @JsonProperty("brokerLogs") final List<String> brokerLogs,
+                          @JsonProperty("error") final String error) {
     this.symbol = symbol;
     this.startingCash = startingCash;
     this.endingCash = endingCash;
     this.transactions = Lists.newArrayList(transactions);
     this.tradeStatistic = tradeStatistic;
     this.marks = Lists.newArrayList(marks);
+    this.brokerLogs = Lists.newArrayList(brokerLogs);
+    this.error = error;
   }
 
   public String getSymbol() {
@@ -75,6 +85,14 @@ public class SimulationReport {
 
   public List<Mark> getMarks() {
     return marks;
+  }
+
+  public List<String> getBrokerLogs() {
+    return brokerLogs;
+  }
+
+  public String getError() {
+    return error;
   }
 
   @Override
@@ -117,6 +135,8 @@ public class SimulationReport {
     private List<Transaction> transactions = Lists.newArrayList();
     private TradeStatistic tradeStatistic;
     private List<Mark> marks = Lists.newArrayList();
+    private List<String> brokerLogs = Lists.newArrayList();
+    private String error;
 
     public Builder symbol(final String symbol) {
       this.symbol = symbol;
@@ -168,8 +188,19 @@ public class SimulationReport {
       return this;
     }
 
+    public Builder addBrokerLogs(final List<String> brokerLogs) {
+      this.brokerLogs.addAll(brokerLogs);
+      return this;
+    }
+
+    public Builder error(final String error) {
+      this.error = error;
+      return this;
+    }
+
     public SimulationReport build() {
-      return new SimulationReport(symbol, startingCash, endingCash, transactions, tradeStatistic, marks);
+      return new SimulationReport(symbol, startingCash, endingCash, transactions,
+          tradeStatistic, marks, brokerLogs, error);
     }
   }
 }

@@ -17,7 +17,7 @@ select {
 .panel {
     float:left;
     margin: 15px;
-    min-width:250px;
+    min-width:30%;
     min-height:100px;
     background: white;
     border: 1px solid #eee;
@@ -62,20 +62,28 @@ select {
     font-size:12px;
 }
 
-#scanResult th {
+.algoListPanel .algoItem {
+    margin: 5px 0;
+}
+
+.algoListPanel .deleteAlgo {
+    float:right;
+}
+
+.scannerPanel th {
     color:#444;
 }
-#scanResult td {
+.scannerPanel td {
     border-bottom: 1px solid #eee;
     padding: 7px 10px;
 }
-#scanResult .buy .txnType {
+.scannerPanel .buy .txnType {
     color: darkgreen;
 }
-#scanResult .sell .txnType {
+.scannerPanel .sell .txnType {
     color: darkred;
 }
-#scanResult td.price, #scanResult td.profit {
+.scannerPanel td.price, .scannerPanel td.profit {
     text-align:right;
 }
 
@@ -117,5 +125,10 @@ select {
     right: 0;
     bottom: 0;
     left: 0;
+}
+
+#algoEditor .saveForm {
+    float:left;
+    margin-right:15px;
 }
 

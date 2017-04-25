@@ -6,6 +6,7 @@ import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.BarProducer;
 import com.bn.ninjatrader.simulation.model.*;
+import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.script.AlgorithmScript;
 import com.bn.ninjatrader.simulation.script.ScriptRunner;
 import com.google.common.collect.Lists;
@@ -113,5 +114,15 @@ public class SimulationTest {
     final List<BarData> barDataList = barDataCaptor.getAllValues();
     assertThat(barDataList.get(0).getPrice()).isEqualTo(price1);
     assertThat(barDataList.get(1).getPrice()).isEqualTo(price2);
+  }
+
+  @Test
+  public void testPlayWithError_shouldReturnReportWithErrorMsg() {
+    doThrow(new RuntimeException("test error"))
+        .when(scriptRunner).onSimulationStart(any());
+
+    final SimulationReport report = simulation.play();
+
+    assertThat(report.getError()).isEqualTo("test error");
   }
 }

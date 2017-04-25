@@ -1,4 +1,15 @@
-define(['jquery', 'require', '../scanner/scanner', '../status/status'], function ($, require, Scanner, Status) {
+define(['jquery', 'require',
+    'app/scanner/scanner',
+    'app/status/status',
+    'app/dashboard/panel/algolistpanel',
+    'app/dashboard/panel/scannerpanel',
+    'app/client/algoclient'], function ($, require) {
+
+    var Scanner = require("app/scanner/scanner");
+    var Status = require("app/status/status");
+    var AlgoListPanel = require("app/dashboard/panel/algolistpanel");
+    var ScannerPanel = require("app/dashboard/panel/scannerpanel");
+    var AlgoClient = require("app/client/algoclient");
 
     function Dashboard() {
         this.status = new Status("#status");
@@ -70,28 +81,33 @@ define(['jquery', 'require', '../scanner/scanner', '../status/status'], function
     };
 
     Dashboard.prototype.initAlgo = function(callback) {
-        $.get(context.serviceHost + "/algorithms")
-            .done(function(data) {
-                var algoDropdown = $("select.algo").empty();
-                for(var i in data) {
-                    var algo = data[i];
-                    var option = $('<option></option>').attr("value", algo.algorithmId).text(algo.description);
-                    algoDropdown.append(option);
-                }
+        var algoListPanel = new AlgoListPanel();
+        $("#panels").append(algoListPanel.node());
+        algoListPanel.load();
 
-                if (callback) {
-                    callback();
-                }
-            });
+        AlgoClient.getAll(function(data) {
+            var algoDropdown = $("select.algo").empty();
+            for(var i in data) {
+                var algo = data[i];
+                var option = $('<option></option>').attr("value", algo.algorithmId).text(algo.description);
+                algoDropdown.append(option);
+            }
+
+            if (callback) {
+                callback();
+            }
+        });
     };
 
     $(document).ready(function() {
         var dashboard = new Dashboard();
 
         dashboard.initAlgo(function() {
-            dashboard.initScanner("#scanner");
-            dashboard.initScanner("#scanner2");
+            $("#panels").append(new ScannerPanel().node());
+            $("#panels").append(new ScannerPanel().node());
         });
+
+
 
         dashboard.initAdminTaskPanel("#admin");
     });

@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.model.mongo.dao;
 
 import com.bn.ninjatrader.model.dao.AlgorithmDao;
-import com.bn.ninjatrader.model.entity.TradeAlgorithm;
+import com.bn.ninjatrader.model.entity.Algorithm;
 import com.bn.ninjatrader.model.mongo.annotation.TradeAlgorithmCollection;
 import com.bn.ninjatrader.model.mongo.document.MongoTradeAlgorithmDocument;
 import com.bn.ninjatrader.model.mongo.util.Queries;
@@ -40,7 +40,7 @@ public class MongoAlgorithmDao extends MongoAbstractDao implements AlgorithmDao 
   }
 
   @Override
-  public TradeAlgorithm save(final TradeAlgorithm algo) {
+  public Algorithm save(final Algorithm algo) {
     final MongoTradeAlgorithmDocument doc = MongoTradeAlgorithmDocument.copyFrom(algo);
     if (StringUtils.isEmpty(doc.getAlgorithmId())) {
       doc.setAlgorithmId(idGenerator.createId());
@@ -50,7 +50,7 @@ public class MongoAlgorithmDao extends MongoAbstractDao implements AlgorithmDao 
   }
 
   @Override
-  public Optional<TradeAlgorithm> findByTradeAlgorithmId(final String algoId) {
+  public Optional<Algorithm> findByAlgorithmId(final String algoId) {
     final Optional<MongoTradeAlgorithmDocument> foundDoc = Optional.ofNullable(getMongoCollection()
         .findOne(FIND_BY_ALGO_ID, algoId).as(MongoTradeAlgorithmDocument.class));
 
@@ -58,7 +58,12 @@ public class MongoAlgorithmDao extends MongoAbstractDao implements AlgorithmDao 
   }
 
   @Override
-  public List<TradeAlgorithm> findByUserId(final String userId) {
+  public void delete(final String algoId) {
+    getMongoCollection().remove(FIND_BY_ALGO_ID, algoId);
+  }
+
+  @Override
+  public List<Algorithm> findByUserId(final String userId) {
     try (final MongoCursor<MongoTradeAlgorithmDocument> cursor =
              getMongoCollection().find(FIND_BY_USER_ID, userId)
                  .as(MongoTradeAlgorithmDocument.class)) {

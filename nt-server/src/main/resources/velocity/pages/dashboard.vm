@@ -9,52 +9,6 @@
 
 <body>
 
-<div id="scanner" class="panel">
-    <div class="panelWrap">
-        <div class="panelHeader">
-            <h3 class="panelTitle">Stock Scanner</h3>
-            <div class="panelAction">
-                <select class="algo"></select>
-                <select class="days">
-                    <option value="1">Today</option>
-                    <option value="2">2 days ago</option>
-                    <option value="3">3 days ago</option>
-                    <option value="7">7 days ago</option>
-                    <option value="14">14 days ago</option>
-                    <option value="30">30 days ago</option>
-                </select>
-                <button class="refreshBtn">Scan</button>
-            </div>
-        </div>
-        <div id="scanResult" class="panelContent">Loading...</div>
-    </div>
-</div>
-
-<div id="scanner2" class="panel">
-    <div class="panelWrap">
-        <div class="panelHeader">
-            <h3 class="panelTitle">Stock Scanner2</h3>
-            <div class="panelAction">
-                <select class="algo">
-                    #foreach($algo in $tradeAlgorithms)
-                        <option value="$algo.id">$algo.description</option>
-                    #end
-                </select>
-                <select class="days">
-                    <option value="1">Today</option>
-                    <option value="2">2 days ago</option>
-                    <option value="3">3 days ago</option>
-                    <option value="7">7 days ago</option>
-                    <option value="14">14 days ago</option>
-                    <option value="30">30 days ago</option>
-                </select>
-                <button class="refreshBtn">Scan</button>
-            </div>
-        </div>
-        <div id="scanResult" class="panelContent">Loading...</div>
-    </div>
-</div>
-
 <div id="admin" class="panel">
     <div class="panelWrap">
         <div class="panelHeader">
@@ -66,6 +20,8 @@
         </div>
     </div>
 </div>
+
+<div id="panels"></div>
 
 <div id="status"></div>
 

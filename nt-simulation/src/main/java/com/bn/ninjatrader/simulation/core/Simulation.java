@@ -61,18 +61,22 @@ public class Simulation implements BrokerListener {
   }
 
   public SimulationReport play() {
-    scriptRunner.onSimulationStart(this.simContext);
+    try {
+      scriptRunner.onSimulationStart(this.simContext);
 
-    for (final Map.Entry<String, List<Price>> entry : priceDatastore.entrySet()) {
-      final String symbol = entry.getKey();
-      for (final Price price : entry.getValue()) {
-        final BarData bar = barProducer.nextBar(symbol, price, simContext);
-        processBar(bar);
+      for (final Map.Entry<String, List<Price>> entry : priceDatastore.entrySet()) {
+        final String symbol = entry.getKey();
+        for (final Price price : entry.getValue()) {
+          final BarData bar = barProducer.nextBar(symbol, price, simContext);
+          processBar(bar);
+        }
       }
+      onSimulationEnd();
+    } catch (final Exception e) {
+      return createSimulationReport(e).build();
     }
-    onSimulationEnd();
 
-    return createSimulationReport();
+    return createSimulationReport().build();
   }
 
   private void processBar(final BarData bar) {
@@ -86,16 +90,19 @@ public class Simulation implements BrokerListener {
     scriptRunner.onSimulationEnd();
   }
 
-  public SimulationReport createSimulationReport() {
-    final SimulationReport report = SimulationReport.builder()
+  public SimulationReport.Builder createSimulationReport() {
+    return SimulationReport.builder()
         .symbol(simRequest.getSymbol())
         .tradeStatistics(account.getTradeStatistic())
         .addTransactions(account.getBookkeeper().getTransactions())
         .startingCash(simRequest.getStartingCash())
         .endingCash(account.getTotalAccountValue())
         .addMarks(simContext.getChartMarks())
-        .build();
-    return report;
+        .addBrokerLogs(broker.getLogs());
+  }
+
+  public SimulationReport.Builder createSimulationReport(final Exception e) {
+    return createSimulationReport().error(e.getMessage());
   }
 
   public Account getAccount() {

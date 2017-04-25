@@ -2,7 +2,7 @@ package com.bn.ninjatrader.simulation.scanner;
 
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.AlgorithmDao;
-import com.bn.ninjatrader.model.entity.TradeAlgorithm;
+import com.bn.ninjatrader.model.entity.Algorithm;
 import com.bn.ninjatrader.model.util.TestUtil;
 import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
@@ -60,7 +60,7 @@ public class StockScannerTest {
 
   @Test
   public void testScan_shouldRunSimulationOnAllSymbols() {
-    when(tradeAlgorithmDao.findByTradeAlgorithmId(anyString())).thenReturn(Optional.of(mock(TradeAlgorithm.class)));
+    when(tradeAlgorithmDao.findByAlgorithmId(anyString())).thenReturn(Optional.of(mock(Algorithm.class)));
     when(simulation.play())
         .thenReturn(SimulationReport.builder()
             .startingCash(100000)

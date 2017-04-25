@@ -3,7 +3,7 @@ package com.bn.ninjatrader.simulation.scanner;
 import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.AlgorithmDao;
-import com.bn.ninjatrader.model.entity.TradeAlgorithm;
+import com.bn.ninjatrader.model.entity.Algorithm;
 import com.bn.ninjatrader.model.mongo.guice.NtModelMongoModule;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationRequest;
@@ -58,9 +58,9 @@ public class StockScanner {
     final LocalDate from = LocalDate.now(clock).minusYears(1);
     final LocalDate to = LocalDate.now(clock);
     final Set<String> symbols = priceDao.findAllSymbols();
-    final TradeAlgorithm tradeAlgorithm = tradeAlgorithmDao.findByTradeAlgorithmId(req.getAlgoId())
+    final Algorithm algorithm = tradeAlgorithmDao.findByAlgorithmId(req.getAlgoId())
         .orElseThrow(() -> new AlgorithmIdNotFoundException(req.getAlgoId()));
-    final AlgorithmScript algoScript = algorithmScriptFactory.create(tradeAlgorithm);
+    final AlgorithmScript algoScript = algorithmScriptFactory.create(algorithm);
 
     // Collect reports for each symbol.
     final List<SimulationReport> reports =  symbols.stream()

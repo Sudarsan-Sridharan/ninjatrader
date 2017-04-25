@@ -36,7 +36,7 @@ public class SimContextFactory {
     final List<Price> priceList = priceDao.findPrices().withSymbol(req.getSymbol())
         .from(req.getFrom()).to(req.getTo()).now();
     final Account account = new Account(new Portfolio(), new Bookkeeper(), new TradeStatistic(), req.getStartingCash());
-    final Broker broker = brokerFactory.createBroker();
+    final Broker broker = brokerFactory.createBroker(req);
     final History history = History.withMaxSize(DEFAULT_MAX_HISTORY_SIZE);
 
     return SimContext.builder().account(account).broker(broker).boardLotTable(boardLotTable).history(history)

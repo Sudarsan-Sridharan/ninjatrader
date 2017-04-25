@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.simulation.service;
 
 import com.bn.ninjatrader.model.dao.AlgorithmDao;
-import com.bn.ninjatrader.model.entity.TradeAlgorithm;
+import com.bn.ninjatrader.model.entity.Algorithm;
 import com.bn.ninjatrader.simulation.exception.AlgorithmIdNotFoundException;
 import com.bn.ninjatrader.simulation.script.AlgorithmScriptFactory;
 import com.bn.ninjatrader.simulation.script.AlgorithmScript;
@@ -29,7 +29,7 @@ public class AlgorithmService {
    * Data is stored as json, so need to convert it to object.
    */
   public AlgorithmScript findById(final String algoId) {
-    final TradeAlgorithm algorithm = tradeAlgorithmDao.findByTradeAlgorithmId(algoId)
+    final Algorithm algorithm = tradeAlgorithmDao.findByAlgorithmId(algoId)
         .orElseThrow(() -> new AlgorithmIdNotFoundException(algoId));
 
     final AlgorithmScript script = scriptFactory.create(algorithm);

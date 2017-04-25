@@ -84,6 +84,7 @@ public class RunSimulationTaskTest extends JerseyTest {
         .queryParam("from", "20160101")
         .queryParam("to", "20161231")
         .queryParam("algoId", "dtRKje03")
+        .queryParam("isDebug", "true")
         .request().get();
 
     verify(simulationFactory).create(requestCaptor.capture());
@@ -93,6 +94,7 @@ public class RunSimulationTaskTest extends JerseyTest {
     assertThat(req.getFrom()).isEqualTo(LocalDate.of(2016, 1, 1));
     assertThat(req.getTo()).isEqualTo(LocalDate.of(2016, 12, 31));
     assertThat(req.getAlgorithmScript()).isNotNull();
+    assertThat(req.isDebug()).isTrue();
   }
 
   @Test

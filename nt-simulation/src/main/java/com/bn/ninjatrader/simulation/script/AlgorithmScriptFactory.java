@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.script;
 
-import com.bn.ninjatrader.model.entity.TradeAlgorithm;
+import com.bn.ninjatrader.model.entity.Algorithm;
 
 import javax.inject.Singleton;
 
@@ -10,7 +10,7 @@ import javax.inject.Singleton;
 @Singleton
 public class AlgorithmScriptFactory {
 
-    public AlgorithmScript create(final TradeAlgorithm algorithm) {
+    public AlgorithmScript create(final Algorithm algorithm) {
         return new GroovyAlgorithmScript(algorithm.getAlgorithm());
     }
 }
