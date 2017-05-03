@@ -1,18 +1,15 @@
 <html>
 <head>
     <title>Beach Ninja Trader</title>
-    <script data-main="js/chart" src="js/lib/require.js"></script>
+    <script data-main="js/page/chart-page-1.1" src="js/lib/require.js"></script>
     #chartstyle()
 </head>
 
 <body>
-<form id="symbolForm">
+<form id="chartForm">
     <input type="text" id="symbolInput" value="MEG">
+    <select name="algoId"></select>
     <button type="submit" id="symbolSubmit">Submit</button>
-    <select id="timeframe">
-        <option value="ONE_DAY" selected>1D</option>
-        <option value="ONE_WEEK">1W</option>
-    </select>
 </form>
 
 <div id="chart"></div>

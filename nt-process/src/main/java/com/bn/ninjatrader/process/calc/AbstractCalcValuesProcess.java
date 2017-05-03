@@ -11,7 +11,7 @@
 //import com.bn.ninjatrader.model.dao.PriceDao;
 //import com.bn.ninjatrader.model.mongo.dao.ValueDao;
 //import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
-//import com.bn.ninjatrader.process.request.CalcRequest;
+//import com.bn.ninjatrader.adjustPrices.request.CalcRequest;
 //import com.google.inject.Inject;
 //import com.google.inject.Singleton;
 //import org.slf4j.Logger;
@@ -46,7 +46,7 @@
 //  }
 //
 //  @Override
-//  public void process(final CalcRequest calcRequest) {
+//  public void adjustPrices(final CalcRequest calcRequest) {
 //    checkNotNull(calcRequest);
 //
 //    for (final String symbol : calcRequest.getAllSymbols()) {

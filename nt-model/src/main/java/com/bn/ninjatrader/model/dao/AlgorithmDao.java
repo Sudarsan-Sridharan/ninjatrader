@@ -17,4 +17,6 @@ public interface AlgorithmDao {
   Optional<Algorithm> findByAlgorithmId(final String algoId);
 
   void delete(final String algoId);
+
+  void delete(final String userId, final String algoId);
 }

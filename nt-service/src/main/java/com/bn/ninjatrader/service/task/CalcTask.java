@@ -47,7 +47,7 @@ public class CalcTask {
   }
 
   @POST
-  public Response calc(@FormParam("process") final List<String> processNames,
+  public Response calc(@FormParam("adjustPrices") final List<String> processNames,
                    @FormParam("symbol") final List<String> inputSymbols,
                    @FormParam("from") final String fromIsoBasicDate,
                    @FormParam("to") final String toIsoBasicDate) {

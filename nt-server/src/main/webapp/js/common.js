@@ -2,11 +2,11 @@ requirejs.config({
     baseUrl: 'js/lib',
     paths: {
         app: '../app',
+        page: '../page',
         jquery: 'jquery.min',
         jquerySerializeJson: 'jquery.serializejson.min',
         ace: 'ace/ace',
-        d3: 'd3.min',
-        boardLot: 'boardlot'
+        d3: 'd3.min'
     },
 
     shim: {

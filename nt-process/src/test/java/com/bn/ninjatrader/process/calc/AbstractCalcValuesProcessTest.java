@@ -11,7 +11,7 @@
 //import com.bn.ninjatrader.model.dao.PriceDao;
 //import com.bn.ninjatrader.model.mongo.dao.ValueDao;
 //import com.bn.ninjatrader.model.request.SaveRequest;
-//import com.bn.ninjatrader.process.request.CalcRequest;
+//import com.bn.ninjatrader.adjustPrices.request.CalcRequest;
 //import org.junit.Before;
 //import org.junit.Test;
 //import org.mockito.ArgumentCaptor;
@@ -43,7 +43,7 @@
 //  private ValueCalculator calculator;
 //  private PriceDao priceDao;
 //  private ValueDao valueDao;
-//  private AbstractCalcValuesProcess process;
+//  private AbstractCalcValuesProcess adjustPrices;
 //
 //  @Before
 //  public void setup() {
@@ -51,7 +51,7 @@
 //    priceDao = mock(PriceDao.class);
 //    valueDao = mock(ValueDao.class);
 //
-//    process = new DummyProcess(calculator, priceDao, valueDao);
+//    adjustPrices = new DummyProcess(calculator, priceDao, valueDao);
 //
 //    calcResult.clear();
 //
@@ -63,7 +63,7 @@
 //    LocalDate date = LocalDate.MIN; // out of range
 //    when(calculator.calc(any())).thenReturn(calcResult);
 //
-//    process.process(CalcRequest.forSymbol("MEG").from(date).to(date).periods(process.getDefaultPeriods()));
+//    adjustPrices.adjustPrices(CalcRequest.forSymbol("MEG").from(date).to(date).periods(adjustPrices.getDefaultPeriods()));
 //
 //    verify(priceDao, times(0)).save(any(SavePriceRequest.class));
 //  }
@@ -73,7 +73,7 @@
 //    calcResult.put(20, Collections.emptyList());
 //    when(calculator.calc(any())).thenReturn(calcResult);
 //
-//    process.process(CalcRequest.forSymbol("MEG").from(DATE_2014).to(DATE_2017).periods(20));
+//    adjustPrices.adjustPrices(CalcRequest.forSymbol("MEG").from(DATE_2014).to(DATE_2017).periods(20));
 //
 //    verify(priceDao, times(0)).save(any(SavePriceRequest.class));
 //  }
@@ -84,7 +84,7 @@
 //    calcResult.put(20, TestUtil.randomValues(3));
 //    when(calculator.calc(any())).thenReturn(calcResult);
 //
-//    process.process(CalcRequest.forSymbols("MEG", "BDO", "TEL")
+//    adjustPrices.adjustPrices(CalcRequest.forSymbols("MEG", "BDO", "TEL")
 //        .timeFrames(TimeFrame.ONE_DAY)
 //        .from(DATE_2014)
 //        .to(DATE_2017));
@@ -101,7 +101,7 @@
 //    calcResult.put(100, TestUtil.randomValues(2));
 //    when(calculator.calc(any())).thenReturn(calcResult);
 //
-//    process.process(CalcRequest.forSymbol("MEG")
+//    adjustPrices.adjustPrices(CalcRequest.forSymbol("MEG")
 //        .timeFrames(TimeFrame.ONE_DAY)
 //        .from(DATE_2014)
 //        .to(DATE_2017)
@@ -118,7 +118,7 @@
 //    calcResult.put(20, TestUtil.randomValues(3));
 //    when(calculator.calc(any())).thenReturn(calcResult);
 //
-//    process.process(CalcRequest.forSymbol("MEG")
+//    adjustPrices.adjustPrices(CalcRequest.forSymbol("MEG")
 //        .allTimeFrames()
 //        .from(DATE_2014)
 //        .to(DATE_2017));
@@ -138,7 +138,7 @@
 //    calcResult.put(100, TestUtil.randomValues(3));
 //    when(calculator.calc(any())).thenReturn(calcResult);
 //
-//    process.process(CalcRequest.forSymbols("MEG", "BDO")
+//    adjustPrices.adjustPrices(CalcRequest.forSymbols("MEG", "BDO")
 //        .allTimeFrames()
 //        .from(DATE_2014)
 //        .to(DATE_2017));
@@ -159,7 +159,7 @@
 //    calcResult.put(20, TestUtil.randomValuesForDateRange(DATE_2014.plusMonths(6), DATE_2015));
 //    when(calculator.calc(any())).thenReturn(calcResult);
 //
-//    process.process(CalcRequest.forSymbol("MEG")
+//    adjustPrices.adjustPrices(CalcRequest.forSymbol("MEG")
 //        .timeFrames(TimeFrame.ONE_DAY)
 //        .from(DATE_2015)
 //        .to(DATE_2015));

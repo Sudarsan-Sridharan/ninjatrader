@@ -1,11 +1,10 @@
 package com.bn.ninjatrader.process.adjustment;
 
-import com.bn.ninjatrader.calculator.PriceAdjustmentCalculator;
 import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.logical.expression.operation.Operation;
-import com.bn.ninjatrader.logical.expression.operation.Operations;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
+import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,47 +14,42 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
  * @author bradwee2000@gmail.com
  */
-public class PriceAdjustmentProcessTest {
-  private static final Logger LOG = LoggerFactory.getLogger(PriceAdjustmentProcessTest.class);
+public class PriceAdjustmentServiceTest {
+  private static final Logger LOG = LoggerFactory.getLogger(PriceAdjustmentServiceTest.class);
 
   private final LocalDate from = LocalDate.of(2016, 2, 1);
   private final LocalDate to = LocalDate.of(2016, 2, 5);
 
   private PriceDao priceDao;
-  private PriceAdjustmentCalculator calculator;
+  private PriceBuilderFactory priceBuilderFactory = new DummyPriceBuilderFactory();
 
-  private PriceAdjustmentProcess process;
+  private PriceAdjustmentService service;
 
   @Before
   public void before() {
     priceDao = mock(PriceDao.class);
-    calculator = mock(PriceAdjustmentCalculator.class);
 
     when(priceDao.savePrices(any())).thenReturn(mock(PriceDao.SavePricesOperation.class, RETURNS_SELF));
     when(priceDao.findPrices()).thenReturn(mock(PriceDao.FindPricesOperation.class, RETURNS_SELF));
 
-    process = new PriceAdjustmentProcess(priceDao, calculator);
+    service = new PriceAdjustmentService(priceDao, priceBuilderFactory);
   }
 
   @Test
-  public void testRunWithSymbol_shouldCalculateForSymbol() {
-    final Price price = mock(Price.class);
-    final Price adjustedPrice = mock(Price.class);
-    final List<Price> prices = Lists.newArrayList(price);
-    final List<Price> adjustedPrices = Lists.newArrayList(adjustedPrice);
+  public void testRunWithSymbol_shouldAdjustPricesForSymbol() {
+    final Price price = priceBuilderFactory.builder().date(from)
+        .open(10).high(20).low(7).close(15).volume(1000).build();
 
-    when(priceDao.findPrices().now()).thenReturn(prices);
-    when(calculator.calc(any(List.class), any(Operation.class))).thenReturn(adjustedPrices);
+    when(priceDao.findPrices().now()).thenReturn(Lists.newArrayList(price));
 
-    process.process(PriceAdjustmentRequest.forSymbol("MEG").from(from).to(to).adjustment(Operations.startWith(2)));
-
-    // Verify find all symbols not called
-    verify(priceDao, times(0)).findAllSymbols();
+    final List<Price> adjustedPrices = service.preparePriceAdjustment()
+        .symbol("MEG").from(from).to(to).script("return $PRICE / 2").execute();
 
     // Verify FindPriceRequest
     verify(priceDao.findPrices()).withSymbol("MEG");
@@ -68,7 +62,9 @@ public class PriceAdjustmentProcessTest {
     verify(priceDao.savePrices(any())).withSymbol("MEG");
     verify(priceDao.savePrices(any())).withTimeFrame(TimeFrame.ONE_DAY);
 
-    // Verify Calculator called
-    verify(calculator).calc(Lists.newArrayList(price), Operations.startWith(2));
+    final Price expectedPrice = priceBuilderFactory.builder().date(from)
+        .open(5).high(10).low(3.5).close(7.5).volume(1000).build();
+
+    assertThat(adjustedPrices).containsExactly(expectedPrice);
   }
 }

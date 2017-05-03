@@ -1,4 +1,4 @@
-define(["./boardlot"], function(BoardLot) {
+define(["app/util/boardlot"], function(BoardLot) {
 
     function Format() {
     }

@@ -7,8 +7,8 @@
 //import com.bn.ninjatrader.common.type.TimeFrame;
 //import com.bn.ninjatrader.model.dao.PriceDao;
 //import com.bn.ninjatrader.model.mongo.dao.ValueDao;
-//import com.bn.ninjatrader.process.provider.PriorValueProvider;
-//import com.bn.ninjatrader.process.provider.PriorValueRequest;
+//import com.bn.ninjatrader.adjustPrices.provider.PriorValueProvider;
+//import com.bn.ninjatrader.adjustPrices.provider.PriorValueRequest;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 //

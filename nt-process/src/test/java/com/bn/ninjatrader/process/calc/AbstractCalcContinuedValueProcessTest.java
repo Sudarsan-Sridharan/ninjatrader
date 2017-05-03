@@ -7,8 +7,8 @@
 //import com.bn.ninjatrader.common.type.TimeFrame;
 //import com.bn.ninjatrader.model.dao.PriceDao;
 //import com.bn.ninjatrader.model.mongo.dao.ValueDao;
-//import com.bn.ninjatrader.process.provider.PriorValueProvider;
-//import com.bn.ninjatrader.process.provider.PriorValueRequest;
+//import com.bn.ninjatrader.adjustPrices.provider.PriorValueProvider;
+//import com.bn.ninjatrader.adjustPrices.provider.PriorValueRequest;
 //import com.google.common.collect.Lists;
 //import com.google.common.collect.Maps;
 //import org.junit.Before;
@@ -33,7 +33,7 @@
 //  private ValueDao emaDao;
 //  private PriorValueProvider priorValueProvider;
 //
-//  private DummyProcess process;
+//  private DummyProcess adjustPrices;
 //
 //  @Before
 //  public void before() {
@@ -42,13 +42,13 @@
 //    emaDao = mock(ValueDao.class);
 //    priorValueProvider = mock(PriorValueProvider.class);
 //
-//    process = new DummyProcess(calculator, priceDao, emaDao, priorValueProvider);
+//    adjustPrices = new DummyProcess(calculator, priceDao, emaDao, priorValueProvider);
 //  }
 //
 //  @Test
 //  public void testProvideCalcParams_shouldGetPriorValues() {
 //    final ArgumentCaptor<PriorValueRequest> requestCaptor = ArgumentCaptor.forClass(PriorValueRequest.class);
-//    process.provideCalcParams("MEG", TimeFrame.ONE_DAY,
+//    adjustPrices.provideCalcParams("MEG", TimeFrame.ONE_DAY,
 //        Lists.newArrayList(
 //            Price.builder().date(now).close(1).build(),
 //            Price.builder().date(now.plusDays(1)).close(2).build()
@@ -77,7 +77,7 @@
 //
 //    when(priorValueProvider.providePriorValues(any(PriorValueRequest.class))).thenReturn(result);
 //
-//    final CalcParams<Value> calcParams = process.provideCalcParams("MEG", TimeFrame.ONE_DAY,
+//    final CalcParams<Value> calcParams = adjustPrices.provideCalcParams("MEG", TimeFrame.ONE_DAY,
 //        prices, Lists.newArrayList(10, 50));
 //
 //    assertThat(calcParams).isNotNull();

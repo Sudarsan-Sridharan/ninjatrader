@@ -28,6 +28,7 @@ public class MongoAlgorithmDao extends MongoAbstractDao implements AlgorithmDao 
   private static final Logger LOG = LoggerFactory.getLogger(MongoAlgorithmDao.class);
   private static final String FIND_BY_ALGO_ID = "{ algoId: # }";
   private static final String FIND_BY_USER_ID = "{ userId: # }";
+  private static final String FIND_BY_USER_ALGO_ID = "{ userId: #, algoId: # }";
 
   private final IdGenerator idGenerator;
 
@@ -60,6 +61,11 @@ public class MongoAlgorithmDao extends MongoAbstractDao implements AlgorithmDao 
   @Override
   public void delete(final String algoId) {
     getMongoCollection().remove(FIND_BY_ALGO_ID, algoId);
+  }
+
+  @Override
+  public void delete(final String userId, final String algoId) {
+    getMongoCollection().remove(FIND_BY_USER_ALGO_ID, userId, algoId);
   }
 
   @Override

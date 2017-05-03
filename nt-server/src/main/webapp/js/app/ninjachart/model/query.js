@@ -5,7 +5,7 @@ define(function() {
         this.from = from;
         this.to = to;
         this.periodMap = []; // Map of <IndicatorName, [periods]>
-        this.algoId = '';
+        this.algoIdInput = '';
     }
 
     Query.prototype.setSymbol = function(symbol) {
@@ -34,7 +34,7 @@ define(function() {
     }
 
     Query.prototype.setAlgoId = function(algoId) {
-        this.algoId = algoId;
+        this.algoIdInput = algoId;
         return this;
     }
 

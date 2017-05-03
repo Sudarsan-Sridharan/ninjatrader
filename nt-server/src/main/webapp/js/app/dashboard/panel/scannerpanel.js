@@ -1,9 +1,13 @@
-define(['jquery', 'require', 'boardlot', './basicpanel', 'app/client/algoclient', 'app/client/scannerclient'], function ($, require) {
+define(['jquery', 'require',
+    'app/util/boardlot',
+    'app/dashboard/panel/basicpanel',
+    'app/client/algo-client',
+    'app/client/scanner-client'], function ($, require) {
 
-    var BoardLot = require('boardlot');
-    var BasicPanel = require("./basicpanel");
-    var AlgoClient = require("app/client/algoclient");
-    var ScannerClient = require("app/client/scannerclient");
+    var BoardLot = require('app/util/boardlot');
+    var BasicPanel = require("app/dashboard/panel/basicpanel");
+    var AlgoClient = require("app/client/algo-client");
+    var ScannerClient = require("app/client/scanner-client");
 
     function ScannerPanel() {
         BasicPanel.call(this, "Scanner", "scannerPanel");

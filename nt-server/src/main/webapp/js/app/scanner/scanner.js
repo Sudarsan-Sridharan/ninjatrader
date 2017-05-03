@@ -1,4 +1,4 @@
-define(['jquery', 'boardlot'], function ($, BoardLot) {
+define(['jquery', 'app/util/boardlot'], function ($, BoardLot) {
     
     function Scanner(containerId) {
         this.container = $(containerId);

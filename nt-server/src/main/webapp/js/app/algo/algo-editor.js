@@ -1,20 +1,17 @@
 define(['jquery', 'require', 'jquerySerializeJson', 'ace',
     'app/status/status',
-    'app/client/algoclient',
-    'app/client/simulationclient'],
-
-    function ($, require, serializeJson, ace) {
+    'app/client/algo-client',
+    'app/client/simulation-client'], function ($, require, serializeJson, ace) {
 
     var Status = require("app/status/status");
-    var AlgoClient = require("app/client/algoclient");
-    var SimulationClient = require("app/client/simulationclient");
+    var AlgoClient = require("app/client/algo-client");
+    var SimulationClient = require("app/client/simulation-client");
 
     function AlgoEditor(containerId) {
         this.container = $(containerId);
         this.form = this.container.find(".saveForm");
-        this.algoId = this.container.find("[name=algoId]");
-        this.algorithm = this.container.find(".algorithm");
-        this.description = this.container.find(".description");
+        this.algoIdInput = this.container.find("[name=algoId]");
+        this.descInput = this.container.find(".description");
         this.symbolInput = this.container.find(".symbol");
         this.saveBtn = this.container.find(".submitBtn");
         this.runBtn = this.container.find(".runBtn");
@@ -29,25 +26,23 @@ define(['jquery', 'require', 'jquerySerializeJson', 'ace',
             return false;
         });
         this.runBtn.click(function() {
-           that.runAlgorithm();
+            that.runAlgorithm();
             return false;
         });
     }
 
-    AlgoEditor.prototype.load = function() {
-        var algoIdParam = $.queryParam("algoId");
+    AlgoEditor.prototype.loadByAlgoId = function(algoId) {
+        if (!algoId) return;
 
-        if (!algoIdParam) return;
-
-        var algoId = this.algoId;
-        var description = this.description;
+        var algoIdInput = this.algoIdInput;
+        var descInput = this.descInput;
         var editor = this.editor;
         var statusMsg = this.status.show("Loading... ");
 
-        AlgoClient.getById(algoIdParam)
+        AlgoClient.getById(algoId)
             .done(function(data) {
-                algoId.val(data.algorithmId);
-                description.val(data.description);
+                algoIdInput.val(data.algorithmId);
+                descInput.val(data.description);
                 editor.setValue(data.algorithm);
                 statusMsg.remove();
             });
@@ -58,7 +53,7 @@ define(['jquery', 'require', 'jquerySerializeJson', 'ace',
         var formObj = this.form.serializeJSON();
         formObj.algorithm = this.editor.getValue();
 
-        AlgoClient.save(formObj).done(function(data) {
+        AlgoClient.save(formObj).done(function() {
             statusMsg.quickShow("Saving... Success!");
         });
     };
@@ -66,7 +61,7 @@ define(['jquery', 'require', 'jquerySerializeJson', 'ace',
     AlgoEditor.prototype.runAlgorithm = function() {
         var statusMsg = this.status.show("Running...");
         var symbol = this.symbolInput.val();
-        var algoId = this.algoId.val();
+        var algoId = this.algoIdInput.val();
 
         SimulationClient.run(algoId, symbol, function(simulationReport) {
             console.log(simulationReport);
@@ -78,7 +73,5 @@ define(['jquery', 'require', 'jquerySerializeJson', 'ace',
         });
     };
 
-    $(document).ready(function() {
-        new AlgoEditor("#algoEditor").load();
-    });
+    return AlgoEditor;
 });

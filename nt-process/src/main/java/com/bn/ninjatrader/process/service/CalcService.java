@@ -55,7 +55,7 @@ public class CalcService {
     // Create list of processes to run.
     final List<CalcProcess> calcProcesses = provideCalcProcesses(req);
 
-    // Run each process
+    // Run each adjustPrices
     for (final CalcProcess calcProcess : calcProcesses) {
       LOG.info("Calc [{}] from [{}] to [{}]", calcProcess.getProcessName(), from, to);
       calcProcess.process(CalcRequest.forSymbols(symbols).from(from).to(to).timeFrames(TimeFrame.ONE_DAY));
@@ -82,7 +82,7 @@ public class CalcService {
   }
 
   /**
-   * Return list of symbols to process
+   * Return list of symbols to adjustPrices
    */
   private List<String> provideSymbols(final CalcServiceRequest req) {
     final List<String> symbols = Lists.newArrayList();

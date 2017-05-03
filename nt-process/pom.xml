@@ -24,6 +24,10 @@
             <groupId>com.beachninja</groupId>
             <artifactId>nt-model</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>

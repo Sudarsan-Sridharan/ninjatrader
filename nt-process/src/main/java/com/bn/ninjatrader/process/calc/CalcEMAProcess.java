@@ -3,8 +3,8 @@
 //import com.bn.ninjatrader.calculator.EMACalculator;
 //import com.bn.ninjatrader.model.mongo.dao.EMADao;
 //import com.bn.ninjatrader.model.dao.PriceDao;
-//import com.bn.ninjatrader.process.provider.PriorValueProvider;
-//import com.bn.ninjatrader.process.util.CalcProcessNames;
+//import com.bn.ninjatrader.adjustPrices.provider.PriorValueProvider;
+//import com.bn.ninjatrader.adjustPrices.util.CalcProcessNames;
 //import com.google.common.collect.Lists;
 //import com.google.inject.Inject;
 //import com.google.inject.Singleton;

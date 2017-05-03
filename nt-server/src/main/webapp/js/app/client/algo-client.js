@@ -30,18 +30,18 @@ define(['jquery'], function ($) {
     AlgoClient.save = function(jsonObj) {
         return $.ajax({
             url: ajaxUrl,
-            contentType: 'application/json',
             type: 'POST',
-            data: JSON.stringify(jsonObj),
-            dataType: 'json'
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(jsonObj)
         });
     };
 
     AlgoClient.delete = function(algoId) {
         return $.ajax({
             url: ajaxUrl + algoId,
-            contentType: 'application/json',
             type: 'DELETE',
+            contentType: 'application/json',
             dataType: 'json'
         });
     };

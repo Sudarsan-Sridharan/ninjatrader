@@ -3,6 +3,7 @@ package com.bn.ninjatrader.service.dropwizard;
 import com.bn.ninjatrader.model.mongo.guice.NtModelMongoModule;
 import com.bn.ninjatrader.process.guice.NtProcessModule;
 import com.bn.ninjatrader.service.dropwizard.health.ServiceHealthCheck;
+import com.bn.ninjatrader.service.exception.JsonParseExceptionMapper;
 import com.bn.ninjatrader.service.provider.LocalDateParamConverterProvider;
 import com.bn.ninjatrader.service.provider.ObjectMapperContextResolver;
 import com.bn.ninjatrader.service.resource.PriceResource;
@@ -46,6 +47,8 @@ public class ServiceApplication extends Application<ServiceConfig> {
   @Inject
   private RunStockScannerTask runStockScannerTask;
   @Inject
+  private PriceAdjustmentTask priceAdjustmentTask;
+  @Inject
   private ImportCSVPriceTask importPriceTask;
   @Inject
   private ImportPSEDailyQuotesTask importPSEDailyQuotesTask;
@@ -62,10 +65,16 @@ public class ServiceApplication extends Application<ServiceConfig> {
   @Override
   public void run(final ServiceConfig serviceConfig, final Environment env) throws Exception {
     env.healthChecks().register("health", serviceHealthCheck);
-    env.jersey().packages(LocalDateParamConverterProvider.class.getPackage().getName());
+
+    registerProviders(env.jersey());
 
     setupResources(env.jersey());
     setupFilters(env.servlets());
+  }
+
+  private void registerProviders(final JerseyEnvironment jersey) {
+    jersey.packages(LocalDateParamConverterProvider.class.getPackage().getName());
+    jersey.packages(JsonParseExceptionMapper.class.getPackage().getName());
   }
 
   private void setupResources(final JerseyEnvironment jersey) {
@@ -81,6 +90,7 @@ public class ServiceApplication extends Application<ServiceConfig> {
     jersey.register(importPriceTask);
     jersey.register(importPSEDailyQuotesTask);
     jersey.register(importPSETraderDailyQuotesTask);
+    jersey.register(priceAdjustmentTask);
 
     // ObjectMapper
     jersey.register(objectMapperContextResolver);

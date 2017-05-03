@@ -1,4 +1,4 @@
-define(['jquery', '../status/statusitem'], function ($, StatusItem) {
+define(['jquery', 'app/status/status-item'], function ($, StatusItem) {
 
     function Status(divId) {
         this.container = $(divId);
