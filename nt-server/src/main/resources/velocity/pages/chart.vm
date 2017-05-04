@@ -7,7 +7,7 @@
 
 <body>
 <form id="chartForm">
-    <input type="text" id="symbolInput" value="MEG">
+    <input type="text" id="symbolInput" name="symbol" value="MEG" size="6" placeholder="Symbol">
     <select name="algoId"></select>
     <button type="submit" id="symbolSubmit">Submit</button>
 </form>

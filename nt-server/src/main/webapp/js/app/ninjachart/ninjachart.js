@@ -64,7 +64,7 @@ define(["require",
         this._initDragEvent();
     }
 
-    NinjaChart.prototype.show = function(query) {
+    NinjaChart.prototype.show = function(query, callback) {
         var self = this;
         var config = this.config;
         var ajaxUrl = config.contextPath + this.ajaxUrl + query.restUrl();
@@ -73,9 +73,23 @@ define(["require",
             .on("error", function(error) { console.log(error) })
             .on("load", function(data) {
                 self.onDataLoad(query, data);
+                if (callback) {
+                    callback(query, data);
+                }
             }).get();
         return this;
     };
+
+    NinjaChart.prototype.getState = function() {
+        var state = {};
+        state.data = this.data;
+        state.query = this.query;
+        return state;
+    };
+
+    NinjaChart.prototype.setState = function(state) {
+        this.onDataLoad(state.query, state.data);
+    }
 
     /**
      * Called once data is loaded from ajax request.
