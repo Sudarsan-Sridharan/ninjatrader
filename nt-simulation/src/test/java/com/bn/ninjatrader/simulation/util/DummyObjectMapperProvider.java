@@ -1,6 +1,5 @@
 package com.bn.ninjatrader.simulation.util;
 
-import com.bn.ninjatrader.simulation.jackson.NtSimulationModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -13,7 +12,6 @@ public class DummyObjectMapperProvider {
   public static ObjectMapper get() {
     if (om == null) {
       om = create();
-      om.registerModule(new NtSimulationModule());
     }
     return om;
   }

@@ -8,7 +8,6 @@
     <version>1.0-SNAPSHOT</version>
 
     <modules>
-        <module>nt-batch</module>
         <module>nt-calculator</module>
         <module>nt-common</module>
         <module>nt-data-import</module>
@@ -20,9 +19,9 @@
         <module>nt-process</module>
         <module>nt-service</module>
         <module>nt-simulation</module>
-        <module>nt-thirdparty</module>
         <module>nt-service-dropwizard</module>
         <module>nt-service-appengine-standard</module>
+        <module>nt-thirdparty</module>
     </modules>
 
     <properties>

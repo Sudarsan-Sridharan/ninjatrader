@@ -1,6 +1,5 @@
 package com.bn.ninjatrader.logical.expression.operation;
 
-import com.bn.ninjatrader.logical.expression.model.Data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -14,10 +13,8 @@ import java.util.Set;
 @JsonSubTypes({
     @JsonSubTypes.Type(value=Variable.class, name="var"),
     @JsonSubTypes.Type(value=Constant.class, name="const"),
-    @JsonSubTypes.Type(value=BinaryOperation.class, name="biOp"),
-    @JsonSubTypes.Type(value=ArithmeticOperation.class, name="arithmetic"),
 })
-public interface Operation<T extends Data> {
+public interface Operation<T> {
 
   double getValue(final T t);
 

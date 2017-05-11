@@ -2,7 +2,6 @@ package com.bn.ninjatrader.service.provider;
 
 import com.bn.ninjatrader.model.jackson.PriceModuleProvider;
 import com.bn.ninjatrader.model.util.ObjectMapperProvider;
-import com.bn.ninjatrader.simulation.jackson.NtSimulationModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -25,7 +24,6 @@ public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper
                                      final PriceModuleProvider priceModuleProvider) {
     OM = objectMapperProvider.get();
     OM.registerModule(priceModuleProvider.provide());
-    OM.registerModule(new NtSimulationModule());
   }
 
   @Override

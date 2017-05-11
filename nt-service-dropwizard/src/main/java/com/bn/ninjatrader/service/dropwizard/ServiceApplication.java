@@ -41,8 +41,6 @@ public class ServiceApplication extends Application<ServiceConfig> {
   private UserResource userResource;
 
   @Inject
-  private CalcTask calcTask;
-  @Inject
   private RunSimulationTask runSimulationTask;
   @Inject
   private RunStockScannerTask runStockScannerTask;
@@ -84,7 +82,6 @@ public class ServiceApplication extends Application<ServiceConfig> {
 
 
     // Maintenance tasks
-    jersey.register(calcTask);
     jersey.register(runSimulationTask);
     jersey.register(runStockScannerTask);
     jersey.register(importPriceTask);

@@ -1,7 +1,6 @@
 package com.bn.ninjatrader.logical.expression.operation;
 
 import com.bn.ninjatrader.common.util.NumUtil;
-import com.bn.ninjatrader.logical.expression.model.Data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
@@ -12,7 +11,7 @@ import java.util.Set;
 /**
  * @author bradwee2000@gmail.com
  */
-public class Constant<T extends Data> implements Operation<T> {
+public class Constant<T> implements Operation<T> {
 
   private double value;
 
