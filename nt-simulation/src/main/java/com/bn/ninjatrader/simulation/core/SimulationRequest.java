@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.core;
 
-import com.bn.ninjatrader.simulation.script.AlgorithmScript;
+import com.bn.ninjatrader.simulation.algorithm.AlgorithmScript;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 

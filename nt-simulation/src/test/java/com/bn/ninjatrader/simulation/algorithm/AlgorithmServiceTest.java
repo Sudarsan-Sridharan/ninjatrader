@@ -1,9 +1,7 @@
-package com.bn.ninjatrader.simulation.service;
+package com.bn.ninjatrader.simulation.algorithm;
 
 import com.bn.ninjatrader.model.dao.AlgorithmDao;
 import com.bn.ninjatrader.model.entity.Algorithm;
-import com.bn.ninjatrader.simulation.script.AlgorithmScriptFactory;
-import com.bn.ninjatrader.simulation.script.AlgorithmScript;
 import org.junit.Before;
 import org.junit.Test;
 

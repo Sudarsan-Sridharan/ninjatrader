@@ -1,8 +1,9 @@
-package com.bn.ninjatrader.simulation.script;
+package com.bn.ninjatrader.simulation.algorithm;
 
 import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.DataType;
+import com.bn.ninjatrader.simulation.exception.ScriptCompileErrorException;
 import com.bn.ninjatrader.simulation.model.SimContext;
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.Maps;
@@ -10,10 +11,12 @@ import com.google.common.collect.Sets;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
+import org.codehaus.groovy.control.MultipleCompilationErrorsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -29,15 +32,17 @@ public class GroovyAlgorithmScript implements AlgorithmScript {
   private static final GroovyShell shell = new GroovyShell();
 
   private final Set<Variable> variables;
-  private final String scriptText;
   private final Class scriptClass;
 
   public GroovyAlgorithmScript(final String scriptText) {
-    this.scriptText = scriptText;
-    variables = parseVariables(scriptText);
+    variables = Collections.unmodifiableSet(parseVariables(scriptText));
 
-    // Cache the class so we don't keep recompiling script.
-    scriptClass = shell.getClassLoader().parseClass(scriptText);
+    try {
+      // Cache the class so we don't keep recompiling script.
+      scriptClass = shell.getClassLoader().parseClass(scriptText);
+    } catch (final MultipleCompilationErrorsException e) {
+      throw new ScriptCompileErrorException(e);
+    }
   }
 
   @Override
@@ -50,7 +55,7 @@ public class GroovyAlgorithmScript implements AlgorithmScript {
     }
   }
 
-  private Set<Variable> parseVariables(final String scriptText) {
+  public Set<Variable> parseVariables(final String scriptText) {
     final Set<String> variablesNames = Sets.newHashSet();
     final Matcher matcher = varPattern.matcher(scriptText);
     while(matcher.find()) {
@@ -72,7 +77,6 @@ public class GroovyAlgorithmScript implements AlgorithmScript {
   public Collection<Variable> getVariables() {
     return Sets.newHashSet(variables);
   }
-
 
   /**
    * Script Runner

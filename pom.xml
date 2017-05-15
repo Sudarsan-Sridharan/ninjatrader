@@ -22,6 +22,7 @@
         <module>nt-service-dropwizard</module>
         <module>nt-service-appengine-standard</module>
         <module>nt-thirdparty</module>
+        <module>nt-server-appengine</module>
     </modules>
 
     <properties>

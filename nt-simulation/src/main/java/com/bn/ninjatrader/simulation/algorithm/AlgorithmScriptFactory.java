@@ -1,4 +1,4 @@
-package com.bn.ninjatrader.simulation.script;
+package com.bn.ninjatrader.simulation.algorithm;
 
 import com.bn.ninjatrader.model.entity.Algorithm;
 

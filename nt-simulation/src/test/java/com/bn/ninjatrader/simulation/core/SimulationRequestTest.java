@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.core;
 
-import com.bn.ninjatrader.simulation.script.AlgorithmScript;
+import com.bn.ninjatrader.simulation.algorithm.AlgorithmScript;
 import org.junit.Test;
 
 import java.time.LocalDate;

@@ -4,10 +4,11 @@ import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationRequest;
 import com.bn.ninjatrader.simulation.exception.AlgorithmIdNotFoundException;
+import com.bn.ninjatrader.simulation.exception.ScriptCompileErrorException;
 import com.bn.ninjatrader.simulation.exception.VariableUnknownException;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
-import com.bn.ninjatrader.simulation.script.AlgorithmScript;
-import com.bn.ninjatrader.simulation.service.AlgorithmService;
+import com.bn.ninjatrader.simulation.algorithm.AlgorithmScript;
+import com.bn.ninjatrader.simulation.algorithm.AlgorithmService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.apache.commons.lang3.StringUtils;
@@ -27,9 +28,9 @@ import java.time.format.DateTimeFormatter;
 @Path("/task/simulation")
 public class RunSimulationTask {
   private static final Logger LOG = LoggerFactory.getLogger(RunSimulationTask.class);
-  private static final String ERROR_SYM_PARAM_REQUIRED = "symbol parameter is required.";
-  private static final String ERROR_ALGO_ID_PARAM_REQUIRED = "algoId parameter is required.";
-  private static final String ERROR_ALGO_ID_NOT_FOUND = "algoId is not found.";
+  private static final String ERROR_SYM_PARAM_REQUIRED = "Symbol parameter is required.";
+  private static final String ERROR_ALGO_ID_PARAM_REQUIRED = "Algo Id parameter is required.";
+  private static final String ERROR_ALGO_ID_NOT_FOUND = "Algo Id is not found.";
 
   private final SimulationFactory simulationFactory;
   private final AlgorithmService algorithmService;
@@ -64,17 +65,20 @@ public class RunSimulationTask {
     final LocalDate to = StringUtils.isEmpty(basicIsoToDate) ? null :
         LocalDate.parse(basicIsoToDate, DateTimeFormatter.BASIC_ISO_DATE);
 
-    // Get Algorithm
-    final AlgorithmScript script = algorithmService.findById(algoId);
-
-    // Play simulation
     try {
-      final Simulation simulation = simulationFactory.create(SimulationRequest.withSymbol(symbol)
+      // Get Algorithm
+      final AlgorithmScript script = algorithmService.findById(algoId);
+
+      // Play simulation
+      final Simulation simulation = simulationFactory.create(SimulationRequest.withSymbol(StringUtils.upperCase(symbol))
           .from(from).to(to).algorithmScript(script).isDebug(isDebug));
+
       final SimulationReport report = simulation.play();
       return Response.ok(report).build();
     } catch (final AlgorithmIdNotFoundException e) {
       throw new BadRequestException(ERROR_ALGO_ID_NOT_FOUND);
+    } catch (final ScriptCompileErrorException e) {
+      return Response.ok(SimulationReport.builder().error(e.getMessage()).build()).build();
     } catch (VariableUnknownException e) {
       return Response.ok(SimulationReport.builder().error(e.getMessage()).build()).build();
     }

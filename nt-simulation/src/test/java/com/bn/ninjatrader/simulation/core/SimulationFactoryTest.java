@@ -6,7 +6,7 @@ import com.bn.ninjatrader.simulation.binding.BindingFactory;
 import com.bn.ninjatrader.simulation.model.Broker;
 import com.bn.ninjatrader.simulation.model.SimContext;
 import com.bn.ninjatrader.simulation.model.SimContextFactory;
-import com.bn.ninjatrader.simulation.script.AlgorithmScript;
+import com.bn.ninjatrader.simulation.algorithm.AlgorithmScript;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;

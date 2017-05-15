@@ -6,7 +6,7 @@
     #chartstyle()
 </head>
 
-<body>
+<body id="algoEditorPage">
     <div id="algoEditor">
         <form class="saveForm">
             <input type="hidden" name="algoId" value="">
@@ -17,9 +17,17 @@
         </form>
         <form class="runForm">
             <label for="symbol">Symbol:</label>
-            <input name="symbol" class="symbol" type="text" maxlength="8" size="5">
+            <input name="symbol" class="symbol" type="text" maxlength="8" size="5" value="MEG">
             <button class="runBtn">Run</button>
         </form>
+
+        <div class="reportBtn"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+
+        <div id="reportPanel">
+            <div class="reportWrapper">
+                <div class="reportBody"></div>
+            </div>
+        </div>
     </div>
 
     <div id="status"></div>

@@ -1,10 +1,8 @@
-package com.bn.ninjatrader.simulation.service;
+package com.bn.ninjatrader.simulation.algorithm;
 
 import com.bn.ninjatrader.model.dao.AlgorithmDao;
 import com.bn.ninjatrader.model.entity.Algorithm;
 import com.bn.ninjatrader.simulation.exception.AlgorithmIdNotFoundException;
-import com.bn.ninjatrader.simulation.script.AlgorithmScriptFactory;
-import com.bn.ninjatrader.simulation.script.AlgorithmScript;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

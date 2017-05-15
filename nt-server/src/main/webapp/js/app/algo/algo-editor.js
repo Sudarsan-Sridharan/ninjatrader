@@ -7,7 +7,7 @@ define(['jquery', 'require', 'jquerySerializeJson', 'ace',
     var AlgoClient = require("app/client/algo-client");
     var SimulationClient = require("app/client/simulation-client");
 
-    function AlgoEditor(containerId) {
+    function AlgoEditor(containerId, status) {
         this.container = $(containerId);
         this.form = this.container.find(".saveForm");
         this.algoIdInput = this.container.find("[name=algoId]");
@@ -15,7 +15,10 @@ define(['jquery', 'require', 'jquerySerializeJson', 'ace',
         this.symbolInput = this.container.find(".symbol");
         this.saveBtn = this.container.find(".submitBtn");
         this.runBtn = this.container.find(".runBtn");
-        this.status = new Status("#status");
+        this.reportBtn = this.container.find(".reportBtn");
+        this.reportPanel = this.container.find("#reportPanel");
+        this.reportBody = this.container.find(".reportBody");
+        this.status = status ? status : new Status("#status");
         this.editor = ace.edit("codeEditor");
         this.editor.setTheme("ace/theme/monokai");
         this.editor.getSession().setMode("ace/mode/groovy");
@@ -28,6 +31,9 @@ define(['jquery', 'require', 'jquerySerializeJson', 'ace',
         this.runBtn.click(function() {
             that.runAlgorithm();
             return false;
+        });
+        this.reportBtn.click(function() {
+            that.reportPanel.toggleClass("show");
         });
     }
 
@@ -62,15 +68,22 @@ define(['jquery', 'require', 'jquerySerializeJson', 'ace',
         var statusMsg = this.status.show("Running...");
         var symbol = this.symbolInput.val();
         var algoId = this.algoIdInput.val();
+        var that = this;
 
-        SimulationClient.run(algoId, symbol, function(simulationReport) {
-            console.log(simulationReport);
-            if (simulationReport.error) {
-                statusMsg.quickShow(simulationReport.error);
-            } else {
-                statusMsg.quickShow("Running... Success!");
-            }
-        });
+        SimulationClient.run(algoId, symbol)
+            .done(function(simulationReport) {
+                that.reportBody.html(JSON.stringify(simulationReport));
+                that.reportPanel.addClass("show");
+                if (simulationReport.error) {
+                    statusMsg.show(simulationReport.error);
+                } else {
+                    statusMsg.quickShow("Running... Success!");
+                }
+            })
+            .fail(function(e) {
+                var error = JSON.parse(e.responseText)
+                statusMsg.quickShow(error.message);
+            });
     };
 
     return AlgoEditor;

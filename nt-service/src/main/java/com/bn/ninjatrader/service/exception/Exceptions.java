@@ -10,9 +10,9 @@ import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
  */
 public class Exceptions {
 
-    private Exceptions() {}
+  private Exceptions() {}
 
-    public static void throwBadRequest(final String message) {
-        throw new BadRequestException(message, Response.status(BAD_REQUEST).entity(message).build());
-    }
+  public static void throwBadRequest(final String message) {
+    throw new BadRequestException(message, Response.status(BAD_REQUEST).entity(message).build());
+  }
 }

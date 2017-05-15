@@ -5,11 +5,8 @@ define(['jquery'], function ($) {
     function SimulationClient() {
     }
 
-    SimulationClient.run = function(algoId, symbol, callback) {
-        $.get(ajaxUrl + "?algoId=" + algoId + "&symbol=" + symbol + "&isDebug=true")
-            .done(function(data) {
-                callback(data);
-            });
+    SimulationClient.run = function(algoId, symbol) {
+        return $.get(ajaxUrl + "?algoId=" + algoId + "&symbol=" + symbol + "&isDebug=true");
     };
 
     return SimulationClient;

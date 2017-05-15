@@ -5,8 +5,8 @@ import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationRequest;
 import com.bn.ninjatrader.simulation.model.TradeStatistic;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
-import com.bn.ninjatrader.simulation.script.AlgorithmScript;
-import com.bn.ninjatrader.simulation.service.AlgorithmService;
+import com.bn.ninjatrader.simulation.algorithm.AlgorithmScript;
+import com.bn.ninjatrader.simulation.algorithm.AlgorithmService;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Before;
@@ -101,6 +101,19 @@ public class RunSimulationTaskTest extends JerseyTest {
   public void testRunWithNoInputSymbol_shouldReturn400Error() {
     final Response response = target("/task/simulation/run").request().get();
     assertThat(response.getStatus()).isEqualTo(400);
+  }
+
+  @Test
+  public void testRunWithLowercaseSymbol_shouldConvertToUppercase() {
+    target("/task/simulation/run")
+        .queryParam("symbol", "meg")
+        .queryParam("algoId", "dtRKje03")
+        .request().get();
+
+    verify(simulationFactory).create(requestCaptor.capture());
+
+    final SimulationRequest req = requestCaptor.getValue();
+    assertThat(req.getSymbol()).isEqualTo("MEG");
   }
 
   @Test
