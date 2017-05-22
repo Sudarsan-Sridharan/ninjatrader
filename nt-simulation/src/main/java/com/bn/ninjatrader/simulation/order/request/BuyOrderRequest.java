@@ -1,13 +1,18 @@
 package com.bn.ninjatrader.simulation.order.request;
 
+import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.simulation.model.Broker;
 import com.bn.ninjatrader.simulation.order.OrderConfig;
 import com.bn.ninjatrader.simulation.order.type.OrderType;
 import com.bn.ninjatrader.simulation.order.type.OrderTypes;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.google.common.base.MoreObjects;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 
 /**
+ * User OrderRequestFactory
+ *
  * @author bradwee2000@gmail.com
  */
 public class BuyOrderRequest extends OrderRequest {
@@ -17,8 +22,9 @@ public class BuyOrderRequest extends OrderRequest {
     private OrderConfig orderConfig = OrderConfig.defaults();
     private double cashAmount;
 
-    public BuyOrderRequest(final Broker broker) {
-        super(broker, TransactionType.BUY);
+    @Inject
+    public BuyOrderRequest(final BoardLotTable boardLotTable, @Assisted final Broker broker) {
+        super(boardLotTable, broker, TransactionType.BUY);
     }
 
     public BuyOrderRequest withCashAmount(final double cashAmount) {
@@ -42,7 +48,7 @@ public class BuyOrderRequest extends OrderRequest {
     }
 
     public BuyOrderRequest atPrice(final double price) {
-        this.orderType = OrderTypes.atPrice(price);
+        this.orderType = OrderTypes.atPrice(roundPrice(price));
         return this;
     }
 

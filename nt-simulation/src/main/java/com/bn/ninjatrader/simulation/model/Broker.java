@@ -11,6 +11,7 @@ import com.bn.ninjatrader.simulation.order.executor.OrderExecutor;
 import com.bn.ninjatrader.simulation.order.processor.OrderRequestProcessor;
 import com.bn.ninjatrader.simulation.order.request.BuyOrderRequest;
 import com.bn.ninjatrader.simulation.order.request.OrderRequest;
+import com.bn.ninjatrader.simulation.order.request.OrderRequestFactory;
 import com.bn.ninjatrader.simulation.order.request.SellOrderRequest;
 import com.bn.ninjatrader.simulation.order.type.OrderType;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
@@ -25,7 +26,11 @@ import com.google.inject.assistedinject.Assisted;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -45,6 +50,7 @@ public class Broker {
   private final Map<TransactionType, OrderExecutor> orderExecutors;
   private final Map<TransactionType, OrderRequestProcessor> orderRequestProcessors;
   private final List<String> logs;
+  private final OrderRequestFactory orderRequestFactory;
   private final boolean isDebug;
 
   private BarData currentBar;
@@ -52,9 +58,11 @@ public class Broker {
   @Inject
   public Broker(@OrderExecutors final Map<TransactionType, OrderExecutor> orderExecutors,
                 @OrderRequestProcessors final Map<TransactionType, OrderRequestProcessor> orderRequestProcessors,
+                final OrderRequestFactory orderRequestFactory,
                 @Assisted final SimulationRequest request) {
     this.orderExecutors = orderExecutors;
     this.orderRequestProcessors = orderRequestProcessors;
+    this.orderRequestFactory = orderRequestFactory;
     this.isDebug = request.isDebug();
     this.logs = isDebug ? Lists.newArrayList() : Collections.emptyList();
   }
@@ -79,14 +87,7 @@ public class Broker {
     final OrderRequestProcessor processor = orderRequestProcessors.get(req.getTxnType());
     final Order order = processor.process(req, currentBar);
 
-    if (isDebug) {
-      logs.add(String.format(SUBMIT_ORDER_LOG,
-          order.getOrderDate(),
-          order.getTransactionType(),
-          order.getOrderType().getFulfilledPrice(currentBar, currentBar)));
-    }
-
-    pendingOrders.add(PendingOrder.of(order, currentBar));
+    submitOrder(order, currentBar);
   }
 
   public void processPendingOrders(final BarData barData) {
@@ -95,23 +96,38 @@ public class Broker {
       return;
     }
 
-    final List<PendingOrder> fulfilledOrders = Lists.newArrayList();
+    final List<PendingOrder> processedOrders = Lists.newArrayList();
     for (final PendingOrder pendingOrder : pendingOrders) {
-      if (pendingOrder.isReadyToProcess(barData)) {
-        fulfillOrder(pendingOrder, barData);
-        fulfilledOrders.add(pendingOrder);
-      } else if (pendingOrder.isExpired(barData)) {
-
-        if (isDebug) {
-          logs.add(String.format(EXPIRED_ORDER_LOG,
-            barData.getPrice().getDate(),
-            pendingOrder.getTransactionType(),
-            pendingOrder.getSubmittedBarData().getPrice().getDate()));
-        }
-        fulfilledOrders.add(pendingOrder);
+      switch (pendingOrder.getStatus(barData)) {
+        case READY:
+          fulfillOrder(pendingOrder, barData);
+          processedOrders.add(pendingOrder);
+          break;
+        case EXPIRED:
+          handleExpiredOrder(pendingOrder, barData);
+          processedOrders.add(pendingOrder);
+          break;
       }
     }
-    pendingOrders.removeAll(fulfilledOrders);
+    pendingOrders.removeAll(processedOrders);
+  }
+
+  private void handleExpiredOrder(final PendingOrder pendingOrder, final BarData bar) {
+    final SimContext simContext = bar.getSimContext();
+    final Account account = simContext.getAccount();
+    final Portfolio portfolio = account.getPortfolio();
+
+    if (isDebug) {
+      logs.add(String.format(EXPIRED_ORDER_LOG,
+          bar.getPrice().getDate(),
+          pendingOrder.getTransactionType(),
+          pendingOrder.getSubmittedBarData().getPrice().getDate()));
+    }
+LOG.info("SUMANLATIK: {}", pendingOrder);
+    if (pendingOrder.getTransactionType() == TransactionType.SELL) {
+      final long committedShares = account.getPortfolio().getCommittedShares(pendingOrder.getSymbol());
+      portfolio.cancelCommittedShares(pendingOrder.getSymbol(), committedShares);
+    }
   }
 
   private void fulfillOrder(final PendingOrder pendingOrder, final BarData barData) {
@@ -175,11 +191,11 @@ public class Broker {
   }
 
   public BuyOrderRequest buyOrder() {
-    return new BuyOrderRequest(this);
+    return orderRequestFactory.createBuyOrderRequest(this);
   }
 
   public SellOrderRequest sellOrder() {
-    return new SellOrderRequest(this);
+    return orderRequestFactory.createSellOrderRequest(this);
   }
 
   public void setCurrentBar(final BarData currentBar) {

@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.simulation.model;
 
+import com.bn.ninjatrader.simulation.data.*;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Maps;
@@ -79,6 +80,10 @@ public class Portfolio {
   public double getEquityValue(final String symbol) {
     checkArgument(portfolioItems.containsKey(symbol), SYMBOL_NOT_EXIST_ERROR_MSG, symbol);
     return portfolioItems.get(symbol).getEquityValue();
+  }
+
+  public double getTotalEquityValue(final BarData barData) {
+    return portfolioItems.values().stream().mapToDouble(item -> item.getEquityValue(barData)).sum();
   }
 
   public double getTotalEquityValue() {

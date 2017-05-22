@@ -10,6 +10,7 @@ public class Variables {
 
   public static final Variable BAR_INDEX = Variable.of(DataType.BAR_INDEX);
 
+  public static final Variable LOG = Variable.of(DataType.LOG);
   public static final Variable BROKER = Variable.of(DataType.BROKER);
   public static final Variable HISTORY = Variable.of(DataType.HISTORY);
   public static final Variable MARKERS = Variable.of(DataType.MARKERS);

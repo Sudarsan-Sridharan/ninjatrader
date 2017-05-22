@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class BoardLotTest {
 
-  private BoardLot boardLot = BoardLot.newLot().min(0.0001).max(0.9999).tick(0.0001).lot(1000).build();
+  private BoardLot boardLot = BoardLot.newLot().min(0.0001).max(0.9999).tick(0.0001).lot(1000).decimalPlaces(4).build();
 
   @Test
   public void testCreate() {
@@ -18,6 +18,7 @@ public class BoardLotTest {
     assertThat(boardLot.getMaxPrice()).isEqualTo(0.9999);
     assertThat(boardLot.getTick()).isEqualTo(0.0001);
     assertThat(boardLot.getLotSize()).isEqualTo(1000);
+    assertThat(boardLot.getDecimalPlaces()).isEqualTo(4);
   }
 
   @Test

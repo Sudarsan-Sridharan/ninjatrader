@@ -30,7 +30,7 @@ public class SimulationReport {
   @JsonProperty("endingCash")
   private final double endingCash;
 
-  @JsonProperty("txns")
+  @JsonProperty("transactions")
   private final List<Transaction> transactions;
 
   @JsonProperty("stats")

@@ -5,6 +5,7 @@ import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.DataType;
 import com.bn.ninjatrader.simulation.exception.ScriptCompileErrorException;
 import com.bn.ninjatrader.simulation.model.SimContext;
+import com.bn.ninjatrader.simulation.transaction.*;
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -91,14 +92,17 @@ public class GroovyAlgorithmScript implements AlgorithmScript {
     private final Map<String, Object> varBindings = Maps.newHashMap();
     private final Binding binding = new Binding(varBindings);
     private final Script script;
+    private final Logger scriptLogger;
 
     private Runner(final Script script) {
       this.script = script;
       this.script.setBinding(binding);
+      this.scriptLogger = LoggerFactory.getLogger(script.getClass());
     }
 
     @Override
     public void onSimulationStart(final SimContext context) {
+      varBindings.put(DataType.LOG, this.scriptLogger);
       varBindings.put(DataType.BROKER, context.getBroker());
       varBindings.put(DataType.HISTORY, context.getHistory());
       varBindings.put(DataType.MARKERS, context.getChartMarks());
@@ -120,13 +124,15 @@ public class GroovyAlgorithmScript implements AlgorithmScript {
     }
 
     @Override
-    public void onBuyFulfilled(BarData barData) {
-      script.invokeMethod(ON_BUY_FULFILLED_METHOD, null);
+    public void onBuyFulfilled(final BuyTransaction txn, BarData barData) {
+      script.invokeMethod(ON_BUY_FULFILLED_METHOD,
+          new Object[] {txn.getDate(), txn.getPrice(), txn.getNumOfShares()});
     }
 
     @Override
-    public void onSellFulfilled(BarData barData) {
-      script.invokeMethod(ON_SELL_FULFILLED_METHOD, null);
+    public void onSellFulfilled(final SellTransaction txn, BarData barData) {
+      script.invokeMethod(ON_SELL_FULFILLED_METHOD,
+          new Object[] {txn.getDate(), txn.getPrice(), txn.getNumOfShares()});
     }
 
     @Override

@@ -22,7 +22,7 @@ public class BindingFactory {
   private final Map<String, Class> varCalculatorMap;
   private final List<Variable> excluded = Lists.newArrayList(Variables.MARKERS,
       Variables.ACCOUNT, Variables.BROKER, Variables.HISTORY,
-      Variables.SYMBOL, Variables.PORTFOLIO, Variables.BOARDLOT);
+      Variables.SYMBOL, Variables.PORTFOLIO, Variables.BOARDLOT, Variables.LOG);
 
   @Inject
   public BindingFactory(@VarCalculatorMap final Map<String, Class> varCalculatorMap) {

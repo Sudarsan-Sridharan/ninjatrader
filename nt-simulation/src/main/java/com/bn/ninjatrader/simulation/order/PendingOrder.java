@@ -41,6 +41,18 @@ public class PendingOrder implements Order {
     return submittedBarData;
   }
 
+  public OrderStatus getStatus(final BarData bar) {
+    if (isExpired(bar)) {
+      return OrderStatus.EXPIRED;
+    }
+
+    if (isReadyToProcess(bar)) {
+      return OrderStatus.READY;
+    }
+
+    return OrderStatus.PENDING;
+  }
+
   /**
    * Orders are ready to process if today >= submitted day + barsFromNow
    * @param currentBarData current BarData

@@ -42,7 +42,7 @@ public class Simulation implements BrokerListener {
   public Simulation(final SimContext simContext,
                     final SimulationRequest simRequest,
                     final BarProducer barProducer) {
-    checkNotNull(simRequest, "SimParams must not be null.");
+    checkNotNull(simRequest, "SimRequest must not be null.");
     checkNotNull(simContext, "SimContext must not be null.");
     checkNotNull(simContext.getAccount(), "World.Account must not be null.");
     checkNotNull(simContext.getPrices(), "World.Prices must not be null.");
@@ -61,22 +61,22 @@ public class Simulation implements BrokerListener {
   }
 
   public SimulationReport play() {
+    BarData bar = null;
     try {
       scriptRunner.onSimulationStart(this.simContext);
 
       for (final Map.Entry<String, List<Price>> entry : priceDatastore.entrySet()) {
         final String symbol = entry.getKey();
         for (final Price price : entry.getValue()) {
-          final BarData bar = barProducer.nextBar(symbol, price, simContext);
+          bar = barProducer.nextBar(symbol, price, simContext);
           processBar(bar);
         }
       }
       onSimulationEnd();
+      return createSimulationReport(bar).build();
     } catch (final Exception e) {
-      return createSimulationReport(e).build();
+      return createSimulationReport(e, bar).build();
     }
-
-    return createSimulationReport().build();
   }
 
   private void processBar(final BarData bar) {
@@ -90,19 +90,19 @@ public class Simulation implements BrokerListener {
     scriptRunner.onSimulationEnd();
   }
 
-  public SimulationReport.Builder createSimulationReport() {
+  public SimulationReport.Builder createSimulationReport(final BarData bar) {
     return SimulationReport.builder()
         .symbol(simRequest.getSymbol())
         .tradeStatistics(account.getTradeStatistic())
         .addTransactions(account.getBookkeeper().getTransactions())
         .startingCash(simRequest.getStartingCash())
-        .endingCash(account.getTotalAccountValue())
+        .endingCash(account.getTotalAccountValue(bar))
         .addMarks(simContext.getChartMarks())
         .addBrokerLogs(broker.getLogs());
   }
 
-  public SimulationReport.Builder createSimulationReport(final Exception e) {
-    return createSimulationReport().error(e.getMessage());
+  public SimulationReport.Builder createSimulationReport(final Exception e, final BarData bar) {
+    return createSimulationReport(bar).error(e.getMessage());
   }
 
   public Account getAccount() {
@@ -119,11 +119,11 @@ public class Simulation implements BrokerListener {
 
   @Override
   public void onFulfilledBuy(final BuyTransaction transaction, final BarData barData) {
-    scriptRunner.onBuyFulfilled(barData);
+    scriptRunner.onBuyFulfilled(transaction, barData);
   }
 
   @Override
   public void onFulfilledSell(final SellTransaction transaction, final BarData barData) {
-    scriptRunner.onSellFulfilled(barData);
+    scriptRunner.onSellFulfilled(transaction, barData);
   }
 }

@@ -31,8 +31,8 @@ public class TradeStatistic {
   @JsonProperty("totalGain")
   private double totalGain = 0;
 
-  @JsonProperty("totalLosses")
-  private double totalLosses = 0;
+  @JsonProperty("totalLoss")
+  private double totalLoss = 0;
 
   @JsonProperty("maxGainTxn")
   private SellTransaction maxGainTxn = SellTransaction.builder().build();
@@ -62,8 +62,8 @@ public class TradeStatistic {
     return totalGain;
   }
 
-  public double getTotalLosses() {
-    return totalLosses;
+  public double getTotalLoss() {
+    return totalLoss;
   }
 
   public double getTotalProfit() {
@@ -119,7 +119,7 @@ public class TradeStatistic {
           transaction : maxPcntGainTxn;
     } else {
       numOfLosses++;
-      totalLosses = NumUtil.plus(totalLosses, transaction.getProfit());
+      totalLoss = NumUtil.plus(totalLoss, transaction.getProfit());
       maxLossTxn = transaction.getProfit() < maxLossTxn.getProfit() ? transaction : maxLossTxn;
       maxPcntLossTxn = transaction.getProfitPcnt() < maxPcntLossTxn.getProfitPcnt() ?
           transaction : maxPcntLossTxn;
@@ -138,7 +138,7 @@ public class TradeStatistic {
         numOfLosses == that.numOfLosses &&
         Double.compare(that.totalProfit, totalProfit) == 0 &&
         Double.compare(that.totalGain, totalGain) == 0 &&
-        Double.compare(that.totalLosses, totalLosses) == 0 &&
+        Double.compare(that.totalLoss, totalLoss) == 0 &&
         Objects.equal(maxGainTxn, that.maxGainTxn) &&
         Objects.equal(maxPcntGainTxn, that.maxPcntGainTxn) &&
         Objects.equal(maxLossTxn, that.maxLossTxn) &&
@@ -147,7 +147,7 @@ public class TradeStatistic {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(numOfTrades, numOfWins, numOfLosses, totalProfit, totalGain, totalLosses, maxGainTxn, maxPcntGainTxn, maxLossTxn, maxPcntLossTxn);
+    return Objects.hashCode(numOfTrades, numOfWins, numOfLosses, totalProfit, totalGain, totalLoss, maxGainTxn, maxPcntGainTxn, maxLossTxn, maxPcntLossTxn);
   }
 
   @Override
@@ -158,7 +158,7 @@ public class TradeStatistic {
         .add("numOfLosses", numOfLosses)
         .add("totalProfit", totalProfit)
         .add("totalGain", totalGain)
-        .add("totalLosses", totalLosses)
+        .add("totalLoss", totalLoss)
         .add("maxGainTxn", maxGainTxn)
         .add("maxPcntGainTxn", maxPcntGainTxn)
         .add("maxLossTxn", maxLossTxn)

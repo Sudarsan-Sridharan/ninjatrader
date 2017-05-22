@@ -8,11 +8,11 @@
 
 <body id="algoEditorPage">
     <div id="algoEditor">
-        <form class="saveForm">
+        <form class="saveAlgoForm">
             <input type="hidden" name="algoId" value="">
             <label for="description">Name:</label>
-            <input name="description" class="description" type="text" maxlength="100" size="20">
-            <button class="submitBtn">Save</button>
+            <input name="description" type="text" maxlength="100" size="20">
+            <button class="saveBtn">Save</button>
             <div id="codeEditor"></div>
         </form>
         <form class="runForm">
@@ -20,15 +20,10 @@
             <input name="symbol" class="symbol" type="text" maxlength="8" size="5" value="MEG">
             <button class="runBtn">Run</button>
         </form>
-
-        <div class="reportBtn"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-
-        <div id="reportPanel">
-            <div class="reportWrapper">
-                <div class="reportBody"></div>
-            </div>
-        </div>
     </div>
+
+    <div class="actionToggleBtn"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+    <div id="actionPanel"></div>
 
     <div id="status"></div>
     #contextSettings()

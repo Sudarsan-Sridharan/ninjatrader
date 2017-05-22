@@ -47,11 +47,6 @@ public class MarketCloseTest {
   }
 
   @Test
-  public void testGetVariables_shouldReturnEmptySet() {
-    assertThat(marketClose.getVariables()).isEmpty();
-  }
-
-  @Test
   public void testEquals_shouldBeEqualIfAllPropertiesAreEqual() {
     assertThat(marketClose).isEqualTo(new MarketClose())
         .isNotEqualTo(null)

@@ -1,12 +1,8 @@
 package com.bn.ninjatrader.simulation.order.type;
 
 import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.logical.expression.operation.Variable;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.google.common.base.MoreObjects;
-
-import java.util.Collections;
-import java.util.Set;
 
 /**
  * @author bradwee2000@gmail.com
@@ -28,11 +24,6 @@ public class MarketOpen implements OrderType {
   public double getFulfilledPrice(final BarData onSubmitBarData, final BarData currentBarData) {
     final Price price = currentBarData.getPrice();
     return price.getOpen();
-  }
-
-  @Override
-  public Set<Variable> getVariables() {
-    return Collections.emptySet();
   }
 
   @Override

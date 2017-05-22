@@ -1,14 +1,13 @@
 package com.bn.ninjatrader.simulation.model;
 
-import com.bn.ninjatrader.common.util.NumUtil;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.bn.ninjatrader.common.util.*;
+import com.bn.ninjatrader.simulation.data.*;
+import com.bn.ninjatrader.simulation.logicexpression.*;
+import com.fasterxml.jackson.annotation.*;
+import com.google.common.base.*;
+import org.slf4j.*;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.*;
 
 /**
  * This class is immutable.
@@ -128,6 +127,13 @@ public class PortfolioItem {
 
   public double getEquityValue() {
     return NumUtil.multiply(totalShares, avgPrice);
+  }
+
+  public double getEquityValue(BarData bar) {
+    if (bar == null) {
+      return 0;
+    }
+    return NumUtil.multiply(totalShares, (double) bar.get(Variables.PRICE_CLOSE));
   }
 
   @Override

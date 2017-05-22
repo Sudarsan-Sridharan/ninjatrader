@@ -40,7 +40,7 @@ public class SimulationReportPrinter {
     LOG.info("Biggest % Gain: {} ({}%)", stats.getMaxPcntGainTxn().getProfit(), NumUtil.toPercent(stats.getMaxPcntGainTxn().getProfitPcnt()));
     LOG.info("Biggest % Loss: {} ({}%)", stats.getMaxPcntLossTxn().getProfit(), NumUtil.toPercent(stats.getMaxPcntLossTxn().getProfitPcnt()));
     LOG.info("Total Gain: {}", NumUtil.trimPrice(stats.getTotalGain()));
-    LOG.info("Total Loss: {}", NumUtil.trimPrice(stats.getTotalLosses()));
+    LOG.info("Total Loss: {}", NumUtil.trimPrice(stats.getTotalLoss()));
     LOG.info("Total Profit: {}", NumUtil.trimPrice(stats.getTotalProfit()));
     LOG.info("Profit per Trade: {}", stats.getProfitPerTrade());
     LOG.info("Starting Cash: {}", report.getStartingCash());

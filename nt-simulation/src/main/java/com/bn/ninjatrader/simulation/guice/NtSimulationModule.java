@@ -15,6 +15,7 @@ import com.bn.ninjatrader.simulation.order.executor.SellOrderExecutor;
 import com.bn.ninjatrader.simulation.order.processor.BuyOrderRequestProcessor;
 import com.bn.ninjatrader.simulation.order.processor.OrderRequestProcessor;
 import com.bn.ninjatrader.simulation.order.processor.SellOrderRequestProcessor;
+import com.bn.ninjatrader.simulation.order.request.OrderRequestFactory;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.google.common.collect.Maps;
 import com.google.inject.AbstractModule;
@@ -30,6 +31,7 @@ public class NtSimulationModule extends AbstractModule {
   @Override
   protected void configure() {
     install(new FactoryModuleBuilder().build(BrokerFactory.class));
+    install(new FactoryModuleBuilder().build(OrderRequestFactory.class));
   }
 
   @Provides

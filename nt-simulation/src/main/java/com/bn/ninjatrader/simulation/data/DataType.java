@@ -7,6 +7,7 @@ public class DataType {
 
   private DataType() {}
 
+  public static final String LOG = "$LOG";
   public static final String BAR_INDEX = "$BAR_INDEX";
 
   public static final String BROKER = "$BROKER";

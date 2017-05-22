@@ -58,8 +58,8 @@ public class Account implements BrokerListener {
     return portfolio;
   }
 
-  public double getTotalAccountValue() {
-    return NumUtil.plus(portfolio.getTotalEquityValue(), liquidCash);
+  public double getTotalAccountValue(final BarData barData) {
+    return NumUtil.plus(portfolio.getTotalEquityValue(barData), liquidCash);
   }
 
   @Override
