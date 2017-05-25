@@ -2,7 +2,7 @@ package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.common.util.*;
 import com.bn.ninjatrader.simulation.data.*;
-import com.bn.ninjatrader.simulation.logicexpression.*;
+import com.bn.ninjatrader.simulation.logic.*;
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.base.*;
 import org.slf4j.*;

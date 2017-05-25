@@ -1,9 +1,9 @@
 package com.bn.ninjatrader.simulation.binding;
 
-import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.bn.ninjatrader.simulation.logic.Variable;
 import com.bn.ninjatrader.simulation.annotation.VarCalculatorMap;
 import com.bn.ninjatrader.simulation.exception.VariableUnknownException;
-import com.bn.ninjatrader.simulation.logicexpression.Variables;
+import com.bn.ninjatrader.simulation.logic.Variables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

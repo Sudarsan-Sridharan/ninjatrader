@@ -1,8 +1,8 @@
 package com.bn.ninjatrader.simulation.data;
 
-import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.bn.ninjatrader.simulation.logic.Variable;
 import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.simulation.model.SimContext;
+import com.bn.ninjatrader.simulation.model.SimulationContext;
 import com.google.common.base.MoreObjects;
 
 /**
@@ -20,18 +20,18 @@ public class BarData {
   private final int index;
   private final DataMap dataMap;
   private final Price price;
-  private final SimContext simContext;
+  private final SimulationContext simulationContext;
 
   private BarData(final String symbol,
                   final int index,
                   final Price price,
                   final DataMap dataMap,
-                  final SimContext simContext) {
+                  final SimulationContext simulationContext) {
     this.symbol = symbol;
     this.index = index;
     this.price = price;
     this.dataMap = dataMap;
-    this.simContext = simContext;
+    this.simulationContext = simulationContext;
   }
 
   public Object get(final Variable variable) {
@@ -48,8 +48,8 @@ public class BarData {
     return price;
   }
 
-  public SimContext getSimContext() {
-    return simContext;
+  public SimulationContext getSimulationContext() {
+    return simulationContext;
   }
 
   public String getSymbol() {
@@ -63,7 +63,7 @@ public class BarData {
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
-        .add("symbol", symbol).add("index", index).add("price", price).add("dataMap", dataMap).add("world", simContext)
+        .add("symbol", symbol).add("index", index).add("price", price).add("dataMap", dataMap).add("world", simulationContext)
         .toString();
   }
 
@@ -74,7 +74,7 @@ public class BarData {
     private int index;
     private DataMap dataMap = new DataMap();
     private Price price;
-    private SimContext simContext;
+    private SimulationContext simulationContext;
     private String symbol;
 
     public Builder index(final int index) {
@@ -93,8 +93,8 @@ public class BarData {
       this.dataMap.put(variable, value);
       return this;
     }
-    public Builder world(final SimContext simContext) {
-      this.simContext = simContext;
+    public Builder world(final SimulationContext simulationContext) {
+      this.simulationContext = simulationContext;
       return this;
     }
     public Builder symbol(final String symbol) {
@@ -103,7 +103,7 @@ public class BarData {
     }
 
     public BarData build() {
-      return new BarData(symbol, index, price, dataMap, simContext);
+      return new BarData(symbol, index, price, dataMap, simulationContext);
     }
   }
 }

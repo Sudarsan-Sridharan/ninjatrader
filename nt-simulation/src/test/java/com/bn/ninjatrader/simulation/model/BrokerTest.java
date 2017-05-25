@@ -58,7 +58,7 @@ public class BrokerTest {
   private SellOrderRequestProcessor sellOrderRequestProcessor;
   private BrokerListener brokerListener;
   private BarData barData;
-  private SimContext simContext;
+  private SimulationContext simulationContext;
   private OrderRequestFactory orderRequestFactory;
 
   private Map<TransactionType, OrderExecutor> orderExecutors;
@@ -68,7 +68,7 @@ public class BrokerTest {
   public void setup() {
     portfolio = mock(Portfolio.class);
     account = mock(Account.class);
-    simContext = mock(SimContext.class);
+    simulationContext = mock(SimulationContext.class);
     barData = mock(BarData.class);
     orderRequestFactory = mock(OrderRequestFactory.class);
     buyOrderExecutor = mock(BuyOrderExecutor.class);
@@ -89,8 +89,8 @@ public class BrokerTest {
     broker.addListener(brokerListener);
 
     when(barData.getPrice()).thenReturn(price);
-    when(barData.getSimContext()).thenReturn(simContext);
-    when(simContext.getAccount()).thenReturn(account);
+    when(barData.getSimulationContext()).thenReturn(simulationContext);
+    when(simulationContext.getAccount()).thenReturn(account);
     when(account.getPortfolio()).thenReturn(portfolio);
   }
 
@@ -134,11 +134,11 @@ public class BrokerTest {
 
     when(barTomorrow.getPrice()).thenReturn(price);
     when(barTomorrow.getIndex()).thenReturn(2);
-    when(barTomorrow.getSimContext()).thenReturn(simContext);
+    when(barTomorrow.getSimulationContext()).thenReturn(simulationContext);
 
     when(bar2DaysFromNow.getPrice()).thenReturn(price);
     when(bar2DaysFromNow.getIndex()).thenReturn(3);
-    when(bar2DaysFromNow.getSimContext()).thenReturn(simContext);
+    when(bar2DaysFromNow.getSimulationContext()).thenReturn(simulationContext);
 
     // Create unfulfillable order with expiry
     final BuyOrder order = BuyOrder.builder()
@@ -171,7 +171,7 @@ public class BrokerTest {
 
     when(bar2DaysFromNow.getPrice()).thenReturn(price);
     when(bar2DaysFromNow.getIndex()).thenReturn(3);
-    when(bar2DaysFromNow.getSimContext()).thenReturn(simContext);
+    when(bar2DaysFromNow.getSimulationContext()).thenReturn(simulationContext);
 
     // Create unfulfillable order with expiry
     final SellOrder order = SellOrder.builder()

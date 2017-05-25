@@ -7,7 +7,6 @@ import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.util.DateObjUtil;
 import com.bn.ninjatrader.process.request.CalcRequest;
-import com.bn.ninjatrader.process.util.CalcProcessNames;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
@@ -20,7 +19,7 @@ import java.util.List;
  * Created by Brad on 6/8/16.
  */
 @Singleton
-public class CalcWeeklyPriceProcess implements CalcProcess {
+public class CalcWeeklyPriceProcess {
   private static final Logger LOG = LoggerFactory.getLogger(CalcWeeklyPriceProcess.class);
 
   private final WeeklyPriceCalculator calculator;
@@ -33,7 +32,6 @@ public class CalcWeeklyPriceProcess implements CalcProcess {
     this.priceDao = priceDao;
   }
 
-  @Override
   public void process(final CalcRequest calcRequest) {
     LOG.debug("with {}", calcRequest);
     for (final String symbol : calcRequest.getAllSymbols()) {
@@ -50,10 +48,5 @@ public class CalcWeeklyPriceProcess implements CalcProcess {
             .now();
       }
     }
-  }
-
-  @Override
-  public String getProcessName() {
-    return CalcProcessNames.WEEKLY_PRICE;
   }
 }

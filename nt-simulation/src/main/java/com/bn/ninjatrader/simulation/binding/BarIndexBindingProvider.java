@@ -2,7 +2,7 @@ package com.bn.ninjatrader.simulation.binding;
 
 import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.simulation.data.DataMap;
-import com.bn.ninjatrader.simulation.logicexpression.Variables;
+import com.bn.ninjatrader.simulation.logic.Variables;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.slf4j.Logger;

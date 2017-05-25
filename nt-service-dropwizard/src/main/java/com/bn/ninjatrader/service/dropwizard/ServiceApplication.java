@@ -1,15 +1,19 @@
 package com.bn.ninjatrader.service.dropwizard;
 
 import com.bn.ninjatrader.model.mongo.guice.NtModelMongoModule;
-import com.bn.ninjatrader.process.guice.NtProcessModule;
 import com.bn.ninjatrader.service.dropwizard.health.ServiceHealthCheck;
 import com.bn.ninjatrader.service.exception.JsonParseExceptionMapper;
 import com.bn.ninjatrader.service.provider.LocalDateParamConverterProvider;
 import com.bn.ninjatrader.service.provider.ObjectMapperContextResolver;
-import com.bn.ninjatrader.service.resource.PriceResource;
 import com.bn.ninjatrader.service.resource.AlgorithmResource;
+import com.bn.ninjatrader.service.resource.PriceResource;
 import com.bn.ninjatrader.service.resource.UserResource;
-import com.bn.ninjatrader.service.task.*;
+import com.bn.ninjatrader.service.task.ImportCSVPriceTask;
+import com.bn.ninjatrader.service.task.ImportPSEDailyQuotesTask;
+import com.bn.ninjatrader.service.task.ImportPSETraderDailyQuotesTask;
+import com.bn.ninjatrader.service.task.PriceAdjustmentTask;
+import com.bn.ninjatrader.service.task.RunSimulationTask;
+import com.bn.ninjatrader.service.task.RunStockScannerTask;
 import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -101,7 +105,6 @@ public class ServiceApplication extends Application<ServiceConfig> {
   public static void main(String[] args) throws Exception {
     final Injector injector = Guice.createInjector(
         new NtModelMongoModule(),
-        new NtProcessModule(),
         new NtSimulationModule()
     );
     final ServiceApplication serviceApplication = injector.getInstance(ServiceApplication.class);

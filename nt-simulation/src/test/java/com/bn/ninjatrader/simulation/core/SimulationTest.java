@@ -46,7 +46,7 @@ public class SimulationTest {
   private Broker broker;
   private BarProducer barProducer;
   private History history;
-  private SimContext simContext;
+  private SimulationContext simulationContext;
   private ScriptRunner scriptRunner;
 
   private Simulation simulation;
@@ -69,12 +69,12 @@ public class SimulationTest {
     when(account.getPortfolio()).thenReturn(portfolio);
     when(account.getLiquidCash()).thenReturn(100000d);
     when(portfolio.isEmpty()).thenReturn(true);
-    when(barProducer.nextBar(anyString(), any(Price.class), any(SimContext.class))).thenReturn(bar1, bar2);
+    when(barProducer.nextBar(anyString(), any(Price.class), any(SimulationContext.class))).thenReturn(bar1, bar2);
     when(algorithm.newRunner()).thenReturn(scriptRunner);
 
-    simContext = SimContext.builder().account(account).broker(broker).pricesForSymbol("MEG", prices).history(history).build();
+    simulationContext = SimulationContext.builder().account(account).broker(broker).pricesForSymbol("MEG", prices).history(history).build();
 
-    simulation = new Simulation(simContext, simRequest, barProducer);
+    simulation = new Simulation(simulationContext, simRequest, barProducer);
   }
 
   @Test
@@ -82,8 +82,8 @@ public class SimulationTest {
     simulation.play();
 
     // Should forSymbol bar data twice. One for each price.
-    verify(barProducer).nextBar("MEG", price1, simContext);
-    verify(barProducer).nextBar("MEG", price2, simContext);
+    verify(barProducer).nextBar("MEG", price1, simulationContext);
+    verify(barProducer).nextBar("MEG", price2, simulationContext);
   }
 
   @Test

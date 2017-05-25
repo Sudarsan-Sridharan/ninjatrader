@@ -4,7 +4,7 @@ import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.simulation.binding.BindingFactory;
 import com.bn.ninjatrader.simulation.model.Broker;
-import com.bn.ninjatrader.simulation.model.SimContext;
+import com.bn.ninjatrader.simulation.model.SimulationContext;
 import com.bn.ninjatrader.simulation.model.SimContextFactory;
 import com.bn.ninjatrader.simulation.algorithm.AlgorithmScript;
 import com.google.common.collect.Lists;
@@ -38,7 +38,7 @@ public class SimulationFactoryTest {
   private BindingFactory varCalculatorFactory;
   private SimulationRequest simRequest;
   private Clock clock;
-  private SimContext context;
+  private SimulationContext context;
 
   @Before
   public void before() {
@@ -47,7 +47,7 @@ public class SimulationFactoryTest {
     varCalculatorFactory = mock(BindingFactory.class);
     simContextFactory = mock(SimContextFactory.class);
     clock = Clock.systemUTC();
-    context = mock(SimContext.class, RETURNS_DEEP_STUBS);
+    context = mock(SimulationContext.class, RETURNS_DEEP_STUBS);
 
     simRequest = SimulationRequest.withSymbol("MEG").from(from).to(to)
         .startingCash(100_000)
@@ -69,6 +69,6 @@ public class SimulationFactoryTest {
     final Simulation simulation = factory.create(simRequest);
 
     assertThat(simulation).isNotNull();
-    assertThat(simulation.getSimContext()).isNotNull();
+    assertThat(simulation.getSimulationContext()).isNotNull();
   }
 }

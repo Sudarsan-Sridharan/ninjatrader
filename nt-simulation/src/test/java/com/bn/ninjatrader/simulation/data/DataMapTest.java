@@ -1,14 +1,14 @@
 package com.bn.ninjatrader.simulation.data;
 
-import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.bn.ninjatrader.simulation.logic.Variable;
 import com.google.common.collect.Maps;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Map;
 
-import static com.bn.ninjatrader.simulation.logicexpression.Variables.PRICE_CLOSE;
-import static com.bn.ninjatrader.simulation.logicexpression.Variables.PRICE_OPEN;
+import static com.bn.ninjatrader.simulation.logic.Variables.PRICE_CLOSE;
+import static com.bn.ninjatrader.simulation.logic.Variables.PRICE_OPEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 

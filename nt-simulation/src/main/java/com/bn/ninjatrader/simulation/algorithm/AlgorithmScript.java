@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.algorithm;
 
-import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.bn.ninjatrader.simulation.logic.Variable;
 
 import java.util.Collection;
 

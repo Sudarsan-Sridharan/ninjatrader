@@ -1,14 +1,14 @@
 package com.bn.ninjatrader.simulation.core;
 
 import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.bn.ninjatrader.simulation.logic.Variable;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 import com.bn.ninjatrader.simulation.binding.BindingFactory;
 import com.bn.ninjatrader.simulation.binding.BindingProvider;
 import com.bn.ninjatrader.simulation.data.BarProducer;
-import com.bn.ninjatrader.simulation.model.SimContext;
+import com.bn.ninjatrader.simulation.model.SimulationContext;
 import com.bn.ninjatrader.simulation.model.SimContextFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -60,7 +60,7 @@ public class SimulationFactory {
     // Producer for bars
     final BarProducer barProducer = new BarProducer(bindingProviders);
 
-    final SimContext context = simContextFactory.create(req);
+    final SimulationContext context = simContextFactory.create(req);
     final Simulation simulation = new Simulation(context, req, barProducer);
 
     // Pre calculate indicators that require many past days of data

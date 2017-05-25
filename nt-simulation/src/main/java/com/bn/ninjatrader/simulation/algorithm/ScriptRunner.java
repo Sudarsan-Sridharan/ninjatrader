@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.simulation.algorithm;
 
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.model.SimContext;
+import com.bn.ninjatrader.simulation.model.SimulationContext;
 import com.bn.ninjatrader.simulation.transaction.*;
 
 /**
@@ -9,7 +9,7 @@ import com.bn.ninjatrader.simulation.transaction.*;
  */
 public interface ScriptRunner {
 
-  void onSimulationStart(final SimContext context);
+  void onSimulationStart(final SimulationContext context);
 
   void processBar(final BarData barData);
 

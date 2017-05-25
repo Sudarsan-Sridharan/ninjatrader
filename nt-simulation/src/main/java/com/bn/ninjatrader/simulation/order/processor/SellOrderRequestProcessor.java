@@ -31,7 +31,7 @@ public class SellOrderRequestProcessor implements OrderRequestProcessor {
         final SellOrderRequest sellReq = (SellOrderRequest) req;
         final String symbol = sellReq.getSymbol();
 
-        final Portfolio portfolio = barData.getSimContext().getAccount().getPortfolio();
+        final Portfolio portfolio = barData.getSimulationContext().getAccount().getPortfolio();
         final long totalSharesToSell = portfolio.getTotalShares(symbol);
 
         if (portfolio.canCommitShares(symbol, totalSharesToSell)) {

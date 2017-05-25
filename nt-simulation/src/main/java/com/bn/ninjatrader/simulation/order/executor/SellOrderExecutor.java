@@ -5,7 +5,7 @@ import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.model.Portfolio;
-import com.bn.ninjatrader.simulation.model.SimContext;
+import com.bn.ninjatrader.simulation.model.SimulationContext;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
 import com.bn.ninjatrader.simulation.order.type.OrderType;
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
@@ -30,8 +30,8 @@ public class SellOrderExecutor extends OrderExecutor {
   public SellTransaction execute(final PendingOrder pendingOrder, final BarData currentBarData) {
     checkConditions(pendingOrder, currentBarData);
 
-    final SimContext simContext = currentBarData.getSimContext();
-    final Account account = simContext.getAccount();
+    final SimulationContext simulationContext = currentBarData.getSimulationContext();
+    final Account account = simulationContext.getAccount();
     final Portfolio portfolio = account.getPortfolio();
     final OrderType orderType = pendingOrder.getOrderType();
     final BarData submittedBarData = pendingOrder.getSubmittedBarData();

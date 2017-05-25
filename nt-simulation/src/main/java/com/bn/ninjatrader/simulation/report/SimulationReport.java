@@ -48,7 +48,7 @@ public class SimulationReport {
   public SimulationReport(@JsonProperty("symbol") final String symbol,
                           @JsonProperty("startingCash") final double startingCash,
                           @JsonProperty("endingCash") final double endingCash,
-                          @JsonProperty("txns") final List<Transaction> transactions,
+                          @JsonProperty("transactions") final List<Transaction> transactions,
                           @JsonProperty("stats") final TradeStatistic tradeStatistic,
                           @JsonProperty("marks") final List<Mark> marks,
                           @JsonProperty("brokerLogs") final List<String> brokerLogs,

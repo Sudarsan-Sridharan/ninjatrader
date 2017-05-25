@@ -8,7 +8,7 @@ import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.model.Portfolio;
-import com.bn.ninjatrader.simulation.model.SimContext;
+import com.bn.ninjatrader.simulation.model.SimulationContext;
 import com.bn.ninjatrader.simulation.order.BuyOrder;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
@@ -40,7 +40,7 @@ public class BuyOrderExecutorTest {
   private final PendingOrder pendingOrder = PendingOrder.of(order, submittedBarData);
 
   private BoardLotTable boardLotTable;
-  private SimContext simContext;
+  private SimulationContext simulationContext;
   private Account account;
   private BarData barData;
   private Portfolio portfolio;
@@ -50,14 +50,14 @@ public class BuyOrderExecutorTest {
   @Before
   public void setup() {
     barData = mock(BarData.class);
-    simContext = mock(SimContext.class);
+    simulationContext = mock(SimulationContext.class);
     account = mock(Account.class);
     boardLotTable = mock(BoardLotTable.class);
     portfolio = mock(Portfolio.class);
 
-    when(barData.getSimContext()).thenReturn(simContext);
+    when(barData.getSimulationContext()).thenReturn(simulationContext);
     when(barData.getPrice()).thenReturn(price);
-    when(simContext.getAccount()).thenReturn(account);
+    when(simulationContext.getAccount()).thenReturn(account);
     when(boardLotTable.getBoardLot(anyDouble())).thenReturn(boardLot);
     when(account.getPortfolio()).thenReturn(portfolio);
 

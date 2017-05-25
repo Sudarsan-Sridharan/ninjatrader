@@ -31,12 +31,14 @@ requirejs(["../common"], function () {
             /**
              * Load Algorithm
              */
-            var loadingAlgoStatus = status.show("Loading algorithm...");
-            $.when(algoEditor.loadByAlgoId(algoIdParam)).done(function(data) {
-                algoIdInput.val(data.algorithmId);
-                descInput.val(data.description);
-                loadingAlgoStatus.remove();
-            });
+            if (algoIdParam) {
+                var loadingAlgoStatus = status.show("Loading algorithm...");
+                $.when(algoEditor.loadByAlgoId(algoIdParam)).done(function (data) {
+                    algoIdInput.val(data.algorithmId);
+                    descInput.val(data.description);
+                    loadingAlgoStatus.remove();
+                });
+            }
 
             /**
              * Toggle Action panel
@@ -50,7 +52,8 @@ requirejs(["../common"], function () {
              */
             $(".saveBtn").click(function() {
                 var saveStatus = status.show("Saving...");
-                $.when(algoEditor.save(algoIdInput.val(), descInput.val())).done(function() {
+                $.when(algoEditor.save(algoIdInput.val(), descInput.val())).done(function(data) {
+                    algoIdInput.val(data.algorithmId);
                     saveStatus.quickShow("Saving... Success!");
                 });
                 return false;
@@ -62,21 +65,20 @@ requirejs(["../common"], function () {
             $(".runBtn").click(function() {
                 var runStatus = status.show("Running...");
 
-                SimulationClient.run(algoIdInput.val(), symbolInput.val()).done(function(result) {
-                    var formattedResult = SimulationReportFormatter.toNode(result);
-
-                    // Show result to action panel.
-                    actionPanel.body(formattedResult).show();
-                    if (result.error) {
-                        runStatus.show(result.error);
-                    } else {
-                        runStatus.quickShow("Running... Success!");
-                    }
-                    runStatus.quickShow("Running... Success!");
-                }).fail(function(e) {
-                    var error = JSON.parse(e.responseText);
-                    runStatus.quickShow(error.message);
-                });
+                SimulationClient.run(algoIdInput.val(), symbolInput.val())
+                    .done(function(result) {
+                        if (result.error) {
+                            runStatus.show(result.error);
+                        } else {
+                            var formattedResult = SimulationReportFormatter.toNode(result);
+                            // Show result to action panel.
+                            actionPanel.body(formattedResult).show();
+                            runStatus.quickShow("Running... Success!");
+                        }
+                    }).fail(function(e) {
+                        var error = JSON.parse(e.responseText);
+                        runStatus.quickShow(error.message);
+                    });
 
                 return false;
             });

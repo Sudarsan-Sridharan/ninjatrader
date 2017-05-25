@@ -4,7 +4,7 @@ import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.bn.ninjatrader.simulation.binding.BindingProvider;
-import com.bn.ninjatrader.simulation.model.SimContext;
+import com.bn.ninjatrader.simulation.model.SimulationContext;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +12,7 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.util.Collections;
 
-import static com.bn.ninjatrader.simulation.logicexpression.Variables.*;
+import static com.bn.ninjatrader.simulation.logic.Variables.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -32,14 +32,14 @@ public class BarProducerTest {
   private BindingProvider bindingProvider2;
   private DataMap dataMap;
   private BarProducer barProducer;
-  private SimContext simContext;
+  private SimulationContext simulationContext;
 
   @Before
   public void setup() {
     bindingProvider = mock(BindingProvider.class);
     bindingProvider2 = mock(BindingProvider.class);
     dataMap = mock(DataMap.class);
-    simContext = mock(SimContext.class);
+    simulationContext = mock(SimulationContext.class);
 
     barProducer = new BarProducer(Lists.newArrayList(bindingProvider, bindingProvider2));
 
@@ -50,7 +50,7 @@ public class BarProducerTest {
 
   @Test
   public void testCreateBarData_shouldSetProperties() {
-    final BarData barData = barProducer.nextBar("MEG", price, simContext);
+    final BarData barData = barProducer.nextBar("MEG", price, simulationContext);
 
     assertThat(barData).isNotNull();
     assertThat(barData.getPrice()).isEqualTo(price);
@@ -66,7 +66,7 @@ public class BarProducerTest {
         .addData(SMA.withPeriod(21), 100.15));
 
     final BarData barData =
-        barProducer.nextBar("MEG", price, simContext);
+        barProducer.nextBar("MEG", price, simulationContext);
 
     assertThat(barData.get(SMA.withPeriod(21))).isEqualTo(100.15);
     assertThat(barData.get(PRICE_OPEN)).isEqualTo(1.0);

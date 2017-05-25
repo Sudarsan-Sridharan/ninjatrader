@@ -2,7 +2,7 @@ package com.bn.ninjatrader.simulation.data;
 
 import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.simulation.binding.BindingProvider;
-import com.bn.ninjatrader.simulation.model.SimContext;
+import com.bn.ninjatrader.simulation.model.SimulationContext;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,12 +22,12 @@ public class BarProducer {
 
   public BarData nextBar(final String symbol,
                          final Price price,
-                         final SimContext simContext) {
+                         final SimulationContext simulationContext) {
     final BarData.Builder barDataBuilder = BarData.builder()
         .symbol(symbol)
         .index(index)
         .price(price)
-        .world(simContext);
+        .world(simulationContext);
 
     bindingProviders.stream()
         .forEach(varCalculator -> barDataBuilder.addData(varCalculator.get(price)));

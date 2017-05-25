@@ -46,8 +46,8 @@ public class BuyOrderExecutor extends OrderExecutor {
         .barIndex(barData.getIndex())
         .build();
 
-    barData.getSimContext().getAccount().addCash(-txn.getValue());
-    barData.getSimContext().getAccount().getPortfolio().add(txn);
+    barData.getSimulationContext().getAccount().addCash(-txn.getValue());
+    barData.getSimulationContext().getAccount().getPortfolio().add(txn);
 
     return txn;
   }

@@ -32,14 +32,14 @@ public class SimContextFactory {
     this.boardLotTable = boardLotTable;
   }
 
-  public SimContext create(final SimulationRequest req) {
+  public SimulationContext create(final SimulationRequest req) {
     final List<Price> priceList = priceDao.findPrices().withSymbol(req.getSymbol())
         .from(req.getFrom()).to(req.getTo()).now();
     final Account account = new Account(new Portfolio(), new Bookkeeper(), new TradeStatistic(), req.getStartingCash());
     final Broker broker = brokerFactory.createBroker(req);
     final History history = History.withMaxSize(DEFAULT_MAX_HISTORY_SIZE);
 
-    return SimContext.builder().account(account).broker(broker).boardLotTable(boardLotTable).history(history)
+    return SimulationContext.builder().account(account).broker(broker).boardLotTable(boardLotTable).history(history)
         .pricesForSymbol(req.getSymbol(), priceList).build();
   }
 }

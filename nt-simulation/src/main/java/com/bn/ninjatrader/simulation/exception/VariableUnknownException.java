@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.exception;
 
-import com.bn.ninjatrader.logical.expression.operation.Variable;
+import com.bn.ninjatrader.simulation.logic.Variable;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 

@@ -90,8 +90,8 @@ define(["d3", "../util/format"], function(d3, Format) {
 
         // Build data map by date
         this._dataByDateMap = [];
-        for (var i in data.txns) {
-            var tnx = data.txns[i];
+        for (var i in data.transactions) {
+            var tnx = data.transactions[i];
             this._dataByDateMap[tnx.dt] = tnx;
         }
     }

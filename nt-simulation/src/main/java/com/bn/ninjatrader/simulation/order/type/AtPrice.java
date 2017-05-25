@@ -2,6 +2,8 @@ package com.bn.ninjatrader.simulation.order.type;
 
 import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.simulation.data.BarData;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.slf4j.Logger;
@@ -10,6 +12,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author bradwee2000@gmail.com
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AtPrice implements OrderType {
   private static final Logger LOG = LoggerFactory.getLogger(AtPrice.class);
 
@@ -17,9 +20,10 @@ public class AtPrice implements OrderType {
     return new AtPrice(price);
   }
 
+  @JsonProperty("price")
   private final double price;
 
-  public AtPrice(final double price) {
+  public AtPrice(@JsonProperty("price") final double price) {
     this.price = price;
   }
 

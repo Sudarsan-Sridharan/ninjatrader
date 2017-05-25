@@ -113,8 +113,8 @@ public class Broker {
   }
 
   private void handleExpiredOrder(final PendingOrder pendingOrder, final BarData bar) {
-    final SimContext simContext = bar.getSimContext();
-    final Account account = simContext.getAccount();
+    final SimulationContext simulationContext = bar.getSimulationContext();
+    final Account account = simulationContext.getAccount();
     final Portfolio portfolio = account.getPortfolio();
 
     if (isDebug) {
@@ -123,7 +123,7 @@ public class Broker {
           pendingOrder.getTransactionType(),
           pendingOrder.getSubmittedBarData().getPrice().getDate()));
     }
-LOG.info("SUMANLATIK: {}", pendingOrder);
+
     if (pendingOrder.getTransactionType() == TransactionType.SELL) {
       final long committedShares = account.getPortfolio().getCommittedShares(pendingOrder.getSymbol());
       portfolio.cancelCommittedShares(pendingOrder.getSymbol(), committedShares);
