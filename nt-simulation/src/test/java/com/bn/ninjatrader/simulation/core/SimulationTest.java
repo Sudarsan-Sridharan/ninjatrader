@@ -93,12 +93,14 @@ public class SimulationTest {
     simulation.play();
 
     // Verify barData is sent to broker for each price
-    verify(broker, times(2)).processPendingOrders(barDataCaptor.capture());
+    verify(broker, times(4)).processPendingOrders(barDataCaptor.capture());
 
     // Verify BarData values
     final List<BarData> barDataList = barDataCaptor.getAllValues();
     assertThat(barDataList.get(0).getPrice()).isEqualTo(price1);
-    assertThat(barDataList.get(1).getPrice()).isEqualTo(price2);
+    assertThat(barDataList.get(1).getPrice()).isEqualTo(price1);
+    assertThat(barDataList.get(2).getPrice()).isEqualTo(price2);
+    assertThat(barDataList.get(3).getPrice()).isEqualTo(price2);
   }
 
   @Test

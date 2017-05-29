@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -40,6 +41,9 @@ public class User {
   @JsonProperty("mobile")
   private final String mobile;
 
+  @JsonProperty("roles")
+  private final Collection<String> roles; // Stock symbols
+
   @JsonProperty("watchList")
   private final List<String> watchList; // Stock symbols
 
@@ -49,6 +53,7 @@ public class User {
               @JsonProperty("lastname") final String lastname,
               @JsonProperty("email") final String email,
               @JsonProperty("mobile") final String mobile,
+              @JsonProperty("roles") final Collection<String> roles,
               @JsonProperty("watchList") final Collection<String> watchList) {
     this.userId = userId;
     this.username = username;
@@ -56,6 +61,7 @@ public class User {
     this.lastname = lastname;
     this.email = email;
     this.mobile = mobile;
+    this.roles = Collections.unmodifiableCollection(roles);
     this.watchList = watchList.stream().sorted().collect(Collectors.toList());
   }
 
@@ -81,6 +87,14 @@ public class User {
 
   public String getMobile() {
     return mobile;
+  }
+
+  public Collection<String> getRoles() {
+    return roles;
+  }
+
+  public boolean hasRole(final String role) {
+    return roles.contains(role);
   }
 
   public List<String> getWatchList() {
@@ -130,6 +144,7 @@ public class User {
     private String email;
     private String mobile;
     private final Set<String> watchList = Sets.newHashSet();
+    private final Set<String> roles = Sets.newHashSet();
 
     public Builder userId(final String userId) {
       this.userId = userId;
@@ -161,6 +176,21 @@ public class User {
       return this;
     }
 
+    public Builder addRole(final String role) {
+      this.roles.add(role);
+      return this;
+    }
+
+    public Builder addRoles(final Collection<String> roles) {
+      this.roles.addAll(roles);
+      return this;
+    }
+
+    public Builder addRoles(final String role, final String ... more) {
+      this.roles.addAll(Lists.asList(role, more));
+      return this;
+    }
+
     public Builder addToWatchList(final String symbol) {
       watchList.add(symbol);
       return this;
@@ -177,7 +207,7 @@ public class User {
     }
 
     public User build() {
-      return new User(userId, username, firstname, lastname, email, mobile, watchList);
+      return new User(userId, username, firstname, lastname, email, mobile, roles, watchList);
     }
   }
 }

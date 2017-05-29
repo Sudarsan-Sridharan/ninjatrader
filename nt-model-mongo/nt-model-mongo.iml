@@ -32,9 +32,9 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.7.0" level="project" />
     <orderEntry type="library" name="Maven: de.undercouch:bson4jackson:2.7.0" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.7.3" level="project" />
-    <orderEntry type="library" name="Maven: com.netflix.archaius:archaius2-api:2.1.11" level="project" />
-    <orderEntry type="library" name="Maven: com.netflix.archaius:archaius2-core:2.1.11" level="project" />
-    <orderEntry type="library" name="Maven: com.netflix.archaius:archaius2-guice:2.1.11" level="project" />
+    <orderEntry type="library" name="Maven: com.netflix.archaius:archaius2-api:2.1.12" level="project" />
+    <orderEntry type="library" name="Maven: com.netflix.archaius:archaius2-core:2.1.12" level="project" />
+    <orderEntry type="library" name="Maven: com.netflix.archaius:archaius2-guice:2.1.12" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.google.inject.extensions:guice-multibindings:4.0" level="project" />
     <orderEntry type="module" module-name="nt-model" scope="TEST" production-on-test="" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />

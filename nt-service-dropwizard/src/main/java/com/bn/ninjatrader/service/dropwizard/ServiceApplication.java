@@ -1,6 +1,8 @@
 package com.bn.ninjatrader.service.dropwizard;
 
 import com.bn.ninjatrader.model.mongo.guice.NtModelMongoModule;
+import com.bn.ninjatrader.scheduler.JobScheduler;
+import com.bn.ninjatrader.scheduler.guice.NtSchedulerModule;
 import com.bn.ninjatrader.service.dropwizard.health.ServiceHealthCheck;
 import com.bn.ninjatrader.service.exception.JsonParseExceptionMapper;
 import com.bn.ninjatrader.service.provider.LocalDateParamConverterProvider;
@@ -16,16 +18,17 @@ import com.bn.ninjatrader.service.task.RunSimulationTask;
 import com.bn.ninjatrader.service.task.RunStockScannerTask;
 import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 import io.dropwizard.Application;
 import io.dropwizard.configuration.ResourceConfigurationSourceProvider;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
 import io.dropwizard.jetty.setup.ServletEnvironment;
+import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 
+import javax.inject.Inject;
 import javax.servlet.DispatcherType;
 import java.util.EnumSet;
 
@@ -59,6 +62,9 @@ public class ServiceApplication extends Application<ServiceConfig> {
   @Inject
   private ObjectMapperContextResolver objectMapperContextResolver;
 
+  @Inject
+  private JobScheduler jobScheduler;
+
   @Override
   public void initialize(Bootstrap<ServiceConfig> bootstrap) {
     bootstrap.setConfigurationSourceProvider(new ResourceConfigurationSourceProvider());
@@ -72,6 +78,18 @@ public class ServiceApplication extends Application<ServiceConfig> {
 
     setupResources(env.jersey());
     setupFilters(env.servlets());
+
+    env.lifecycle().manage(new Managed() {
+      @Override
+      public void start() throws Exception {
+        jobScheduler.start();
+      }
+
+      @Override
+      public void stop() throws Exception {
+        jobScheduler.shutdown();
+      }
+    });
   }
 
   private void registerProviders(final JerseyEnvironment jersey) {
@@ -105,7 +123,8 @@ public class ServiceApplication extends Application<ServiceConfig> {
   public static void main(String[] args) throws Exception {
     final Injector injector = Guice.createInjector(
         new NtModelMongoModule(),
-        new NtSimulationModule()
+        new NtSimulationModule(),
+        new NtSchedulerModule()
     );
     final ServiceApplication serviceApplication = injector.getInstance(ServiceApplication.class);
 

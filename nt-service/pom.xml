@@ -14,10 +14,6 @@
     <dependencies>
         <dependency>
             <groupId>com.beachninja</groupId>
-            <artifactId>nt-calculator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.beachninja</groupId>
             <artifactId>nt-common</artifactId>
         </dependency>
         <dependency>

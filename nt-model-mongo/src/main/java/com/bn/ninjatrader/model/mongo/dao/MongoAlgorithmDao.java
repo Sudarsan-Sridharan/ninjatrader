@@ -5,7 +5,7 @@ import com.bn.ninjatrader.model.entity.Algorithm;
 import com.bn.ninjatrader.model.mongo.annotation.TradeAlgorithmCollection;
 import com.bn.ninjatrader.model.mongo.document.MongoTradeAlgorithmDocument;
 import com.bn.ninjatrader.model.mongo.util.Queries;
-import com.bn.ninjatrader.model.util.IdGenerator;
+import com.bn.ninjatrader.common.util.IdGenerator;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

@@ -41,11 +41,8 @@ public class GroovyAlgorithmScript implements AlgorithmScript {
 
     String convertedSafeScript = scriptText;
     for (final ScriptVariable v : historicalVariables) {
-      LOG.info("REPLACING: {} with {}", v.getName(), v.getSafeName());
       convertedSafeScript = convertedSafeScript.replace(v.getName(), v.getSafeName());
     }
-
-    LOG.info("SAFE SCRIPT: {}", convertedSafeScript);
 
     try {
       // Cache the class so we don't keep recompiling script.

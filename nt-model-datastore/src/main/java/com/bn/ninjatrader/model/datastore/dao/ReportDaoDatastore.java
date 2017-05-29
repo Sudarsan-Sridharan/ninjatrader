@@ -6,7 +6,7 @@ import com.bn.ninjatrader.model.dao.ReportDao;
 import com.bn.ninjatrader.model.datastore.document.ReportDocument;
 import com.bn.ninjatrader.model.request.FindReportRequest;
 import com.bn.ninjatrader.model.request.SaveReportRequest;
-import com.bn.ninjatrader.model.util.IdGenerator;
+import com.bn.ninjatrader.common.util.IdGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;

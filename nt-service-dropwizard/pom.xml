@@ -22,6 +22,10 @@
         </dependency>
         <dependency>
             <groupId>com.beachninja</groupId>
+            <artifactId>nt-scheduler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.beachninja</groupId>
             <artifactId>nt-service</artifactId>
         </dependency>
         <dependency>

@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.model.entity;
 
-import com.bn.ninjatrader.model.util.IdGenerator;
+import com.bn.ninjatrader.common.util.IdGenerator;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
