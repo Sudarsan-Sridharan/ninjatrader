@@ -1,5 +1,5 @@
 # docker build -t nt-server .
-# docker run -d -p8080:8080 -e "service.host=http://192.168.99.100:9000" --restart=always nt-server
+# docker run -d -p8080:8080 -e "service.host=http://192.168.99.100:9000" --restart=always -e TZ=Asia/Manila nt-server
 
 FROM jetty:alpine
 

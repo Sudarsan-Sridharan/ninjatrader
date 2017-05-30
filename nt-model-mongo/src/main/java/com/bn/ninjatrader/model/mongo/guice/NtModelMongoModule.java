@@ -1,8 +1,8 @@
 package com.bn.ninjatrader.model.mongo.guice;
 
 import com.bn.ninjatrader.common.guice.NtClockModule;
-import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.AlgorithmDao;
+import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.UserDao;
 import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.model.mongo.annotation.PriceCollection;
@@ -10,8 +10,8 @@ import com.bn.ninjatrader.model.mongo.annotation.StockCollection;
 import com.bn.ninjatrader.model.mongo.annotation.TradeAlgorithmCollection;
 import com.bn.ninjatrader.model.mongo.annotation.UserCollection;
 import com.bn.ninjatrader.model.mongo.client.DbClient;
-import com.bn.ninjatrader.model.mongo.dao.MongoPriceDao;
 import com.bn.ninjatrader.model.mongo.dao.MongoAlgorithmDao;
+import com.bn.ninjatrader.model.mongo.dao.MongoPriceDao;
 import com.bn.ninjatrader.model.mongo.dao.MongoUserDao;
 import com.bn.ninjatrader.model.mongo.factory.PriceBuilderFactoryMongo;
 import com.google.inject.AbstractModule;
@@ -58,7 +58,6 @@ public class NtModelMongoModule extends AbstractModule {
     if (dbClient == null) {
       final String host = config.getString("mongo.host");
       final String databaseName = config.getString("mongo.database.name");
-      LOG.info("Connecting to {}/{}", host, databaseName);
       dbClient = DbClient.create().host(host).databaseName(databaseName).connect();
     }
     return dbClient;

@@ -5,3 +5,12 @@ server:
   adminConnectors:
   - type: http
     port: 9001
+logging:
+  level: INFO
+  loggers:
+      "io.dropwizard": INFO
+  appenders:
+  - type: console
+    threshold: ALL
+    timeZone: UTC+8
+    target: stdout

@@ -1,5 +1,5 @@
 # docker build -t nt-service .
-# docker run -d -p9000:9000 -p9001:9001 --restart=always nt-service
+# docker run -d -p9000:9000 -p9001:9001 --restart=always -e TZ=Asia/Manila nt-service
 
 FROM phusion/baseimage:latest
 

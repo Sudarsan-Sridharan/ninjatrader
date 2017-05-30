@@ -17,8 +17,10 @@ import com.bn.ninjatrader.service.task.PriceAdjustmentTask;
 import com.bn.ninjatrader.service.task.RunSimulationTask;
 import com.bn.ninjatrader.service.task.RunStockScannerTask;
 import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
+import com.google.common.collect.Lists;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.netflix.archaius.api.Config;
 import io.dropwizard.Application;
 import io.dropwizard.configuration.ResourceConfigurationSourceProvider;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
@@ -27,6 +29,8 @@ import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.servlet.DispatcherType;
@@ -36,6 +40,7 @@ import java.util.EnumSet;
  * @author bradwee2000@gmail.com
  */
 public class ServiceApplication extends Application<ServiceConfig> {
+  private static final Logger LOG = LoggerFactory.getLogger(ServiceApplication.class);
 
   @Inject
   private ServiceHealthCheck serviceHealthCheck;
@@ -126,7 +131,12 @@ public class ServiceApplication extends Application<ServiceConfig> {
         new NtSimulationModule(),
         new NtSchedulerModule()
     );
+
     final ServiceApplication serviceApplication = injector.getInstance(ServiceApplication.class);
+
+    final Config config = injector.getInstance(Config.class);
+    Lists.newArrayList(config.getKeys()).stream()
+        .forEach(key -> System.out.println("-- " + key + " = " + config.getString(key)));
 
     if (args.length == 0) {
       args = new String[] {"server", "service-config.yaml"};
