@@ -41,6 +41,10 @@ public class MongoPriceDaoTest {
       .open(1.1).high(1.2).low(1.0).close(1.1).volume(1000).build();
   private final Price price2 = pbf.builder().date(tomorrow)
       .open(2.1).high(2.2).low(2.0).close(2.1).volume(2000).build();
+  private final Price priceNextMonth = pbf.builder().date(nextMonth)
+      .open(3.1).high(3.2).low(3.0).close(3.1).volume(3000).build();
+  private final Price priceNextYear = pbf.builder().date(nextYear)
+      .open(4.1).high(4.2).low(4.0).close(4.1).volume(4000).build();
 
   private MongoPriceDao priceDao;
 
@@ -205,6 +209,34 @@ public class MongoPriceDaoTest {
     assertThat(priceDao.findPrices().withSymbol("MEG").withTimeFrame(TimeFrame.ONE_WEEK)
         .from(now).to(now.plusDays(1)).now())
         .containsExactly(price2);
+  }
+
+  @Test
+  public void testRenameSymbol_shouldMergePricesAndRenameToNewSymbol() {
+    // Add prices for different time frames to old symbol
+    priceDao.savePrices(price1, priceNextYear).withSymbol("MEG").withTimeFrame(TimeFrame.ONE_DAY).now();
+    priceDao.savePrices(price2).withSymbol("MEG").withTimeFrame(TimeFrame.ONE_WEEK).now();
+
+    // Add prices for different time frames to new symbol
+    priceDao.savePrices(priceNextMonth).withSymbol("LEG").withTimeFrame(TimeFrame.ONE_DAY).now();
+    priceDao.savePrices(priceNextMonth).withSymbol("LEG").withTimeFrame(TimeFrame.ONE_WEEK).now();
+
+    // Rename
+    priceDao.renameSymbol("MEG").to("LEG").now();
+
+    // Verify that prices for MEG no longer exists
+    assertThat(priceDao.findPrices().withSymbol("MEG").withTimeFrame(TimeFrame.ONE_DAY)
+        .from(now).to(nextYear).now()).isEmpty();
+    assertThat(priceDao.findPrices().withSymbol("MEG").withTimeFrame(TimeFrame.ONE_WEEK)
+        .from(now).to(nextYear).now()).isEmpty();
+
+    // Verify prices of old symbol are merged to new symbol
+    assertThat(priceDao.findPrices().withSymbol("LEG").withTimeFrame(TimeFrame.ONE_DAY)
+        .from(now).to(nextYear).now())
+        .containsExactly(price1, priceNextMonth, priceNextYear);
+    assertThat(priceDao.findPrices().withSymbol("LEG").withTimeFrame(TimeFrame.ONE_WEEK)
+        .from(now).to(nextYear).now())
+        .containsExactly(price2, priceNextMonth);
   }
 
   private Price lastPriceOf(List<Price> prices) {

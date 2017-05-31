@@ -14,6 +14,7 @@ import com.bn.ninjatrader.service.task.ImportCSVPriceTask;
 import com.bn.ninjatrader.service.task.ImportPSEDailyQuotesTask;
 import com.bn.ninjatrader.service.task.ImportPSETraderDailyQuotesTask;
 import com.bn.ninjatrader.service.task.PriceAdjustmentTask;
+import com.bn.ninjatrader.service.task.RenameStockSymbolTask;
 import com.bn.ninjatrader.service.task.RunSimulationTask;
 import com.bn.ninjatrader.service.task.RunStockScannerTask;
 import com.bn.ninjatrader.simulation.guice.NtSimulationModule;
@@ -62,6 +63,8 @@ public class ServiceApplication extends Application<ServiceConfig> {
   private ImportCSVPriceTask importPriceTask;
   @Inject
   private ImportPSEDailyQuotesTask importPSEDailyQuotesTask;
+  @Inject
+  private RenameStockSymbolTask renameStockSymbolTask;
   @Inject
   private ImportPSETraderDailyQuotesTask importPSETraderDailyQuotesTask;
   @Inject
@@ -115,6 +118,7 @@ public class ServiceApplication extends Application<ServiceConfig> {
     jersey.register(importPSEDailyQuotesTask);
     jersey.register(importPSETraderDailyQuotesTask);
     jersey.register(priceAdjustmentTask);
+    jersey.register(renameStockSymbolTask);
 
     // ObjectMapper
     jersey.register(objectMapperContextResolver);

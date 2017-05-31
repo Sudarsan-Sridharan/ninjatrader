@@ -6,6 +6,7 @@ import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.entity.Price;
 import com.bn.ninjatrader.model.mongo.annotation.PriceCollection;
 import com.bn.ninjatrader.model.mongo.dao.operation.MongoFindPricesOperation;
+import com.bn.ninjatrader.model.mongo.dao.operation.MongoRenameSymbolOperation;
 import com.bn.ninjatrader.model.mongo.dao.operation.MongoSavePricesOperation;
 import com.bn.ninjatrader.model.mongo.document.MongoPriceDocument;
 import com.bn.ninjatrader.model.mongo.util.Queries;
@@ -100,4 +101,8 @@ public class MongoPriceDao extends MongoAbstractDao implements PriceDao {
     return bars;
   }
 
+  @Override
+  public RenameSymbolOperation renameSymbol(String symbol) {
+    return new MongoRenameSymbolOperation(this, symbol);
+  }
 }

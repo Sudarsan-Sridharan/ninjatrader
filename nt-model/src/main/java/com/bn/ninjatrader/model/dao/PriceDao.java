@@ -24,6 +24,8 @@ public interface PriceDao {
 
   List<Price> findBeforeDate(final FindBeforeDateRequest build);
 
+  RenameSymbolOperation renameSymbol(final String symbol);
+
   /**
    * Builder interface for finding prices
    */
@@ -48,6 +50,16 @@ public interface PriceDao {
     SavePricesOperation withSymbol(final String symbol);
 
     SavePricesOperation withTimeFrame(final TimeFrame timeFrame);
+
+    void now();
+  }
+
+  /**
+   * Builder interface for renaming stock symbols
+   */
+  interface RenameSymbolOperation {
+
+    RenameSymbolOperation to(final String symbol);
 
     void now();
   }
