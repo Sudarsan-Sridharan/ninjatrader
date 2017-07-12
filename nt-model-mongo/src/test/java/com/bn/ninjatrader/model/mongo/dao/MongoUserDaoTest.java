@@ -19,7 +19,7 @@ public class MongoUserDaoTest {
   private static final Logger LOG = LoggerFactory.getLogger(MongoUserDaoTest.class);
 
   private final User user = User.builder().userId("test").username("jd").firstname("John").lastname("Doe")
-      .email("jh@email.com").mobile("911").addToWatchList("MEG").build();
+      .email("jh@email.com").mobile("911").addToWatchList("MEG").addRole("admin").build();
 
   private static Injector injector;
 
@@ -60,5 +60,6 @@ public class MongoUserDaoTest {
     assertThat(updatedUser.getLastname()).isEqualTo("Jane");
     assertThat(updatedUser.getEmail()).isEqualTo("jh@email.com");
     assertThat(updatedUser.getWatchList()).containsExactly("MEG");
+    assertThat(updatedUser.getRoles()).containsExactly("admin");
   }
 }

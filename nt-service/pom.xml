@@ -14,6 +14,10 @@
     <dependencies>
         <dependency>
             <groupId>com.beachninja</groupId>
+            <artifactId>nt-auth</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.beachninja</groupId>
             <artifactId>nt-common</artifactId>
         </dependency>
         <dependency>
@@ -31,6 +35,17 @@
         <dependency>
             <groupId>com.beachninja</groupId>
             <artifactId>nt-simulation</artifactId>
+        </dependency>
+
+        <!--Servlet-->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
         </dependency>
 
         <!--Jersey-->

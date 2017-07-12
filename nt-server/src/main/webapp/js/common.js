@@ -4,6 +4,7 @@ requirejs.config({
         app: '../app',
         page: '../page',
         jquery: 'jquery.min',
+        cookie: 'js-cookie',
         jquerySerializeJson: 'jquery.serializejson.min',
         ace: 'ace/ace',
         d3: 'd3.min'
@@ -15,7 +16,6 @@ requirejs.config({
         }
     }
 });
-
 
 requirejs(['jquery'], function($) {
 

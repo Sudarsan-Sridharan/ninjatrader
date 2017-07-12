@@ -1,23 +1,28 @@
-.priceAdj {
+.form {
     border: 1px solid #aaa;
     padding: 5px;
     margin: 5px 0;
 }
 
-.priceAdj .field {
+.form .field {
     margin: 3px 0;
 }
 
-.priceAdj .field.from {
+.form .field.from {
     display: inline-block;
 }
 
-.priceAdj .field label {
+.form .field label {
     min-width: 45px;
     display: inline-block;
 }
 
-.priceAdj .field.to {
+.form .field.to {
     margin-left: 40px;
     display: inline-block;
+}
+
+.form button {
+    display:block;
+    margin:5px 0;
 }

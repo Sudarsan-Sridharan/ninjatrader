@@ -38,6 +38,12 @@
             <artifactId>archaius2-guice</artifactId>
         </dependency>
 
+        <!--Servlet-->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.assertj</groupId>

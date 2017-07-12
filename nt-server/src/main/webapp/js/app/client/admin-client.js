@@ -1,17 +1,16 @@
-define(['jquery'], function ($) {
+define(['jquery', 'app/token/token-auth'], function ($, TokenAuth) {
 
     var importQuotesRestUrl = context.serviceHost + "/task/import-pse-trader-quotes";
     var adjustPricesRestUrl = context.serviceHost + "/task/price-adjustment/run";
+    var renameStockSymbolRestUrl = context.serviceHost + "/task/rename-stock-symbol/run";
 
     function AdminClient() {}
 
     AdminClient.importQuotes = function() {
-        return $.ajax({
-            url: importQuotesRestUrl,
-            type: "POST",
-            dataType: "json",
-            contentType: "application/x-www-form-urlencoded; charset=utf-8"
-        });
+        var jsonObj = {};
+        jsonObj.dates = [];
+
+        return doPost(importQuotesRestUrl, { dates: []});
     };
 
     AdminClient.adjustPrices = function(symbol, from, to, script) {
@@ -21,14 +20,30 @@ define(['jquery'], function ($) {
         jsonObj.to = to;
         jsonObj.script = script;
 
+        return doPost(adjustPricesRestUrl, jsonObj);
+    };
+
+    AdminClient.renameStockSymbol = function(from, to) {
+        var jsonObj = {};
+        jsonObj.from = from;
+        jsonObj.to = to;
+
+        return doPost(renameStockSymbolRestUrl, jsonObj);
+    }
+
+    /**
+     * Posts data via ajax
+     */
+    function doPost(url, data) {
         return $.ajax({
-            url: adjustPricesRestUrl,
+            url: url,
             type: "POST",
             contentType: 'application/json',
             dataType: "json",
-            data: JSON.stringify(jsonObj)
+            data: JSON.stringify(data),
+            beforeSend: TokenAuth.addAuthHeaders
         });
-    };
+    }
 
     return AdminClient;
 });

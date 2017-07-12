@@ -10,10 +10,12 @@ import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.time.Clock;
@@ -41,17 +43,13 @@ public class PriceResource extends AbstractDataResource {
   @GET
   @Path("/{symbol}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getPrices(@BeanParam final PriceRequest req) {
+  public Response getPrices(@Context final HttpServletRequest request, @BeanParam final PriceRequest req) {
     final List<Price> prices = priceDao.findPrices().withSymbol(req.getSymbol())
         .withTimeFrame(req.getTimeFrame().orElse(TimeFrame.ONE_DAY))
         .from(req.getFrom().orElse(LocalDate.now(clock).minusYears(2)))
         .to(req.getTo().orElse(LocalDate.now(clock)))
         .now();
-    return Response.ok(createPriceResponse(prices))
-        .header("Access-Control-Allow-Origin", "*")
-        .header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-        .header("Access-Control-Allow-Methods", "GET")
-        .build();
+    return Response.ok(createPriceResponse(prices)).build();
   }
 
   private PriceResponse createPriceResponse(final List<Price> prices) {

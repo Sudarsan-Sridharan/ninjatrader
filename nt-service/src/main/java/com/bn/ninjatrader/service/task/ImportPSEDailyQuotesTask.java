@@ -37,6 +37,6 @@ public class ImportPSEDailyQuotesTask {
   @POST
   public Response importPseDailyQuotes() {
     this.importer.importData(LocalDate.now(clock));
-    return Response.noContent().build();
+    return Response.ok().build();
   }
 }

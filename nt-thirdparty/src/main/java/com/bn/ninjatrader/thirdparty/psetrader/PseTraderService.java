@@ -42,7 +42,10 @@ public class PseTraderService {
           Lists.newArrayList(om.readValue(json, PseTraderQuote[].class));
 
       return pseTraderQuotes.stream()
-          .map(pseTraderQuote -> pseTraderQuote.getDailyQuote())
+          .map(pseTraderQuote -> {
+            pseTraderQuote.setDate(date);
+            return pseTraderQuote.getDailyQuote();
+          })
           .collect(Collectors.toList());
     } catch (final Exception e) {
       throw new RuntimeException(e);

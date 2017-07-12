@@ -3,9 +3,11 @@ package com.bn.ninjatrader.model.mongo.document;
 import com.bn.ninjatrader.model.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.Lists;
 import org.jongo.marshall.jackson.oid.MongoId;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -21,7 +23,8 @@ public class MongoUserDocument {
         user.getLastname(),
         user.getEmail(),
         user.getMobile(),
-        user.getWatchList());
+        user.getWatchList(),
+        user.getRoles());
   }
 
   @MongoId
@@ -49,13 +52,17 @@ public class MongoUserDocument {
   @JsonProperty("watchList")
   private List<String> watchList;
 
+  @JsonProperty("roles")
+  private List<String> roles;
+
   public MongoUserDocument(@JsonProperty("userId") final String userId,
                            @JsonProperty("username") final String username,
                            @JsonProperty("fname") final String firstname,
                            @JsonProperty("lname")final String lastname,
                            @JsonProperty("email") final String email,
                            @JsonProperty("mobile") final String mobile,
-                           @JsonProperty("watchList") final List<String> watchList) {
+                           @JsonProperty("watchList") final List<String> watchList,
+                           @JsonProperty("roels") final Collection<String> roles) {
     this.userId = userId;
     this.username = username;
     this.firstname = firstname;
@@ -63,6 +70,7 @@ public class MongoUserDocument {
     this.email = email;
     this.mobile = mobile;
     this.watchList = watchList == null || watchList.size() == 0 ? null : watchList;
+    this.roles = roles == null || roles.size() == 0 ? null : Lists.newArrayList(roles);
   }
 
   public String getUserId() {
@@ -102,6 +110,7 @@ public class MongoUserDocument {
         .email(email)
         .mobile(mobile)
         .addAllToWatchList(watchList)
+        .addRoles(roles)
         .build();
   }
 }

@@ -20,6 +20,10 @@ public class DailyQuote {
 
   public DailyQuote() { }
 
+  public DailyQuote(final String symbol, double open, double high, double low, double close, long volume) {
+    this(symbol, null, open, high, low, close, volume);
+  }
+
   public DailyQuote(final String symbol, LocalDate date, double open, double high, double low, double close, long volume) {
     this.symbol = symbol;
     this.date = date;

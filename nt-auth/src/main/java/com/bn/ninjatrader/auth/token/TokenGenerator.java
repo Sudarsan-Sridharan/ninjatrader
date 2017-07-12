@@ -50,6 +50,7 @@ public class TokenGenerator {
         .withJWTId(idGenerator.createId())
         .withClaim("fn", user.getFirstname())
         .withClaim("ln", user.getLastname())
+        .withArrayClaim("rl", user.getRoles().toArray(new String [] {}))
         .withExpiresAt(expiry)
         .sign(algorithm);
   }

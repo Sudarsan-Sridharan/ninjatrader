@@ -74,6 +74,12 @@ public class PriceDaoDatastore implements PriceDao {
     return null;
   }
 
+  @Override
+  public RenameSymbolOperation renameSymbol(String symbol) {
+    // TODO
+    return null;
+  }
+
   private Key<PriceDocument> createKey(final String symbol, final int year, final TimeFrame timeFrame) {
     return Key.create(PriceDocument.class, PriceDocument.id(symbol, year, timeFrame));
   }

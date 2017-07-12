@@ -95,6 +95,8 @@ define(['jquery', 'require',
         var th = $("<tr><th>Symbol</th><th>1yr Profit</th><th>Action</th><th>Date</th><th>Price</th></tr>")
         table.append(th);
 
+        console.log(scanResults);
+
         for (var i in scanResults) {
             var result = scanResults[i];
             var txn = result.lastTxn;
@@ -102,11 +104,11 @@ define(['jquery', 'require',
             var link = '<a href="chart?&algoId=' + algoId + '&symbol=' + result.symbol + '" target="_blank">' + result.symbol + '</a>';
 
             var txnDate = this._formatDate(txn.dt);
-            var profit = Math.trunc(result.profit).toLocaleString();
+            var profitPcnt = Math.round(result.profitPcnt * 10000) / 100.0 ;
             var decimalPlaces = BoardLot.getDecimalPlaces(txn.price);
 
             tr.append('<td class="symbol">' + link + '</td>');
-            tr.append('<td class="profit">' + profit + '</td>');
+            tr.append('<td class="profit">' + profitPcnt + '%</td>');
             tr.append('<td class="txnType">' + txn.tnxType + '</td>');
             tr.append('<td class="date">' + txnDate + '</td>');
             tr.append('<td class="price">' + txn.price.toFixed(decimalPlaces) + '</td>');

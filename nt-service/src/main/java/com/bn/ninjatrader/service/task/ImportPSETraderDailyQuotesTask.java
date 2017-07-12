@@ -1,21 +1,24 @@
 package com.bn.ninjatrader.service.task;
 
+import com.bn.ninjatrader.service.annotation.Secured;
 import com.bn.ninjatrader.common.util.DateUtil;
 import com.bn.ninjatrader.dataimport.daily.PseTraderDailyPriceImporter;
+import com.bn.ninjatrader.service.model.ImportQuotesRequest;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.FormParam;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.time.Clock;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Imports PSE-Trader daily quotes to database and runs calculations for the day.
@@ -30,6 +33,8 @@ import java.util.stream.Collectors;
  */
 @Singleton
 @Path("/task/import-pse-trader-quotes")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class ImportPSETraderDailyQuotesTask {
   private static final Logger LOG = LoggerFactory.getLogger(ImportPSETraderDailyQuotesTask.class);
 
@@ -44,18 +49,17 @@ public class ImportPSETraderDailyQuotesTask {
   }
 
   @POST
-  public void execute(@FormParam("date") final List<String> isoBasicDates) {
-    final List<LocalDate> dates;
+  @Secured
+  public Response execute(final ImportQuotesRequest req) {
+    final List<LocalDate> dates = req == null ? Lists.newArrayList() : req.getDates();
 
-    // If no date arg passed, use today's date.
-    if (isoBasicDates == null || isoBasicDates.isEmpty()) {
-      dates = Lists.newArrayList(DateUtil.phNow(clock));
-    } else {
-      dates = isoBasicDates.stream()
-          .map(dateArg -> LocalDate.parse(dateArg, DateTimeFormatter.BASIC_ISO_DATE))
-          .collect(Collectors.toList());
+    if (dates.isEmpty()) {
+      dates.add(DateUtil.phNow(clock));
     }
+
     LOG.info("Processing dates: {}", dates);
     importer.importData(dates);
+
+    return Response.accepted("{}").build();
   }
 }

@@ -182,7 +182,9 @@ public class User {
     }
 
     public Builder addRoles(final Collection<String> roles) {
-      this.roles.addAll(roles);
+      if (roles != null) {
+        this.roles.addAll(roles);
+      }
       return this;
     }
 
@@ -202,7 +204,9 @@ public class User {
     }
 
     public Builder addAllToWatchList(final Collection<String> symbols) {
-      watchList.addAll(symbols);
+      if (symbols != null) {
+        watchList.addAll(symbols);
+      }
       return this;
     }
 
