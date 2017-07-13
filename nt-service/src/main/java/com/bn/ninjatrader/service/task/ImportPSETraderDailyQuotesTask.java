@@ -60,6 +60,6 @@ public class ImportPSETraderDailyQuotesTask {
     LOG.info("Processing dates: {}", dates);
     importer.importData(dates);
 
-    return Response.accepted("{}").build();
+    return Response.ok().build();
   }
 }

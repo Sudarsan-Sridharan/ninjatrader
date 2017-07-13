@@ -6,6 +6,7 @@ import com.bn.ninjatrader.scheduler.JobScheduler;
 import com.bn.ninjatrader.scheduler.guice.NtSchedulerModule;
 import com.bn.ninjatrader.service.dropwizard.health.ServiceHealthCheck;
 import com.bn.ninjatrader.service.exception.JsonParseExceptionMapper;
+import com.bn.ninjatrader.service.filter.AuthorizationFilter;
 import com.bn.ninjatrader.service.filter.CrossOriginResourceResponseFilter;
 import com.bn.ninjatrader.service.guice.NtServiceModule;
 import com.bn.ninjatrader.service.provider.LocalDateParamConverterProvider;
@@ -70,7 +71,8 @@ public class ServiceApplication extends Application<ServiceConfig> {
   private ObjectMapperContextResolver objectMapperContextResolver;
   @Inject
   private CrossOriginResourceResponseFilter crossOriginResourceResponseFilter;
-
+  @Inject
+  private AuthorizationFilter authorizationFilter;
   @Inject
   private JobScheduler jobScheduler;
 
@@ -86,8 +88,6 @@ public class ServiceApplication extends Application<ServiceConfig> {
     registerProviders(env.jersey());
 
     setupResources(env.jersey());
-
-//    setupFilters(env.servlets());
 
     env.lifecycle().manage(new Managed() {
       @Override
@@ -126,12 +126,8 @@ public class ServiceApplication extends Application<ServiceConfig> {
 
     // Filters
     jersey.register(crossOriginResourceResponseFilter);
+    jersey.register(authorizationFilter);
   }
-
-//  private void setupFilters(final ServletEnvironment servlet) {
-//    servlet.addFilter("crossOrigin", CrossOriginFilter.class)
-//        .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/*");
-//  }
 
   public static void main(String[] args) throws Exception {
     final Injector injector = Guice.createInjector(

@@ -3,7 +3,7 @@ package com.bn.ninjatrader.auth.interceptor;
 import com.bn.ninjatrader.auth.exception.InvalidArgumentException;
 import com.bn.ninjatrader.auth.exception.UnauthorizedMethodAccessException;
 import com.bn.ninjatrader.auth.token.DecodedToken;
-import com.bn.ninjatrader.auth.token.TokenVerifier;
+import com.bn.ninjatrader.auth.token.JwtTokenVerifier;
 import com.bn.ninjatrader.common.type.Role;
 import com.google.inject.Provider;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -24,9 +24,9 @@ public class AdminSecuredMethodInterceptor implements MethodInterceptor {
   private static final String AUTH_HEADER = "Authorization";
   private static final String WHITESPACE = " ";
 
-  private final Provider<TokenVerifier> tokenVerifier;
+  private final Provider<JwtTokenVerifier> tokenVerifier;
 
-  public AdminSecuredMethodInterceptor(final Provider<TokenVerifier> tokenVerifier) {
+  public AdminSecuredMethodInterceptor(final Provider<JwtTokenVerifier> tokenVerifier) {
     this.tokenVerifier = tokenVerifier;
   }
 

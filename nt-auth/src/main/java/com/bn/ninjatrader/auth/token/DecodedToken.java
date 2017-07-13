@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.auth.token;
 
+import com.bn.ninjatrader.common.type.Role;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -20,13 +21,13 @@ public class DecodedToken {
   private final String userId;
   private final String firstName;
   private final String lastName;
-  private final Collection<String> roles;
+  private final Collection<Role> roles;
 
   public DecodedToken(final String tokenId,
                       final String userId,
                       final String firstName,
                       final String lastName,
-                      final Collection<String> roles) {
+                      final Collection<Role> roles) {
     this.tokenId = tokenId;
     this.userId = userId;
     this.firstName = firstName;
@@ -50,11 +51,21 @@ public class DecodedToken {
     return lastName;
   }
 
-  public Collection<String> getRoles() {
+  public Collection<Role> getRoles() {
     return roles;
   }
 
-  public boolean hasRole(final String role) {
+  public boolean hasRole(final String roleId) {
+    for (final Role role : roles) {
+      if (role.getId().equals(roleId)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean hasRole(final Role role) {
+    if (role == null) return false;
     return roles.contains(role);
   }
 
@@ -94,7 +105,7 @@ public class DecodedToken {
     private String userId;
     private String firstName;
     private String lastName;
-    private Collection<String> roles = Lists.newArrayList();
+    private Collection<Role> roles = Lists.newArrayList();
 
     public Builder tokenId(final String tokenId) {
       this.tokenId = tokenId;
@@ -116,8 +127,28 @@ public class DecodedToken {
       return this;
     }
 
-    public Builder roles(final Collection roles) {
-      this.roles = roles;
+    public Builder addRoleIds(final Collection<String> roles) {
+      if (roles == null) return this;
+      for (String role :roles) {
+        this.roles.add(Role.findById(role));
+      }
+      return this;
+    }
+
+    public Builder addRole(final Role role) {
+      this.roles.add(role);
+      return this;
+    }
+
+    public Builder addRoles(final Role role, final Role ... more) {
+      this.roles.addAll(Lists.asList(role, more));
+      return this;
+    }
+
+    public Builder addRoles(final Collection<Role> roles) {
+      if (roles != null) {
+        this.roles.addAll(roles);
+      }
       return this;
     }
 

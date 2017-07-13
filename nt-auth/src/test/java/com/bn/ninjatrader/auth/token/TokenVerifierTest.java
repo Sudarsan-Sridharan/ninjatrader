@@ -22,14 +22,14 @@ public class TokenVerifierTest {
 
   private Algorithm algorithm = Algorithm.HMAC256("testKey");
 
-  private TokenVerifier tokenVerifier;
+  private JwtTokenVerifier tokenVerifier;
 
   public TokenVerifierTest() throws UnsupportedEncodingException {
   }
 
   @Before
   public void before() {
-    this.tokenVerifier = new TokenVerifier(algorithm);
+    this.tokenVerifier = new JwtTokenVerifier(algorithm);
   }
 
   @Test

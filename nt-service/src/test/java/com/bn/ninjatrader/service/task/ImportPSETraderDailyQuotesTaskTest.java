@@ -9,6 +9,8 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
@@ -17,6 +19,7 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 
+import static javax.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -26,7 +29,7 @@ import static org.mockito.Mockito.verify;
  * @author bradwee2000@gmail.com
  */
 public class ImportPSETraderDailyQuotesTaskTest extends JerseyTest {
-
+  private static final Logger LOG = LoggerFactory.getLogger(ImportPSETraderDailyQuotesTaskTest.class);
   private static final LocalDate now = LocalDate.of(2016, 2, 1);
   private static final PseTraderDailyPriceImporter importer = mock(PseTraderDailyPriceImporter.class);
   private static final Clock clock = TestUtil.fixedClock(now);
@@ -52,9 +55,11 @@ public class ImportPSETraderDailyQuotesTaskTest extends JerseyTest {
     final ImportQuotesRequest request = new ImportQuotesRequest();
     request.setDates(Lists.newArrayList(date1, date2));
 
-    final Response response = target("/task/import-pse-trader-quotes").request().post(Entity.json(request));
+    final Response response = target("/task/import-pse-trader-quotes")
+        .request()
+        .post(Entity.json(request));
 
-    assertThat(response.getStatus() == Response.Status.NO_CONTENT.getStatusCode());
+    assertThat(response.getStatus() == OK.getStatusCode());
 
     verify(importer).importData(captor.capture());
     assertThat(captor.getValue()).containsExactly(date1, date2);
@@ -64,9 +69,11 @@ public class ImportPSETraderDailyQuotesTaskTest extends JerseyTest {
   public void testImportWithNoDateArg_shouldImportDataForToday() {
     final ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
 
-    final Response response = target("/task/import-pse-trader-quotes").request().post(Entity.json(new ImportQuotesRequest()));
+    final Response response = target("/task/import-pse-trader-quotes")
+        .request()
+        .post(Entity.json(new ImportQuotesRequest()));
 
-    assertThat(response.getStatus() == Response.Status.NO_CONTENT.getStatusCode());
+    assertThat(response.getStatus() == OK.getStatusCode());
 
     verify(importer).importData(captor.capture());
     assertThat(captor.getValue()).containsExactly(now);

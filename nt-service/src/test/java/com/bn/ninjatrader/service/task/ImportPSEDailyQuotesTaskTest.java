@@ -35,7 +35,7 @@ public class ImportPSEDailyQuotesTaskTest extends JerseyTest {
   @Test
   public void testImportPseQuotes_shouldImportQuotes() throws Exception {
     final Response response = target("/task/import-pse-quotes").request().post(Entity.form(new Form()));
-    assertThat(response.getStatus()).isEqualTo(204);
+    assertThat(response.getStatus()).isEqualTo(200);
 
     verify(importer).importData(now);
   }

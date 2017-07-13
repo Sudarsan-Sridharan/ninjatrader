@@ -20,7 +20,7 @@ define(['jquery', 'require',
         this.actionBar.append(this.algoSelector).append(this.daySelector).append(this.scanButton);
         this.content.append(this.actionBar).append(this.scanResult);
 
-        this._prepareDaysSelector([1, 2, 3, 5, 7, 15, 30]);
+        this._prepareDaysSelector([1, 2, 3, 5, 7, 15, 30, 50, 70, 100]);
 
         this.disable();
 
@@ -79,10 +79,12 @@ define(['jquery', 'require',
         var algoId = this.algoSelector.val();
 
         this.disable();
+        this.scanButton.html("Scanning...");
 
         ScannerClient.scan(algoId, this.daySelector.val(), function(scanResult) {
             that._displayResults(scanResult, algoId);
             that.enable();
+            that.scanButton.html("Scan");
         });
     };
 
@@ -95,8 +97,6 @@ define(['jquery', 'require',
         var th = $("<tr><th>Symbol</th><th>1yr Profit</th><th>Action</th><th>Date</th><th>Price</th></tr>")
         table.append(th);
 
-        console.log(scanResults);
-
         for (var i in scanResults) {
             var result = scanResults[i];
             var txn = result.lastTxn;
@@ -104,7 +104,7 @@ define(['jquery', 'require',
             var link = '<a href="chart?&algoId=' + algoId + '&symbol=' + result.symbol + '" target="_blank">' + result.symbol + '</a>';
 
             var txnDate = this._formatDate(txn.dt);
-            var profitPcnt = Math.round(result.profitPcnt * 10000) / 100.0 ;
+            var profitPcnt = Math.round(result.profitPcnt * 10000) / 100.0 ; //Convert to "100.00%"
             var decimalPlaces = BoardLot.getDecimalPlaces(txn.price);
 
             tr.append('<td class="symbol">' + link + '</td>');
