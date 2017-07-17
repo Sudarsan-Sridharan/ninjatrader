@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.model.mongo.document;
 
+import com.bn.ninjatrader.common.type.Role;
 import com.bn.ninjatrader.model.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -53,7 +54,7 @@ public class MongoUserDocument {
   private List<String> watchList;
 
   @JsonProperty("roles")
-  private List<String> roles;
+  private List<Role> roles;
 
   public MongoUserDocument(@JsonProperty("userId") final String userId,
                            @JsonProperty("username") final String username,
@@ -62,7 +63,7 @@ public class MongoUserDocument {
                            @JsonProperty("email") final String email,
                            @JsonProperty("mobile") final String mobile,
                            @JsonProperty("watchList") final List<String> watchList,
-                           @JsonProperty("roels") final Collection<String> roles) {
+                           @JsonProperty("roels") final Collection<Role> roles) {
     this.userId = userId;
     this.username = username;
     this.firstname = firstname;

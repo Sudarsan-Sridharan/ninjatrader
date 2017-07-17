@@ -101,8 +101,6 @@ public class AuthorizationFilter implements ContainerRequestFilter {
    * Verify that user has required role to access method.
    */
   private void verifyRole(final DecodedToken token, final List<Role> allowedRoles) {
-    LOG.info("REQUIRED ROLES: {}", allowedRoles);
-
     for (final Role role : allowedRoles) {
       if (token.hasRole(role)) {
 

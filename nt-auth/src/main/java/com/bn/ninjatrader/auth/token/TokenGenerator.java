@@ -14,6 +14,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 /**
  * @author bradwee2000@gmail.com
@@ -41,16 +42,24 @@ public class TokenGenerator {
 
   public String createTokenForUserId(final String userId) {
     final User user = userDao.findByUserId(userId).orElseThrow(() -> new UserIdNotFoundException(userId));
+    return createTokenForUser(user);
+  }
+
+  public String createTokenForUser(final User user) {
     final Date expiry = Date.from(LocalDateTime.now(clock)
         .plusDays(config.getTokenExpiryDays())
         .atZone(ZoneId.of(config.getZoneId()))
         .toInstant());
 
-    return JWT.create().withSubject(userId)
+    return JWT.create().withSubject(user.getUserId())
         .withJWTId(idGenerator.createId())
         .withClaim("fn", user.getFirstname())
         .withClaim("ln", user.getLastname())
-        .withArrayClaim("rl", user.getRoles().toArray(new String [] {}))
+        .withArrayClaim("rl", user.getRoles()
+            .stream()
+            .map(r -> r.getId())
+            .collect(Collectors.toList())
+            .toArray(new String [] {}))
         .withExpiresAt(expiry)
         .sign(algorithm);
   }

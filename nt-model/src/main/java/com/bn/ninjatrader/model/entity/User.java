@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.model.entity;
 
+import com.bn.ninjatrader.common.type.Role;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
@@ -42,7 +43,7 @@ public class User {
   private final String mobile;
 
   @JsonProperty("roles")
-  private final Collection<String> roles; // Stock symbols
+  private final Collection<Role> roles;
 
   @JsonProperty("watchList")
   private final List<String> watchList; // Stock symbols
@@ -53,7 +54,7 @@ public class User {
               @JsonProperty("lastname") final String lastname,
               @JsonProperty("email") final String email,
               @JsonProperty("mobile") final String mobile,
-              @JsonProperty("roles") final Collection<String> roles,
+              @JsonProperty("roles") final Collection<Role> roles,
               @JsonProperty("watchList") final Collection<String> watchList) {
     this.userId = userId;
     this.username = username;
@@ -89,7 +90,7 @@ public class User {
     return mobile;
   }
 
-  public Collection<String> getRoles() {
+  public Collection<Role> getRoles() {
     return roles;
   }
 
@@ -144,7 +145,7 @@ public class User {
     private String email;
     private String mobile;
     private final Set<String> watchList = Sets.newHashSet();
-    private final Set<String> roles = Sets.newHashSet();
+    private final Set<Role> roles = Sets.newHashSet();
 
     public Builder userId(final String userId) {
       this.userId = userId;
@@ -176,19 +177,19 @@ public class User {
       return this;
     }
 
-    public Builder addRole(final String role) {
+    public Builder addRole(final Role role) {
       this.roles.add(role);
       return this;
     }
 
-    public Builder addRoles(final Collection<String> roles) {
+    public Builder addRoles(final Collection<Role> roles) {
       if (roles != null) {
         this.roles.addAll(roles);
       }
       return this;
     }
 
-    public Builder addRoles(final String role, final String ... more) {
+    public Builder addRoles(final Role role, final Role ... more) {
       this.roles.addAll(Lists.asList(role, more));
       return this;
     }

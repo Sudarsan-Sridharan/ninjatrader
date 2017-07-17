@@ -4,12 +4,14 @@ import com.bn.ninjatrader.model.entity.User;
 import com.bn.ninjatrader.model.mongo.guice.NtModelTestModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import org.jongo.ResultHandler;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.bn.ninjatrader.common.type.Role.ADMIN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -19,7 +21,7 @@ public class MongoUserDaoTest {
   private static final Logger LOG = LoggerFactory.getLogger(MongoUserDaoTest.class);
 
   private final User user = User.builder().userId("test").username("jd").firstname("John").lastname("Doe")
-      .email("jh@email.com").mobile("911").addToWatchList("MEG").addRole("admin").build();
+      .email("jh@email.com").mobile("911").addToWatchList("MEG").addRole(ADMIN).build();
 
   private static Injector injector;
 
@@ -55,11 +57,17 @@ public class MongoUserDaoTest {
 
     // Verify fields are updated
     final User updatedUser = dao.findByUserId("test").get();
+
+    dao.getMongoCollection().findOne("{userId:\"test\"}").map((ResultHandler<User>) result -> {
+      LOG.info("LALALA: {}",  result.get("roles"));
+      return null;
+    });
+
     assertThat(updatedUser.getUsername()).isEqualTo("jd");
     assertThat(updatedUser.getFirstname()).isEqualTo("Mary");
     assertThat(updatedUser.getLastname()).isEqualTo("Jane");
     assertThat(updatedUser.getEmail()).isEqualTo("jh@email.com");
     assertThat(updatedUser.getWatchList()).containsExactly("MEG");
-    assertThat(updatedUser.getRoles()).containsExactly("admin");
+    assertThat(updatedUser.getRoles()).containsExactly(ADMIN);
   }
 }

@@ -1,5 +1,7 @@
 package com.bn.ninjatrader.common.type;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * @author bradwee2000@gmail.com
  */
@@ -7,7 +9,9 @@ public enum Role {
 
   ADMIN("admin"),
 
-  SUBSCRIBER("subscriber");
+  SUBSCRIBER("subscriber"),
+
+  VIEWER("viewer");
 
   private static final String ROLE_ID_NOT_FOUND = "Role with id %s is not found";
 
@@ -26,6 +30,10 @@ public enum Role {
     this.id = id;
   }
 
+  /**
+   * Role ID will be used to store in database. This prevents errors when enum objects are renamed.
+   */
+  @JsonValue
   public String getId() {
     return id;
   }
