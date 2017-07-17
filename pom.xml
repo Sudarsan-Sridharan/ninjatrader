@@ -12,6 +12,7 @@
         <module>nt-calculator</module>
         <module>nt-common</module>
         <module>nt-data-import</module>
+        <module>nt-event</module>
         <module>nt-model</module>
         <module>nt-model-datastore</module>
         <module>nt-model-mongo</module>
@@ -68,6 +69,11 @@
             <dependency>
                 <groupId>com.beachninja</groupId>
                 <artifactId>nt-data-import</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.beachninja</groupId>
+                <artifactId>nt-event</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
