@@ -3,7 +3,6 @@ package com.bn.ninjatrader.process.adjustment;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import groovy.lang.GroovyShell;
@@ -26,13 +25,10 @@ public class PriceAdjustmentService {
   private static final GroovyShell shell = new GroovyShell();
   private static final String PRICE_VARIABLE = "$PRICE";
   private final PriceDao priceDao;
-  private final PriceBuilderFactory priceBuilderFactory;
 
   @Inject
-  public PriceAdjustmentService(final PriceDao priceDao,
-                                final PriceBuilderFactory priceBuilderFactory) {
+  public PriceAdjustmentService(final PriceDao priceDao) {
     this.priceDao = priceDao;
-    this.priceBuilderFactory = priceBuilderFactory;
   }
 
   public PriceAdjustmentRequest.ExecutorBuilder preparePriceAdjustment() {
@@ -79,7 +75,7 @@ public class PriceAdjustmentService {
     script.setProperty(PRICE_VARIABLE, price.getClose());
     final Double close = (Double) script.run();
 
-    return priceBuilderFactory.builder().copyOf(price)
+    return Price.builder().copyOf(price)
         .open(open)
         .high(high)
         .low(low)

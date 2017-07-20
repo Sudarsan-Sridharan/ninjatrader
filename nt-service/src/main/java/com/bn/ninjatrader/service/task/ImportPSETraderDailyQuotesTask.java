@@ -1,8 +1,11 @@
 package com.bn.ninjatrader.service.task;
 
-import com.bn.ninjatrader.service.annotation.Secured;
 import com.bn.ninjatrader.common.util.DateUtil;
 import com.bn.ninjatrader.dataimport.daily.PseTraderDailyPriceImporter;
+import com.bn.ninjatrader.model.entity.DailyQuote;
+import com.bn.ninjatrader.service.annotation.Event;
+import com.bn.ninjatrader.service.annotation.Secured;
+import com.bn.ninjatrader.service.event.ImportedClosingPricesMessage;
 import com.bn.ninjatrader.service.model.ImportQuotesRequest;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -50,6 +53,7 @@ public class ImportPSETraderDailyQuotesTask {
 
   @POST
   @Secured
+  @Event(messageClass = ImportedClosingPricesMessage.class)
   public Response execute(final ImportQuotesRequest req) {
     final List<LocalDate> dates = req == null ? Lists.newArrayList() : req.getDates();
 
@@ -58,8 +62,8 @@ public class ImportPSETraderDailyQuotesTask {
     }
 
     LOG.info("Processing dates: {}", dates);
-    importer.importData(dates);
+    final List<DailyQuote> importedQuotes = importer.importData(dates);
 
-    return Response.ok().build();
+    return Response.ok(importedQuotes).build();
   }
 }

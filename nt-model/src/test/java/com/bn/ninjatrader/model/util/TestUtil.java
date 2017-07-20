@@ -1,9 +1,8 @@
 package com.bn.ninjatrader.model.util;
 
-import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.model.entity.PriceBuilder;
-import com.bn.ninjatrader.model.deprecated.Value;
 import com.bn.ninjatrader.common.util.DateUtil;
+import com.bn.ninjatrader.model.deprecated.Value;
+import com.bn.ninjatrader.model.entity.Price;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
@@ -24,7 +23,6 @@ public class TestUtil {
   private static final ZoneId zoneId = ZoneId.systemDefault();
   private static final ObjectMapper objectMapper = new ObjectMapper();
   private static final LocalDate now = LocalDate.of(2016, 2, 1);
-  private static final DummyPriceBuilderFactory pbf = new DummyPriceBuilderFactory();
 
   public static ObjectMapper objectMapper() {
     return objectMapper;
@@ -38,7 +36,7 @@ public class TestUtil {
     return randomPriceBuilder().build();
   }
 
-  public static PriceBuilder randomPriceBuilder() {
+  public static Price.Builder randomPriceBuilder() {
     return randomPriceBuilderWithFloorCeil(1, random.nextInt(100));
   }
 
@@ -62,8 +60,8 @@ public class TestUtil {
     return randomPriceBuilderWithFloorCeil(lowest, highest).build();
   }
 
-  public static PriceBuilder randomPriceBuilderWithFloorCeil(final double lowest, final double highest) {
-    return pbf.builder()
+  public static Price.Builder randomPriceBuilderWithFloorCeil(final double lowest, final double highest) {
+    return Price.builder()
         .open(random.nextDouble())
         .high(((random.nextDouble() * 1000) + lowest) % highest)
         .low(random.nextDouble() + lowest)

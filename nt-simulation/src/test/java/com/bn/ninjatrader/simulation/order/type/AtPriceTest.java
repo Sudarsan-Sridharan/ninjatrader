@@ -1,8 +1,6 @@
 package com.bn.ninjatrader.simulation.order.type;
 
 import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
-import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.util.DummyObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,8 +19,7 @@ import static org.mockito.Mockito.when;
  */
 public class AtPriceTest {
 
-  private final PriceBuilderFactory pbf = new DummyPriceBuilderFactory();
-  private final Price price = pbf.builder().open(3).high(5).low(2).close(4).build();
+  private final Price price = Price.builder().open(3).high(5).low(2).close(4).build();
   private final AtPrice atPrice = new AtPrice(5);
 
   private BarData submittedBarData;

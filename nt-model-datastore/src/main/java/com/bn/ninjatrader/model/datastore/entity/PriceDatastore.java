@@ -2,7 +2,6 @@ package com.bn.ninjatrader.model.datastore.entity;
 
 import com.bn.ninjatrader.common.util.NtLocalDateDeserializer;
 import com.bn.ninjatrader.common.util.NtLocalDateSerializer;
-import com.bn.ninjatrader.model.datastore.builder.PriceBuilderDatastore;
 import com.bn.ninjatrader.model.entity.Price;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -11,16 +10,11 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 /**
  * @author bradwee2000@gmail.com
  */
-public class PriceDatastore implements Price {
-
-  public static final PriceBuilderDatastore builder() {
-    return new PriceBuilderDatastore();
-  }
+public class PriceDatastore extends Price {
 
   private double o; // open. Names are abbreviated to keep space usage low in datastore.
 
@@ -37,22 +31,25 @@ public class PriceDatastore implements Price {
 //  @Translate(value = LocalDateTranslatorFactory.class)
 //  private LocalDate d; // date
 
-  private String d; // Appengine doesn't support java8 LocalDate. so use string for now.
+  private LocalDate d; // Appengine doesn't support java8 LocalDate. so use string for now.
 
   /**
    * Objectify requires private no-arg constructor.
    */
-  private PriceDatastore() {}
+  private PriceDatastore() {
+    this(null, 0, 0, 0, 0, 0, 0);
+  }
 
   public PriceDatastore(@JsonSerialize(using = NtLocalDateSerializer.class)
                     @JsonDeserialize(using = NtLocalDateDeserializer.class)
-                    @JsonProperty("d") final String date,
+                    @JsonProperty("d") final LocalDate date,
                     @JsonProperty("o") final double open,
                     @JsonProperty("h") final double high,
                     @JsonProperty("l") final double low,
                     @JsonProperty("c") final double close,
                     @JsonProperty("ch") final double change,
                     @JsonProperty("v") final long volume) {
+    super(date, open, high, low, close, change, volume);
     this.d = date;
     this.o = open;
     this.h = high;
@@ -89,7 +86,7 @@ public class PriceDatastore implements Price {
 
   @Override
   public LocalDate getDate() {
-    return LocalDate.parse(d, DateTimeFormatter.BASIC_ISO_DATE);
+    return d;
   }
 
   @Override

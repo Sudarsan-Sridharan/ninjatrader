@@ -1,8 +1,6 @@
 package com.bn.ninjatrader.simulation.data;
 
 import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
-import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.bn.ninjatrader.simulation.binding.BindingProvider;
 import com.bn.ninjatrader.simulation.model.SimulationContext;
 import com.google.common.collect.Lists;
@@ -12,7 +10,9 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.util.Collections;
 
-import static com.bn.ninjatrader.simulation.logic.Variables.*;
+import static com.bn.ninjatrader.simulation.logic.Variables.PRICE_HIGH;
+import static com.bn.ninjatrader.simulation.logic.Variables.PRICE_OPEN;
+import static com.bn.ninjatrader.simulation.logic.Variables.SMA;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -24,9 +24,7 @@ import static org.mockito.Mockito.when;
 public class BarProducerTest {
 
   private final LocalDate now = LocalDate.of(2016, 1, 1);
-  private final PriceBuilderFactory pbf = new DummyPriceBuilderFactory();
-  private final Price price = pbf.builder().date(now).close(1).build();
-
+  private final Price price = Price.builder().date(now).close(1).build();
 
   private BindingProvider bindingProvider;
   private BindingProvider bindingProvider2;

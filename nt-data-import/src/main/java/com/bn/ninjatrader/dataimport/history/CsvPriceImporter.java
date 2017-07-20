@@ -5,7 +5,6 @@ import com.bn.ninjatrader.dataimport.history.parser.CsvDataParser;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.entity.DailyQuote;
 import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
@@ -34,15 +33,12 @@ public class CsvPriceImporter {
 
   private final CsvDataParser parser;
   private final PriceDao priceDao;
-  private final PriceBuilderFactory priceBuilderFactory;
 
   @Inject
   public CsvPriceImporter(final CsvDataParser parser,
-                          final PriceDao priceDao,
-                          final PriceBuilderFactory priceBuilderFactory) {
+                          final PriceDao priceDao) {
     this.parser = parser;
     this.priceDao = priceDao;
-    this.priceBuilderFactory = priceBuilderFactory;
   }
 
   public void importPrices() throws IOException {
@@ -71,7 +67,7 @@ public class CsvPriceImporter {
     final Multimap<String, Price> symbolMultimap = ArrayListMultimap.create();
 
     for (final DailyQuote quote : quotes) {
-      symbolMultimap.put(quote.getSymbol(), quote.getPrice(priceBuilderFactory));
+      symbolMultimap.put(quote.getSymbol(), quote.getPrice());
     }
 
     for (final Map.Entry<String, Collection<Price>> perSymbol : symbolMultimap.asMap().entrySet()) {

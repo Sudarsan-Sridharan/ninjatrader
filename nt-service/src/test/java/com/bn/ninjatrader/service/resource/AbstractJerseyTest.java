@@ -1,10 +1,7 @@
 package com.bn.ninjatrader.service.resource;
 
-import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
-import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.bn.ninjatrader.service.provider.LocalDateParamConverterProvider;
 import com.bn.ninjatrader.service.provider.ObjectMapperContextResolver;
-import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.glassfish.jersey.client.ClientConfig;
@@ -27,14 +24,7 @@ public abstract class AbstractJerseyTest extends JerseyTest {
 
   @Override
   protected Application configure() {
-    injector = Guice.createInjector(
-        new AbstractModule() {
-          @Override
-          protected void configure() {
-            bind(PriceBuilderFactory.class).toInstance(new DummyPriceBuilderFactory());
-          }
-        }
-    );
+    injector = Guice.createInjector();
 
     objectMapperContextResolver = injector.getInstance(ObjectMapperContextResolver.class);
 

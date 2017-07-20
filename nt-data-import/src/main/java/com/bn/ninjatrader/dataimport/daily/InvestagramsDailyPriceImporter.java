@@ -1,8 +1,7 @@
 package com.bn.ninjatrader.dataimport.daily;
 
-import com.bn.ninjatrader.model.entity.DailyQuote;
-import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.model.entity.DailyQuote;
 import com.bn.ninjatrader.thirdparty.investagrams.InvestagramsService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -24,9 +23,8 @@ public class InvestagramsDailyPriceImporter extends AbstractDailyPriceImporter{
 
   @Inject
   public InvestagramsDailyPriceImporter(final InvestagramsService investagramsService,
-                                        final PriceDao priceDao,
-                                        final PriceBuilderFactory priceBuilderFactory) {
-    super(priceDao, priceBuilderFactory);
+                                        final PriceDao priceDao) {
+    super(priceDao);
     this.investagramsService = investagramsService;
   }
 

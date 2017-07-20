@@ -1,8 +1,6 @@
 package com.bn.ninjatrader.calculator.util;
 
 import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
-import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,16 +10,15 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class MeanCalculatingStackTest {
 
-  private final PriceBuilderFactory priceBuilderFactory = new DummyPriceBuilderFactory();
-  private final Price highPrecisionPrice = priceBuilderFactory.builder()
+  private final Price highPrecisionPrice = Price.builder()
       .open(0.00001).high(0.00002).low(0.00003).close(0.00004).volume(100).build();
-  private final Price price1 = priceBuilderFactory.builder()
+  private final Price price1 = Price.builder()
       .open(1.0).high(2.0).low(3.0).close(4.0).volume(1000).build();
-  private final Price price2 = priceBuilderFactory.builder()
+  private final Price price2 = Price.builder()
       .open(10.0).high(20.0).low(30.0).close(40.0).volume(2000).build();
-  private final Price price3 = priceBuilderFactory.builder()
+  private final Price price3 = Price.builder()
       .open(100.0).high(200.0).low(300.0).close(400.0).volume(3000).build();
-  private final Price price4 = priceBuilderFactory.builder()
+  private final Price price4 = Price.builder()
       .open(1000.0).high(2000.0).low(3000.0).close(4000.0).volume(4000).build();
 
   @Test

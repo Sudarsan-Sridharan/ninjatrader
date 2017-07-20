@@ -2,9 +2,7 @@ package com.bn.ninjatrader.model.datastore.dao;
 
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.datastore.document.PriceDocument;
-import com.bn.ninjatrader.model.datastore.factory.PriceBuilderFactoryDatastore;
 import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.model.util.TestUtil;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -27,19 +25,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PriceDaoDatastoreTest {
 
   private final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
-  private final PriceBuilderFactory pbf = new PriceBuilderFactoryDatastore();
   private final LocalDate now = LocalDate.of(2017, 1, 1);
   private final LocalDate tomorrow = now.plusDays(1);
   private final LocalDate nextMonth = now.plusMonths(1);
   private final LocalDate nextYear = now.plusYears(1);
 
-  private final Price price1 = pbf.builder().date(now)
+  private final Price price1 = Price.builder().date(now)
       .open(1.1).high(1.2).low(1.0).close(1.1).volume(1000).build();
-  private final Price price2 = pbf.builder().date(tomorrow)
+  private final Price price2 = Price.builder().date(tomorrow)
       .open(2.1).high(2.2).low(2.0).close(2.1).volume(2000).build();
-  private final Price price3 = pbf.builder().date(nextMonth)
+  private final Price price3 = Price.builder().date(nextMonth)
       .open(3.1).high(3.2).low(3.0).close(3.1).volume(3000).build();
-  private final Price price4 = pbf.builder().date(nextYear)
+  private final Price price4 = Price.builder().date(nextYear)
       .open(4.1).high(4.2).low(4.0).close(4.1).volume(4000).build();
 
   private Closeable session;

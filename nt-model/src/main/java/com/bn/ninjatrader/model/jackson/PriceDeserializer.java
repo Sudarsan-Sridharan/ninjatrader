@@ -1,7 +1,6 @@
 package com.bn.ninjatrader.model.jackson;
 
 import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,6 +14,14 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import static com.bn.ninjatrader.model.jackson.PriceAttributes.CHANGE;
+import static com.bn.ninjatrader.model.jackson.PriceAttributes.CLOSE;
+import static com.bn.ninjatrader.model.jackson.PriceAttributes.DATE;
+import static com.bn.ninjatrader.model.jackson.PriceAttributes.HIGH;
+import static com.bn.ninjatrader.model.jackson.PriceAttributes.LOW;
+import static com.bn.ninjatrader.model.jackson.PriceAttributes.OPEN;
+import static com.bn.ninjatrader.model.jackson.PriceAttributes.VOLUME;
+
 /**
  * @author bradwee2000@gmail.com
  */
@@ -22,12 +29,9 @@ import java.time.format.DateTimeFormatter;
 public class PriceDeserializer extends StdDeserializer<Price> {
   private static final Logger LOG = LoggerFactory.getLogger(PriceDeserializer.class);
 
-  private final PriceBuilderFactory pbf;
-
   @Inject
-  public PriceDeserializer(final PriceBuilderFactory pbf) {
+  public PriceDeserializer() {
     super((Class)null);
-    this.pbf = pbf;
   }
 
   @Override
@@ -35,14 +39,14 @@ public class PriceDeserializer extends StdDeserializer<Price> {
                            final DeserializationContext deserializationContext)
       throws IOException {
     final JsonNode node = jp.getCodec().readTree(jp);
-    return pbf.builder()
-        .date(LocalDate.parse(node.get("d").asText(), DateTimeFormatter.BASIC_ISO_DATE))
-        .open(node.get("o").asDouble())
-        .high(node.get("h").asDouble())
-        .low(node.get("l").asDouble())
-        .close(node.get("c").asDouble())
-        .change(node.get("ch").asDouble())
-        .volume(node.get("v").asLong())
+    return Price.builder()
+        .date(LocalDate.parse(node.get(DATE).asText(), DateTimeFormatter.BASIC_ISO_DATE))
+        .open(node.get(OPEN).asDouble())
+        .high(node.get(HIGH).asDouble())
+        .low(node.get(LOW).asDouble())
+        .close(node.get(CLOSE).asDouble())
+        .change(node.get(CHANGE).asDouble())
+        .volume(node.get(VOLUME).asLong())
         .build();
   }
 }

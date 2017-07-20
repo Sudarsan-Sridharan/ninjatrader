@@ -5,7 +5,6 @@ import com.bn.ninjatrader.model.jackson.PriceDeserializer;
 import com.bn.ninjatrader.model.jackson.PriceSerializer;
 import com.bn.ninjatrader.model.mongo.annotation.MongoDatabaseName;
 import com.bn.ninjatrader.model.mongo.annotation.MongoHost;
-import com.bn.ninjatrader.model.mongo.factory.PriceBuilderFactoryMongo;
 import com.bn.ninjatrader.model.mongo.guice.NtModelMongoModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -58,10 +57,10 @@ public class DbClient {
 
     jongo = new Jongo(new DB(mongoClient, dbName),
         new JacksonMapper.Builder()
-            .registerModule(new Jdk8Module())     // removed so we can deploy to appengine
+            .registerModule(new Jdk8Module())
             .registerModule(new JavaTimeModule())
             .addSerializer(Price.class, new PriceSerializer())
-            .addDeserializer(Price.class, new PriceDeserializer(new PriceBuilderFactoryMongo()))
+            .addDeserializer(Price.class, new PriceDeserializer())
             .build());
 
     LOG.info("Connected to mongodb: {}", mongoClient.getAddress());

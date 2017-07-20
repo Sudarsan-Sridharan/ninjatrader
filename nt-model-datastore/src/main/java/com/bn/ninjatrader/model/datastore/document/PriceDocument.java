@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.model.datastore.document;
 
 import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.model.datastore.entity.PriceDatastore;
+import com.bn.ninjatrader.model.entity.Price;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -35,7 +35,7 @@ public class PriceDocument {
   private TimeFrame timeFrame;
 
   @Unindex
-  private List<PriceDatastore> data;
+  private List<Price> data; // TODO transform to DatastorePrice w/ shorter attribute names
 
   private PriceDocument() {}
 
@@ -50,14 +50,14 @@ public class PriceDocument {
     return id;
   }
 
-  public List<PriceDatastore> getData() {
+  public List<Price> getData() {
     if (data == null) {
       data = Lists.newArrayList();
     }
     return data;
   }
 
-  public void setData(final List<PriceDatastore> data) {
+  public void setData(final List<Price> data) {
     this.data = data;
   }
 

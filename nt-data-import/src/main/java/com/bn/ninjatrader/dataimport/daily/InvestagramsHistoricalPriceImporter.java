@@ -4,7 +4,6 @@ import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.entity.DailyQuote;
 import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.thirdparty.investagrams.InvestagramsService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -28,16 +27,13 @@ public class InvestagramsHistoricalPriceImporter extends AbstractDailyPriceImpor
 
   private final InvestagramsService investagramsService;
   private final PriceDao priceDao;
-  private final PriceBuilderFactory priceBuilderFactory;
 
   @Inject
   public InvestagramsHistoricalPriceImporter(final InvestagramsService investagramsService,
-                                             final PriceDao priceDao,
-                                             final PriceBuilderFactory priceBuilderFactory) {
-    super(priceDao, priceBuilderFactory);
+                                             final PriceDao priceDao) {
+    super(priceDao);
     this.investagramsService = investagramsService;
     this.priceDao = priceDao;
-    this.priceBuilderFactory = priceBuilderFactory;
   }
 
   @Override
@@ -50,14 +46,16 @@ public class InvestagramsHistoricalPriceImporter extends AbstractDailyPriceImpor
   }
 
   @Override
-  public void importData(final Collection<LocalDate> dates) {
-    for (Map.Entry<String, List<Price>> symbolPriceList : toPriceMap(provideDailyQuotes()).entrySet()) {
+  public List<DailyQuote> importData(final Collection<LocalDate> dates) {
+    final List<DailyQuote> quotes = provideDailyQuotes();
+    for (Map.Entry<String, List<Price>> symbolPriceList : toPriceMap(quotes).entrySet()) {
       LOG.debug("Saved prices for {}", symbolPriceList.getKey());
       priceDao.savePrices(symbolPriceList.getValue())
           .withSymbol(symbolPriceList.getKey())
           .withTimeFrame(TimeFrame.ONE_DAY)
           .now();
     }
+    return quotes;
   }
 
   private Map<String, List<Price>> toPriceMap(final List<DailyQuote> dailyQuotes) {
@@ -67,7 +65,7 @@ public class InvestagramsHistoricalPriceImporter extends AbstractDailyPriceImpor
       if (symbolMap.get(symbol) == null) {
         symbolMap.put(symbol, Lists.newArrayList());
       }
-      symbolMap.get(symbol).add(dailyQuote.getPrice(priceBuilderFactory));
+      symbolMap.get(symbol).add(dailyQuote.getPrice());
     }
     return symbolMap;
   }

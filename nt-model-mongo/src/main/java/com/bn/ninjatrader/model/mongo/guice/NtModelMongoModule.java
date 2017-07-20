@@ -4,7 +4,6 @@ import com.bn.ninjatrader.common.guice.NtClockModule;
 import com.bn.ninjatrader.model.dao.AlgorithmDao;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.dao.UserDao;
-import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.model.mongo.annotation.PriceCollection;
 import com.bn.ninjatrader.model.mongo.annotation.StockCollection;
 import com.bn.ninjatrader.model.mongo.annotation.TradeAlgorithmCollection;
@@ -13,7 +12,6 @@ import com.bn.ninjatrader.model.mongo.client.DbClient;
 import com.bn.ninjatrader.model.mongo.dao.MongoAlgorithmDao;
 import com.bn.ninjatrader.model.mongo.dao.MongoPriceDao;
 import com.bn.ninjatrader.model.mongo.dao.MongoUserDao;
-import com.bn.ninjatrader.model.mongo.factory.PriceBuilderFactoryMongo;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.netflix.archaius.api.Config;
@@ -50,7 +48,6 @@ public class NtModelMongoModule extends AbstractModule {
     bind(UserDao.class).to(MongoUserDao.class);
     bind(PriceDao.class).to(MongoPriceDao.class);
     bind(AlgorithmDao.class).to(MongoAlgorithmDao.class);
-    bind(PriceBuilderFactory.class).to(PriceBuilderFactoryMongo.class);
   }
 
   @Provides

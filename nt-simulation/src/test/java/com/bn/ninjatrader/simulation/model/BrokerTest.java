@@ -1,8 +1,6 @@
 package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
-import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.bn.ninjatrader.simulation.core.SimulationRequest;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.listener.BrokerListener;
@@ -41,8 +39,7 @@ import static org.mockito.Mockito.when;
 public class BrokerTest {
 
   private final LocalDate now = LocalDate.of(2016, 1, 1);
-  private final PriceBuilderFactory pbf = new DummyPriceBuilderFactory();
-  private final Price price = pbf.builder().date(now).open(1).high(2).low(3).close(4).volume(1000).build();
+  private final Price price = Price.builder().date(now).open(1).high(2).low(3).close(4).volume(1000).build();
 
   private final BuyTransaction buyTransaction = Transaction.buy().price(4).shares(1000).date(now).build();
   private final SellTransaction sellTransaction = Transaction.sell().price(4).shares(1000).date(now).build();

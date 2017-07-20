@@ -82,7 +82,7 @@ public class MongoPriceDocument implements Comparable<MongoPriceDocument> {
   }
 
   public void setData(List<Price> data) {
-    this.data = data;
+//    this.data = data;
   }
 
   @Override

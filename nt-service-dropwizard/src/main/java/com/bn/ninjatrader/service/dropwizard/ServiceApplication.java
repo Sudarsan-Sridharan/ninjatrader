@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.service.dropwizard;
 
 import com.bn.ninjatrader.auth.guice.NtAuthModule;
+import com.bn.ninjatrader.event.guice.NtEventModule;
 import com.bn.ninjatrader.model.mongo.guice.NtModelMongoModule;
 import com.bn.ninjatrader.scheduler.JobScheduler;
 import com.bn.ninjatrader.scheduler.guice.NtSchedulerModule;
@@ -8,6 +9,7 @@ import com.bn.ninjatrader.service.dropwizard.health.ServiceHealthCheck;
 import com.bn.ninjatrader.service.exception.JsonParseExceptionMapper;
 import com.bn.ninjatrader.service.filter.AuthorizationFilter;
 import com.bn.ninjatrader.service.filter.CrossOriginResourceResponseFilter;
+import com.bn.ninjatrader.service.filter.EventDispatchFilter;
 import com.bn.ninjatrader.service.guice.NtServiceModule;
 import com.bn.ninjatrader.service.provider.LocalDateParamConverterProvider;
 import com.bn.ninjatrader.service.provider.ObjectMapperContextResolver;
@@ -69,10 +71,14 @@ public class ServiceApplication extends Application<ServiceConfig> {
   private ImportPSETraderDailyQuotesTask importPSETraderDailyQuotesTask;
   @Inject
   private ObjectMapperContextResolver objectMapperContextResolver;
+
   @Inject
   private CrossOriginResourceResponseFilter crossOriginResourceResponseFilter;
   @Inject
   private AuthorizationFilter authorizationFilter;
+  @Inject
+  private EventDispatchFilter eventDispatchFilter;
+
   @Inject
   private JobScheduler jobScheduler;
 
@@ -127,10 +133,12 @@ public class ServiceApplication extends Application<ServiceConfig> {
     // Filters
     jersey.register(crossOriginResourceResponseFilter);
     jersey.register(authorizationFilter);
+    jersey.register(eventDispatchFilter);
   }
 
   public static void main(String[] args) throws Exception {
     final Injector injector = Guice.createInjector(
+        new NtEventModule(),
         new NtAuthModule(),
         new NtModelMongoModule(),
         new NtSimulationModule(),

@@ -3,7 +3,6 @@ package com.bn.ninjatrader.model.datastore.dao.operation;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.datastore.document.PriceDocument;
-import com.bn.ninjatrader.model.datastore.entity.PriceDatastore;
 import com.bn.ninjatrader.model.entity.Price;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
@@ -71,16 +70,16 @@ public final class DatastoreSavePricesOperation implements PriceDao.SavePricesOp
 
       // Add prices to document. Must not have duplicate dates. Existing date will be overwritten.
       final Collection<Price> pricesToSave = pricesPerYear.get(year);
-      final Map<LocalDate, PriceDatastore> docPrices = Maps.newHashMap();
+      final Map<LocalDate, Price> docPrices = Maps.newHashMap();
 
       // Add document prices to a map, ensuring uniqueness by date.
       for (final Price price : documents.get(key).getData()) {
-        docPrices.put(price.getDate(), (PriceDatastore) price);
+        docPrices.put(price.getDate(), price);
       }
 
       // Add new prices to map, overwriting old prices of same date.
       for (final Price price : pricesToSave) {
-        docPrices.put(price.getDate(), (PriceDatastore) price);
+        docPrices.put(price.getDate(), price);
       }
 
       documents.get(key).setData(docPrices.values().stream().collect(Collectors.toList()));

@@ -2,8 +2,6 @@ package com.bn.ninjatrader.model.mongo.dao;
 
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
-import com.bn.ninjatrader.model.mongo.factory.PriceBuilderFactoryMongo;
 import com.bn.ninjatrader.model.mongo.guice.NtModelTestModule;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 import com.bn.ninjatrader.model.util.TestUtil;
@@ -36,14 +34,13 @@ public class MongoPriceDaoTest {
 
   private static Injector injector;
 
-  private PriceBuilderFactory pbf = new PriceBuilderFactoryMongo();
-  private final Price price1 = pbf.builder().date(now)
+  private final Price price1 = Price.builder().date(now)
       .open(1.1).high(1.2).low(1.0).close(1.1).volume(1000).build();
-  private final Price price2 = pbf.builder().date(tomorrow)
+  private final Price price2 = Price.builder().date(tomorrow)
       .open(2.1).high(2.2).low(2.0).close(2.1).volume(2000).build();
-  private final Price priceNextMonth = pbf.builder().date(nextMonth)
+  private final Price priceNextMonth = Price.builder().date(nextMonth)
       .open(3.1).high(3.2).low(3.0).close(3.1).volume(3000).build();
-  private final Price priceNextYear = pbf.builder().date(nextYear)
+  private final Price priceNextYear = Price.builder().date(nextYear)
       .open(4.1).high(4.2).low(4.0).close(4.1).volume(4000).build();
 
   private MongoPriceDao priceDao;
@@ -70,7 +67,7 @@ public class MongoPriceDaoTest {
   @Test
   public void testFindByDateRange_shouldRetrievePricesWithinDateRange() {
     priceDao.savePrices(price1, price2).withSymbol("MEG").now();
-    
+
     assertThat(priceDao.findPrices().withSymbol("MEG").from(now).to(now).now()).containsExactly(price1);
     assertThat(priceDao.findPrices().withSymbol("MEG").from(tomorrow).to(tomorrow).now()).containsExactly(price2);
     assertThat(priceDao.findPrices().withSymbol("MEG").from(now).to(tomorrow).now()).containsExactly(price1, price2);
@@ -105,15 +102,15 @@ public class MongoPriceDaoTest {
   @Test
   public void testSaveWithOverlap_shouldOverwriteExistingPrices() {
     // Set 1
-    final Price price1 = pbf.builder().date(now).open(1.1).high(1.2).low(1.0).close(1.1).volume(1000).build();
-    final Price price2 = pbf.builder().date(tomorrow).open(2.1).high(2.2).low(2.0).close(2.1).volume(2000).build();
-    final Price price3 = pbf.builder().date(now.plusDays(2))
+    final Price price1 = Price.builder().date(now).open(1.1).high(1.2).low(1.0).close(1.1).volume(1000).build();
+    final Price price2 = Price.builder().date(tomorrow).open(2.1).high(2.2).low(2.0).close(2.1).volume(2000).build();
+    final Price price3 = Price.builder().date(now.plusDays(2))
         .open(3.1).high(3.2).low(3.3).close(3.4).volume(3000).build();
 
     // Set 2
-    final Price price4 = pbf.builder().date(now.plusDays(2))
+    final Price price4 = Price.builder().date(now.plusDays(2))
         .open(4.1).high(4.2).low(4.3).close(4.4).volume(4000).build();
-    final Price price5 = pbf.builder().date(now.plusDays(3))
+    final Price price5 = Price.builder().date(now.plusDays(3))
         .open(5.1).high(5.2).low(5.3).close(5.4).volume(5000).build();
 
     // Save set 1 prices
@@ -128,9 +125,9 @@ public class MongoPriceDaoTest {
 
   @Test
   public void testSimpleFindNBarsBeforeDate_shouldReturnPricesBeforeGivenDate() {
-    final Price priceNow = pbf.builder().date(now).close(1).build();
-    final Price priceTomorrow = pbf.builder().date(tomorrow).close(2).build();
-    final Price priceNextMonth = pbf.builder().date(nextMonth).close(3).build();
+    final Price priceNow = Price.builder().date(now).close(1).build();
+    final Price priceTomorrow = Price.builder().date(tomorrow).close(2).build();
+    final Price priceNextMonth = Price.builder().date(nextMonth).close(3).build();
 
     priceDao.savePrices(priceNow, priceTomorrow, priceNextMonth).withSymbol("MEG").now();
 

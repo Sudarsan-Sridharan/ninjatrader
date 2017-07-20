@@ -26,6 +26,10 @@
         </dependency>
         <dependency>
             <groupId>com.beachninja</groupId>
+            <artifactId>nt-event</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.beachninja</groupId>
             <artifactId>nt-model</artifactId>
         </dependency>
         <dependency>

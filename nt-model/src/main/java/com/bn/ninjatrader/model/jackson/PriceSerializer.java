@@ -10,6 +10,14 @@ import com.google.inject.Singleton;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
+import static com.bn.ninjatrader.model.jackson.PriceAttributes.CHANGE;
+import static com.bn.ninjatrader.model.jackson.PriceAttributes.CLOSE;
+import static com.bn.ninjatrader.model.jackson.PriceAttributes.DATE;
+import static com.bn.ninjatrader.model.jackson.PriceAttributes.HIGH;
+import static com.bn.ninjatrader.model.jackson.PriceAttributes.LOW;
+import static com.bn.ninjatrader.model.jackson.PriceAttributes.OPEN;
+import static com.bn.ninjatrader.model.jackson.PriceAttributes.VOLUME;
+
 /**
  * @author bradwee2000@gmail.com
  */
@@ -29,13 +37,13 @@ public class PriceSerializer extends StdSerializer<Price> {
                         final JsonGenerator gen,
                         final SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("d", price.getDate().format(DateTimeFormatter.BASIC_ISO_DATE));
-    gen.writeNumberField("o", price.getOpen());
-    gen.writeNumberField("h", price.getHigh());
-    gen.writeNumberField("l", price.getLow());
-    gen.writeNumberField("c", price.getClose());
-    gen.writeNumberField("ch", price.getChange());
-    gen.writeNumberField("v", price.getVolume());
+    gen.writeStringField(DATE, price.getDate().format(DateTimeFormatter.BASIC_ISO_DATE));
+    gen.writeNumberField(OPEN, price.getOpen());
+    gen.writeNumberField(HIGH, price.getHigh());
+    gen.writeNumberField(LOW, price.getLow());
+    gen.writeNumberField(CLOSE, price.getClose());
+    gen.writeNumberField(CHANGE, price.getChange());
+    gen.writeNumberField(VOLUME, price.getVolume());
     gen.writeEndObject();
   }
 

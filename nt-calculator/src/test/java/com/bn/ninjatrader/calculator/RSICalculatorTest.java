@@ -1,10 +1,8 @@
 package com.bn.ninjatrader.calculator;
 
 import com.beust.jcommander.internal.Lists;
-import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.bn.ninjatrader.model.deprecated.Value;
-import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
+import com.bn.ninjatrader.model.entity.Price;
 import mockit.Tested;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +23,6 @@ import static org.testng.Assert.assertTrue;
 public class RSICalculatorTest {
 
   private static final Logger log = LoggerFactory.getLogger(RSICalculatorTest.class);
-
-  private final PriceBuilderFactory priceBuilderFactory = new DummyPriceBuilderFactory();
 
   @Tested
   private RSICalculator calculator;
@@ -120,7 +116,7 @@ public class RSICalculatorTest {
   }
 
   private Price createPriceWithChange(double change) {
-    Price price = priceBuilderFactory.builder().date(dateCounter).change(change).build();
+    Price price = Price.builder().date(dateCounter).change(change).build();
     dateCounter = dateCounter.plusDays(1);
     return price;
   }

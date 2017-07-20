@@ -1,14 +1,17 @@
 package com.bn.ninjatrader.simulation.core;
 
 import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
-import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
-import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.data.BarProducer;
-import com.bn.ninjatrader.simulation.model.*;
-import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.algorithm.AlgorithmScript;
 import com.bn.ninjatrader.simulation.algorithm.ScriptRunner;
+import com.bn.ninjatrader.simulation.data.BarData;
+import com.bn.ninjatrader.simulation.data.BarProducer;
+import com.bn.ninjatrader.simulation.model.Account;
+import com.bn.ninjatrader.simulation.model.Bookkeeper;
+import com.bn.ninjatrader.simulation.model.Broker;
+import com.bn.ninjatrader.simulation.model.History;
+import com.bn.ninjatrader.simulation.model.Portfolio;
+import com.bn.ninjatrader.simulation.model.SimulationContext;
+import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +23,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 /**
@@ -31,9 +40,8 @@ public class SimulationTest {
 
   private final LocalDate date1 = LocalDate.of(2016, 2, 1);
   private final LocalDate date2 = LocalDate.of(2016, 2, 2);
-  private final PriceBuilderFactory pbf = new DummyPriceBuilderFactory();
-  private final Price price1 = pbf.builder().date(date1).open(1.2).high(1.4).low(1.1).close(1.3).volume(100000).build();
-  private final Price price2 = pbf.builder().date(date1).open(2.2).high(2.4).low(2.1).close(2.3).volume(200000).build();
+  private final Price price1 = Price.builder().date(date1).open(1.2).high(1.4).low(1.1).close(1.3).volume(100000).build();
+  private final Price price2 = Price.builder().date(date1).open(2.2).high(2.4).low(2.1).close(2.3).volume(200000).build();
   private final List<Price> prices = Lists.newArrayList(price1, price2);
   private final BarData bar1 = BarData.builder().price(price1).index(0).build();
   private final BarData bar2 = BarData.builder().price(price2).index(1).build();

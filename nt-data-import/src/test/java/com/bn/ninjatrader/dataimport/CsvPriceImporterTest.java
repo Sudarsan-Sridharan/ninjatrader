@@ -1,12 +1,10 @@
-package com.bn.ninjatrader.importer;
+package com.bn.ninjatrader.dataimport;
 
 import com.bn.ninjatrader.dataimport.history.CsvPriceImporter;
 import com.bn.ninjatrader.dataimport.history.parser.CsvDataParser;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.entity.DailyQuote;
 import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
-import com.bn.ninjatrader.model.util.DummyPriceBuilderFactory;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +14,11 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.RETURNS_SELF;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Brad on 6/6/16.
@@ -27,7 +29,6 @@ public class CsvPriceImporterTest {
 
   private CsvDataParser parser;
   private PriceDao priceDao;
-  private PriceBuilderFactory priceFactory;
 
   private CsvPriceImporter importer;
 
@@ -45,22 +46,21 @@ public class CsvPriceImporterTest {
   public void before() {
     parser = mock(CsvDataParser.class);
     priceDao = mock(PriceDao.class);
-    priceFactory = new DummyPriceBuilderFactory();
 
     when(priceDao.savePrices(any())).thenReturn(mock(PriceDao.SavePricesOperation.class, RETURNS_SELF));
 
-    importer = new CsvPriceImporter(parser, priceDao, priceFactory);
+    importer = new CsvPriceImporter(parser, priceDao);
   }
 
   @Test
   public void testSaveDifferentSymbols_shouldSaveQuotesForEachSymbol() {
     importer.save(Lists.newArrayList(quote1, quote2, quote3, quote4, quote5));
 
-    final List<Price> bdoExpectedPrices = Lists.newArrayList(quote3.getPrice(priceFactory),
-        quote4.getPrice(priceFactory));
+    final List<Price> bdoExpectedPrices = Lists.newArrayList(quote3.getPrice(),
+        quote4.getPrice());
 
-    final List<Price> megExpectedPrices = Lists.newArrayList(quote1.getPrice(priceFactory),
-        quote2.getPrice(priceFactory), quote5.getPrice(priceFactory));
+    final List<Price> megExpectedPrices = Lists.newArrayList(quote1.getPrice(),
+        quote2.getPrice(), quote5.getPrice());
 
     verify(priceDao.savePrices(bdoExpectedPrices)).withSymbol("BDO");
 

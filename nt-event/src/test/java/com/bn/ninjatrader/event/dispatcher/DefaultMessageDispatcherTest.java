@@ -1,8 +1,9 @@
-package com.bn.ninjatrader.event.broker;
+package com.bn.ninjatrader.event.dispatcher;
 
 import com.bn.ninjatrader.event.Message;
 import com.bn.ninjatrader.event.handler.MessageHandler;
-import com.bn.ninjatrader.event.type.EventType;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,13 +15,14 @@ import static org.mockito.Mockito.verify;
 /**
  * @author bradwee2000@gmail.com
  */
-public class DefaultMessageBrokerTest {
-
-  private MessageBroker broker;
+public class DefaultMessageDispatcherTest {
+  private Multimap<String, MessageHandler> subscribers = ArrayListMultimap.create();
+  private MessageDispatcher broker;
 
   @Before
   public void before() {
-    broker = new DefaultMessageBroker();
+    subscribers.clear();
+    broker = new DefaultMessageDispatcher(subscribers);
   }
 
   @Test
@@ -28,11 +30,12 @@ public class DefaultMessageBrokerTest {
     // Subscribe to event
     final MessageHandler handler1 = mock(MessageHandler.class);
     final MessageHandler handler2 = mock(MessageHandler.class);
-    broker.subscribe(EventType.IMPORTED_FULL_PRICES, handler1);
-    broker.subscribe(EventType.IMPORTED_FULL_PRICES, handler2);
+
+    subscribers.put("Event1", handler1);
+    subscribers.put("Event1", handler2);
 
     // Dispatch same event
-    final Message message = () -> EventType.IMPORTED_FULL_PRICES;
+    final Message message = new Message("Event1", null) {};
     broker.dispatch(message);
 
     // Should call subscribers
@@ -44,10 +47,10 @@ public class DefaultMessageBrokerTest {
   public void testSubscribeToEvent_shouldNotCallSubscriberWhenDiffEventIsTriggered() {
     // Subscribe to event
     final MessageHandler handler = mock(MessageHandler.class);
-    broker.subscribe(EventType.IMPORTED_FULL_PRICES, handler);
+    subscribers.put("Event1", handler);
 
     // Dispatch different event
-    final Message message = () -> EventType.IMPORTED_CLOSING_PRICES;
+    final Message message = new Message("AnotherEvent", null) {};
     broker.dispatch(message);
 
     // Should not call subscriber

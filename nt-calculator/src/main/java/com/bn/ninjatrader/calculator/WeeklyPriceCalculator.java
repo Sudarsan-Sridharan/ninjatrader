@@ -1,10 +1,7 @@
 package com.bn.ninjatrader.calculator;
 
 import com.bn.ninjatrader.model.entity.Price;
-import com.bn.ninjatrader.model.entity.PriceBuilder;
-import com.bn.ninjatrader.model.entity.PriceBuilderFactory;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,21 +19,13 @@ import java.util.List;
 public class WeeklyPriceCalculator {
   private static final Logger LOG = LoggerFactory.getLogger(WeeklyPriceCalculator.class);
 
-  private final PriceBuilderFactory priceBuilderFactory;
-
-  @Inject
-  public WeeklyPriceCalculator(final PriceBuilderFactory priceBuilderFactory) {
-    this.priceBuilderFactory = priceBuilderFactory;
-  }
-
   public List<Price> calc(final Collection<Price> priceList) {
-    return new OneTimeUseWeeklyPriceCalculator(priceBuilderFactory).calc(priceList);
+    return new OneTimeUseWeeklyPriceCalculator().calc(priceList);
   }
 
   public List<Price> calc(final Price price, final Price ... more) {
-    return new OneTimeUseWeeklyPriceCalculator(priceBuilderFactory).calc(Lists.asList(price, more));
+    return new OneTimeUseWeeklyPriceCalculator().calc(Lists.asList(price, more));
   }
-
 
   private static class OneTimeUseWeeklyPriceCalculator {
     private static final int MONDAY = 1;
@@ -46,14 +35,11 @@ public class WeeklyPriceCalculator {
     private int lastRecordedWeekOfYear = 0;
     private int lastRecordedYear = 0;
     private final List<Price> results = Lists.newArrayList();
-    private final PriceBuilderFactory priceBuilderFactory;
 
-    private OneTimeUseWeeklyPriceCalculator(final PriceBuilderFactory priceBuilderFactory) {
-      this.priceBuilderFactory = priceBuilderFactory;
-    }
+    private OneTimeUseWeeklyPriceCalculator() {}
 
     public List<Price> calc(final Collection<Price> priceList) {
-      PriceBuilder weeklyPriceBuilder = null;
+      Price.Builder weeklyPriceBuilder = null;
 
       for (final Price price : priceList) {
 
@@ -83,18 +69,18 @@ public class WeeklyPriceCalculator {
           && lastRecordedYear == date.getYear();
     }
 
-    private void addPriceToWeek(final PriceBuilder weeklyPriceBuilder, final Price price) {
+    private void addPriceToWeek(final Price.Builder weeklyPriceBuilder, final Price price) {
       weeklyPriceBuilder.high(Math.max(price.getHigh(), weeklyPriceBuilder.getHigh()));
       weeklyPriceBuilder.low(Math.min(price.getLow(), weeklyPriceBuilder.getLow()));
       weeklyPriceBuilder.addVolume(price.getVolume());
       weeklyPriceBuilder.close(price.getClose());
     }
 
-    private PriceBuilder createNewWeekWithStartingPrice(final Price price) {
-      return priceBuilderFactory.builder().copyOf(price).date(price.getDate().with(dayOfWeekField, MONDAY));
+    private Price.Builder createNewWeekWithStartingPrice(final Price price) {
+      return Price.builder().copyOf(price).date(price.getDate().with(dayOfWeekField, MONDAY));
     }
 
-    private void recordNewWeek(final PriceBuilder weeklyPriceBuilder) {
+    private void recordNewWeek(final Price.Builder weeklyPriceBuilder) {
       final LocalDate date = weeklyPriceBuilder.getDate();
       lastRecordedWeekOfYear = date.get(weekOfYearField);
       lastRecordedYear = date.getYear();

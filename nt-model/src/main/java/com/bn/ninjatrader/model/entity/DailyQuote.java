@@ -122,8 +122,8 @@ public class DailyQuote {
         .toString();
   }
 
-  public Price getPrice(final PriceBuilderFactory priceBuilderFactory) {
-    return priceBuilderFactory.builder()
+  public Price getPrice() {
+    return Price.builder()
         .date(date).open(open).high(high).low(low).close(close).volume(volume).build();
   }
 }
