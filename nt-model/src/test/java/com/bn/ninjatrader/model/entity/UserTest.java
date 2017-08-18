@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.model.entity;
 
+import com.bn.ninjatrader.common.model.User;
 import com.bn.ninjatrader.common.type.Role;
 import com.google.common.collect.Lists;
 import org.junit.Test;

@@ -2,7 +2,7 @@ package com.bn.ninjatrader.model.deprecated;
 
 import com.bn.ninjatrader.common.util.NtLocalDateDeserializer;
 import com.bn.ninjatrader.common.util.NtLocalDateSerializer;
-import com.bn.ninjatrader.model.entity.DateObj;
+import com.bn.ninjatrader.common.model.DateObj;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

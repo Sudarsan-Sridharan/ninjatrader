@@ -16,6 +16,10 @@ define(['jquery', 'app/status/status-item'], function ($, StatusItem) {
         return statusItem;
     };
 
+    Status.prototype.newStatusItem = function() {
+        return new StatusItem(this.container, "");
+    }
+
     Status.prototype.clearAll = function() {
         for (var i in this.statusItems) {
             this.statusItems[i].remove();

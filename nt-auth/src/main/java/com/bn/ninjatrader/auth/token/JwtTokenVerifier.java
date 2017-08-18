@@ -12,6 +12,10 @@ import com.bn.ninjatrader.auth.exception.InvalidTokenException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import static com.bn.ninjatrader.auth.attribute.TokenAttrNames.FIRST_NAME;
+import static com.bn.ninjatrader.auth.attribute.TokenAttrNames.LAST_NAME;
+import static com.bn.ninjatrader.auth.attribute.TokenAttrNames.ROLES;
+
 /**
  * @author bradwee2000@gmail.com
  */
@@ -32,9 +36,9 @@ public class JwtTokenVerifier implements TokenVerifier {
       return DecodedToken.builder()
           .tokenId(jwt.getId())
           .userId(jwt.getSubject())
-          .firstName(jwt.getClaim("fn").asString())
-          .lastName(jwt.getClaim("ln").asString())
-          .addRoleIds(jwt.getClaim("r").asList(String.class))
+          .firstName(jwt.getClaim(FIRST_NAME).asString())
+          .lastName(jwt.getClaim(LAST_NAME).asString())
+          .addRoleIds(jwt.getClaim(ROLES).asList(String.class))
           .build();
     } catch (final TokenExpiredException e) {
       throw new ExpiredTokenException(e);

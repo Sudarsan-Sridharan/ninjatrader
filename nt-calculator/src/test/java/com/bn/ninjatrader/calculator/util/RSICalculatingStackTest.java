@@ -2,7 +2,7 @@ package com.bn.ninjatrader.calculator.util;
 
 import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.model.deprecated.RSIValue;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.model.util.TestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

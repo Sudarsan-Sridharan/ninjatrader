@@ -3,7 +3,7 @@ package com.bn.ninjatrader.calculator;
 import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.calculator.parameter.CalcParams;
 import com.bn.ninjatrader.model.deprecated.Value;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.model.util.TestUtil;
 import mockit.Tested;
 import org.testng.annotations.Test;

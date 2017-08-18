@@ -17,6 +17,10 @@
             <groupId>com.beachninja</groupId>
             <artifactId>nt-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.beachninja</groupId>
+            <artifactId>nt-messaging</artifactId>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>

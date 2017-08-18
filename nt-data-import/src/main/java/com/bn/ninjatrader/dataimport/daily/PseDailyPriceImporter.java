@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.dataimport.daily;
 
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.entity.DailyQuote;
+import com.bn.ninjatrader.common.model.DailyQuote;
 import com.bn.ninjatrader.thirdparty.pse.PseService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

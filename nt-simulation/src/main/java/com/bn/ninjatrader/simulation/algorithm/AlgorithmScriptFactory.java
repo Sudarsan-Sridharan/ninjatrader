@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.algorithm;
 
-import com.bn.ninjatrader.model.entity.Algorithm;
+import com.bn.ninjatrader.common.model.Algorithm;
 
 import javax.inject.Singleton;
 

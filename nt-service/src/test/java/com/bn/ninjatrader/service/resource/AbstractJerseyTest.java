@@ -19,7 +19,7 @@ import javax.ws.rs.core.Application;
 public abstract class AbstractJerseyTest extends JerseyTest {
   private static final Logger LOG = LoggerFactory.getLogger(AbstractJerseyTest.class);
 
-  private Injector injector;
+  private Injector injector; // TODO why use injector?
   private ObjectMapperContextResolver objectMapperContextResolver;
 
   @Override

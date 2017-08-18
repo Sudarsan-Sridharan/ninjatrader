@@ -2,7 +2,7 @@ package com.bn.ninjatrader.model.mongo.dao.operation;
 
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.model.mongo.util.Queries;
 import com.google.common.collect.Lists;
 import org.jongo.MongoCollection;

@@ -2,7 +2,7 @@ package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.simulation.core.SimulationRequest;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;

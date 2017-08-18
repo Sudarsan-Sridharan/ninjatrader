@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.model.mongo.dao;
 
-import com.bn.ninjatrader.model.entity.User;
+import com.bn.ninjatrader.common.model.User;
 import com.bn.ninjatrader.model.mongo.guice.NtModelTestModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;

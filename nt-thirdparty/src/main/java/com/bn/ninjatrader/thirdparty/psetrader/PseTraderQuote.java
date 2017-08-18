@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.thirdparty.psetrader;
 
-import com.bn.ninjatrader.model.entity.DailyQuote;
+import com.bn.ninjatrader.common.model.DailyQuote;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
@@ -24,7 +24,7 @@ public class PseTraderQuote {
                         @JsonProperty("l") final double low,
                         @JsonProperty("c") final double close,
                         @JsonProperty("v") final long volume) {
-    dailyQuote = new DailyQuote(symbol, open, high, low, close, volume);
+    dailyQuote = new DailyQuote(symbol, null, open, high, low, close, volume);
   }
 
   public void setDate(final LocalDate date) {

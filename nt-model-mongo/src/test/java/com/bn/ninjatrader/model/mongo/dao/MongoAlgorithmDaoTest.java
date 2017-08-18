@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.model.mongo.dao;
 
-import com.bn.ninjatrader.model.entity.Algorithm;
+import com.bn.ninjatrader.common.model.Algorithm;
 import com.bn.ninjatrader.model.mongo.guice.NtModelTestModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -42,11 +42,11 @@ public class MongoAlgorithmDaoTest {
   public void testSaveAndFind_shouldReturnEqualObject() {
     dao.save(algo);
 
-    assertThat(dao.findByAlgorithmId("test")).hasValue(algo);
-    assertThat(dao.findByUserId("sys")).containsExactly(algo);
+    assertThat(dao.findOneByAlgorithmId("test")).hasValue(algo);
+    assertThat(dao.findAlgorithms().withUserId("sys").now()).containsExactly(algo);
 
-    assertThat(dao.findByAlgorithmId("non-existing")).isEmpty();
-    assertThat(dao.findByUserId("non-existing")).isEmpty();
+    assertThat(dao.findOneByAlgorithmId("non-existing")).isEmpty();
+    assertThat(dao.findAlgorithms().withUserId("non-existing").now()).isEmpty();
   }
 
   @Test
@@ -56,15 +56,30 @@ public class MongoAlgorithmDaoTest {
 
     assertThat(saved.getId()).isNotEmpty();
 
-    final Optional<Algorithm> found = dao.findByAlgorithmId(saved.getId());
+    final Optional<Algorithm> found = dao.findOneByAlgorithmId(saved.getId());
     assertThat(found).isNotEmpty();
     assertThat(found.get().getAlgorithm()).isEqualTo("{ sample algorithm }");
   }
 
   @Test
+  public void testFindAutoScanEnabledOnly_shouldRetrieveOnlyThoseWithAutoScan() {
+    dao.save(algo); // isAutoScan = false
+
+    final Algorithm autoScanAlgo = dao.save(Algorithm.builder()
+        .userId("sys").description("desc").algorithm("{ sample algorithm }").isAutoScan(true).build());
+
+    assertThat(dao.findAlgorithms().isAutoScan(true).now()).containsExactly(autoScanAlgo);
+    assertThat(dao.findAlgorithms().withUserId("sys").isAutoScan(true).now()).containsExactly(autoScanAlgo);
+
+    assertThat(dao.findAlgorithms().isAutoScan(false).now()).containsExactly(algo);
+    assertThat(dao.findAlgorithms().withUserId("sys").isAutoScan(false).now()).containsExactly(autoScanAlgo);
+  }
+
+  @Test
   public void testUpdate_shouldUpdateInDb() {
     final Algorithm updatedAlgo = Algorithm.builder()
-        .algoId("test").userId("sys").algorithm("{ sample overwritten algorithm }").description("").build();
+        .algoId("test").userId("sys")
+        .algorithm("{ sample overwritten algorithm }").description("").isAutoScan(true).build();
 
     // Save old algorithm
     dao.save(algo);
@@ -73,7 +88,7 @@ public class MongoAlgorithmDaoTest {
     dao.save(updatedAlgo);
 
     // Verify that algorithm has new content
-    assertThat(dao.findByAlgorithmId("test")).hasValue(updatedAlgo);
+    assertThat(dao.findOneByAlgorithmId("test")).hasValue(updatedAlgo);
   }
 
   @Test
@@ -89,7 +104,7 @@ public class MongoAlgorithmDaoTest {
     dao.delete("algo1");
 
     // Verify that algo1 is deleted and algo2 still exists
-    assertThat(dao.findByAlgorithmId("algo1")).isEmpty();
-    assertThat(dao.findByAlgorithmId("algo2")).hasValue(algo2);
+    assertThat(dao.findOneByAlgorithmId("algo1")).isEmpty();
+    assertThat(dao.findOneByAlgorithmId("algo2")).hasValue(algo2);
   }
 }

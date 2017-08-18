@@ -3,7 +3,7 @@ package com.bn.ninjatrader.calculator;
 import com.bn.ninjatrader.calculator.parameter.CalcParams;
 import com.bn.ninjatrader.calculator.util.CalculatingStack;
 import com.bn.ninjatrader.calculator.util.RSICalculatingStack;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.model.deprecated.RSIValue;
 import com.bn.ninjatrader.model.deprecated.Value;
 import com.google.inject.Singleton;

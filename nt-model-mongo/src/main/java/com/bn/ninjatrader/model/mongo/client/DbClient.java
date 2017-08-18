@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.model.mongo.client;
 
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.model.jackson.PriceDeserializer;
 import com.bn.ninjatrader.model.jackson.PriceSerializer;
 import com.bn.ninjatrader.model.mongo.annotation.MongoDatabaseName;

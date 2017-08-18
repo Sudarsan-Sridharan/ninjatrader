@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.model.mongo.dao;
 
 import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.model.mongo.guice.NtModelTestModule;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 import com.bn.ninjatrader.model.util.TestUtil;

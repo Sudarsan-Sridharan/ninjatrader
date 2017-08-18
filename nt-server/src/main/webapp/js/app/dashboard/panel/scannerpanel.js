@@ -2,15 +2,18 @@ define(['jquery', 'require',
     'app/util/boardlot',
     'app/dashboard/panel/basicpanel',
     'app/client/algo-client',
-    'app/client/scanner-client'], function ($, require) {
+    'app/client/scanner-client',
+    'app/sse/sse'], function ($, require) {
 
     var BoardLot = require('app/util/boardlot');
     var BasicPanel = require("app/dashboard/panel/basicpanel");
     var AlgoClient = require("app/client/algo-client");
     var ScannerClient = require("app/client/scanner-client");
+    var Sse = require("app/sse/sse");
 
-    function ScannerPanel() {
+    function ScannerPanel( id) {
         BasicPanel.call(this, "Scanner", "scannerPanel");
+        this.sse = new Sse();
         this.actionBar = $("<div></div>").addClass("panelAction");
         this.algoSelector = $("<select></select>").addClass("algo");
         this.daySelector = $("<select></select>").addClass("days");
@@ -20,45 +23,74 @@ define(['jquery', 'require',
         this.actionBar.append(this.algoSelector).append(this.daySelector).append(this.scanButton);
         this.content.append(this.actionBar).append(this.scanResult);
 
-        this._prepareDaysSelector([1, 2, 3, 5, 7, 15, 30, 50, 70, 100]);
+        this.id = id;
 
-        this.disable();
-
-        var that = this;
-        this.scanButton.click(function() {
-            that.scan();
-        });
-
-        this.load();
+        this._init();
     }
 
     ScannerPanel.prototype = Object.create(BasicPanel.prototype);
     ScannerPanel.prototype.constructor = ScannerPanel;
 
-    ScannerPanel.prototype._prepareDaysSelector = function(dayOptions) {
-        for (var i in dayOptions) {
-            var days = dayOptions[i];
-            var description = days + " days ago";
-            if (days == 1) {
-                description = "Today";
-            }
-            var option = $('<option value="' + days + '">' + description + '</option>');
-            this.daySelector.append(option);
-        }
-    }
+    ScannerPanel.prototype._init = function() {
+        var that = this;
 
-    ScannerPanel.prototype.load = function() {
+        this.disable();
+        this._loadAlgorithms();
+        this._initDaysSelector([1, 2, 3, 5, 7, 15, 30]);
+
+        // Connect to SSE server and listen.
+        this.sse.connect();
+
+        // Initialize Scan button click
+        this.scanButton.click(function() {
+            that.scan();
+        });
+
+        // On change algorithm, do scan
+        this.algoSelector.change(function() {
+            that.scan();
+        });
+    };
+
+    /**
+     * Load all of user's algorithms for the dropdown.
+     */
+    ScannerPanel.prototype._loadAlgorithms = function() {
         var algoSelector = this.algoSelector;
         var that = this;
 
+        // Retrieve all of user's algorithms
         AlgoClient.getAll(function(algorithms) {
+            var algorithmIds = [];
             algoSelector.html("");
             for (var i in algorithms) {
                 var algorithm = algorithms[i];
                 var option = $('<option value="' + algorithm.algorithmId + '">' + algorithm.description + '</option>');
                 algoSelector.append(option);
+                algorithmIds.push(algorithm.algorithmId);
             }
             that.enable();
+            that._onAlgorithmsLoaded(algorithmIds);
+        });
+    };
+
+    /**
+     * Initialize dropdown for selecting days.
+     */
+    ScannerPanel.prototype._initDaysSelector = function(dayOptions) {
+        var that = this;
+        for (var i in dayOptions) {
+            var days = dayOptions[i];
+            var description = days + " days ago";
+            if (days === 1) {
+                description = "Today";
+            }
+            var option = $('<option value="' + days + '">' + description + '</option>');
+            this.daySelector.append(option);
+        }
+
+        this.daySelector.change(function() {
+            that.scan();
         });
     };
 
@@ -78,6 +110,7 @@ define(['jquery', 'require',
         var that = this;
         var algoId = this.algoSelector.val();
 
+        // Disable button and show Scanning message
         this.disable();
         this.scanButton.html("Scanning...");
 
@@ -94,7 +127,7 @@ define(['jquery', 'require',
 
     ScannerPanel.prototype._displayResults = function(scanResults, algoId) {
         var table = $('<table cellpadding="0" cellspacing="0"></table>');
-        var th = $("<tr><th>Symbol</th><th>1yr Profit</th><th>Action</th><th>Date</th><th>Price</th></tr>")
+        var th = $("<tr><th>Symbol</th><th>1yr Profit</th><th>Action</th><th>Date</th><th>Price</th></tr>");
         table.append(th);
 
         for (var i in scanResults) {
@@ -120,7 +153,19 @@ define(['jquery', 'require',
         container.fadeOut(300, function() {
             container.html("").append(table).fadeIn(300);
         })
-    }
+    };
+
+    ScannerPanel.prototype._onAlgorithmsLoaded = function(algorithmIds) {
+        var that = this;
+        for (var i in algorithmIds) {
+            var algorithmId = algorithmIds[i];
+            this.sse.addListener(algorithmId, function (e) {
+                if (that.algoSelector.val() == e.type) {
+                    that._displayResults(JSON.parse(e.data), e.type);
+                }
+            });
+        }
+    };
 
     ScannerPanel.prototype._formatDate = function(basicIsoDate) {
         var year = Math.trunc(basicIsoDate / 10000);
@@ -131,7 +176,7 @@ define(['jquery', 'require',
         day = ("0" + day).slice(-2);
 
         return month + "/" + day + "/" + year;
-    }
+    };
 
     return ScannerPanel;
 });

@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.data;
 
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import org.junit.Test;
 
 import static com.bn.ninjatrader.simulation.logic.Variables.ICHIMOKU_CHIKOU;

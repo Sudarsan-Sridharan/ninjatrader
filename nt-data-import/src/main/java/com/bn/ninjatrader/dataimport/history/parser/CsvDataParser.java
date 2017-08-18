@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.dataimport.history.parser;
 
-import com.bn.ninjatrader.model.entity.DailyQuote;
+import com.bn.ninjatrader.common.model.DailyQuote;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import org.apache.commons.io.FileUtils;

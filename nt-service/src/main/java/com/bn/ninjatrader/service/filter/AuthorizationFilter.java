@@ -6,6 +6,8 @@ import com.bn.ninjatrader.auth.token.DecodedToken;
 import com.bn.ninjatrader.auth.token.TokenVerifier;
 import com.bn.ninjatrader.common.type.Role;
 import com.bn.ninjatrader.service.annotation.Secured;
+import com.bn.ninjatrader.service.security.AuthenticatedUser;
+import com.bn.ninjatrader.service.security.NtSecurityContext;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
@@ -31,10 +34,13 @@ import java.util.List;
  * @author bradwee2000@gmail.com
  */
 @Singleton
+@Provider
 @Priority(Priorities.AUTHORIZATION)
 public class AuthorizationFilter implements ContainerRequestFilter {
   private static final Logger LOG = LoggerFactory.getLogger(AuthorizationFilter.class);
   private static final String AUTH_HEADER = "Authorization";
+  private static final String BEARER = "Bearer ";
+  private static final String EMPTY = "";
 
   @Context
   private ResourceInfo resourceInfo;
@@ -56,14 +62,28 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 
       try {
         final DecodedToken token = verifyToken(req);
+
+        // Allow passage if request is a System call
+        if (token.hasRole(Role.SYSTEM)) {
+          return;
+        }
+
         final List<Role> classRoles = extractRoles(resourceClass);
         final List<Role> methodRoles = extractRoles(resourceMethod);
 
-        // Check if the user is allowed to execute the method
         // The method annotations override the class annotations
-        verifyRole(token, methodRoles.isEmpty() ? classRoles : methodRoles);
+        final List<Role> allowedRoles = methodRoles.isEmpty() ? classRoles : methodRoles;
+
+        // Check if the user is allowed to execute the method
+        if (!allowedRoles.isEmpty()) {
+          verifyRole(token, allowedRoles);
+        }
+
+        // If all is well, create SecurityContext
+        initSecurityContext(req, token);
 
       } catch (InvalidTokenException e) {
+        LOG.error("{}", e.getMessage());
         throw new UnauthorizedMethodAccessException();
       }
     }
@@ -90,11 +110,26 @@ public class AuthorizationFilter implements ContainerRequestFilter {
    * Verify that request header contains valid token.
    */
   private DecodedToken verifyToken(final ContainerRequestContext req) {
-    final String authToken = req.getHeaderString(AUTH_HEADER);
-    if (StringUtils.isEmpty(authToken)) {
-      throw new UnauthorizedMethodAccessException();
+    String authentication = req.getHeaderString(AUTH_HEADER);
+
+    // If no authentication header, check query parameters
+    if (StringUtils.isEmpty(authentication)) {
+      authentication = req.getUriInfo().getQueryParameters().getFirst("au");
+
+      // If no token found in query parameters, check in cookies
+      if (StringUtils.isEmpty(authentication)) {
+
+        // If still no token found, forbid access
+        if (req.getCookies().get("au") == null || StringUtils.isEmpty(req.getCookies().get("au").getValue())) {
+          throw new UnauthorizedMethodAccessException();
+        }
+
+        authentication = req.getCookies().get("au").getValue();
+      }
+    } else {
+      authentication = authentication.replace(BEARER, EMPTY);
     }
-    return tokenVerifier.verifyToken(authToken);
+    return tokenVerifier.verifyToken(authentication);
   }
 
   /**
@@ -103,10 +138,20 @@ public class AuthorizationFilter implements ContainerRequestFilter {
   private void verifyRole(final DecodedToken token, final List<Role> allowedRoles) {
     for (final Role role : allowedRoles) {
       if (token.hasRole(role)) {
-
         return;
       }
     }
     throw new UnauthorizedMethodAccessException();
+  }
+
+  private void initSecurityContext(final ContainerRequestContext req, final DecodedToken token) {
+    // Create User and SecurityContext
+    final AuthenticatedUser user = new AuthenticatedUser(
+        token.getUserId(),
+        token.getFirstName(),
+        token.getLastName(),
+        token.getRoles());
+    final String scheme = req.getUriInfo().getRequestUri().getScheme();
+    req.setSecurityContext(new NtSecurityContext(user, scheme));
   }
 }

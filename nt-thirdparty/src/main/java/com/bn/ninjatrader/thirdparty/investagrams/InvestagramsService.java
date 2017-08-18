@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.thirdparty.investagrams;
 
-import com.bn.ninjatrader.model.entity.DailyQuote;
+import com.bn.ninjatrader.common.model.DailyQuote;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;

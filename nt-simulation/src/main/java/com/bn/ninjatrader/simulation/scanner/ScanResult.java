@@ -6,11 +6,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
+import java.io.Serializable;
+
 /**
  * @author bradwee2000@gmail.com
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ScanResult {
+public class ScanResult implements Serializable {
 
   public static final Builder builder() {
     return new Builder();

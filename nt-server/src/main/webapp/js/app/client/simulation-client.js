@@ -1,6 +1,6 @@
 define(['jquery'], function ($) {
 
-    var ajaxUrl = context.serviceHost + "/task/simulation/run";
+    var ajaxUrl = context.serviceHost + "/tasks/simulation/run";
 
     function SimulationClient() {
     }

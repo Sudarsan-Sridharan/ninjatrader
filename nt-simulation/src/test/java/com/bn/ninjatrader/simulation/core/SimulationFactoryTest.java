@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.simulation.core;
 
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.simulation.binding.BindingFactory;
 import com.bn.ninjatrader.simulation.model.Broker;
 import com.bn.ninjatrader.simulation.model.SimulationContext;

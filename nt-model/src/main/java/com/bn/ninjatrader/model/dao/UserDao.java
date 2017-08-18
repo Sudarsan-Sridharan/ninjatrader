@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.model.dao;
 
-import com.bn.ninjatrader.model.entity.User;
+import com.bn.ninjatrader.common.model.User;
 
 import java.util.Optional;
 

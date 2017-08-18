@@ -2,12 +2,12 @@ define(['jquery', 'app/util/boardlot'], function ($, BoardLot) {
     
     function Scanner(containerId) {
         this.container = $(containerId);
-        this.ajaxUrl = "/task/scanner/run";
+        this.ajaxUrl = "/scan";
     }
 
     Scanner.prototype.scan = function(algoId, days, scanCompleteCallback) {
         var that = this;
-        $.get(context.serviceHost + that.ajaxUrl + "?algoId=" + algoId + "&days=" + days)
+        $.get(context.serviceHost + that.ajaxUrl + "/" + algoId + "?days=" + days)
             .done(function(data) {
                 that._displayResults(data, algoId);
             })

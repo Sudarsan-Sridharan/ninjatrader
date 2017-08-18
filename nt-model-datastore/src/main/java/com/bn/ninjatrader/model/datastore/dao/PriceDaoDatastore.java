@@ -5,7 +5,7 @@ import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.datastore.dao.operation.DatastoreFindPricesOperation;
 import com.bn.ninjatrader.model.datastore.dao.operation.DatastoreSavePricesOperation;
 import com.bn.ninjatrader.model.datastore.document.PriceDocument;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

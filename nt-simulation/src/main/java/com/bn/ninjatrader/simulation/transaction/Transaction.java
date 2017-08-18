@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
@@ -26,7 +27,7 @@ import java.time.LocalDate;
     @JsonSubTypes.Type(value = BuyTransaction.class, name = "buy"),
     @JsonSubTypes.Type(value = SellTransaction.class, name = "sell")
 })
-public abstract class Transaction {
+public abstract class Transaction implements Serializable {
 
   @JsonProperty("index")
   private final int barIndex; // Bar number. Used to calculate how many bars since last buy / sell.

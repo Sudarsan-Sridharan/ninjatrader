@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.service.model;
 
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.common.util.NtLocalDateDeserializer;
 import com.bn.ninjatrader.common.util.NtLocalDateSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

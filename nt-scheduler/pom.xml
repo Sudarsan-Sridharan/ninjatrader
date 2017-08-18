@@ -14,7 +14,11 @@
     <dependencies>
         <dependency>
             <groupId>com.beachninja</groupId>
-            <artifactId>nt-service</artifactId>
+            <artifactId>nt-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.beachninja</groupId>
+            <artifactId>nt-service-client</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.transaction</groupId>

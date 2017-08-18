@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.scheduler.job;
 
-import com.bn.ninjatrader.dataimport.daily.PseTraderDailyPriceImporter;
+import com.bn.ninjatrader.common.rest.ImportQuotesRequest;
+import com.bn.ninjatrader.service.client.service.ImportQuotesClient;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -19,11 +20,11 @@ import java.time.ZoneId;
 public class ImportQuotesJob implements Job {
   private static final Logger LOG = LoggerFactory.getLogger(ImportQuotesJob.class);
 
-  private final PseTraderDailyPriceImporter quotesImporter;
+  private final ImportQuotesClient importQuotesClient;
 
   @Inject
-  public ImportQuotesJob(final PseTraderDailyPriceImporter quotesImporter) {
-    this.quotesImporter = quotesImporter;
+  public ImportQuotesJob(final ImportQuotesClient importQuotesClient) {
+    this.importQuotesClient = importQuotesClient;
   }
 
   @Override
@@ -32,10 +33,8 @@ public class ImportQuotesJob implements Job {
 
     LOG.info("Fire: {}", fireDate);
 
-    try {
-      quotesImporter.importData(fireDate);
-    } catch (final Exception e) {
-      LOG.warn(e.getMessage());
-    }
+    final ImportQuotesRequest req = ImportQuotesRequest.forDate(fireDate);
+
+    importQuotesClient.importQuotes(req);
   }
 }

@@ -1,4 +1,4 @@
-define(['jquery'], function ($) {
+define(['jquery', 'app/auth/token-auth'], function ($, TokenAuth) {
 
     var ajaxUrl = context.serviceHost + "/algorithms/";
 
@@ -8,13 +8,14 @@ define(['jquery'], function ($) {
     function AlgoClient() {
     }
 
-    AlgoClient.getAll = function() {
-        return $.get(ajaxUrl);
-    };
-
     AlgoClient.getAll = function(callback) {
         if (!cache.all) {
-            $.get(ajaxUrl).done(function(algorithms) {
+            $.ajax({
+                url: ajaxUrl,
+                type: 'GET',
+                contentType: 'application/json',
+                beforeSend: TokenAuth.addAuthHeaders
+            }).done(function(algorithms) {
                 cache.all = algorithms;
                 callback(cache.all);
             });
@@ -24,7 +25,12 @@ define(['jquery'], function ($) {
     };
 
     AlgoClient.getById = function(algoId) {
-        return $.get(ajaxUrl + algoId);
+        return $.ajax({
+            url: ajaxUrl + algoId,
+            type: 'GET',
+            contentType: 'application/json',
+            beforeSend: TokenAuth.addAuthHeaders
+        })
     };
 
     AlgoClient.save = function(jsonObj) {
@@ -33,7 +39,8 @@ define(['jquery'], function ($) {
             type: 'POST',
             contentType: 'application/json',
             dataType: 'json',
-            data: JSON.stringify(jsonObj)
+            data: JSON.stringify(jsonObj),
+            beforeSend: TokenAuth.addAuthHeaders
         });
     };
 
@@ -42,7 +49,8 @@ define(['jquery'], function ($) {
             url: ajaxUrl + algoId,
             type: 'DELETE',
             contentType: 'application/json',
-            dataType: 'json'
+            dataType: 'json',
+            beforeSend: TokenAuth.addAuthHeaders
         });
     };
 

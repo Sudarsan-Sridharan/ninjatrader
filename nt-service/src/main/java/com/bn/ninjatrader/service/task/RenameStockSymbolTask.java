@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response;
  */
 @Singleton
 @Produces(MediaType.APPLICATION_JSON)
-@Path("/task/rename-stock-symbol")
+@Path("/tasks/rename-stock-symbol")
 public class RenameStockSymbolTask {
   private static final Logger LOG = LoggerFactory.getLogger(RenameStockSymbolTask.class);
   public static final String ERROR_FROM_PARAM_REQUIRED = "\"from\" parameter is required.";

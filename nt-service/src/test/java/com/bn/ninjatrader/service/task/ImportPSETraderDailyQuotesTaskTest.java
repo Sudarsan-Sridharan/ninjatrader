@@ -1,18 +1,19 @@
 package com.bn.ninjatrader.service.task;
 
+import com.bn.ninjatrader.common.model.DailyQuote;
+import com.bn.ninjatrader.common.rest.ImportQuotesRequest;
 import com.bn.ninjatrader.dataimport.daily.PseTraderDailyPriceImporter;
-import com.bn.ninjatrader.event.handler.MessageHandler;
-import com.bn.ninjatrader.model.entity.DailyQuote;
+import com.bn.ninjatrader.messaging.listener.MessageListener;
 import com.bn.ninjatrader.model.util.TestUtil;
 import com.bn.ninjatrader.service.event.EventTypes;
-import com.bn.ninjatrader.service.event.ImportedClosingPricesMessage;
-import com.bn.ninjatrader.service.model.ImportQuotesRequest;
+import com.bn.ninjatrader.service.event.message.ImportedFullPricesMessage;
 import com.bn.ninjatrader.service.util.EventIntegrationTest;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -41,28 +43,29 @@ public class ImportPSETraderDailyQuotesTaskTest extends EventIntegrationTest {
   private static final LocalDate now = LocalDate.of(2016, 2, 1);
   private static final PseTraderDailyPriceImporter importer = mock(PseTraderDailyPriceImporter.class);
   private static final Clock clock = TestUtil.fixedClock(now);
-  private static final MessageHandler messageHandler = mock(MessageHandler.class);
+  private static final MessageListener messageListener = mock(MessageListener.class);
 
-  @Override
-  protected Application configure() {
-    final ResourceConfig resourceConfig = (ResourceConfig) super.configure();
+  private static ResourceConfig resourceConfig;
+
+  @BeforeClass
+  public static void beforeClass() {
+    final Multimap<String, MessageListener> subscribers = ArrayListMultimap.create();
+    subscribers.put(EventTypes.IMPORTED_FULL_PRICES, messageListener);
 
     final ImportPSETraderDailyQuotesTask resource = new ImportPSETraderDailyQuotesTask(importer, clock);
 
-    return resourceConfig.register(resource);
+    resourceConfig = integrateApplication(subscribers).register(resource);
   }
 
   @Override
-  public Multimap<String, MessageHandler> prepareSubscribers() {
-    Multimap<String, MessageHandler> subscribers = ArrayListMultimap.create();
-    subscribers.put(EventTypes.IMPORTED_FULL_PRICES, messageHandler);
-    return subscribers;
+  protected Application configure() {
+    return resourceConfig;
   }
 
   @Before
   public void before() {
     reset(importer);
-    reset(messageHandler);
+    reset(messageListener);
   }
 
   @Test
@@ -75,11 +78,11 @@ public class ImportPSETraderDailyQuotesTaskTest extends EventIntegrationTest {
     final ImportQuotesRequest request = new ImportQuotesRequest();
     request.setDates(Lists.newArrayList(date1, date2));
 
-    final Response response = target("/task/import-pse-trader-quotes")
+    final Response response = target("/tasks/import-pse-trader-quotes")
         .request()
         .post(Entity.json(request));
 
-    assertThat(response.getStatus() == OK.getStatusCode());
+    assertThat(response.getStatus()).isEqualTo(OK.getStatusCode());
 
     verify(importer).importData(captor.capture());
     assertThat(captor.getValue()).containsExactly(date1, date2);
@@ -89,11 +92,11 @@ public class ImportPSETraderDailyQuotesTaskTest extends EventIntegrationTest {
   public void testImportWithNoDateArg_shouldImportDataForToday() {
     final ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
 
-    final Response response = target("/task/import-pse-trader-quotes")
+    final Response response = target("/tasks/import-pse-trader-quotes")
         .request()
         .post(Entity.json(new ImportQuotesRequest()));
 
-    assertThat(response.getStatus() == OK.getStatusCode());
+    assertThat(response.getStatus()).isEqualTo(OK.getStatusCode());
 
     verify(importer).importData(captor.capture());
     assertThat(captor.getValue()).containsExactly(now);
@@ -101,8 +104,8 @@ public class ImportPSETraderDailyQuotesTaskTest extends EventIntegrationTest {
 
   @Test
   public void testImport_shouldSendImportEvent() {
-    final ArgumentCaptor<ImportedClosingPricesMessage> captor =
-        ArgumentCaptor.forClass(ImportedClosingPricesMessage.class);
+    final ArgumentCaptor<ImportedFullPricesMessage> captor =
+        ArgumentCaptor.forClass(ImportedFullPricesMessage.class);
 
     final ImportQuotesRequest request = new ImportQuotesRequest();
     request.setDates(Lists.newArrayList(now));
@@ -111,10 +114,10 @@ public class ImportPSETraderDailyQuotesTaskTest extends EventIntegrationTest {
 
     when(importer.importData(anyCollection())).thenReturn(Lists.newArrayList(expectedQuote));
 
-    target("/task/import-pse-trader-quotes").request().post(Entity.json(request));
+    target("/tasks/import-pse-trader-quotes").request().post(Entity.json(request));
 
     // Verify that message is sent and handled.
-    verify(messageHandler).handle(captor.capture());
+    verify(messageListener).onMessage(captor.capture(), any());
 
     // Verify payload contains expected quote
     assertThat(captor.getValue().getPayload()).containsExactly(expectedQuote);

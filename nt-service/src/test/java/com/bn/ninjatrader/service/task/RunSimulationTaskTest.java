@@ -66,7 +66,7 @@ public class RunSimulationTaskTest extends JerseyTest {
 
   @Test
   public void testRun_shouldReturnSimulationReport() {
-    final SimulationReport report = target("/task/simulation/run")
+    final SimulationReport report = target("/tasks/simulation/run")
         .queryParam("symbol", "MEG")
         .queryParam("algoId", "algoId")
         .request()
@@ -79,7 +79,7 @@ public class RunSimulationTaskTest extends JerseyTest {
 
   @Test
   public void testRunWithParams_shouldUseGivenParams() {
-    target("/task/simulation/run")
+    target("/tasks/simulation/run")
         .queryParam("symbol", "MEG")
         .queryParam("from", "20160101")
         .queryParam("to", "20161231")
@@ -99,13 +99,13 @@ public class RunSimulationTaskTest extends JerseyTest {
 
   @Test
   public void testRunWithNoInputSymbol_shouldReturn400Error() {
-    final Response response = target("/task/simulation/run").request().get();
+    final Response response = target("/tasks/simulation/run").request().get();
     assertThat(response.getStatus()).isEqualTo(400);
   }
 
   @Test
   public void testRunWithLowercaseSymbol_shouldConvertToUppercase() {
-    target("/task/simulation/run")
+    target("/tasks/simulation/run")
         .queryParam("symbol", "meg")
         .queryParam("algoId", "dtRKje03")
         .request().get();
@@ -118,7 +118,7 @@ public class RunSimulationTaskTest extends JerseyTest {
 
   @Test
   public void testRunWithNoInputAlgoId_shouldReturn400Error() {
-    final Response response = target("/task/simulation/run")
+    final Response response = target("/tasks/simulation/run")
         .queryParam("symbol", "MEG")
         .request().get();
     assertThat(response.getStatus()).isEqualTo(400);

@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.model;
 
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.simulation.data.BarData;
 import org.junit.Test;
 

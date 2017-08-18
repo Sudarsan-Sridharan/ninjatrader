@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.model.datastore.document;
 
 import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;

@@ -2,7 +2,7 @@ package com.bn.ninjatrader.simulation.order.executor;
 
 import com.bn.ninjatrader.common.boardlot.BoardLot;
 import com.bn.ninjatrader.common.boardlot.BoardLotTable;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
 import com.bn.ninjatrader.simulation.model.Portfolio;

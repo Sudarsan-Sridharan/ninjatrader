@@ -3,7 +3,7 @@ package com.bn.ninjatrader.model.mongo.dao;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.common.util.FixedList;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.model.mongo.annotation.PriceCollection;
 import com.bn.ninjatrader.model.mongo.dao.operation.MongoFindPricesOperation;
 import com.bn.ninjatrader.model.mongo.dao.operation.MongoRenameSymbolOperation;

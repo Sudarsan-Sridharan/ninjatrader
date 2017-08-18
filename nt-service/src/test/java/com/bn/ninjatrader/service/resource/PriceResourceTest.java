@@ -2,7 +2,7 @@ package com.bn.ninjatrader.service.resource;
 
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.model.util.TestUtil;
 import com.bn.ninjatrader.service.model.PriceResponse;
 import com.google.common.collect.Lists;

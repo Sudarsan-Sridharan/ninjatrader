@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.model.entity;
 
+import com.bn.ninjatrader.common.model.User;
 import com.bn.ninjatrader.common.util.IdGenerator;
 
 import javax.inject.Inject;

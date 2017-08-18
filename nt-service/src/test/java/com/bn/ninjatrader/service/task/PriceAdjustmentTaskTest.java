@@ -31,7 +31,7 @@ public class PriceAdjustmentTaskTest extends JerseyTest {
 
   private static final LocalDate now = LocalDate.of(2016, 2, 1);
   private static final LocalDate tomorrow = now.plusDays(1);
-  private static final String REST_URL = "/task/price-adjustment/run";
+  private static final String REST_URL = "/tasks/price-adjustment/run";
 
   @Captor
   private ArgumentCaptor<SimulationRequest> requestCaptor;
@@ -95,7 +95,7 @@ public class PriceAdjustmentTaskTest extends JerseyTest {
     final PriceAdjustmentRequest request = PriceAdjustmentRequest.builder()
         .symbol("MEG").to(tomorrow).script("script").build();
 
-    final Response response = target("/task/price-adjustment/run")
+    final Response response = target("/tasks/price-adjustment/run")
         .request()
         .post(Entity.json(request));
 

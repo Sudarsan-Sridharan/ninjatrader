@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.core;
 
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.simulation.algorithm.AlgorithmScript;
 import com.bn.ninjatrader.simulation.algorithm.ScriptRunner;
 import com.bn.ninjatrader.simulation.data.BarData;

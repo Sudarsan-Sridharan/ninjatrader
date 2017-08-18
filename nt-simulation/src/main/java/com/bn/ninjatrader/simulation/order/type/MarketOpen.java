@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.order.type;
 
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.google.common.base.MoreObjects;
 

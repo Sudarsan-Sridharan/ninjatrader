@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * Created by Brad on 7/26/16.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
 @BindingAnnotation
 public @interface Subscribers {
 }

@@ -2,11 +2,11 @@ package com.bn.ninjatrader.service.task;
 
 import com.bn.ninjatrader.common.util.DateUtil;
 import com.bn.ninjatrader.dataimport.daily.PseTraderDailyPriceImporter;
-import com.bn.ninjatrader.model.entity.DailyQuote;
+import com.bn.ninjatrader.common.model.DailyQuote;
 import com.bn.ninjatrader.service.annotation.Event;
 import com.bn.ninjatrader.service.annotation.Secured;
-import com.bn.ninjatrader.service.event.ImportedClosingPricesMessage;
-import com.bn.ninjatrader.service.model.ImportQuotesRequest;
+import com.bn.ninjatrader.service.event.message.ImportedFullPricesMessage;
+import com.bn.ninjatrader.common.rest.ImportQuotesRequest;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -23,19 +23,22 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.bn.ninjatrader.common.type.Role.ADMIN;
+
 /**
  * Imports PSE-Trader daily quotes to database and runs calculations for the day.
  *
  * To import daily quotes from PSE-Trader and store to database:
- * curl -X POST localhost:8080/task/import-pse-trader-quotes
+ * curl -X POST localhost:8080/tasks/import-pse-trader-quotes
  *
  * To import data for specific dates:
- * curl -X POST localhost:8080/task/import-pse-trader-quotes -d "date={}&date={}"
+ * curl -X POST localhost:8080/tasks/import-pse-trader-quotes -d "date={}&date={}"
  *
  * @author bradwee2000@gmail.com
  */
 @Singleton
-@Path("/task/import-pse-trader-quotes")
+@Secured(ADMIN)
+@Path("/tasks/import-pse-trader-quotes")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class ImportPSETraderDailyQuotesTask {
@@ -52,8 +55,7 @@ public class ImportPSETraderDailyQuotesTask {
   }
 
   @POST
-  @Secured
-  @Event(messageClass = ImportedClosingPricesMessage.class)
+  @Event(messageClass = ImportedFullPricesMessage.class)
   public Response execute(final ImportQuotesRequest req) {
     final List<LocalDate> dates = req == null ? Lists.newArrayList() : req.getDates();
 

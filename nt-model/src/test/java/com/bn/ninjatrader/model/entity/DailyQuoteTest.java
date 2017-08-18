@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.model.entity;
 
+import com.bn.ninjatrader.common.model.DailyQuote;
 import com.google.common.collect.Sets;
 import org.junit.Test;
 import org.slf4j.Logger;

@@ -2,7 +2,7 @@ package com.bn.ninjatrader.process.adjustment;
 
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import groovy.lang.GroovyShell;

@@ -2,7 +2,7 @@ package com.bn.ninjatrader.model.util;
 
 import com.bn.ninjatrader.common.util.DateUtil;
 import com.bn.ninjatrader.model.deprecated.Value;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;

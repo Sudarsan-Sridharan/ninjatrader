@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.model.mongo.dao;
 
 import com.bn.ninjatrader.model.dao.UserDao;
-import com.bn.ninjatrader.model.entity.User;
+import com.bn.ninjatrader.common.model.User;
 import com.bn.ninjatrader.model.mongo.annotation.UserCollection;
 import com.bn.ninjatrader.model.mongo.document.MongoUserDocument;
 import com.bn.ninjatrader.model.mongo.util.Queries;

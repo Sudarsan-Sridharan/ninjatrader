@@ -20,7 +20,7 @@ import java.time.LocalDate;
  * @author bradwee2000@gmail.com
  */
 @Singleton
-@Path("/task/import-pse-quotes")
+@Path("/tasks/import-pse-quotes")
 public class ImportPSEDailyQuotesTask {
   private static final Logger LOG = LoggerFactory.getLogger(ImportPSEDailyQuotesTask.class);
 

@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.binding;
 
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.simulation.data.DataMap;
 import com.bn.ninjatrader.simulation.logic.Variables;
 import com.google.common.base.MoreObjects;

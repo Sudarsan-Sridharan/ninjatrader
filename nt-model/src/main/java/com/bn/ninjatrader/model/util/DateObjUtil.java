@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.model.util;
 
-import com.bn.ninjatrader.model.entity.DateObj;
+import com.bn.ninjatrader.common.model.DateObj;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

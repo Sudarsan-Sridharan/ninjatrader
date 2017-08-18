@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.service.resource;
 
 import com.bn.ninjatrader.model.dao.UserDao;
-import com.bn.ninjatrader.model.entity.User;
+import com.bn.ninjatrader.common.model.User;
 import com.bn.ninjatrader.model.entity.UserFactory;
 import com.bn.ninjatrader.service.model.CreateUserRequest;
 import org.glassfish.jersey.server.ResourceConfig;

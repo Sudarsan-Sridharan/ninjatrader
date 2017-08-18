@@ -1,17 +1,19 @@
 package com.bn.ninjatrader.thirdparty.psetrader;
 
-import com.bn.ninjatrader.model.entity.DailyQuote;
+import com.bn.ninjatrader.common.model.DailyQuote;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.fluent.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,6 +49,12 @@ public class PseTraderService {
             return pseTraderQuote.getDailyQuote();
           })
           .collect(Collectors.toList());
+    } catch (final HttpResponseException e) {
+      if (e.getStatusCode() == 404) {
+        LOG.warn("No quotes found for {}", date);
+        return Collections.emptyList();
+      }
+      throw new RuntimeException(e);
     } catch (final Exception e) {
       throw new RuntimeException(e);
     }

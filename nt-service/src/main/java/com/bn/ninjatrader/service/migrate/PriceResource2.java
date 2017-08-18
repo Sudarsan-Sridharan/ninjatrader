@@ -3,7 +3,7 @@
 //import com.bn.ninjatrader.common.type.TimeFrame;
 //import com.bn.ninjatrader.model.dao.PriceDao;
 //import com.bn.ninjatrader.model.datastore.dao.PriceDaoDatastore;
-//import com.bn.ninjatrader.model.entity.Price;
+//import com.bn.ninjatrader.common.model.Price;
 //import com.bn.ninjatrader.service.model.PriceRequest;
 //import com.bn.ninjatrader.service.model.PriceResponse;
 //import com.bn.ninjatrader.service.resource.AbstractDataResource;

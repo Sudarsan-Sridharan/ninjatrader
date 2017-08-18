@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.calculator.util;
 
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

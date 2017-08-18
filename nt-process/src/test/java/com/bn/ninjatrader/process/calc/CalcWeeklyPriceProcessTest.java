@@ -4,7 +4,7 @@ import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.calculator.WeeklyPriceCalculator;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.process.request.CalcRequest;
 import org.junit.Before;
 import org.junit.Test;

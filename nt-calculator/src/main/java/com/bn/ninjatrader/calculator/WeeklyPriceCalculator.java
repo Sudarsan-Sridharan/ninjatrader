@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.calculator;
 
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;

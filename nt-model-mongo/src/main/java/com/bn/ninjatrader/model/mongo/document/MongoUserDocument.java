@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.model.mongo.document;
 
 import com.bn.ninjatrader.common.type.Role;
-import com.bn.ninjatrader.model.entity.User;
+import com.bn.ninjatrader.common.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;

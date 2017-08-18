@@ -22,6 +22,10 @@
         </dependency>
         <dependency>
             <groupId>com.beachninja</groupId>
+            <artifactId>nt-cache-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.beachninja</groupId>
             <artifactId>nt-data-import</artifactId>
         </dependency>
         <dependency>
@@ -35,6 +39,14 @@
         <dependency>
             <groupId>com.beachninja</groupId>
             <artifactId>nt-process</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.beachninja</groupId>
+            <artifactId>nt-push</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.beachninja</groupId>
+            <artifactId>nt-queue</artifactId>
         </dependency>
         <dependency>
             <groupId>com.beachninja</groupId>
@@ -73,6 +85,11 @@
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-sse</artifactId>
+        </dependency>
+
 
         <!--Log-->
         <dependency>

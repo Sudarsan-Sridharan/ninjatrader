@@ -2,7 +2,7 @@ package com.bn.ninjatrader.process.adjustment;
 
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.model.mongo.document;
 
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.mongo.util.QueryParam;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

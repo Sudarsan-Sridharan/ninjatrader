@@ -3,7 +3,7 @@ package com.bn.ninjatrader.service.task;
 import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationRequest;
-import com.bn.ninjatrader.simulation.exception.AlgorithmIdNotFoundException;
+import com.bn.ninjatrader.simulation.exception.AlgorithmNotFoundException;
 import com.bn.ninjatrader.simulation.exception.ScriptCompileErrorException;
 import com.bn.ninjatrader.simulation.exception.VariableUnknownException;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
@@ -25,7 +25,7 @@ import java.time.format.DateTimeFormatter;
  * @author bradwee2000@gmail.com
  */
 @Singleton
-@Path("/task/simulation")
+@Path("/tasks/simulation")
 public class RunSimulationTask {
   private static final Logger LOG = LoggerFactory.getLogger(RunSimulationTask.class);
   private static final String ERROR_SYM_PARAM_REQUIRED = "Symbol parameter is required.";
@@ -75,7 +75,7 @@ public class RunSimulationTask {
 
       final SimulationReport report = simulation.play();
       return Response.ok(report).build();
-    } catch (final AlgorithmIdNotFoundException e) {
+    } catch (final AlgorithmNotFoundException e) {
       throw new BadRequestException(ERROR_ALGO_ID_NOT_FOUND);
     } catch (final ScriptCompileErrorException e) {
       return Response.ok(SimulationReport.builder().error(e.getMessage()).build()).build();

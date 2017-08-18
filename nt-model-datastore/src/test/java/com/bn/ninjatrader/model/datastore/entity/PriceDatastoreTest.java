@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.model.datastore.entity;
 
 import com.bn.ninjatrader.model.datastore.util.DummyObjectMapperProvider;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 

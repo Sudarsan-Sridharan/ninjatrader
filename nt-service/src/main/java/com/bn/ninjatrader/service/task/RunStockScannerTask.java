@@ -9,19 +9,26 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.*;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author bradwee2000@gmail.com
  */
 @Singleton
-@Path("/task/scanner")
+@Deprecated //TODO NO NEED FOR THIS? Maybe use scanner worker.
+@Path("/tasks/scanner")
 public class RunStockScannerTask {
   private static final Logger LOG = LoggerFactory.getLogger(RunStockScannerTask.class);
-  private static final int DEFAULT_DAYS = 4;
+  private static final int DEFAULT_DAYS = 1;
 
   private final StockScanner stockScanner;
 
@@ -41,7 +48,12 @@ public class RunStockScannerTask {
 
     final int numOfDays = days == 0 ? DEFAULT_DAYS : days;
 
-    final List<ScanResult> scanResults = stockScanner.scan(ScanRequest.withAlgoId(algoId).days(numOfDays));
+    final List<ScanResult> scanResults = stockScanner.scan(ScanRequest.withAlgoId(algoId).days(numOfDays))
+        .values()
+        .stream()
+        .sorted(Comparator.comparing(ScanResult::getSymbol))
+        .collect(Collectors.toList());
+
     return Response.ok(scanResults).build();
   }
 }

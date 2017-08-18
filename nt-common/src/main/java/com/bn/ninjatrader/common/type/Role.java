@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * @author bradwee2000@gmail.com
  */
 public enum Role {
+  SYSTEM("system"),
 
   ADMIN("admin"),
 

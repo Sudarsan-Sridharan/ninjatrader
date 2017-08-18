@@ -49,7 +49,7 @@ public class RenameStockSymbolTaskTest extends JerseyTest {
     req.setFrom("MEG");
     req.setTo("MEG2");
 
-    final Response response = target("/task/rename-stock-symbol/run")
+    final Response response = target("/tasks/rename-stock-symbol/run")
         .request()
         .post(Entity.json(req));
 

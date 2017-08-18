@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.service.filter;
 
-import com.bn.ninjatrader.event.Message;
-import com.bn.ninjatrader.event.dispatcher.MessageDispatcher;
+import com.bn.ninjatrader.event.message.Message;
+import com.bn.ninjatrader.event.dispatcher.MessagePublisher;
 import com.bn.ninjatrader.service.annotation.Event;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
@@ -28,17 +28,17 @@ public class EventDispatchFilter implements ContainerResponseFilter {
   @Context
   private ResourceInfo resourceInfo;
 
-  private final MessageDispatcher messageDispatcher;
+  private final MessagePublisher messageDispatcher;
 
   @Inject
-  public EventDispatchFilter(final MessageDispatcher messageDispatcher) {
+  public EventDispatchFilter(final MessagePublisher messageDispatcher) {
     this.messageDispatcher = messageDispatcher;
   }
 
   @Override
   public void filter(final ContainerRequestContext ctx, final ContainerResponseContext res) throws IOException {
     final Method method = resourceInfo.getResourceMethod();
-    if (!method.isAnnotationPresent(Event.class)) {
+    if (method == null || !method.isAnnotationPresent(Event.class)) {
       return;
     }
 
@@ -54,7 +54,7 @@ public class EventDispatchFilter implements ContainerResponseFilter {
     try {
       final Message message = (Message) event.messageClass().getConstructors()[0]
           .newInstance(payload);
-      messageDispatcher.dispatch(message);
+      messageDispatcher.publish(message);
     } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
       throw new RuntimeException(e);
     }

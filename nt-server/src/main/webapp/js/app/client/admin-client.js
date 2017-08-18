@@ -1,8 +1,8 @@
-define(['jquery', 'app/token/token-auth'], function ($, TokenAuth) {
+define(['jquery', 'app/auth/token-auth'], function ($, TokenAuth) {
 
-    var importQuotesRestUrl = context.serviceHost + "/task/import-pse-trader-quotes";
-    var adjustPricesRestUrl = context.serviceHost + "/task/price-adjustment/run";
-    var renameStockSymbolRestUrl = context.serviceHost + "/task/rename-stock-symbol/run";
+    var importQuotesRestUrl = context.serviceHost + "/tasks/import-pse-trader-quotes";
+    var adjustPricesRestUrl = context.serviceHost + "/tasks/price-adjustment/run";
+    var renameStockSymbolRestUrl = context.serviceHost + "/tasks/rename-stock-symbol/run";
 
     function AdminClient() {}
 

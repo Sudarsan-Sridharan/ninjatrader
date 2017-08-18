@@ -14,6 +14,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * Marks that a method requires specific roles.
  * This is used in REST services.
  *
+ * @see com.bn.ninjatrader.service.filter.AuthorizationFilter
+ *
  * @author bradwee2000@gmail.com
  */
 @NameBinding

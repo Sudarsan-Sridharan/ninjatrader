@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.simulation.core;
 
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.BarProducer;
 import com.bn.ninjatrader.simulation.listener.BrokerListener;

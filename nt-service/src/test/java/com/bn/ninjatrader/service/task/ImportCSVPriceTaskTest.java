@@ -34,7 +34,7 @@ public class ImportCSVPriceTaskTest extends JerseyTest {
 
   @Test
   public void testImportCsvPrices_shouldImportPrices() throws Exception {
-    final Response response = target("/task/importcsvprice").request().post(Entity.form(new Form()));
+    final Response response = target("/tasks/importcsvprice").request().post(Entity.form(new Form()));
     assertThat(response.getStatus()).isEqualTo(204);
     verify(csvPriceImporter).importPrices();
   }

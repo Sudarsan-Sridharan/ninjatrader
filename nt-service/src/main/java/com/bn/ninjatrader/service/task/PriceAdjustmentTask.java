@@ -2,6 +2,7 @@ package com.bn.ninjatrader.service.task;
 
 import com.bn.ninjatrader.process.adjustment.PriceAdjustmentRequest;
 import com.bn.ninjatrader.process.adjustment.PriceAdjustmentService;
+import com.bn.ninjatrader.service.annotation.Secured;
 import com.bn.ninjatrader.service.exception.Exceptions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -15,12 +16,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import static com.bn.ninjatrader.common.type.Role.ADMIN;
+
 /**
  * @author bradwee2000@gmail.com
  */
 @Singleton
+@Secured(ADMIN)
 @Produces(MediaType.APPLICATION_JSON)
-@Path("/task/price-adjustment")
+@Path("/tasks/price-adjustment")
 public class PriceAdjustmentTask {
   private static final Logger LOG = LoggerFactory.getLogger(PriceAdjustmentTask.class);
   public static final String ERROR_SYM_PARAM_REQUIRED = "\"symbol\" parameter is required.";

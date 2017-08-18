@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.calculator.parameter;
 
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.model.deprecated.Value;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.model.dao;
 
-import com.bn.ninjatrader.model.entity.Algorithm;
+import com.bn.ninjatrader.common.model.Algorithm;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,11 +12,23 @@ public interface AlgorithmDao {
 
   Algorithm save(final Algorithm algorithm);
 
-  List<Algorithm> findByUserId(final String userId);
+  FindAlgorithmsOperation findAlgorithms();
 
-  Optional<Algorithm> findByAlgorithmId(final String algoId);
+  Optional<Algorithm> findOneByAlgorithmId(final String algoId);
 
   void delete(final String algoId);
 
   void delete(final String userId, final String algoId);
+
+  /**
+   * Builder interface for finding Algorithms
+   */
+  interface FindAlgorithmsOperation {
+
+    FindAlgorithmsOperation withUserId(final String userId);
+
+    FindAlgorithmsOperation isAutoScan(final boolean isAutoScan);
+
+    List<Algorithm> now();
+  }
 }

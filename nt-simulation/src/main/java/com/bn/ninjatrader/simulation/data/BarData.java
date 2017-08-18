@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.simulation.data;
 
 import com.bn.ninjatrader.simulation.logic.Variable;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.simulation.model.SimulationContext;
 import com.google.common.base.MoreObjects;
 

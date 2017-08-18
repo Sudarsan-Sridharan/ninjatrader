@@ -2,7 +2,7 @@ package com.bn.ninjatrader.process.adjustment;
 
 import com.bn.ninjatrader.common.util.BasicIsoLocalDateDeserializer;
 import com.bn.ninjatrader.common.util.BasicIsoLocalDateSerializer;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

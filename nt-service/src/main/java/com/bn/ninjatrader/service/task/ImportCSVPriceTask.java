@@ -16,7 +16,7 @@ import javax.ws.rs.Path;
  * @author bradwee2000@gmail.com
  */
 @Singleton
-@Path("/task/importcsvprice")
+@Path("/tasks/importcsvprice")
 public class ImportCSVPriceTask {
 
   private static final Logger LOG = LoggerFactory.getLogger(ImportCSVPriceTask.class);

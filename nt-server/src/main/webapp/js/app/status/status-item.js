@@ -17,20 +17,21 @@ define(['jquery'], function ($) {
     }
 
     StatusItem.prototype.show = function(msg) {
+        clearTimeout(this.timeoutId);
+        this.container.show();
         if (msg) {
             this.msg(msg);
         }
+
         this.parentContainer.append(this.container);
         return this;
     };
 
     StatusItem.prototype.quickShow = function(msg) {
-        if (msg) {
-            this.msg(msg);
-        }
-        this.parentContainer.append(this.container);
+        this.show(msg);
+
         var that = this;
-        setTimeout(function() {
+        this.timeoutId = setTimeout(function() {
             that.remove();
         }, 4000);
         return this;

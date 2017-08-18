@@ -2,8 +2,8 @@ package com.bn.ninjatrader.dataimport.daily;
 
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.entity.DailyQuote;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.DailyQuote;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.thirdparty.investagrams.InvestagramsService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

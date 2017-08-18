@@ -2,7 +2,7 @@ package com.bn.ninjatrader.calculator;
 
 import com.beust.jcommander.internal.Lists;
 import com.bn.ninjatrader.model.deprecated.Value;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import mockit.Tested;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

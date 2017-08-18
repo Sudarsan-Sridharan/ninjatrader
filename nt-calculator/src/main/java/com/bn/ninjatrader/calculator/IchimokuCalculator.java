@@ -3,7 +3,7 @@ package com.bn.ninjatrader.calculator;
 import com.bn.ninjatrader.calculator.parameter.IchimokuParameters;
 import com.bn.ninjatrader.model.deprecated.Ichimoku;
 import com.bn.ninjatrader.model.deprecated.Value;
-import com.bn.ninjatrader.model.entity.Price;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.model.util.DateObjUtil;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
