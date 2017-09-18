@@ -1,15 +1,15 @@
 package com.bn.ninjatrader.simulation.core;
 
-import com.bn.ninjatrader.common.type.TimeFrame;
-import com.bn.ninjatrader.simulation.logic.Variable;
-import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.common.model.Price;
+import com.bn.ninjatrader.common.type.TimeFrame;
+import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 import com.bn.ninjatrader.simulation.binding.BindingFactory;
 import com.bn.ninjatrader.simulation.binding.BindingProvider;
 import com.bn.ninjatrader.simulation.data.BarProducer;
-import com.bn.ninjatrader.simulation.model.SimulationContext;
+import com.bn.ninjatrader.simulation.logic.Variable;
 import com.bn.ninjatrader.simulation.model.SimContextFactory;
+import com.bn.ninjatrader.simulation.model.SimulationContext;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
@@ -29,33 +29,35 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Singleton
 public class SimulationFactory {
   private static final Logger LOG = LoggerFactory.getLogger(SimulationFactory.class);
+  private static final String NULL_REQUEST_ERROR = "SimulationRequest must not be null.";
+  private static final String NULL_ALGORITHM_ERROR = "SimulationRequest.algorithmScript must not be null";
 
   private final PriceDao priceDao;
-  private final BindingFactory varCalculatorFactory;
+  private final BindingFactory bindingFactory;
   private final SimContextFactory simContextFactory;
   private final Clock clock;
 
   @Inject
-  public SimulationFactory(final BindingFactory varCalculatorFactory,
+  public SimulationFactory(final BindingFactory bindingFactory,
                            final PriceDao priceDao,
                            final SimContextFactory simContextFactory,
                            final Clock clock) {
     this.priceDao = priceDao;
-    this.varCalculatorFactory = varCalculatorFactory;
+    this.bindingFactory = bindingFactory;
     this.simContextFactory = simContextFactory;
     this.clock = clock;
   }
 
   public Simulation create(final SimulationRequest req) {
-    checkNotNull(req, "SimulationRequest must not be null.");
-    checkNotNull(req.getAlgorithmScript(), "SimulationRequest.algorithmScript must not be null");
+    checkNotNull(req, NULL_REQUEST_ERROR);
+    checkNotNull(req.getAlgorithmScript(), NULL_ALGORITHM_ERROR);
 
     // Set default values
     setRequestDefaultsIfNull(req);
 
     // Provides data for different variables
     final Collection<BindingProvider> bindingProviders =
-        varCalculatorFactory.createForVariables(req.getAlgorithmScript().getVariables());
+        bindingFactory.createBindingForVariables(req.getAlgorithmScript().getVariables());
 
     // Producer for bars
     final BarProducer barProducer = new BarProducer(bindingProviders);

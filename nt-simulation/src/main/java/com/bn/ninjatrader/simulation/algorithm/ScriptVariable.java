@@ -4,10 +4,12 @@ import com.bn.ninjatrader.simulation.logic.Variable;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
+import java.io.Serializable;
+
 /**
  * @author bradwee2000@gmail.com
  */
-public class ScriptVariable {
+public class ScriptVariable implements Serializable {
 
     private static final String HISTORY_NAME_FORMAT = "%s[%s]";
     private static final String HISTORY_SAFE_NAME_FORMAT = "%s_$BARSAGO%s";
@@ -20,6 +22,13 @@ public class ScriptVariable {
     private final int barsAgo;
     private final String name;
     private final String safeName;
+
+    private ScriptVariable() {
+        this.variable = null;
+        this.barsAgo = 0;
+        this.name = null;
+        this.safeName = null;
+    }
 
     public ScriptVariable(final Variable variable, final int barsAgo) {
         this.variable = variable;

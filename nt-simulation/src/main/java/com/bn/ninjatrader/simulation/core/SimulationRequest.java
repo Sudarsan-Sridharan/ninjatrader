@@ -4,12 +4,13 @@ import com.bn.ninjatrader.simulation.algorithm.AlgorithmScript;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
  * @author bradwee2000@gmail.com
  */
-public class SimulationRequest {
+public class SimulationRequest implements Serializable {
 
   public static final SimulationRequest withSymbol(final String symbol) {
     return new SimulationRequest(symbol);
@@ -21,6 +22,8 @@ public class SimulationRequest {
   private LocalDate to;
   private AlgorithmScript algorithmScript;
   private boolean isDebug;
+
+  private SimulationRequest() {}
 
   private SimulationRequest(final String symbol) {
     this.symbol = symbol;

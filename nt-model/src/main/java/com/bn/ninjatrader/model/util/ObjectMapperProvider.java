@@ -6,10 +6,16 @@ import com.bn.ninjatrader.model.jackson.PriceSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author bradwee2000@gmail.com
@@ -20,15 +26,8 @@ public class ObjectMapperProvider {
 
   private static ObjectMapper OM;
 
-  private final PriceSerializer priceSerializer;
-  private final PriceDeserializer priceDeserializer;
-
   @Inject
-  public ObjectMapperProvider(final PriceSerializer priceSerializer,
-                              final PriceDeserializer priceDeserializer) {
-    this.priceSerializer = priceSerializer;
-    this.priceDeserializer = priceDeserializer;
-
+  public ObjectMapperProvider() {
     OM = createDefaultObjectMapper();
   }
 
@@ -37,12 +36,14 @@ public class ObjectMapperProvider {
   }
 
   private ObjectMapper createDefaultObjectMapper() {
-    final SimpleModule module = new SimpleModule()
-        .addSerializer(Price.class, priceSerializer)
-        .addDeserializer(Price.class, priceDeserializer);
-
     return new ObjectMapper()
-        .registerModule(module)
-        .registerModule(new GuavaModule());
+        .registerModule(new SimpleModule()
+            .addSerializer(Price.class, new PriceSerializer())
+            .addDeserializer(Price.class, new PriceDeserializer()))
+        .registerModule(new GuavaModule())
+        .registerModule(new JavaTimeModule()
+            .addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.BASIC_ISO_DATE))
+            .addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.BASIC_ISO_DATE))
+        );
   }
 }

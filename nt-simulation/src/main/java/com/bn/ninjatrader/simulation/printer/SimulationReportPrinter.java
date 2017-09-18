@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.simulation.printer;
 
 import com.bn.ninjatrader.common.util.NumUtil;
-import com.bn.ninjatrader.simulation.model.TradeStatistic;
+import com.bn.ninjatrader.simulation.model.stat.TradeStatistic;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
@@ -34,7 +34,6 @@ public class SimulationReportPrinter {
     LOG.info("# of Trades: {}", stats.getNumOfTrades());
     LOG.info("# of Wins: {} ({}%)", stats.getNumOfWins(), stats.getWinPcnt());
     LOG.info("# of Losses: {} ({}%)", stats.getNumOfLosses(), stats.getLossPcnt());
-    LOG.info("Win / Loss Ratio: {}", stats.getWinLoseRatio());
     LOG.info("Biggest Gain Amt: {} ({}%)", stats.getMaxGainTxn().getProfit(), NumUtil.toPercent(stats.getMaxGainTxn().getProfitPcnt()));
     LOG.info("Biggest Loss Amt: {} ({}%)", stats.getMaxLossTxn().getProfit(), NumUtil.toPercent(stats.getMaxLossTxn().getProfitPcnt()));
     LOG.info("Biggest % Gain: {} ({}%)", stats.getMaxPcntGainTxn().getProfit(), NumUtil.toPercent(stats.getMaxPcntGainTxn().getProfitPcnt()));

@@ -1,10 +1,11 @@
 package com.bn.ninjatrader.model.datastore.guice;
 
-import com.bn.ninjatrader.common.guice.NtClockModule;
+import com.bn.ninjatrader.model.dao.AlgorithmDao;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.model.dao.ReportDao;
+import com.bn.ninjatrader.model.dao.UserDao;
+import com.bn.ninjatrader.model.datastore.dao.AlgorithmDaoDatastore;
 import com.bn.ninjatrader.model.datastore.dao.PriceDaoDatastore;
-import com.bn.ninjatrader.model.datastore.dao.ReportDaoDatastore;
+import com.bn.ninjatrader.model.datastore.dao.UserDaoDatastore;
 import com.google.inject.AbstractModule;
 
 /**
@@ -14,8 +15,8 @@ public class NtModelDatastoreModule extends AbstractModule {
   
   @Override
   protected void configure() {
-    install(new NtClockModule());
+    bind(AlgorithmDao.class).to(AlgorithmDaoDatastore.class);
     bind(PriceDao.class).to(PriceDaoDatastore.class);
-    bind(ReportDao.class).to(ReportDaoDatastore.class);
+    bind(UserDao.class).to(UserDaoDatastore.class);
   }
 }

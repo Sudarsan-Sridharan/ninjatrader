@@ -6,11 +6,11 @@ import com.bn.ninjatrader.simulation.algorithm.ScriptRunner;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.data.BarProducer;
 import com.bn.ninjatrader.simulation.model.Account;
-import com.bn.ninjatrader.simulation.model.Bookkeeper;
 import com.bn.ninjatrader.simulation.model.Broker;
 import com.bn.ninjatrader.simulation.model.History;
-import com.bn.ninjatrader.simulation.model.Portfolio;
 import com.bn.ninjatrader.simulation.model.SimulationContext;
+import com.bn.ninjatrader.simulation.model.portfolio.Portfolio;
+import com.bn.ninjatrader.simulation.model.stat.TradeStatistic;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.google.common.collect.Lists;
 import org.junit.Before;
@@ -50,7 +50,7 @@ public class SimulationTest {
   private SimulationRequest simRequest;
   private Account account;
   private Portfolio portfolio;
-  private Bookkeeper bookkeeper;
+  private TradeStatistic tradeStatistic;
   private Broker broker;
   private BarProducer barProducer;
   private History history;
@@ -62,8 +62,8 @@ public class SimulationTest {
   @Before
   public void before() {
     account = mock(Account.class);
+    tradeStatistic = mock(TradeStatistic.class);
     portfolio = mock(Portfolio.class);
-    bookkeeper = mock(Bookkeeper.class);
     broker = mock(Broker.class);
     barProducer = mock(BarProducer.class);
     history = mock(History.class);
@@ -73,8 +73,8 @@ public class SimulationTest {
     simRequest = SimulationRequest.withSymbol("MEG")
         .startingCash(100000).from(date1).to(date2).algorithmScript(algorithm);
 
-    when(account.getBookkeeper()).thenReturn(bookkeeper);
     when(account.getPortfolio()).thenReturn(portfolio);
+    when(account.getTradeStatistic()).thenReturn(tradeStatistic);
     when(account.getLiquidCash()).thenReturn(100000d);
     when(portfolio.isEmpty()).thenReturn(true);
     when(barProducer.nextBar(anyString(), any(Price.class), any(SimulationContext.class))).thenReturn(bar1, bar2);

@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 public class BuyOrderExecutor extends OrderExecutor {
   private static final Logger LOG = LoggerFactory.getLogger(BuyOrderExecutor.class);
 
+  private BuyOrderExecutor() {}
+
   @Inject
   public BuyOrderExecutor(final BoardLotTable boardLotTable) {
     super(boardLotTable);
@@ -33,9 +35,8 @@ public class BuyOrderExecutor extends OrderExecutor {
 
   private BuyTransaction fulfillBuyOrder(final PendingOrder pendingOrder, final BarData barData) {
     final BuyOrder buyOrder = (BuyOrder) pendingOrder.getOrder();
-    final BarData submittedBarData = pendingOrder.getSubmittedBarData();
     final OrderType orderType = buyOrder.getOrderType();
-    final double boughtPrice = orderType.getFulfilledPrice(submittedBarData, barData);
+    final double boughtPrice = orderType.getFulfilledPrice(barData);
     final long numOfShares = getNumOfSharesCanBuyWithAmount(buyOrder.getCashAmount(), boughtPrice);
 
     final BuyTransaction txn = Transaction.buy()
@@ -45,9 +46,6 @@ public class BuyOrderExecutor extends OrderExecutor {
         .shares(numOfShares)
         .barIndex(barData.getIndex())
         .build();
-
-    barData.getSimulationContext().getAccount().addCash(-txn.getValue());
-    barData.getSimulationContext().getAccount().getPortfolio().add(txn);
 
     return txn;
   }

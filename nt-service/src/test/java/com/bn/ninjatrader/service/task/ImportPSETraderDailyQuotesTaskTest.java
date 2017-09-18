@@ -3,6 +3,7 @@ package com.bn.ninjatrader.service.task;
 import com.bn.ninjatrader.common.model.DailyQuote;
 import com.bn.ninjatrader.common.rest.ImportQuotesRequest;
 import com.bn.ninjatrader.dataimport.daily.PseTraderDailyPriceImporter;
+import com.bn.ninjatrader.messaging.Message;
 import com.bn.ninjatrader.messaging.listener.MessageListener;
 import com.bn.ninjatrader.model.util.TestUtil;
 import com.bn.ninjatrader.service.event.EventTypes;
@@ -12,6 +13,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -55,6 +57,11 @@ public class ImportPSETraderDailyQuotesTaskTest extends EventIntegrationTest {
     final ImportPSETraderDailyQuotesTask resource = new ImportPSETraderDailyQuotesTask(importer, clock);
 
     resourceConfig = integrateApplication(subscribers).register(resource);
+  }
+
+  @AfterClass
+  public static void afterClass() {
+    shutDown();
   }
 
   @Override
@@ -121,5 +128,23 @@ public class ImportPSETraderDailyQuotesTaskTest extends EventIntegrationTest {
 
     // Verify payload contains expected quote
     assertThat(captor.getValue().getPayload()).containsExactly(expectedQuote);
+  }
+
+  @Test
+  public void testImportViaGet_shouldImportTodayQuotes() throws InterruptedException {
+    final ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
+    final ArgumentCaptor<Message<List>> messageCaptor = ArgumentCaptor.forClass(Message.class);
+
+    final Response response = target("/tasks/import-pse-trader-quotes").request().get();
+
+    assertThat(response.getStatus()).isEqualTo(OK.getStatusCode());
+
+    verify(importer).importData(captor.capture());
+    assertThat(captor.getValue()).containsExactly(now);
+
+    Thread.sleep(100); // Give topic some time to
+
+    // Verify that message is sent and handled.
+    verify(messageListener).onMessage(messageCaptor.capture(), any());
   }
 }

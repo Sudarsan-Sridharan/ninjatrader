@@ -3,6 +3,7 @@ package com.bn.ninjatrader.common.boardlot;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import static com.bn.ninjatrader.common.boardlot.BoardLot.newLot;
  * Created by Brad on 8/18/16.
  */
 @Singleton
-public class BoardLotTable {
+public class BoardLotTable implements Serializable {
 
   private static final List<BoardLot> STANDARD_BOARD_LOTS = Collections.unmodifiableList(Lists.newArrayList(
       newLot().min(0.0001).max(0.0099).tick(0.0001).decimalPlaces(4).lot(1000000).build(),

@@ -47,7 +47,7 @@ public class BindingFactory {
     }
   }
 
-  public Set<BindingProvider> createForVariables(final Collection<Variable> variables) {
+  public Set<BindingProvider> createBindingForVariables(final Collection<Variable> variables) {
     variables.removeAll(excluded); // TODO, this is ugly, just add providers for each needed variable!!
     final Set<BindingProvider> set = new HashSet<>();
     for (final Variable variable : variables) {

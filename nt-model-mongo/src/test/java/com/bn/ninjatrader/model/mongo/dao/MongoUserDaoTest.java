@@ -4,7 +4,6 @@ import com.bn.ninjatrader.common.model.User;
 import com.bn.ninjatrader.model.mongo.guice.NtModelTestModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import org.jongo.ResultHandler;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -58,16 +57,22 @@ public class MongoUserDaoTest {
     // Verify fields are updated
     final User updatedUser = dao.findByUserId("test").get();
 
-    dao.getMongoCollection().findOne("{userId:\"test\"}").map((ResultHandler<User>) result -> {
-      LOG.info("LALALA: {}",  result.get("roles"));
-      return null;
-    });
-
     assertThat(updatedUser.getUsername()).isEqualTo("jd");
     assertThat(updatedUser.getFirstname()).isEqualTo("Mary");
     assertThat(updatedUser.getLastname()).isEqualTo("Jane");
     assertThat(updatedUser.getEmail()).isEqualTo("jh@email.com");
     assertThat(updatedUser.getWatchList()).containsExactly("MEG");
     assertThat(updatedUser.getRoles()).containsExactly(ADMIN);
+  }
+
+  @Test
+  public void testSaveWithNoUserId_shouldGenerateUserIdAndSave() {
+    final User user = User.builder().username("jd").firstname("John").lastname("Doe")
+        .email("jh@email.com").mobile("911").addToWatchList("MEG").addRole(ADMIN).build();
+
+    final User savedUser = dao.saveUser(user);
+
+    assertThat(savedUser.getUserId()).isNotEmpty();
+    assertThat(dao.findByUserId(savedUser.getUserId())).hasValue(savedUser);
   }
 }

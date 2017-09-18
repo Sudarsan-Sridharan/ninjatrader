@@ -27,6 +27,13 @@
             <artifactId>hazelcast-client</artifactId>
         </dependency>
 
+        <!--App Enginge-->
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-api-1.0-sdk</artifactId>
+            <version>${appengine.version}</version>
+        </dependency>
+
         <!--Archaius-->
         <dependency>
             <groupId>com.netflix.archaius</groupId>
@@ -48,8 +55,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.jmockit</groupId>
-            <artifactId>jmockit</artifactId>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

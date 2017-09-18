@@ -4,6 +4,7 @@ import com.bn.ninjatrader.common.util.NtLocalDateDeserializer;
 import com.bn.ninjatrader.common.util.NtLocalDateSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.MoreObjects;
@@ -19,27 +20,39 @@ import java.time.LocalDate;
 public class DailyQuote implements Serializable {
   private static final long serialVersionUID = 1L;
 
+  @JsonProperty("s")
   private String symbol;
 
   @JsonSerialize(using = NtLocalDateSerializer.class)
   @JsonDeserialize(using = NtLocalDateDeserializer.class)
+  @JsonProperty("d")
   private LocalDate date;
+
+  @JsonProperty("o")
   private double open;
+
+  @JsonProperty("h")
   private double high;
+
+  @JsonProperty("l")
   private double low;
+
+  @JsonProperty("c")
   private double close;
+
+  @JsonProperty("v")
   private long volume;
 
   public DailyQuote() {}
 
-  public DailyQuote(final String symbol,
+  public DailyQuote(@JsonProperty("s") final String symbol,
                     @JsonDeserialize(using = NtLocalDateDeserializer.class)
-                    LocalDate date,
-                    double open,
-                    double high,
-                    double low,
-                    double close,
-                    long volume) {
+                    @JsonProperty("d") LocalDate date,
+                    @JsonProperty("o") double open,
+                    @JsonProperty("h") double high,
+                    @JsonProperty("l") double low,
+                    @JsonProperty("c") double close,
+                    @JsonProperty("v") long volume) {
     this.symbol = symbol;
     this.date = date;
     this.open = open;
@@ -51,6 +64,10 @@ public class DailyQuote implements Serializable {
 
   public String getSymbol() {
     return symbol;
+  }
+
+  public void setSymbol(String symbol) {
+    this.symbol = symbol;
   }
 
   public LocalDate getDate() {
@@ -65,20 +82,40 @@ public class DailyQuote implements Serializable {
     return open;
   }
 
+  public void setOpen(double open) {
+    this.open = open;
+  }
+
   public double getHigh() {
     return high;
+  }
+
+  public void setHigh(double high) {
+    this.high = high;
   }
 
   public double getLow() {
     return low;
   }
 
+  public void setLow(double low) {
+    this.low = low;
+  }
+
   public double getClose() {
     return close;
   }
 
+  public void setClose(double close) {
+    this.close = close;
+  }
+
   public long getVolume() {
     return volume;
+  }
+
+  public void setVolume(long volume) {
+    this.volume = volume;
   }
 
   @Override

@@ -1,9 +1,11 @@
 package com.bn.ninjatrader.simulation.model;
 
+import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.simulation.core.SimulationRequest;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.listener.BrokerListener;
+import com.bn.ninjatrader.simulation.model.portfolio.Portfolio;
 import com.bn.ninjatrader.simulation.order.BuyOrder;
 import com.bn.ninjatrader.simulation.order.OrderConfig;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
@@ -14,7 +16,6 @@ import com.bn.ninjatrader.simulation.order.executor.SellOrderExecutor;
 import com.bn.ninjatrader.simulation.order.processor.BuyOrderRequestProcessor;
 import com.bn.ninjatrader.simulation.order.processor.OrderRequestProcessor;
 import com.bn.ninjatrader.simulation.order.processor.SellOrderRequestProcessor;
-import com.bn.ninjatrader.simulation.order.request.OrderRequestFactory;
 import com.bn.ninjatrader.simulation.order.type.OrderTypes;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
@@ -56,7 +57,7 @@ public class BrokerTest {
   private BrokerListener brokerListener;
   private BarData barData;
   private SimulationContext simulationContext;
-  private OrderRequestFactory orderRequestFactory;
+  private BoardLotTable boardLotTable;
 
   private Map<TransactionType, OrderExecutor> orderExecutors;
   private Map<TransactionType, OrderRequestProcessor> orderRequestProcessors;
@@ -67,12 +68,12 @@ public class BrokerTest {
     account = mock(Account.class);
     simulationContext = mock(SimulationContext.class);
     barData = mock(BarData.class);
-    orderRequestFactory = mock(OrderRequestFactory.class);
     buyOrderExecutor = mock(BuyOrderExecutor.class);
     sellOrderExecutor = mock(SellOrderExecutor.class);
     buyOrderRequestProcessor = mock(BuyOrderRequestProcessor.class);
     sellOrderRequestProcessor = mock(SellOrderRequestProcessor.class);
     brokerListener = mock(BrokerListener.class);
+    boardLotTable = mock(BoardLotTable.class);
 
     orderExecutors = Maps.newHashMap();
     orderExecutors.put(TransactionType.BUY, buyOrderExecutor);
@@ -82,7 +83,8 @@ public class BrokerTest {
     orderRequestProcessors.put(TransactionType.BUY, buyOrderRequestProcessor);
     orderRequestProcessors.put(TransactionType.SELL, sellOrderRequestProcessor);
 
-    broker = new Broker(orderExecutors, orderRequestProcessors, orderRequestFactory, mock(SimulationRequest.class));
+    broker = new Broker(orderExecutors, orderRequestProcessors, boardLotTable,
+        mock(SimulationRequest.class));
     broker.addListener(brokerListener);
 
     when(barData.getPrice()).thenReturn(price);

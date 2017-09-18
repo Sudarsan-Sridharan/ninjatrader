@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.simulation.order.processor;
 
 import com.bn.ninjatrader.simulation.data.BarData;
-import com.bn.ninjatrader.simulation.model.Portfolio;
+import com.bn.ninjatrader.simulation.model.portfolio.Portfolio;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.order.SellOrder;
 import com.bn.ninjatrader.simulation.order.request.OrderRequest;

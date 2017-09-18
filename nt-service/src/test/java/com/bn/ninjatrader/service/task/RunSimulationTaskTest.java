@@ -1,12 +1,12 @@
 package com.bn.ninjatrader.service.task;
 
+import com.bn.ninjatrader.simulation.algorithm.AlgorithmScript;
+import com.bn.ninjatrader.simulation.algorithm.AlgorithmService;
 import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationRequest;
-import com.bn.ninjatrader.simulation.model.TradeStatistic;
+import com.bn.ninjatrader.simulation.model.stat.EmptyTradeStatistic;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
-import com.bn.ninjatrader.simulation.algorithm.AlgorithmScript;
-import com.bn.ninjatrader.simulation.algorithm.AlgorithmService;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Before;
@@ -21,7 +21,12 @@ import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
@@ -54,7 +59,7 @@ public class RunSimulationTaskTest extends JerseyTest {
     simulationReport = SimulationReport.builder()
         .startingCash(100_000)
         .endingCash(200_000)
-        .tradeStatistics(new TradeStatistic())
+        .tradeStatistics(EmptyTradeStatistic.instance())
         .build();
 
     final Simulation simulation = mock(Simulation.class);

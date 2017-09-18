@@ -36,7 +36,7 @@ import static java.util.Comparator.comparing;
 @Produces(MediaType.APPLICATION_JSON)
 public class ScanResource {
   private static final Logger LOG = LoggerFactory.getLogger(ScanResource.class);
-  private static final int DEFAULT_TIMEOUT_SECONDS = 10;
+  private static final int DEFAULT_TIMEOUT_SECONDS = 15;
 
   private final ScanResultStore scanResultStore;
   private final Clock clock;

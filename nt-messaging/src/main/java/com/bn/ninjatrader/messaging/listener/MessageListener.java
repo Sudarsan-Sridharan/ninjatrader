@@ -1,5 +1,7 @@
 package com.bn.ninjatrader.messaging.listener;
 
+import com.bn.ninjatrader.messaging.Message;
+
 import java.time.LocalDateTime;
 
 /**
@@ -12,5 +14,5 @@ public interface MessageListener<T> {
    * @param message Message object
    * @param publishTime time message was published
    */
-  void onMessage(T message, LocalDateTime publishTime);
+  void onMessage(Message<T> message, LocalDateTime publishTime);
 }

@@ -4,13 +4,15 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
+import java.io.Serializable;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * @author bradwee2000@gmail.com
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Variable {
+public class Variable implements Serializable {
 
   public static Variable of(final String dataType) {
     return new Variable(dataType);
@@ -19,6 +21,11 @@ public class Variable {
   private final String dataType;
 
   private final int period;
+
+  private Variable() {
+    this.dataType = null;
+    this.period = 0;
+  }
 
   public Variable(final String dataType) {
     this(dataType, 0);

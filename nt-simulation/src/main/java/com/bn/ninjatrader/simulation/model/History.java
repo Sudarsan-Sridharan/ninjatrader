@@ -3,8 +3,10 @@ package com.bn.ninjatrader.simulation.model;
 import com.bn.ninjatrader.common.util.FixedList;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.google.common.base.MoreObjects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import java.io.Serializable;
 import java.util.Optional;
 
 import static com.bn.ninjatrader.common.util.FixedList.TrimDirection.RIGHT_TO_LEFT;
@@ -12,13 +14,18 @@ import static com.bn.ninjatrader.common.util.FixedList.TrimDirection.RIGHT_TO_LE
 /**
  * Created by Brad on 8/22/16.
  */
-public class History {
+public class History implements Serializable {
+  private static final Logger LOG = LoggerFactory.getLogger(History.class);
 
   public static History withMaxSize(int maxSize) {
     return new History(maxSize);
   }
 
-  private final List<BarData> barDataList;
+  private final FixedList<BarData> barDataList;
+
+  private History() {
+    this.barDataList = null;
+  }
 
   private History(final int maxSize) {
     this.barDataList = FixedList.withMaxSizeAndTrimDirection(maxSize, RIGHT_TO_LEFT);

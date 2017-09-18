@@ -25,11 +25,7 @@ import static com.bn.ninjatrader.model.jackson.PriceAttributes.VOLUME;
 public class PriceSerializer extends StdSerializer<Price> {
 
   public PriceSerializer() {
-    this(Price.class);
-  }
-
-  public PriceSerializer(Class<Price> t) {
-    super(t);
+    super(Price.class);
   }
 
   @Override

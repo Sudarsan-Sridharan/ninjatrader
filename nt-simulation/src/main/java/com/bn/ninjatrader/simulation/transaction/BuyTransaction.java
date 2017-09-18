@@ -14,7 +14,7 @@ import java.time.LocalDate;
  */
 public class BuyTransaction extends Transaction {
 
-  static BuyTransactionLogBuilder create() {
+  public static BuyTransactionLogBuilder builder() {
     return new BuyTransactionLogBuilder();
   }
 

@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -32,7 +33,7 @@ import static com.bn.ninjatrader.common.type.Role.ADMIN;
  * curl -X POST localhost:8080/tasks/import-pse-trader-quotes
  *
  * To import data for specific dates:
- * curl -X POST localhost:8080/tasks/import-pse-trader-quotes -d "date={}&date={}"
+ * curl -X POST localhost:9000/tasks/import-pse-trader-quotes -d {\"dates\":[\"20170824\"]} -H "Content-Type: application/json" --cookie "au=XXX"
  *
  * @author bradwee2000@gmail.com
  */
@@ -54,6 +55,13 @@ public class ImportPSETraderDailyQuotesTask {
     this.clock = clock;
   }
 
+  @GET
+  @Event(messageClass = ImportedFullPricesMessage.class)
+  public Response importDailyQuotes() {
+    final List<LocalDate> dates = Lists.newArrayList(DateUtil.phNow(clock));
+    return importQuotesForDates(dates);
+  }
+
   @POST
   @Event(messageClass = ImportedFullPricesMessage.class)
   public Response execute(final ImportQuotesRequest req) {
@@ -63,9 +71,12 @@ public class ImportPSETraderDailyQuotesTask {
       dates.add(DateUtil.phNow(clock));
     }
 
+    return importQuotesForDates(dates);
+  }
+
+  private Response importQuotesForDates(final List<LocalDate> dates) {
     LOG.info("Processing dates: {}", dates);
     final List<DailyQuote> importedQuotes = importer.importData(dates);
-
     return Response.ok(importedQuotes).build();
   }
 }

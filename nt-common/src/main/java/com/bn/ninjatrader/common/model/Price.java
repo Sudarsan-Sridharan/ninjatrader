@@ -3,12 +3,13 @@ package com.bn.ninjatrader.common.model;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
  * @author bradwee2000@gmail.com
  */
-public class Price implements DateObj<Price> {
+public class Price implements DateObj<Price>, Serializable {
 
   public static final Builder builder() {
     return new Builder();
@@ -21,6 +22,8 @@ public class Price implements DateObj<Price> {
   private long volume;
   private double change;
   private LocalDate date;
+
+  private Price() {}
 
   public Price(final LocalDate date,
                final double open,

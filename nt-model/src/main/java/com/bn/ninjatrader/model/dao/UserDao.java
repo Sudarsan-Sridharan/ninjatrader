@@ -9,9 +9,9 @@ import java.util.Optional;
  */
 public interface UserDao {
 
-  void saveUser(final User user);
+  User saveUser(final User user);
 
   Optional<User> findByUserId(final String userId);
 
-  Optional<User> findByUsername(final String userId);
+  Optional<User> findByUsername(final String username);
 }

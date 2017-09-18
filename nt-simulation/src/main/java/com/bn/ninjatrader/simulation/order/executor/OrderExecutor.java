@@ -6,14 +6,18 @@ import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 
+import java.io.Serializable;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by Brad on 8/13/16.
  */
-public abstract class OrderExecutor {
+public abstract class OrderExecutor implements Serializable {
 
   private BoardLotTable boardLotTable;
+
+  protected OrderExecutor() {}
 
   public OrderExecutor(final BoardLotTable boardLotTable) {
     this.boardLotTable = boardLotTable;

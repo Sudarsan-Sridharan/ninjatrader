@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.simulation.report;
 
 import com.bn.ninjatrader.simulation.model.Mark;
-import com.bn.ninjatrader.simulation.model.TradeStatistic;
+import com.bn.ninjatrader.simulation.model.stat.TradeStatistic;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -42,6 +42,12 @@ public class SimulationReport {
   @JsonProperty("brokerLogs")
   private final List<String> brokerLogs;
 
+  @JsonProperty("profit")
+  private final double profit;
+
+  @JsonProperty("profitPcnt")
+  private final double profitPcnt;
+
   @JsonProperty("error")
   private final String error;
 
@@ -52,6 +58,8 @@ public class SimulationReport {
                           @JsonProperty("stats") final TradeStatistic tradeStatistic,
                           @JsonProperty("marks") final List<Mark> marks,
                           @JsonProperty("brokerLogs") final List<String> brokerLogs,
+                          @JsonProperty("profit") final double profit,
+                          @JsonProperty("profitPcnt") final double profitPcnt,
                           @JsonProperty("error") final String error) {
     this.symbol = symbol;
     this.startingCash = startingCash;
@@ -60,6 +68,8 @@ public class SimulationReport {
     this.tradeStatistic = tradeStatistic;
     this.marks = Lists.newArrayList(marks);
     this.brokerLogs = Lists.newArrayList(brokerLogs);
+    this.profit = profit;
+    this.profitPcnt = profitPcnt;
     this.error = error;
   }
 
@@ -91,6 +101,14 @@ public class SimulationReport {
     return brokerLogs;
   }
 
+  public double getProfit() {
+    return profit;
+  }
+
+  public double getProfitPcnt() {
+    return profitPcnt;
+  }
+
   public String getError() {
     return error;
   }
@@ -102,15 +120,19 @@ public class SimulationReport {
     SimulationReport that = (SimulationReport) o;
     return Double.compare(that.startingCash, startingCash) == 0 &&
         Double.compare(that.endingCash, endingCash) == 0 &&
+        Double.compare(that.profit, profit) == 0 &&
+        Double.compare(that.profitPcnt, profitPcnt) == 0 &&
         Objects.equal(symbol, that.symbol) &&
         Objects.equal(transactions, that.transactions) &&
         Objects.equal(tradeStatistic, that.tradeStatistic) &&
-        Objects.equal(marks, that.marks);
+        Objects.equal(marks, that.marks) &&
+        Objects.equal(brokerLogs, that.brokerLogs) &&
+        Objects.equal(error, that.error);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(symbol, startingCash, endingCash, transactions, tradeStatistic, marks);
+    return Objects.hashCode(symbol, startingCash, endingCash, transactions, tradeStatistic, marks, brokerLogs, profit, profitPcnt, error);
   }
 
   @Override
@@ -122,6 +144,10 @@ public class SimulationReport {
         .add("transactions", transactions)
         .add("tradeStatistic", tradeStatistic)
         .add("marks", marks)
+        .add("brokerLogs", brokerLogs)
+        .add("profit", profit)
+        .add("profitPcnt", profitPcnt)
+        .add("error", error)
         .toString();
   }
 
@@ -132,6 +158,8 @@ public class SimulationReport {
     private String symbol;
     private double startingCash;
     private double endingCash;
+    private double profit;
+    private double profitPcnt;
     private List<Transaction> transactions = Lists.newArrayList();
     private TradeStatistic tradeStatistic;
     private List<Mark> marks = Lists.newArrayList();
@@ -150,6 +178,16 @@ public class SimulationReport {
 
     public Builder endingCash(final double endingCash) {
       this.endingCash = endingCash;
+      return this;
+    }
+
+    public Builder profit(final double profit) {
+      this.profit = profit;
+      return this;
+    }
+
+    public Builder profitPcnt(final double profitPcnt) {
+      this.profitPcnt = profitPcnt;
       return this;
     }
 
@@ -200,7 +238,7 @@ public class SimulationReport {
 
     public SimulationReport build() {
       return new SimulationReport(symbol, startingCash, endingCash, transactions,
-          tradeStatistic, marks, brokerLogs, error);
+          tradeStatistic, marks, brokerLogs, profit, profitPcnt, error);
     }
   }
 }

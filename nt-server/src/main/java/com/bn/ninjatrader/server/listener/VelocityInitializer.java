@@ -1,5 +1,6 @@
 package com.bn.ninjatrader.server.listener;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.velocity.app.Velocity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,26 +15,19 @@ import java.util.Properties;
  * @author Brad
  */
 public class VelocityInitializer implements ServletContextListener {
-
   private static final Logger log = LoggerFactory.getLogger(VelocityInitializer.class);
 
   public void contextInitialized(ServletContextEvent event) {
-    Properties prop = new Properties();
-    InputStream is = VelocityInitializer.class.getResourceAsStream("/velocity.properties");
+    final Properties prop = new Properties();
+    final InputStream is = VelocityInitializer.class.getResourceAsStream("/velocity.properties");
     try {
       prop.load(is);
-
-      String logFile = event.getServletContext().getRealPath("/WEB-INF") + "/velocity.transaction";
-      log.info("logFile=" + logFile);
-      prop.setProperty("runtime.log", logFile);
-
-      log.info("Loaded velocity properties: " + prop);
-
       Velocity.init(prop);
       log.info("Initialized singleton velocity instance");
-
-    } catch (IOException e) {
+    } catch (final IOException e) {
       log.error(e.getMessage(), e);
+    } finally {
+      IOUtils.closeQuietly(is);
     }
   }
 

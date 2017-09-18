@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.event.dispatcher;
 
-import com.bn.ninjatrader.event.message.Message;
+import com.bn.ninjatrader.messaging.Message;
 
 /**
  * Handles dispatching messages to subscribers.

@@ -18,8 +18,8 @@ define(['jquery', 'require',
     }
 
     Dashboard.prototype.load = function()  {
-        this.panels.append(new ScannerPanel("1111").node())
-            .append(new ScannerPanel("2222").node())
+        this.panels.append(new ScannerPanel("1").node())
+            .append(new ScannerPanel("2").node())
             .append(new AdminPanel(this.status).node())
             .append(new AlgoListPanel(this.status).node());
     };

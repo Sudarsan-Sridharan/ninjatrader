@@ -4,17 +4,22 @@ import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.simulation.binding.BindingProvider;
 import com.bn.ninjatrader.simulation.model.SimulationContext;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
 /**
  * Created by Brad on 8/24/16.
  */
-public class BarProducer {
+public class BarProducer implements Serializable {
 
   private final Collection<BindingProvider> bindingProviders;
 
   private int index = 1;
+
+  private BarProducer() {
+    bindingProviders = null;
+  }
 
   public BarProducer(final Collection<BindingProvider> bindingProviders) {
     this.bindingProviders = bindingProviders;

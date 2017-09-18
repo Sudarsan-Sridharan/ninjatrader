@@ -10,12 +10,12 @@ import com.bn.ninjatrader.simulation.binding.SmaBindingProvider;
 import com.bn.ninjatrader.simulation.data.DataType;
 import com.bn.ninjatrader.simulation.model.BrokerFactory;
 import com.bn.ninjatrader.simulation.order.executor.BuyOrderExecutor;
+import com.bn.ninjatrader.simulation.order.executor.CleanupOrderExecutor;
 import com.bn.ninjatrader.simulation.order.executor.OrderExecutor;
 import com.bn.ninjatrader.simulation.order.executor.SellOrderExecutor;
 import com.bn.ninjatrader.simulation.order.processor.BuyOrderRequestProcessor;
 import com.bn.ninjatrader.simulation.order.processor.OrderRequestProcessor;
 import com.bn.ninjatrader.simulation.order.processor.SellOrderRequestProcessor;
-import com.bn.ninjatrader.simulation.order.request.OrderRequestFactory;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
 import com.google.common.collect.Maps;
 import com.google.inject.AbstractModule;
@@ -31,7 +31,6 @@ public class NtSimulationModule extends AbstractModule {
   @Override
   protected void configure() {
     install(new FactoryModuleBuilder().build(BrokerFactory.class));
-    install(new FactoryModuleBuilder().build(OrderRequestFactory.class));
   }
 
   @Provides
@@ -48,10 +47,12 @@ public class NtSimulationModule extends AbstractModule {
   @Provides
   @OrderExecutors
   private Map<TransactionType, OrderExecutor> provideOrderExecutors(final BuyOrderExecutor buyOrderExecutor,
-                                                                    final SellOrderExecutor sellOrderExecutor) {
+                                                                    final SellOrderExecutor sellOrderExecutor,
+                                                                    final CleanupOrderExecutor cleanupOrderExecutor) {
     final Map<TransactionType, OrderExecutor> orderExecutors = Maps.newHashMap();
     orderExecutors.put(TransactionType.BUY, buyOrderExecutor);
     orderExecutors.put(TransactionType.SELL, sellOrderExecutor);
+    orderExecutors.put(TransactionType.CLEANUP, cleanupOrderExecutor);
     return orderExecutors;
   }
 

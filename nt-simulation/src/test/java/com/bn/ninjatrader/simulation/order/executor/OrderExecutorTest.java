@@ -4,7 +4,7 @@ import com.bn.ninjatrader.common.boardlot.BoardLot;
 import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
-import com.bn.ninjatrader.simulation.model.Portfolio;
+import com.bn.ninjatrader.simulation.model.portfolio.Portfolio;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 import org.junit.Before;

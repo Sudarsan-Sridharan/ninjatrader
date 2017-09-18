@@ -35,7 +35,7 @@ define(['jquery', 'app/util/boardlot'], function ($, BoardLot) {
 
             tr.append('<td class="symbol">' + link + '</td>');
             tr.append('<td class="profit">' + profit + '</td>');
-            tr.append('<td class="txnType">' + txn.tnxType + '</td>');
+            tr.append('<td class="txnType">' + txn.txnType + '</td>');
             tr.append('<td class="date">' + txnDate + '</td>');
             tr.append('<td class="price">' + txn.price.toFixed(decimalPlaces) + '</td>');
 

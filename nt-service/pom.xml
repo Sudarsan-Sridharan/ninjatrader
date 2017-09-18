@@ -52,6 +52,10 @@
             <groupId>com.beachninja</groupId>
             <artifactId>nt-simulation</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.beachninja</groupId>
+            <artifactId>nt-worker</artifactId>
+        </dependency>
 
         <!--Servlet-->
         <dependency>

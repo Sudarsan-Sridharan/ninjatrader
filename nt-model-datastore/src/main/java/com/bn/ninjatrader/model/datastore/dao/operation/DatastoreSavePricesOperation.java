@@ -1,12 +1,10 @@
 package com.bn.ninjatrader.model.datastore.dao.operation;
 
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.datastore.document.PriceDocument;
-import com.bn.ninjatrader.common.model.Price;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.googlecode.objectify.Key;
 
@@ -43,6 +41,18 @@ public final class DatastoreSavePricesOperation implements PriceDao.SavePricesOp
     return this;
   }
 
+  public String getSymbol() {
+    return symbol;
+  }
+
+  public TimeFrame getTimeFrame() {
+    return timeFrame;
+  }
+
+  public Collection<Price> getPrices() {
+    return prices;
+  }
+
   @Override
   public void now() {
     // Organize prices by year
@@ -51,33 +61,29 @@ public final class DatastoreSavePricesOperation implements PriceDao.SavePricesOp
       pricesPerYear.put(price.getDate().getYear(), price);
     }
 
-    // For each year, create createKey
-    final List<Key<PriceDocument>> keys = Lists.newArrayList();
-    for (int year : pricesPerYear.keySet()) {
-      keys.add(createKey(symbol, year, timeFrame));
-    }
+    // For each year, create key for faster access in datastore
+    final List<Key<PriceDocument>> keys = pricesPerYear.keySet().stream()
+        .map(year -> createKey(symbol, year, timeFrame))
+        .collect(Collectors.toList());
 
     // Load documents where the prices belong
     final Map<Key<PriceDocument>, PriceDocument> documents = ofy().load().keys(keys);
 
     // Add prices to their respective documents
     for (int year : pricesPerYear.keySet()) {
-      final Key<PriceDocument> key = createKey(symbol, year, timeFrame);
+
       // Create new document if not existing
+      final Key<PriceDocument> key = createKey(symbol, year, timeFrame);
       if (documents.get(key) == null) {
         documents.put(key, new PriceDocument(symbol, year, timeFrame));
       }
 
-      // Add prices to document. Must not have duplicate dates. Existing date will be overwritten.
-      final Collection<Price> pricesToSave = pricesPerYear.get(year);
-      final Map<LocalDate, Price> docPrices = Maps.newHashMap();
-
       // Add document prices to a map, ensuring uniqueness by date.
-      for (final Price price : documents.get(key).getData()) {
-        docPrices.put(price.getDate(), price);
-      }
+      final Map<LocalDate, Price> docPrices = documents.get(key).getData().stream()
+          .collect(Collectors.toMap((price) -> price.getDate(), (price) -> price));
 
       // Add new prices to map, overwriting old prices of same date.
+      final Collection<Price> pricesToSave = pricesPerYear.get(year);
       for (final Price price : pricesToSave) {
         docPrices.put(price.getDate(), price);
       }

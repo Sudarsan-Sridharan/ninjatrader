@@ -1,12 +1,12 @@
 package com.bn.ninjatrader.simulation.core;
 
-import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.common.model.Price;
+import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.simulation.algorithm.AlgorithmScript;
 import com.bn.ninjatrader.simulation.binding.BindingFactory;
 import com.bn.ninjatrader.simulation.model.Broker;
-import com.bn.ninjatrader.simulation.model.SimulationContext;
 import com.bn.ninjatrader.simulation.model.SimContextFactory;
-import com.bn.ninjatrader.simulation.algorithm.AlgorithmScript;
+import com.bn.ninjatrader.simulation.model.SimulationContext;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +19,11 @@ import java.util.List;
 
 import static com.bn.ninjatrader.model.util.TestUtil.randomPrices;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.RETURNS_SELF;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 /**

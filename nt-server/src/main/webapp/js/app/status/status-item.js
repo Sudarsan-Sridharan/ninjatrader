@@ -5,25 +5,35 @@ define(['jquery'], function ($) {
         this.container = $('<div class="statusItem"></div>');
         this.statusMsg = $('<div class="msg">' + msg + '</div>');
         this.closeBtn = $('<div class="close">X</div>');
+        this.isReady = false;
 
         this.container.append(this.closeBtn);
         this.container.append(this.statusMsg);
 
-        // Close Button click
-        var that = this;
-        this.closeBtn.click(function() {
-            that.remove();
-        });
+
     }
 
     StatusItem.prototype.show = function(msg) {
+        // Cancel any timed fade out
         clearTimeout(this.timeoutId);
+
+        if (!this.isReady) {
+            this.isReady = true;
+
+            // Close Button click
+            var that = this;
+            this.closeBtn.click(function() {
+                that.remove();
+            });
+        }
+
+        // Show this container
         this.container.show();
         if (msg) {
             this.msg(msg);
         }
-
         this.parentContainer.append(this.container);
+
         return this;
     };
 
@@ -31,9 +41,8 @@ define(['jquery'], function ($) {
         this.show(msg);
 
         var that = this;
-        this.timeoutId = setTimeout(function() {
-            that.remove();
-        }, 4000);
+        this.timeoutId = setTimeout(function() { that.remove(); }, 4000);
+
         return this;
     };
 
@@ -43,8 +52,10 @@ define(['jquery'], function ($) {
     };
 
     StatusItem.prototype.remove = function() {
+        var that = this;
         this.container.fadeOut(200, function() {
             $(this).remove();
+            that.isReady = false;
         });
         return this;
     };

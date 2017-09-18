@@ -1,8 +1,9 @@
 package com.bn.ninjatrader.service.filter;
 
-import com.bn.ninjatrader.event.message.Message;
 import com.bn.ninjatrader.event.dispatcher.MessagePublisher;
+import com.bn.ninjatrader.messaging.Message;
 import com.bn.ninjatrader.service.annotation.Event;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -51,12 +53,26 @@ public class EventDispatchFilter implements ContainerResponseFilter {
 
     final Object payload = res.getEntity();
 
+    doPublishEventMessageWithPayload(event, payload);
+  }
+
+  private void doPublishEventMessageWithPayload(final Event event, final Object payload) {
+
+    // Find constructor that can accept the payload.
+    final Constructor constructor = findConstructor(event.messageClass());
+
     try {
-      final Message message = (Message) event.messageClass().getConstructors()[0]
-          .newInstance(payload);
+      final Message message = (Message) constructor.newInstance(payload);
       messageDispatcher.publish(message);
     } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private Constructor findConstructor(final Class messageClass) {
+    return Lists.newArrayList(messageClass.getConstructors()).stream()
+        .filter(c -> c.getParameterCount() == 1)
+        .findFirst()
+        .orElseThrow(() -> new IllegalStateException("Single parameter constructor that accepts message payload is not found."));
   }
 }

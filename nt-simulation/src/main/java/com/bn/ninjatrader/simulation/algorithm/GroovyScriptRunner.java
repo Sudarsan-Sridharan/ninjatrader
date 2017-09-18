@@ -20,6 +20,7 @@ import java.util.Set;
  * Script Runner
  */
 public class GroovyScriptRunner implements ScriptRunner {
+  private static final Logger LOG = LoggerFactory.getLogger(GroovyScriptRunner.class);
   private static final String ON_SIM_START_METHOD = "onSimulationStart";
   private static final String ON_SIM_END_METHOD = "onSimulationEnd";
   private static final String PROCESS_BAR_METHOD = "processBar";

@@ -23,7 +23,7 @@ public class MarketClose implements OrderType {
   }
 
   @Override
-  public double getFulfilledPrice(final BarData onSubmitBarData, final BarData currentBarData) {
+  public double getFulfilledPrice(final BarData currentBarData) {
     final Price price = currentBarData.getPrice();
     return price.getClose();
   }

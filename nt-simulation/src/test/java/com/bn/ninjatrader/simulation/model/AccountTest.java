@@ -1,13 +1,17 @@
 package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.simulation.data.BarData;
+import com.bn.ninjatrader.simulation.model.portfolio.Portfolio;
+import com.bn.ninjatrader.simulation.model.stat.TradeStatistic;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Brad on 8/23/16.
@@ -15,34 +19,21 @@ import static org.mockito.Mockito.*;
 public class AccountTest {
 
   private Account account;
-  private Bookkeeper bookkeeper;
   private TradeStatistic tradeStatistic;
   private Portfolio portfolio;
 
   @Before
   public void setup() {
-    bookkeeper = mock(Bookkeeper.class);
     tradeStatistic = mock(TradeStatistic.class);
     portfolio = mock(Portfolio.class);
 
-    account = new Account(portfolio, bookkeeper, tradeStatistic, 100000);
+    account = new Account(portfolio, tradeStatistic, 100000);
   }
 
   @Test
   public void testOnCreate_shouldSetDefaults() {
     assertThat(account.getLiquidCash()).isEqualTo(100000.0);
     assertThat(account.getProfit()).isEqualTo(0.0);
-  }
-
-  @Test
-  public void testAddCash_shouldAddCash() {
-    account.addCash(1000);
-    assertThat(account.getProfit()).isEqualTo(1000.0);
-    assertThat(account.getLiquidCash()).isEqualTo(101000.0);
-
-    account.addCash(-2000);
-    assertThat(account.getProfit()).isEqualTo(-1000.0);
-    assertThat(account.getLiquidCash()).isEqualTo(99000.0);
   }
 
   @Test
@@ -54,7 +45,11 @@ public class AccountTest {
 
     account.onFulfilledBuy(buyTxn, barData);
 
-    verify(bookkeeper).keep(buyTxn);
+    assertThat(account.getLiquidCash()).isEqualTo(90000d);
+    assertThat(account.getLiquidCash()).isEqualTo(90000d);
+
+    verify(tradeStatistic).collectStats(buyTxn);
+    verify(portfolio).add(buyTxn);
   }
 
   @Test
@@ -66,7 +61,20 @@ public class AccountTest {
 
     account.onFulfilledSell(sellTxn, barData);
 
-    verify(bookkeeper).keep(sellTxn);
+    assertThat(account.getLiquidCash()).isEqualTo(110000d);
+    assertThat(account.getProfit()).isEqualTo(10000d);
+
     verify(tradeStatistic).collectStats(sellTxn);
+  }
+
+  @Test
+  public void testCalcProfit_shouldIncludeUnsoldEquity() {
+    final BuyTransaction buyTxn = mock(BuyTransaction.class);
+    final BarData barData = mock(BarData.class);
+
+    when(buyTxn.getNumOfShares()).thenReturn(1000l);
+    when(buyTxn.getPrice()).thenReturn(10d);
+
+    account.onFulfilledBuy(buyTxn, barData);
   }
 }

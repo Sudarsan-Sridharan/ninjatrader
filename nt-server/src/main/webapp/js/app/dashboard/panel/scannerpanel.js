@@ -23,6 +23,8 @@ define(['jquery', 'require',
         this.actionBar.append(this.algoSelector).append(this.daySelector).append(this.scanButton);
         this.content.append(this.actionBar).append(this.scanResult);
 
+        this.scanResultsMap = [];
+
         this.id = id;
 
         this._init();
@@ -37,9 +39,6 @@ define(['jquery', 'require',
         this.disable();
         this._loadAlgorithms();
         this._initDaysSelector([1, 2, 3, 5, 7, 15, 30]);
-
-        // Connect to SSE server and listen.
-        this.sse.connect();
 
         // Initialize Scan button click
         this.scanButton.click(function() {
@@ -115,6 +114,7 @@ define(['jquery', 'require',
         this.scanButton.html("Scanning...");
 
         ScannerClient.scan(algoId, this.daySelector.val(), function(scanResult) {
+            that._mergeScanResults(scanResult);
             that._displayResults(scanResult, algoId);
             that.enable();
             that.scanButton.html("Scan");
@@ -125,7 +125,7 @@ define(['jquery', 'require',
         return this.container;
     };
 
-    ScannerPanel.prototype._displayResults = function(scanResults, algoId) {
+    ScannerPanel.prototype._displayResults = function(scanResults, algoId, highlightSymbols) {
         var table = $('<table cellpadding="0" cellspacing="0"></table>');
         var th = $("<tr><th>Symbol</th><th>1yr Profit</th><th>Action</th><th>Date</th><th>Price</th></tr>");
         table.append(th);
@@ -133,16 +133,21 @@ define(['jquery', 'require',
         for (var i in scanResults) {
             var result = scanResults[i];
             var txn = result.lastTxn;
-            var tr = $('<tr class="' + txn.type +'"></tr>');
+            var tr = $('<tr class="' + txn.txnType.toLowerCase() +'"></tr>');
             var link = '<a href="chart?&algoId=' + algoId + '&symbol=' + result.symbol + '" target="_blank">' + result.symbol + '</a>';
-
             var txnDate = this._formatDate(txn.dt);
             var profitPcnt = Math.round(result.profitPcnt * 10000) / 100.0 ; //Convert to "100.00%"
             var decimalPlaces = BoardLot.getDecimalPlaces(txn.price);
 
+            if ($.inArray(result.symbol, highlightSymbols) != -1) {
+                tr.addClass("new");
+            } else {
+                tr.removeClass("new");
+            }
+
             tr.append('<td class="symbol">' + link + '</td>');
             tr.append('<td class="profit">' + profitPcnt + '%</td>');
-            tr.append('<td class="txnType">' + txn.tnxType + '</td>');
+            tr.append('<td class="txnType">' + txn.txnType + '</td>');
             tr.append('<td class="date">' + txnDate + '</td>');
             tr.append('<td class="price">' + txn.price.toFixed(decimalPlaces) + '</td>');
 
@@ -155,15 +160,50 @@ define(['jquery', 'require',
         })
     };
 
+    /**
+     * Add listener to each algorithm once it's loaded.
+     */
     ScannerPanel.prototype._onAlgorithmsLoaded = function(algorithmIds) {
         var that = this;
         for (var i in algorithmIds) {
             var algorithmId = algorithmIds[i];
             this.sse.addListener(algorithmId, function (e) {
                 if (that.algoSelector.val() == e.type) {
-                    that._displayResults(JSON.parse(e.data), e.type);
+                    that._onNewUpdateReceived(JSON.parse(e.data), e.type);
                 }
             });
+        }
+    };
+
+    ScannerPanel.prototype._onNewUpdateReceived = function(newScanResults, algorithmId) {
+        this._mergeScanResults(newScanResults);
+
+        // Get new ScanResults to highlight
+        var highlightSymbols = [];
+        for (var i in newScanResults) {
+            highlightSymbols.push(newScanResults[i].symbol);
+        }
+
+        // Get all ScanResults
+        var scanResults = []
+        for (var i in this.scanResultsMap) {
+            scanResults.push(this.scanResultsMap[i]);
+        }
+
+        // Sort by symbols
+        scanResults.sort(function(a, b) {
+            return a.symbol.localeCompare(b.symbol);
+        });
+
+        console.log(highlightSymbols, scanResults);
+
+        this._displayResults(scanResults, algorithmId, highlightSymbols);
+    };
+
+    ScannerPanel.prototype._mergeScanResults = function(newScanResults) {
+        for (var i in newScanResults) {
+            var scanResult = newScanResults[i];
+            this.scanResultsMap[scanResult.symbol] = scanResult;
         }
     };
 

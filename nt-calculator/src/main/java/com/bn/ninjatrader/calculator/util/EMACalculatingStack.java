@@ -29,6 +29,11 @@ public class EMACalculatingStack extends FixedStack<Price> implements Calculatin
 
   private double emaValue = Double.NaN;
 
+  private EMACalculatingStack() {
+    this.multiplier = 0;
+    this.fixedSize = 0;
+  }
+
   private EMACalculatingStack(final int fixedSize) {
     super(fixedSize);
     this.fixedSize = fixedSize;

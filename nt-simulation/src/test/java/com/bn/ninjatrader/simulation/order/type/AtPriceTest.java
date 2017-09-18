@@ -23,30 +23,30 @@ public class AtPriceTest {
   private final AtPrice atPrice = new AtPrice(5);
 
   private BarData submittedBarData;
-  private BarData currentBarData;
+  private BarData currentBar;
 
   @Before
   public void before() {
     submittedBarData = mock(BarData.class);
-    currentBarData = mock(BarData.class);
+    currentBar = mock(BarData.class);
 
-    when(currentBarData.getPrice()).thenReturn(price);
+    when(currentBar.getPrice()).thenReturn(price);
   }
 
   @Test
   public void testIsFulfillable_shouldReturnTrueIfPriceBetweenHighAndLow() {
-    assertThat(AtPrice.of(1.999).isFulfillable(submittedBarData, currentBarData)).isFalse();
-    assertThat(AtPrice.of(5.00001).isFulfillable(submittedBarData, currentBarData)).isFalse();
-    assertThat(AtPrice.of(5).isFulfillable(submittedBarData, currentBarData)).isTrue();
-    assertThat(AtPrice.of(2).isFulfillable(submittedBarData, currentBarData)).isTrue();
-    assertThat(AtPrice.of(3.333).isFulfillable(submittedBarData, currentBarData)).isTrue();
+    assertThat(AtPrice.of(1.999).isFulfillable(submittedBarData, currentBar)).isFalse();
+    assertThat(AtPrice.of(5.00001).isFulfillable(submittedBarData, currentBar)).isFalse();
+    assertThat(AtPrice.of(5).isFulfillable(submittedBarData, currentBar)).isTrue();
+    assertThat(AtPrice.of(2).isFulfillable(submittedBarData, currentBar)).isTrue();
+    assertThat(AtPrice.of(3.333).isFulfillable(submittedBarData, currentBar)).isTrue();
   }
 
   @Test
   public void testGetFulfilledPrice_shouldReturnSetPriceIfFulfillable() {
-    assertThat(AtPrice.of(5).getFulfilledPrice(submittedBarData, currentBarData)).isEqualTo(5);
-    assertThat(AtPrice.of(2).getFulfilledPrice(submittedBarData, currentBarData)).isEqualTo(2);
-    assertThat(AtPrice.of(3.00001).getFulfilledPrice(submittedBarData, currentBarData)).isEqualTo(3.00001);
+    assertThat(AtPrice.of(5).getFulfilledPrice(currentBar)).isEqualTo(5);
+    assertThat(AtPrice.of(2).getFulfilledPrice(currentBar)).isEqualTo(2);
+    assertThat(AtPrice.of(3.00001).getFulfilledPrice(currentBar)).isEqualTo(3.00001);
   }
 
   @Test

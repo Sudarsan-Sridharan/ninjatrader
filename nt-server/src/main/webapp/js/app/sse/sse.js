@@ -9,7 +9,7 @@ define(['jquery', 'require',
 
     var isConnected = false; // Allow only 1 connection
     var eventSource;
-    var sseUrl = context.serviceHost + "/sse";
+    var sseUrl = context.serviceHost + "/scan";
     var status;
     var statusItem;
 
@@ -18,6 +18,8 @@ define(['jquery', 'require',
         statusItem = status.newStatusItem();
         this.connectDelaySeconds = 1;
     }
+
+
 
     // Connect to SSE Server
     Sse.prototype.connect = function() {

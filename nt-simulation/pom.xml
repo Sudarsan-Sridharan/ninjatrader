@@ -25,6 +25,10 @@
             <artifactId>nt-model-mongo</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.beachninja</groupId>
+            <artifactId>nt-worker</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.inject.extensions</groupId>
             <artifactId>guice-assistedinject</artifactId>
         </dependency>

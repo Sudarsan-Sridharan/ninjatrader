@@ -26,6 +26,16 @@ public class SellOrder extends AbstractOrder {
    * Builder class.
    */
   public static class Builder extends OrderBuilder<Builder> {
+
+    public Builder copyFrom(final Order source) {
+      date(source.getOrderDate());
+      symbol(source.getSymbol());
+      type(source.getOrderType());
+      config(source.getOrderConfig());
+      shares(source.getNumOfShares());
+      return this;
+    }
+
     @Override
     Builder getThis() {
       return this;

@@ -1,15 +1,15 @@
 package com.bn.ninjatrader.service.dropwizard;
 
-import com.bn.ninjatrader.cache.client.CacheClient;
+import com.bn.ninjatrader.cache.client.api.CacheClient;
 import com.bn.ninjatrader.messaging.MessagingClient;
-import com.bn.ninjatrader.queue.QueueClient;
+import com.bn.ninjatrader.model.mongo.guice.NtModelMongoModule;
 import com.bn.ninjatrader.scheduler.JobScheduler;
 import com.bn.ninjatrader.scheduler.guice.NtSchedulerModule;
 import com.bn.ninjatrader.service.dropwizard.health.ServiceHealthCheck;
 import com.bn.ninjatrader.service.dropwizard.lifecycle.ManagedCacheClient;
 import com.bn.ninjatrader.service.dropwizard.lifecycle.ManagedJobScheduler;
 import com.bn.ninjatrader.service.dropwizard.lifecycle.ManagedMessagingClient;
-import com.bn.ninjatrader.service.dropwizard.lifecycle.ManagedQueueClient;
+import com.bn.ninjatrader.service.dropwizard.lifecycle.ManagedWorkerClient;
 import com.bn.ninjatrader.service.exception.JsonParseExceptionMapper;
 import com.bn.ninjatrader.service.filter.AuthorizationFilter;
 import com.bn.ninjatrader.service.filter.CrossOriginResourceResponseFilter;
@@ -20,7 +20,7 @@ import com.bn.ninjatrader.service.provider.ObjectMapperContextResolver;
 import com.bn.ninjatrader.service.resource.AlgorithmResource;
 import com.bn.ninjatrader.service.resource.PriceResource;
 import com.bn.ninjatrader.service.resource.ScanResource;
-import com.bn.ninjatrader.service.resource.SseResource;
+import com.bn.ninjatrader.service.resource.TestEventResource;
 import com.bn.ninjatrader.service.resource.UserResource;
 import com.bn.ninjatrader.service.task.ImportCSVPriceTask;
 import com.bn.ninjatrader.service.task.ImportPSEDailyQuotesTask;
@@ -29,16 +29,14 @@ import com.bn.ninjatrader.service.task.PriceAdjustmentTask;
 import com.bn.ninjatrader.service.task.RenameStockSymbolTask;
 import com.bn.ninjatrader.service.task.RunSimulationTask;
 import com.bn.ninjatrader.service.task.RunStockScannerTask;
+import com.bn.ninjatrader.worker.WorkerDispatcher;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.dropwizard.Application;
 import io.dropwizard.configuration.ResourceConfigurationSourceProvider;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
-import io.dropwizard.jetty.BiDiGzipHandler;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.handler.HandlerWrapper;
 import org.glassfish.jersey.media.sse.SseFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,9 +59,9 @@ public class ServiceApplication extends Application<ServiceConfig> {
   @Inject
   private UserResource userResource;
   @Inject
-  private SseResource sseResource;
-  @Inject
   private ScanResource scanResource;
+  @Inject
+  private TestEventResource testEventResource;
 
   @Inject
   private RunSimulationTask runSimulationTask;
@@ -94,9 +92,9 @@ public class ServiceApplication extends Application<ServiceConfig> {
   @Inject
   private CacheClient cacheClient;
   @Inject
-  private QueueClient queueClient;
-  @Inject
   private MessagingClient messagingClient;
+  @Inject
+  private WorkerDispatcher workerDispatcher;
 
   @Override
   public void initialize(Bootstrap<ServiceConfig> bootstrap) {
@@ -111,22 +109,9 @@ public class ServiceApplication extends Application<ServiceConfig> {
 
     setupResources(env.jersey());
 
-    //TODO SEE IF THIS IS STILL AN ISSUE IN LATEST JERSEY / DROPWIZARD
-    // Set sync flush to Gzip compression to work properly w/ Server-Sent Events
-    env.lifecycle().addServerLifecycleListener(server -> {
-      Handler handler = server.getHandler();
-      while (handler instanceof HandlerWrapper) {
-        handler = ((HandlerWrapper) handler).getHandler();
-        if (handler instanceof BiDiGzipHandler) {
-          LOG.info("Setting sync flush on gzip compression handler");
-          ((BiDiGzipHandler) handler).setSyncFlush(true);
-        }
-      }
-    });
-
     env.lifecycle().manage(new ManagedJobScheduler(jobScheduler));
+    env.lifecycle().manage(new ManagedWorkerClient(workerDispatcher, ""));
     env.lifecycle().manage(new ManagedCacheClient(cacheClient, ""));
-    env.lifecycle().manage(new ManagedQueueClient(queueClient, ""));
     env.lifecycle().manage(new ManagedMessagingClient(messagingClient, ""));
   }
 
@@ -139,8 +124,8 @@ public class ServiceApplication extends Application<ServiceConfig> {
     jersey.register(priceResource);
     jersey.register(algorithmResource);
     jersey.register(userResource);
-    jersey.register(sseResource);
     jersey.register(scanResource);
+    jersey.register(testEventResource);
 
     // Maintenance tasks
     jersey.register(runSimulationTask);
@@ -168,7 +153,8 @@ public class ServiceApplication extends Application<ServiceConfig> {
 
     final Injector injector = Guice.createInjector(
         new NtSchedulerModule(),
-        new NtServiceModule()
+        new NtServiceModule(),
+        new NtModelMongoModule()
     );
 
     final ServiceApplication serviceApplication = injector.getInstance(ServiceApplication.class);
@@ -177,5 +163,24 @@ public class ServiceApplication extends Application<ServiceConfig> {
       args = new String[] {"server", "service-config.yaml"};
     }
     serviceApplication.run(args);
+
+
+
+
+//    final PriceDao priceDao = injector.getInstance(PriceDao.class);
+//
+//    final int skip = 130;
+//
+//    final List<String> symbols = priceDao.findAllSymbols().stream().sorted().skip(skip).limit(500).collect(Collectors.toList());
+//
+//    ObjectMapperContextResolver objectMapperContextResolver = injector.getInstance(ObjectMapperContextResolver.class);
+//
+//    symbols.forEach(symbol -> {
+//      final List<Price> prices = priceDao.findPrices().withSymbol(symbol).from(LocalDate.now().minusYears(50)).to(LocalDate.now()).now();
+//      LOG.info("Found {} prices for {}", prices.size(), symbol);
+//      final int statusCode = ClientBuilder.newClient().register(objectMapperContextResolver)
+//          .target("https://beach-ninja.appspot.com/migrate/price/"+symbol).request().post(Entity.json(prices)).getStatus();
+//      LOG.info("STATUS CODE: {} {}", symbol, statusCode);
+//    });
   }
 }

@@ -2,14 +2,14 @@ package com.bn.ninjatrader.service.event.handler;
 
 import com.bn.ninjatrader.common.model.Algorithm;
 import com.bn.ninjatrader.common.model.DailyQuote;
+import com.bn.ninjatrader.messaging.Message;
 import com.bn.ninjatrader.messaging.listener.MessageListener;
 import com.bn.ninjatrader.model.dao.AlgorithmDao;
-import com.bn.ninjatrader.push.PushPublisher;
+import com.bn.ninjatrader.queue.Task;
+import com.bn.ninjatrader.queue.TaskDispatcher;
 import com.bn.ninjatrader.service.annotation.cached.CachedDailyQuotes;
-import com.bn.ninjatrader.service.event.message.ImportedFullPricesMessage;
 import com.bn.ninjatrader.service.store.ScanResultStore;
 import com.bn.ninjatrader.simulation.scanner.ScanRequest;
-import com.bn.ninjatrader.simulation.scanner.ScanResult;
 import com.bn.ninjatrader.simulation.scanner.StockScanner;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
@@ -17,45 +17,38 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.time.Clock;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * @author bradwee2000@gmail.com
  */
 @Singleton
-public class ImportedFullPricesHandler implements MessageListener<ImportedFullPricesMessage> {
+public class ImportedFullPricesHandler implements MessageListener<List<DailyQuote>> {
   private static final Logger LOG = LoggerFactory.getLogger(ImportedFullPricesHandler.class);
 
   private final StockScanner stockScanner;
   private final AlgorithmDao algorithmDao;
   private final ScanResultStore scanResultStore;
   private final List<DailyQuote> cachedDailyQuotes;
-  private final PushPublisher pushPublisher;
-  private final Clock clock;
+  private final TaskDispatcher taskDispatcher;
 
   @Inject
   public ImportedFullPricesHandler(final StockScanner stockScanner,
                                    final AlgorithmDao algorithmDao,
-                                   final PushPublisher pushPublisher,
                                    final ScanResultStore scanResultStore,
-                                   final Clock clock,
+                                   final TaskDispatcher taskDispatcher,
                                    @CachedDailyQuotes final List<DailyQuote> cachedDailyQuotes) {
     this.stockScanner = stockScanner;
     this.algorithmDao = algorithmDao;
-    this.pushPublisher = pushPublisher;
     this.scanResultStore = scanResultStore;
-    this.clock = clock;
     this.cachedDailyQuotes = cachedDailyQuotes;
+    this.taskDispatcher = taskDispatcher;
   }
 
   @Override
-  public void onMessage(final ImportedFullPricesMessage message, final LocalDateTime publishTime) {
+  public void onMessage(final Message<List<DailyQuote>> message, final LocalDateTime publishTime) {
     final List<DailyQuote> quotes = message.getPayload();
     if (quotes.isEmpty()) {
       return;
@@ -82,6 +75,8 @@ public class ImportedFullPricesHandler implements MessageListener<ImportedFullPr
   }
 
   private void processNewQuotes(final List<DailyQuote> newQuotes) {
+    LOG.info("Processing New Quotes: {}", newQuotes);
+
     final List<String> symbols = newQuotes.stream().map(q -> q.getSymbol()).collect(Collectors.toList());
 
     // Fetch all algorithms that are on realtime autoscan.
@@ -91,28 +86,16 @@ public class ImportedFullPricesHandler implements MessageListener<ImportedFullPr
 
     // Scan new quotes w/ each algorithm
     algorithms.forEach(algorithm -> {
-      final Map<String, ScanResult> scanResults = stockScanner
-          .scan(ScanRequest.withAlgorithm(algorithm).symbols(symbols));
+      // Only update what's already in cache, meaning user is live and checking on scan results.
+      if (!scanResultStore.contains(algorithm.getId())) {
+        return;
+      }
+      final ScanRequest scanRequest = ScanRequest.withAlgorithm(algorithm).symbols(symbols);
 
-      pushScanResults(algorithm, scanResults);
-      scanResultStore.merge(algorithm.getId(), scanResults);
+      taskDispatcher.submitTask(Task.withPath("/tasks/scan").payload(scanRequest));
+
+//      final Map<String, ScanResult> scanResult = stockScanner.scan(scanRequest);
+//      scanResultStore.merge(algorithm.getId(), scanResult);
     });
-  }
-
-  /**
-   * Push ScanResults to clients. Only ScanResults with today's transactions will be pushed.
-   * @param algorithm
-   * @param scanResults
-   */
-  private void pushScanResults(final Algorithm algorithm, final Map<String, ScanResult> scanResults) {
-    // Filter data by last transaction date. Only results w/ today's transaction will be pushed.
-    final List<ScanResult> data = scanResults.values().stream()
-        .filter((scanResult -> scanResult.getLastTransaction()
-            .getDate().plusDays(1).isAfter(LocalDate.now(clock))))
-        .sorted(Comparator.comparing(ScanResult::getSymbol))
-        .collect(Collectors.toList());
-
-    // Push data to client
-    pushPublisher.push(algorithm.getUserId(), algorithm.getId(), data);
   }
 }

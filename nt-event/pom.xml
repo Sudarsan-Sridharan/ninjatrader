@@ -21,6 +21,22 @@
             <groupId>com.beachninja</groupId>
             <artifactId>nt-messaging</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.beachninja</groupId>
+            <artifactId>nt-model</artifactId>
+        </dependency>
+
+        <!--App Enginge-->
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-api-1.0-sdk</artifactId>
+        </dependency>
+
+        <!--Serialization-->
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>
@@ -37,6 +53,10 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
         </dependency>
     </dependencies>
 </project>

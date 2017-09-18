@@ -6,11 +6,15 @@ define(['jquery', 'app/auth/token-auth'], function ($, TokenAuth) {
 
     function AdminClient() {}
 
-    AdminClient.importQuotes = function() {
+    AdminClient.importQuotes = function(date) {
         var jsonObj = {};
         jsonObj.dates = [];
 
-        return doPost(importQuotesRestUrl, { dates: []});
+        if (date) {
+            jsonObj.dates.push(date);
+        }
+
+        return doPost(importQuotesRestUrl, jsonObj);
     };
 
     AdminClient.adjustPrices = function(symbol, from, to, script) {

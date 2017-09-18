@@ -81,7 +81,7 @@ public class MongoPriceDao extends MongoAbstractDao implements PriceDao {
 
   @Override
   public List<Price> findBeforeDate(final FindBeforeDateRequest request) {
-    final List<Price> bars = FixedList.withMaxSize(request.getNumOfValues());
+    final FixedList<Price> bars = FixedList.withMaxSize(request.getNumOfValues());
     LocalDate fromDate = request.getBeforeDate().withDayOfYear(1);
     LocalDate toDate = request.getBeforeDate().minusDays(1);
 
@@ -98,7 +98,7 @@ public class MongoPriceDao extends MongoAbstractDao implements PriceDao {
       // If not enough data, reset the list and search again with a wider date range.
     } while (bars.size() < request.getNumOfValues() && fromDate.isAfter(MINIMUM_FROM_DATE));
 
-    return bars;
+    return bars.asList();
   }
 
   @Override

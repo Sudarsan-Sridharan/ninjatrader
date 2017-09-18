@@ -21,12 +21,6 @@ public class BarIndexBindingProvider implements BindingProvider {
 
   private long count = 0;
 
-  public BarIndexBindingProvider() {}
-
-  public BarIndexBindingProvider(final int period) {
-
-  }
-
   @Override
   public DataMap get(final Price price) {
     return DataMap.newInstance()

@@ -5,13 +5,15 @@ import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.simulation.model.SimulationContext;
 import com.google.common.base.MoreObjects;
 
+import java.io.Serializable;
+
 /**
  * Contains data for one bar regardless if it's daily, weekly, or monthly time frame.
  * Data can include prices or any indicator values.
  *
  * Created by Brad on 8/2/16.
  */
-public class BarData {
+public class BarData implements Serializable {
   public static final Builder builder() {
     return new Builder();
   }
@@ -21,6 +23,14 @@ public class BarData {
   private final DataMap dataMap;
   private final Price price;
   private final SimulationContext simulationContext;
+
+  private BarData() {
+    this.symbol = null;
+    this.index = 0;
+    this.dataMap = null;
+    this.price = null;
+    this.simulationContext = null;
+  }
 
   private BarData(final String symbol,
                   final int index,

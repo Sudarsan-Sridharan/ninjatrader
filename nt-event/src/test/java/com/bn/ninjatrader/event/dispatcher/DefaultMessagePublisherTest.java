@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.event.dispatcher;
 
-import com.bn.ninjatrader.event.message.Message;
+import com.bn.ninjatrader.messaging.Message;
 import com.bn.ninjatrader.messaging.topic.Topic;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Before;

@@ -25,8 +25,11 @@ public class TokenGeneratorRunner {
         new NtModelMongoModule());
     final TokenGenerator generator = injector.getInstance(TokenGenerator.class);
 
-    final String token = generator.createTokenForUser(User.builder().userId("ADMIN").addRole(Role.ADMIN).build());
+    String token = generator.createTokenForUser(User.builder().userId("ADMIN").addRole(Role.ADMIN).build());
+    LOG.info("Admin TOKEN: {}", token);
+    token = generator.createTokenForUser(User.builder().userId("TINO").addRole(Role.SUBSCRIBER).build());
+    LOG.info("Tino TOKEN: {}", token);
 //    final String token = generator.createTokenForUser(User.builder().addRole(Role.SYSTEM).build());
-    LOG.info("TOKEN: {}", token);
+
   }
 }

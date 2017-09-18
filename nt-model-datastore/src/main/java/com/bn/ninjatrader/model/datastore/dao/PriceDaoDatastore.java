@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.model.datastore.dao;
 
 import com.bn.ninjatrader.common.type.TimeFrame;
+import com.bn.ninjatrader.common.util.FixedList;
 import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.model.datastore.dao.operation.DatastoreFindPricesOperation;
 import com.bn.ninjatrader.model.datastore.dao.operation.DatastoreSavePricesOperation;
@@ -30,6 +31,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 @Singleton
 public class PriceDaoDatastore implements PriceDao {
   private static final Logger LOG = LoggerFactory.getLogger(PriceDaoDatastore.class);
+  public static final LocalDate MINIMUM_FROM_DATE = LocalDate.of(1999, 1, 1);
 
   private final Clock clock;
 
@@ -70,8 +72,26 @@ public class PriceDaoDatastore implements PriceDao {
   }
 
   @Override
-  public List<Price> findBeforeDate(FindBeforeDateRequest build) {
-    return null;
+  public List<Price> findBeforeDate(FindBeforeDateRequest request) {
+    final FixedList<Price> bars = FixedList.withMaxSize(request.getNumOfValues());
+    LocalDate fromDate = request.getBeforeDate().withDayOfYear(1);
+    LocalDate toDate = request.getBeforeDate().minusDays(1);
+
+    do {
+      final List<Price> resultsPerYear = findPrices().withSymbol(request.getSymbol())
+          .withTimeFrame(request.getTimeFrame())
+          .from(fromDate)
+          .to(toDate)
+          .now();
+      bars.clear();
+      bars.addAll(resultsPerYear);
+      fromDate = fromDate.minusYears(1);
+
+      // If not enough data, reset the list and search again with a wider date range.
+    } while (bars.size() < request.getNumOfValues() && fromDate.isAfter(MINIMUM_FROM_DATE));
+
+    return bars.asList();
+
   }
 
   @Override

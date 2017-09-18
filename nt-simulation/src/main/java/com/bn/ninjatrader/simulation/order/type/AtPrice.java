@@ -34,7 +34,7 @@ public class AtPrice implements OrderType {
   }
 
   @Override
-  public double getFulfilledPrice(final BarData onSubmitBarData, final BarData currentBarData) {
+  public double getFulfilledPrice(final BarData currentBar) {
     return price;
   }
 

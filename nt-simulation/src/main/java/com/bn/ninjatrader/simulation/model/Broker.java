@@ -1,17 +1,18 @@
 package com.bn.ninjatrader.simulation.model;
 
+import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.simulation.annotation.OrderExecutors;
 import com.bn.ninjatrader.simulation.annotation.OrderRequestProcessors;
 import com.bn.ninjatrader.simulation.core.SimulationRequest;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.listener.BrokerListener;
+import com.bn.ninjatrader.simulation.model.portfolio.Portfolio;
 import com.bn.ninjatrader.simulation.order.Order;
 import com.bn.ninjatrader.simulation.order.PendingOrder;
 import com.bn.ninjatrader.simulation.order.executor.OrderExecutor;
 import com.bn.ninjatrader.simulation.order.processor.OrderRequestProcessor;
 import com.bn.ninjatrader.simulation.order.request.BuyOrderRequest;
 import com.bn.ninjatrader.simulation.order.request.OrderRequest;
-import com.bn.ninjatrader.simulation.order.request.OrderRequestFactory;
 import com.bn.ninjatrader.simulation.order.request.SellOrderRequest;
 import com.bn.ninjatrader.simulation.order.type.OrderType;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
@@ -26,6 +27,7 @@ import com.google.inject.assistedinject.Assisted;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +40,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Created by Brad on 8/12/16.
  */
-public class Broker {
+public class Broker implements Serializable {
   private static final Logger LOG = LoggerFactory.getLogger(Broker.class);
   private static final String SUBMIT_ORDER_LOG = "%s - Submit %s order at price [%s]";
   private static final String EXPIRED_ORDER_LOG = "%s - Expired %s order submitted on %s";
@@ -50,21 +52,29 @@ public class Broker {
   private final Map<TransactionType, OrderExecutor> orderExecutors;
   private final Map<TransactionType, OrderRequestProcessor> orderRequestProcessors;
   private final List<String> logs;
-  private final OrderRequestFactory orderRequestFactory;
   private final boolean isDebug;
+  private final BoardLotTable boardLotTable;
 
   private BarData currentBar;
+
+  private Broker() {
+    this.orderExecutors = null;
+    this.orderRequestProcessors = null;
+    this.logs = null;
+    this.isDebug = false;
+    this.boardLotTable = null;
+  }
 
   @Inject
   public Broker(@OrderExecutors final Map<TransactionType, OrderExecutor> orderExecutors,
                 @OrderRequestProcessors final Map<TransactionType, OrderRequestProcessor> orderRequestProcessors,
-                final OrderRequestFactory orderRequestFactory,
+                final BoardLotTable boardLotTable,
                 @Assisted final SimulationRequest request) {
     this.orderExecutors = orderExecutors;
     this.orderRequestProcessors = orderRequestProcessors;
-    this.orderRequestFactory = orderRequestFactory;
     this.isDebug = request.isDebug();
     this.logs = isDebug ? Lists.newArrayList() : Collections.emptyList();
+    this.boardLotTable = boardLotTable;
   }
 
   public void submitOrder(final Order order, final BarData barData) {
@@ -73,9 +83,9 @@ public class Broker {
 
     if (isDebug) {
       logs.add(String.format(SUBMIT_ORDER_LOG,
-          order.getOrderDate(),
+          barData.getPrice().getDate(),
           order.getTransactionType(),
-          order.getOrderType().getFulfilledPrice(barData, barData)));
+          order.getOrderType().getFulfilledPrice(barData)));
     }
 
     pendingOrders.add(PendingOrder.of(order, barData));
@@ -83,15 +93,14 @@ public class Broker {
 
   public void submitOrder(final OrderRequest req) {
     checkArgument(orderRequestProcessors.containsKey(req.getTxnType()),
-        "No processor found for TransactionType [%s]", req.getTxnType());
-    final OrderRequestProcessor processor = orderRequestProcessors.get(req.getTxnType());
-    final Order order = processor.process(req, currentBar);
+        "No order processor found for TransactionType [%s]", req.getTxnType());
+
+    final Order order = orderRequestProcessors.get(req.getTxnType()).process(req, currentBar);
 
     submitOrder(order, currentBar);
   }
 
   public void processPendingOrders(final BarData barData) {
-
     if (pendingOrders.isEmpty()) {
       return;
     }
@@ -135,7 +144,7 @@ public class Broker {
     checkNotNull(orderExecutor, "No OrderExecutor found for TransactionType: %s",
         pendingOrder.getTransactionType());
 
-    final TransactionType tnxType = pendingOrder.getTransactionType();
+    final TransactionType txnType = pendingOrder.getTransactionType();
     final OrderType orderType = pendingOrder.getOrderType();
 
     final Transaction transaction = orderExecutor.execute(pendingOrder, barData);
@@ -146,8 +155,8 @@ public class Broker {
     if (isDebug) {
       logs.add(String.format(PROCESSED_ORDER_LOG,
           barData.getPrice().getDate(),
-          tnxType,
-          orderType.getFulfilledPrice(pendingOrder.getSubmittedBarData(), barData)));
+          txnType,
+          orderType.getFulfilledPrice(barData)));
     }
   }
 
@@ -174,8 +183,9 @@ public class Broker {
   private void publishToListeners(final Transaction transaction, final BarData barData) {
     for (final BrokerListener listener : listeners) {
       switch(transaction.getTransactionType()) {
-        case SELL: listener.onFulfilledSell((SellTransaction) transaction, barData); break;
         case BUY: listener.onFulfilledBuy((BuyTransaction) transaction, barData); break;
+        case SELL: listener.onFulfilledSell((SellTransaction) transaction, barData); break;
+        case CLEANUP: listener.onCleanup((SellTransaction) transaction, barData); break;
       }
     }
   }
@@ -191,11 +201,11 @@ public class Broker {
   }
 
   public BuyOrderRequest buyOrder() {
-    return orderRequestFactory.createBuyOrderRequest(this);
+    return new BuyOrderRequest(boardLotTable, this);
   }
 
   public SellOrderRequest sellOrder() {
-    return orderRequestFactory.createSellOrderRequest(this);
+    return new SellOrderRequest(boardLotTable, this);
   }
 
   public void setCurrentBar(final BarData currentBar) {

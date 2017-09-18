@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.simulation.algorithm;
 
-import com.bn.ninjatrader.simulation.logic.Variable;
 import com.bn.ninjatrader.simulation.exception.ScriptCompileErrorException;
+import com.bn.ninjatrader.simulation.logic.Variable;
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.Sets;
 import groovy.lang.GroovyShell;
@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,31 +31,38 @@ public class GroovyAlgorithmScript implements AlgorithmScript {
   private final Set<ScriptVariable> scriptVariables;
   private final Set<ScriptVariable> historicalVariables;
   private final Set<Variable> variables;
-  private final Class scriptClass;
+
+  private String convertedSafeScript;
+  private transient Class scriptClass;
+
+  private GroovyAlgorithmScript() {
+    scriptVariables = null;
+    historicalVariables = null;
+    variables = null;
+  }
 
   public GroovyAlgorithmScript(final String scriptText) {
-    scriptVariables = Collections.unmodifiableSet(parseScriptVariables(scriptText));
+    scriptVariables = Sets.newHashSet(parseScriptVariables(scriptText));
     variables = scriptVariables.stream().map(v -> v.getVariable()).collect(Collectors.toSet());
     historicalVariables = scriptVariables.stream().filter(v -> v.getBarsAgo() > 0).collect(Collectors.toSet());
 
-    String convertedSafeScript = scriptText;
+    convertedSafeScript = scriptText;
     for (final ScriptVariable v : historicalVariables) {
       convertedSafeScript = convertedSafeScript.replace(v.getName(), v.getSafeName());
-    }
-
-    try {
-      // Cache the class so we don't keep recompiling script.
-      scriptClass = shell.getClassLoader().parseClass(convertedSafeScript);
-    } catch (final MultipleCompilationErrorsException e) {
-      throw new ScriptCompileErrorException(e);
     }
   }
 
   @Override
   public ScriptRunner newRunner() {
     try {
+      if (scriptClass == null) {
+        // Cache the class so we don't keep recompiling script.
+        scriptClass = shell.getClassLoader().parseClass(convertedSafeScript);
+      }
       final Script script = (Script) scriptClass.newInstance();
       return new GroovyScriptRunner(script, historicalVariables);
+    } catch (final MultipleCompilationErrorsException e) {
+      throw new ScriptCompileErrorException(e);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

@@ -1,9 +1,12 @@
 package com.bn.ninjatrader.simulation.model;
 
 import com.bn.ninjatrader.common.boardlot.BoardLotTable;
-import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.common.model.Price;
+import com.bn.ninjatrader.model.dao.PriceDao;
 import com.bn.ninjatrader.simulation.core.SimulationRequest;
+import com.bn.ninjatrader.simulation.model.portfolio.Portfolio;
+import com.bn.ninjatrader.simulation.model.stat.DefaultTradeStatistic;
+import com.bn.ninjatrader.simulation.model.stat.TradeStatistic;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,11 +38,18 @@ public class SimContextFactory {
   public SimulationContext create(final SimulationRequest req) {
     final List<Price> priceList = priceDao.findPrices().withSymbol(req.getSymbol())
         .from(req.getFrom()).to(req.getTo()).now();
-    final Account account = new Account(new Portfolio(), new Bookkeeper(), new TradeStatistic(), req.getStartingCash());
+    final Account account = createAccount(req);
     final Broker broker = brokerFactory.createBroker(req);
     final History history = History.withMaxSize(DEFAULT_MAX_HISTORY_SIZE);
 
     return SimulationContext.builder().account(account).broker(broker).boardLotTable(boardLotTable).history(history)
         .pricesForSymbol(req.getSymbol(), priceList).build();
+  }
+
+  private Account createAccount(final SimulationRequest req) {
+    final Portfolio portfolio = new Portfolio();
+    final TradeStatistic tradeStatistic = new DefaultTradeStatistic();
+
+    return new Account(portfolio, tradeStatistic, req.getStartingCash());
   }
 }

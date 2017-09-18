@@ -22,6 +22,7 @@ public class HazelcastMessageListenerAdapter<T> implements com.hazelcast.core.Me
   public void onMessage(Message<T> message) {
     final LocalDateTime publishTime = Instant.ofEpochMilli(message.getPublishTime())
         .atOffset(ZoneOffset.UTC).toLocalDateTime();
-    this.listener.onMessage(message.getMessageObject(), publishTime);
+
+    this.listener.onMessage((com.bn.ninjatrader.messaging.Message<T>) message.getMessageObject(), publishTime);
   }
 }

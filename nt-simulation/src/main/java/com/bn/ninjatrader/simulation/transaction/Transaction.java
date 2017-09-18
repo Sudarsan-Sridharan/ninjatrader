@@ -21,11 +21,10 @@ import java.time.LocalDate;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.PROPERTY,
-    property = "type")
+    property = "txnType")
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = BuyTransaction.class, name = "buy"),
-    @JsonSubTypes.Type(value = SellTransaction.class, name = "sell")
+    @JsonSubTypes.Type(value = BuyTransaction.class, name = "BUY"),
+    @JsonSubTypes.Type(value = SellTransaction.class, name = "SELL")
 })
 public abstract class Transaction implements Serializable {
 
@@ -40,7 +39,7 @@ public abstract class Transaction implements Serializable {
   @JsonDeserialize(using = NtLocalDateDeserializer.class)
   private final LocalDate date;
 
-  @JsonProperty("tnxType")
+  @JsonProperty("txnType")
   private final TransactionType transactionType;
 
   @JsonProperty("price")
@@ -50,18 +49,27 @@ public abstract class Transaction implements Serializable {
   private final long numOfShares;
 
   public static BuyTransaction.BuyTransactionLogBuilder buy() {
-    return BuyTransaction.create();
+    return BuyTransaction.builder();
   }
 
   public static SellTransaction.SellTransactionBuilder sell() {
-    return SellTransaction.create();
+    return SellTransaction.builder();
+  }
+
+  protected Transaction() {
+    this.symbol = null;
+    this.date = null;
+    this.transactionType = null;
+    this.price = 0;
+    this.numOfShares = 0;
+    this.barIndex = 0;
   }
 
   public Transaction(@JsonProperty("sym") String symbol,
                      @JsonProperty("dt")
                      @JsonSerialize(using = NtLocalDateSerializer.class)
                      @JsonDeserialize(using = NtLocalDateDeserializer.class) LocalDate date,
-                     @JsonProperty("tnxType") TransactionType transactionType,
+                     @JsonProperty("txnType") TransactionType transactionType,
                      @JsonProperty("price") double price,
                      @JsonProperty("shares") long numOfShares,
                      @JsonProperty("index") int barIndex) {

@@ -1,6 +1,7 @@
 package com.bn.ninjatrader.service.guice.provider;
 
-import com.bn.ninjatrader.cache.client.CacheClient;
+import com.bn.ninjatrader.cache.client.api.CacheClient;
+import com.bn.ninjatrader.cache.client.api.CachedMap;
 import com.bn.ninjatrader.simulation.scanner.ScanResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,7 @@ import java.util.Map;
  * @author bradwee2000@gmail.com
  */
 @Singleton
-public class CachedScanResultsProvider implements Provider<Map<String, Map<String, ScanResult>>> {
+public class CachedScanResultsProvider implements Provider<CachedMap<String, Map<String, ScanResult>>> {
 
   private static final Logger LOG = LoggerFactory.getLogger(CachedScanResultsProvider.class);
   private static final String NAMESPACE = "scan.results";
@@ -27,7 +28,7 @@ public class CachedScanResultsProvider implements Provider<Map<String, Map<Strin
   }
 
   @Override
-  public Map<String, Map<String, ScanResult>> get() {
+  public CachedMap<String, Map<String, ScanResult>> get() {
     return cacheClient.getMap(NAMESPACE);
   }
 }

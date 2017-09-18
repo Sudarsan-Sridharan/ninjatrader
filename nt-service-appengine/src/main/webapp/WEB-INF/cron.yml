@@ -1,0 +1,26 @@
+cron:
+- description: Import realtime quotes (morning)
+  url: /cron/import-quotes
+  schedule: every 5 minutes from 9:30 to 12:00
+  timezone: Asia/Manila
+  retry_parameters:
+    job_retry_limit: 3
+    min_backoff_seconds: 5
+    max_doublings: 3
+- description: Import realtime quotes (afternoon)
+  url: /cron/import-quotes
+  schedule: every 5 minutes from 13:30 to 15:35
+  timezone: Asia/Manila
+  retry_parameters:
+    job_retry_limit: 3
+    min_backoff_seconds: 5
+    max_doublings: 3
+- description: Import closing quotes (backup)
+  url: /cron/import-quotes
+  schedule: every 2 hours from 16:00 to 22:00
+  timezone: Asia/Manila
+  retry_parameters:
+    job_retry_limit: 3
+    min_backoff_seconds: 5
+    max_doublings: 3
+

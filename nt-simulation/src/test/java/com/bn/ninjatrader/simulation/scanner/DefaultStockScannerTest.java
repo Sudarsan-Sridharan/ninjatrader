@@ -8,10 +8,11 @@ import com.bn.ninjatrader.simulation.algorithm.AlgorithmScriptFactory;
 import com.bn.ninjatrader.simulation.core.Simulation;
 import com.bn.ninjatrader.simulation.core.SimulationFactory;
 import com.bn.ninjatrader.simulation.core.SimulationRequest;
-import com.bn.ninjatrader.simulation.model.TradeStatistic;
+import com.bn.ninjatrader.simulation.model.stat.TradeStatistic;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
+import com.bn.ninjatrader.worker.WorkerDispatcher;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.junit.Before;
@@ -46,6 +47,8 @@ public class DefaultStockScannerTest {
   private TradeStatistic tradeStatistic;
   private AlgorithmScriptFactory algorithmScriptFactory;
   private Clock clock = TestUtil.fixedClock(now);
+  private WorkerDispatcher workerDispatcher;
+  private SimulationReportConverter simulationReportConverter;
 
   private StockScanner stockScanner;
 
@@ -57,6 +60,8 @@ public class DefaultStockScannerTest {
     tradeAlgorithmDao = mock(AlgorithmDao.class);
     tradeStatistic = mock(TradeStatistic.class);
     algorithmScriptFactory = mock(AlgorithmScriptFactory.class);
+    workerDispatcher = mock(WorkerDispatcher.class);
+    simulationReportConverter = mock(SimulationReportConverter.class);
 
     when(priceDao.findAllSymbols()).thenReturn(Sets.newHashSet("MEG"));
     when(tradeAlgorithmDao.findOneByAlgorithmId(anyString())).thenReturn(Optional.of(mock(Algorithm.class)));
@@ -70,9 +75,10 @@ public class DefaultStockScannerTest {
             .addTransaction(BuyTransaction.buy().symbol("MEG").date(yesterday).build())
             .endingCash(300000)
             .build());
+    when(simulationReportConverter.convert(any())).thenCallRealMethod();
 
     stockScanner = new DefaultStockScanner(simulationFactory, priceDao,
-        tradeAlgorithmDao, algorithmScriptFactory, clock);
+        tradeAlgorithmDao, algorithmScriptFactory, clock, workerDispatcher, simulationReportConverter);
   }
 
   @Test

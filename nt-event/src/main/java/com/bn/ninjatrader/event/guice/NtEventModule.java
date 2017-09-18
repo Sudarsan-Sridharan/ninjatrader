@@ -20,10 +20,14 @@ public class NtEventModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(MessagePublisher.class).to(DefaultMessagePublisher.class);
+    bindMessagePublisher();
 
     // Bind Topics map to a provider
     bind(new TypeLiteral<Map<String, Topic>>() {}).annotatedWith(EventTopics.class)
         .toProvider(EventTopicsProvider.class).in(Singleton.class);
+  }
+
+  protected void bindMessagePublisher() {
+    bind(MessagePublisher.class).to(DefaultMessagePublisher.class);
   }
 }

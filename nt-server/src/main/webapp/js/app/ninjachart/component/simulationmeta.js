@@ -5,7 +5,7 @@ define(["d3", "../util/format"], function(d3, Format) {
         this.main = d3.select(document.createElementNS(d3.namespaces.xhtml, "div"))
             .classed("simulationMeta", true);
 
-        this.tnxTypeLabel = this.main.append("span").classed("tnxType", true);
+        this.txnTypeLabel = this.main.append("span").classed("txnType", true);
         this.tnxMeta = this.main.append("span").classed("tnxMeta", true);
 
         this.price = this.addField(this.tnxMeta, "price:", "price");
@@ -38,15 +38,15 @@ define(["d3", "../util/format"], function(d3, Format) {
         return this.main.node();
     };
 
-    SimulationMeta.prototype.showMeta = function(tnx) {
-        this.tnxTypeLabel.html(tnx.tnxType);
-        this.price.value(Format.price(tnx.price));
-        this.shares.value(tnx.shares);
-        this.value.value(Format.price(tnx.value));
+    SimulationMeta.prototype.showMeta = function(txn) {
+        this.txnTypeLabel.html(txn.txnType);
+        this.price.value(Format.price(txn.price));
+        this.shares.value(txn.shares);
+        this.value.value(Format.price(txn.value));
 
         // Sell transactions have profit, show only if it's available.
-        if (tnx.profitPcnt)  {
-            var profitPcnt = Math.round(tnx.profitPcnt * 10000) / 100; // convert from 1.0 to 100%
+        if (txn.profitPcnt)  {
+            var profitPcnt = Math.round(txn.profitPcnt * 10000) / 100; // convert from 1.0 to 100%
             this.profitPcnt.show();
             this.profitPcnt.value(profitPcnt + "%");
         } else {
@@ -54,8 +54,8 @@ define(["d3", "../util/format"], function(d3, Format) {
         }
 
         this.main.style("display", "block")
-            .classed("buy", tnx.tnxType == "BUY")
-            .classed("sell", tnx.tnxType == "SELL");
+            .classed("buy", txn.txnType == "BUY")
+            .classed("sell", txn.txnType == "SELL");
     };
 
     SimulationMeta.prototype.onMouseMove = function(coords) {

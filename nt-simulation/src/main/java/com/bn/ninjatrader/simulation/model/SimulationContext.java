@@ -6,13 +6,14 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author bradwee2000@gmail.com
  */
-public class SimulationContext {
+public class SimulationContext implements Serializable {
   public static final Builder builder() {
     return new Builder();
   }
@@ -23,6 +24,14 @@ public class SimulationContext {
   private final History history;
   private final Map<String, List<Price>> prices;
   private final List<Mark> chartMarks = Lists.newArrayList();
+
+  private SimulationContext() {
+    this.account = null;
+    this.broker = null;
+    this.boardLotTable = null;
+    this.history = null;
+    this.prices = null;
+  }
 
   private SimulationContext(final Account account,
                             final Broker broker,
@@ -64,7 +73,6 @@ public class SimulationContext {
   public String toString() {
     return MoreObjects.toStringHelper(this)
         .add("account", account)
-        .add("broker", broker)
         .add("history", history)
         .add("priceSize", prices.size())
         .add("chartMarks", chartMarks)

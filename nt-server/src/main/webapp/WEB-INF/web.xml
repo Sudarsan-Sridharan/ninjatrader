@@ -29,4 +29,13 @@
         <listener-class>com.bn.ninjatrader.server.listener.VelocityInitializer</listener-class>
     </listener>
 
+    <servlet>
+        <servlet-name>warmup</servlet-name>
+        <servlet-class>com.bn.ninjatrader.server.page.WarmupPage</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>warmup</servlet-name>
+        <url-pattern>/warmup</url-pattern>
+    </servlet-mapping>
 </web-app>

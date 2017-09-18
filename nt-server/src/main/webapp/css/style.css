@@ -87,6 +87,9 @@ select {
 .scannerPanel td.price, .scannerPanel td.profit {
     text-align:right;
 }
+.scannerPanel tr.new td {
+    background-color: #e5e8f5;
+}
 
 #status {
     position: fixed;

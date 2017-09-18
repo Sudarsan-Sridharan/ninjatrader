@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.service.dropwizard.lifecycle;
 
-import com.bn.ninjatrader.cache.client.CacheClient;
+import com.bn.ninjatrader.cache.client.api.CacheClient;
 import io.dropwizard.lifecycle.Managed;
 
 import javax.inject.Inject;

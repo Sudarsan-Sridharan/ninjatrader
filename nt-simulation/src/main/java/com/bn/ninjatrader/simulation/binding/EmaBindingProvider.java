@@ -27,6 +27,12 @@ public class EmaBindingProvider implements BindingProvider {
   private final Variable variable;
   private final EMACalculatingStack stack;
 
+  private EmaBindingProvider() {
+    this.period = 0;
+    this.variable = null;
+    this.stack = null;
+  }
+
   public EmaBindingProvider(final int period) {
     checkArgument(period > 0, INVALID_PERIOD_MSG);
     this.period = period;

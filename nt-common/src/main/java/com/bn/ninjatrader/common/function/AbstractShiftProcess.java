@@ -34,7 +34,7 @@ public abstract class AbstractShiftProcess<T> {
       return;
     }
 
-    List<T> queue = FixedList.withMaxSize(period);
+    FixedList<T> queue = FixedList.withMaxSize(period);
 
     int count = 0;
     for (T t : values) {
@@ -46,7 +46,7 @@ public abstract class AbstractShiftProcess<T> {
     }
 
     // Destroy shifted
-    for (T t : queue) {
+    for (T t : queue.asList()) {
       handler.destroy(t);
     }
   }

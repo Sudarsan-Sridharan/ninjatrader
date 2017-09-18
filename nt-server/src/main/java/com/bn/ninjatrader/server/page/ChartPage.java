@@ -9,6 +9,7 @@ import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -29,7 +30,9 @@ public class ChartPage {
 
   @GET
   @Produces(MediaType.TEXT_HTML)
-  public String showChart() {
-    return htmlWriterFactory.createWithTemplate(TEMPLATE_PATH).write();
+  public String showChart(@QueryParam("symbol") final String symbol) {
+    return htmlWriterFactory.createWithTemplate(TEMPLATE_PATH)
+        .put("symbol", symbol)
+        .write();
   }
 }

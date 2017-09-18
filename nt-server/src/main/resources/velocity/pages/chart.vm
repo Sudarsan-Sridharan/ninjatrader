@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Beach Ninja Trader</title>
+    <title>${symbol} - Beach Ninja Trader</title>
     <script data-main="js/page/chart-page-1.1" src="js/lib/require.js"></script>
     #chartstyle()
 </head>

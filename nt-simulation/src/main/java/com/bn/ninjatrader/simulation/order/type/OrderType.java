@@ -20,5 +20,5 @@ public interface OrderType {
 
   boolean isFulfillable(final BarData onSubmitBarData, final BarData currentBarData);
 
-  double getFulfilledPrice(final BarData onSubmitBarData, final BarData currentBarData);
+  double getFulfilledPrice(final BarData currentBar);
 }

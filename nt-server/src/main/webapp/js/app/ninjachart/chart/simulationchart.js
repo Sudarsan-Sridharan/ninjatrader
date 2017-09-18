@@ -9,7 +9,7 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
         this.transactionGroup = this.getMain().append("g").classed("transactions", true);
         this.markGroup = this.getMain().append("g").classed("marks", true);
 
-        this._getClass = function(txn) { return txn.type };
+        this._getClass = function(txn) { return txn.txnType };
 
         this._getTransactionPath = function(txn) {
             var x = config.xByDate(txn.dt) + config.columnWidth / 2;

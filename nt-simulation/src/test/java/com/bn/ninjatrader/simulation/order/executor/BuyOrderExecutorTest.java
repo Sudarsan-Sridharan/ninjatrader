@@ -5,7 +5,7 @@ import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
-import com.bn.ninjatrader.simulation.model.Portfolio;
+import com.bn.ninjatrader.simulation.model.portfolio.Portfolio;
 import com.bn.ninjatrader.simulation.model.SimulationContext;
 import com.bn.ninjatrader.simulation.order.BuyOrder;
 import com.bn.ninjatrader.simulation.order.Order;
@@ -21,7 +21,6 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -71,8 +70,5 @@ public class BuyOrderExecutorTest {
     assertThat(transaction.getNumOfShares()).isEqualTo(100000);
     assertThat(transaction.getTransactionType()).isEqualTo(TransactionType.BUY);
     assertThat(transaction.getValue()).isEqualTo(100000.0);
-
-    verify(account).addCash(-100000);
-    verify(portfolio).add(transaction);
   }
 }

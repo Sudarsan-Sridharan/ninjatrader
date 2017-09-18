@@ -17,6 +17,11 @@ public class FixedStack<T> {
     return new FixedStack<T>(fixedSize);
   }
 
+  protected FixedStack() {
+    list = null;
+    fixedSize = 0;
+  }
+
   public FixedStack(int fixedSize) {
     assertMinimumSize(fixedSize);
 

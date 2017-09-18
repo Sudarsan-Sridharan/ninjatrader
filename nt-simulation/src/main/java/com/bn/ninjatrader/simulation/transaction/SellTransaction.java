@@ -29,7 +29,13 @@ public class SellTransaction extends Transaction {
     return new SellTransactionBuilder();
   }
 
-  public SellTransaction(@JsonProperty("sym") final String symbol,
+  private SellTransaction() {
+    super();
+    this.profit = 0;
+    this.profitPcnt = 0;
+  }
+
+  private SellTransaction(@JsonProperty("sym") final String symbol,
                          @JsonSerialize(using = NtLocalDateSerializer.class)
                          @JsonDeserialize(using = NtLocalDateDeserializer.class)
                          @JsonProperty("dt") final LocalDate date,
@@ -41,6 +47,17 @@ public class SellTransaction extends Transaction {
     super(symbol, date, TransactionType.SELL, price, numOfShares, barIndex);
     this.profit = profit;
     this.profitPcnt = profitPcnt;
+  }
+
+  private SellTransaction(final SellTransactionBuilder builder) {
+    super(builder.getSymbol(),
+        builder.getDate(),
+        builder.isCleanup ? TransactionType.CLEANUP : TransactionType.SELL,
+        builder.getPrice(),
+        builder.getNumOfShares(),
+        builder.getBarIndex());
+    this.profit = builder.getProfit();
+    this.profitPcnt = builder.getProfitPcnt();
   }
 
   public double getProfit() {
@@ -87,6 +104,21 @@ public class SellTransaction extends Transaction {
     private double profit;
     private double profitPcnt;
 
+    // If true, marks this transaction as a system triggered sell at the end of the simulation, which means that this
+    // it is not an algorithm generated one.
+    private boolean isCleanup;
+
+    public SellTransactionBuilder copyFrom(final SellTransaction source) {
+      symbol(source.getSymbol());
+      date(source.getDate());
+      shares(source.getNumOfShares());
+      price(source.getPrice());
+      barIndex(source.getBarIndex());
+      this.profit = source.getProfit();
+      this.profitPcnt = source.getProfitPcnt();
+      return this;
+    }
+
     public SellTransactionBuilder profit(final double profit) {
       this.profit = profit;
       return this;
@@ -97,17 +129,31 @@ public class SellTransaction extends Transaction {
       return this;
     }
 
+    public SellTransactionBuilder isCleanup(boolean isCleanup) {
+      this.isCleanup = isCleanup;
+      return this;
+    }
+
+    public double getProfit() {
+      return profit;
+    }
+
+    public double getProfitPcnt() {
+      return profitPcnt;
+    }
+
+    public boolean isCleanup() {
+      return isCleanup;
+    }
+
     @Override
     public SellTransaction build() {
-      return new SellTransaction(getSymbol(), getDate(), getPrice(), getNumOfShares(),
-          getBarIndex(), profit, profitPcnt);
+      return new SellTransaction(this);
     }
 
     @Override
     public SellTransactionBuilder getThis() {
       return this;
     }
-
-
   }
 }

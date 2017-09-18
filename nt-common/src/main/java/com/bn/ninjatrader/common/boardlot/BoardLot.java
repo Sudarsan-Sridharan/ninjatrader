@@ -3,10 +3,12 @@ package com.bn.ninjatrader.common.boardlot;
 import com.bn.ninjatrader.common.util.NumUtil;
 import com.google.common.base.MoreObjects;
 
+import java.io.Serializable;
+
 /**
  * Created by Brad on 8/18/16.
  */
-public class BoardLot {
+public class BoardLot implements Serializable {
 
   private final double minPrice;
   private final double maxPrice;

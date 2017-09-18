@@ -40,7 +40,7 @@ public class MarketCloseTest {
 
   @Test
   public void testGetFulfilledPrice_shouldReturnPriceAtClose() {
-    assertThat(marketClose.getFulfilledPrice(submittedBarData, currentBarData)).isEqualTo(4.4);
+    assertThat(marketClose.getFulfilledPrice(currentBarData)).isEqualTo(4.4);
   }
 
   @Test

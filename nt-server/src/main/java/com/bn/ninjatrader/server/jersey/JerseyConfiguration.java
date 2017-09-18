@@ -6,6 +6,7 @@ import com.bn.ninjatrader.server.page.ChartPage;
 import com.bn.ninjatrader.server.page.DashboardPage;
 import com.bn.ninjatrader.server.page.ScannerPage;
 import com.bn.ninjatrader.server.page.TokenPage;
+import com.bn.ninjatrader.server.page.WarmupPage;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -23,5 +24,6 @@ public class JerseyConfiguration extends ResourceConfig {
     register(injector.getInstance(DashboardPage.class));
     register(injector.getInstance(ScannerPage.class));
     register(injector.getInstance(TokenPage.class));
+    register(injector.getInstance(WarmupPage.class));
   }
 }

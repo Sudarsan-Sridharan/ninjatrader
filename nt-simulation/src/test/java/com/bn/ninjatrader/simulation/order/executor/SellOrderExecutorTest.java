@@ -4,7 +4,7 @@ import com.bn.ninjatrader.common.boardlot.BoardLotTable;
 import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.model.Account;
-import com.bn.ninjatrader.simulation.model.Portfolio;
+import com.bn.ninjatrader.simulation.model.portfolio.Portfolio;
 import com.bn.ninjatrader.simulation.model.SimulationContext;
 import com.bn.ninjatrader.simulation.order.BuyOrder;
 import com.bn.ninjatrader.simulation.order.Order;
@@ -58,9 +58,9 @@ public class SellOrderExecutorTest {
 
   @Test
   public void testExecute_shouldCreateSellTransactionWithCalcProfit() {
-    when(portfolio.getTotalShares("MEG")).thenReturn(100000l);
-    when(portfolio.getEquityValue("MEG")).thenReturn(100000d);
-    when(portfolio.getAvgPrice("MEG")).thenReturn(0.75);
+    when(portfolio.getTotalShares()).thenReturn(100000l);
+    when(portfolio.getEquityValue()).thenReturn(100000d);
+    when(portfolio.getAvgPrice()).thenReturn(0.75);
 
     final SellTransaction txn = executor.execute(pendingOrder, barData);
 

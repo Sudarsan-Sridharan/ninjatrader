@@ -3,6 +3,8 @@ package com.bn.ninjatrader.simulation.model;
 import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.simulation.data.BarData;
 import com.bn.ninjatrader.simulation.listener.BrokerListener;
+import com.bn.ninjatrader.simulation.model.portfolio.Portfolio;
+import com.bn.ninjatrader.simulation.model.stat.TradeStatistic;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.SellTransaction;
 import com.google.common.base.MoreObjects;
@@ -16,18 +18,19 @@ public class Account implements BrokerListener {
   private static final Logger LOG = LoggerFactory.getLogger(Account.class);
 
   private final Portfolio portfolio;
-  private final Bookkeeper bookkeeper;
   private final TradeStatistic tradeStatistic;
 
   private double liquidCash = 100000;
   private double startingCash = 100000;
 
+  private Account() {
+    this(null, null, 0d);
+  }
+
   public Account(final Portfolio portfolio,
-                 final Bookkeeper bookkeeper,
                  final TradeStatistic tradeStatistic,
                  final double startingCash) {
     this.portfolio = portfolio;
-    this.bookkeeper = bookkeeper;
     this.tradeStatistic = tradeStatistic;
     this.liquidCash = startingCash;
     this.startingCash = startingCash;
@@ -35,10 +38,6 @@ public class Account implements BrokerListener {
 
   public double getLiquidCash() {
     return liquidCash;
-  }
-
-  public void addCash(final double amount) {
-    liquidCash += amount;
   }
 
   public double getProfit() {
@@ -50,31 +49,36 @@ public class Account implements BrokerListener {
     return tradeStatistic;
   }
 
-  public Bookkeeper getBookkeeper() {
-    return bookkeeper;
-  }
-
   public Portfolio getPortfolio() {
     return portfolio;
   }
 
-  public double getTotalAccountValue(final BarData barData) {
-    return NumUtil.plus(portfolio.getTotalEquityValue(barData), liquidCash);
-  }
-
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this).add("liquidCash", liquidCash).toString();
-  }
-
   @Override
   public void onFulfilledBuy(final BuyTransaction txn, final BarData barData) {
-    bookkeeper.keep(txn);
+    tradeStatistic.collectStats(txn);
+    portfolio.add(txn);
+    liquidCash -= txn.getValue();
   }
 
   @Override
   public void onFulfilledSell(final SellTransaction txn, final BarData barData) {
-    bookkeeper.keep(txn);
     tradeStatistic.collectStats(txn);
+    liquidCash += txn.getValue();
+  }
+
+  @Override
+  public void onCleanup(final SellTransaction txn, final BarData barData) {
+    tradeStatistic.collectStats(txn);
+    liquidCash += txn.getValue();
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("portfolio", portfolio)
+        .add("tradeStatistic", tradeStatistic)
+        .add("liquidCash", liquidCash)
+        .add("startingCash", startingCash)
+        .toString();
   }
 }

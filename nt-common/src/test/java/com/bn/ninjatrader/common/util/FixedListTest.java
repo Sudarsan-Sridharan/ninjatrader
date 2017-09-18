@@ -39,16 +39,16 @@ public class FixedListTest {
     final FixedList<Integer> fixedList = new FixedList<>(2);
 
     fixedList.add(0, 2);
-    assertThat(fixedList).containsExactly(2);
+    assertThat(fixedList.asList()).containsExactly(2);
 
     fixedList.add(0, 1);
-    assertThat(fixedList).containsExactly(1, 2);
+    assertThat(fixedList.asList()).containsExactly(1, 2);
 
     fixedList.add(0, 0);
-    assertThat(fixedList).containsExactly(1, 2);
+    assertThat(fixedList.asList()).containsExactly(1, 2);
 
     fixedList.add(2, 10);
-    assertThat(fixedList).containsExactly(2, 10);
+    assertThat(fixedList.asList()).containsExactly(2, 10);
   }
 
   @Test
@@ -56,22 +56,10 @@ public class FixedListTest {
     final FixedList<Integer> fixedList = FixedList.withMaxSize(2);
 
     fixedList.addAll(Arrays.asList(1, 2, 3, 4));
-    assertThat(fixedList).containsExactly(3, 4);
+    assertThat(fixedList.asList()).containsExactly(3, 4);
 
     fixedList.addAll(Arrays.asList(5, 6 ,7));
-    assertThat(fixedList).containsExactly(6, 7);
-  }
-
-  @Test
-  public void testFixedListAddAllAtIndex() {
-    final FixedList<Integer> fixedList = FixedList.withMaxSize(2);
-
-    fixedList.addAll(Arrays.asList(5, 6, 7));
-    fixedList.addAll(0, Arrays.asList(2, 3, 4));
-    assertThat(fixedList).containsExactly(6, 7);
-
-    fixedList.addAll(2, Arrays.asList(99, 100));
-    assertThat(fixedList).containsExactly(99, 100);
+    assertThat(fixedList.asList()).containsExactly(6, 7);
   }
 
   @Test
@@ -79,9 +67,9 @@ public class FixedListTest {
     final FixedList<Integer> fixedList = FixedList.withMaxSizeAndTrimDirection(2, RIGHT_TO_LEFT);
     fixedList.addAll(Arrays.asList(5, 6, 7, 8));
 
-    assertThat(fixedList).containsExactly(5, 6);
+    assertThat(fixedList.asList()).containsExactly(5, 6);
 
     fixedList.add(0, 4);
-    assertThat(fixedList).containsExactly(4, 5);
+    assertThat(fixedList.asList()).containsExactly(4, 5);
   }
 }

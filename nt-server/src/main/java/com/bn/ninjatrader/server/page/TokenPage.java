@@ -11,6 +11,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import java.net.URI;
 
 /**
  * @author bradwee2000@gmail.com
@@ -21,8 +23,9 @@ import javax.ws.rs.core.Response;
 public class TokenPage {
   private static final Logger LOG = LoggerFactory.getLogger(TokenPage.class);
   private static final String TOKEN_COOKIE_NAME = "au";
-  private static final int COOKIE_MAX_AGE = 60 * 60 * 24 * 30;
+  private static final int COOKIE_MAX_AGE = 60 * 60 * 24 * 99999;
   private static final int COOKIE_VERSION = 1;
+  private static final URI homeUri = UriBuilder.fromResource(DashboardPage.class).build();
 
   @GET
   public Response saveTokenToCookie(@QueryParam("token") final String token) {
@@ -35,6 +38,6 @@ public class TokenPage {
         COOKIE_MAX_AGE,
         false);
 
-    return Response.ok().cookie(cookie).build();
+    return Response.seeOther(homeUri).cookie(cookie).build();
   }
 }

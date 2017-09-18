@@ -10,7 +10,10 @@ define(['jquery', 'require', './basicpanel', 'app/client/admin-client', 'app/uti
         this.status = status;
 
         // Import Quotes
+        this.importContainer = $("<div></div>").addClass("form");
+        this.importDateField = TextInput.builder().label("Date").size(8).placeholder("yyyyMMdd").addClass("date").build();
         this.importBtn = $("<button>Import Quotes</button>");
+        this.importContainer.append(this.importDateField).append(this.importBtn);
 
         // Price Adjustment
         this.priceAdjContainer = $("<div></div>").addClass("form");
@@ -34,7 +37,7 @@ define(['jquery', 'require', './basicpanel', 'app/client/admin-client', 'app/uti
             .append(this.renameSymbolToField)
             .append(this.renameSymbolBtn)
 
-        this.content.append(this.importBtn)
+        this.content.append(this.importContainer)
             .append(this.priceAdjContainer)
             .append(this.renameSymbolContainer);
 
@@ -55,7 +58,9 @@ define(['jquery', 'require', './basicpanel', 'app/client/admin-client', 'app/uti
 
             var statusItem = status.show("Importing quotes...");
 
-            AdminClient.importQuotes().done(function() {
+            var importDate = that.importDateField.input.val();
+
+            AdminClient.importQuotes(importDate).done(function() {
                 statusItem.quickShow("Successfully imported quotes.");
             }).fail(function(e) {
                 console.log(e)

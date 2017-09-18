@@ -1,6 +1,6 @@
 package com.bn.ninjatrader.service.cache;
 
-import com.bn.ninjatrader.cache.client.CacheClient;
+import com.bn.ninjatrader.cache.client.api.CacheClient;
 
 /**
  * Lazily loads cache from cache server.
