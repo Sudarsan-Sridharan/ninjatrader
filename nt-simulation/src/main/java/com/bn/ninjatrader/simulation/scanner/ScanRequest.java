@@ -1,7 +1,5 @@
 package com.bn.ninjatrader.simulation.scanner;
 
-import com.bn.ninjatrader.common.model.Algorithm;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
@@ -10,7 +8,6 @@ import com.google.common.collect.Lists;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Optional;
 
 /**
  * @author bradwee2000@gmail.com
@@ -23,18 +20,11 @@ public class ScanRequest {
     return new ScanRequest(algoId);
   }
 
-  public static ScanRequest withAlgorithm(Algorithm algorithm) {
-    return new ScanRequest(algorithm);
-  }
-
   @JsonProperty("symbols")
   private Collection<String> symbols = Collections.emptyList(); // Empty means all symbols
 
   @JsonProperty("algorithmId")
   private String algorithmId;
-
-  @JsonProperty("algorithm")
-  private Algorithm algorithm;
 
   @JsonProperty("days")
   private int days;
@@ -43,11 +33,6 @@ public class ScanRequest {
 
   private ScanRequest(final String algorithmId) {
     this.algorithmId = algorithmId;
-    this.days = DEFAULT_DAYS;
-  }
-
-  private ScanRequest(final Algorithm algorithm) {
-    this.algorithm = algorithm;
     this.days = DEFAULT_DAYS;
   }
 
@@ -76,12 +61,7 @@ public class ScanRequest {
   }
 
   public String getAlgorithmId() {
-    return algorithm == null ? algorithmId : algorithm.getId();
-  }
-
-  @JsonIgnore
-  public Optional<Algorithm> getAlgorithm() {
-    return Optional.ofNullable(algorithm);
+    return algorithmId;
   }
 
   public Collection<String> getSymbols() {
@@ -95,21 +75,19 @@ public class ScanRequest {
     ScanRequest that = (ScanRequest) o;
     return days == that.days &&
         Objects.equal(symbols, that.symbols) &&
-        Objects.equal(algorithmId, that.algorithmId) &&
-        Objects.equal(algorithm, that.algorithm);
+        Objects.equal(algorithmId, that.algorithmId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(symbols, algorithmId, algorithm, days);
+    return Objects.hashCode(symbols, algorithmId, days);
   }
 
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
-        .add("symbols", symbols)
         .add("algorithmId", algorithmId)
-        .add("algorithm", algorithm)
+        .add("symbols", symbols)
         .add("days", days)
         .toString();
   }

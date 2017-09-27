@@ -53,6 +53,10 @@ public class MongoPriceDocument implements Comparable<MongoPriceDocument> {
     this.timeFrame = timeFrame;
   }
 
+  public String getKey() {
+    return MongoPriceDocument.id(symbol, year, timeFrame);
+  }
+
   public String getSymbol() {
     return symbol;
   }
@@ -81,8 +85,9 @@ public class MongoPriceDocument implements Comparable<MongoPriceDocument> {
     return data;
   }
 
-  public void setData(List<Price> data) {
-//    this.data = data;
+  public MongoPriceDocument setData(List<Price> data) {
+    this.data = data;
+    return this;
   }
 
   @Override

@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.model.dao;
 
-import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.common.model.Price;
+import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 
 import java.time.LocalDate;

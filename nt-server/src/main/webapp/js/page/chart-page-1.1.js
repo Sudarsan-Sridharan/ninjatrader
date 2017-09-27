@@ -12,6 +12,11 @@ requirejs(['../common'], function () {
             var chart = new NinjaChart('chart');
             var symbolParam = $.queryParam("symbol");
             var algoIdParam = $.queryParam("algoId");
+            var fromParam = $.queryParam("from");
+            var toParam = $.queryParam("to");
+
+            fromParam = fromParam ? fromParam : '';
+            toParam = toParam ? toParam : '';
 
             var form = $("#chartForm");
             var symbolInput = form.find("[name='symbol']");
@@ -71,25 +76,43 @@ requirejs(['../common'], function () {
              */
             function showChart(symbol, timeframe, algoId) {
                 symbol = symbol.toUpperCase();
-                var from = new Date();
-                var to = new Date().toDbFormat();
 
-                from.setFullYear(from.getFullYear() - 10);
-                from = from.toDbFormat();
+                var from;
+                if (fromParam == null || fromParam == '') {
+                    from = new Date();
+                    from.setFullYear(from.getFullYear() - 2);
+                } else {
+                    from = Date.parseDbFormat(fromParam);
+                }
+
+                var to;
+                if (toParam == null || toParam == '') {
+                    to = new Date();
+                } else {
+                    to = Date.parseDbFormat(toParam);
+                }
 
                 chart.show(new Query()
                     .setSymbol(symbol)
-                    .setFrom(from)
-                    .setTo(to)
+                    .setFrom(from.toDbFormat())
+                    .setTo(to.toDbFormat())
                     .setTimeframe(timeframe)
                     .setPeriods("sma", [20])
                     .setPeriods("ema", [18, 50, 100, 200])
                     .setPeriods("rsi", [14])
                     .setAlgoId(algoId), function() {
 
-                    var url = "chart?&algoId=" + algoId + "&symbol=" + symbol;
+                    var url = "chart?&algoId=" + algoId + "&symbol=" + symbol + "&from=" + fromParam + "&to=" + toParam;
                     window.history.pushState(chart.getState(), symbol, url);
+                    updateTitle(symbol);
                 });
+            }
+
+            /**
+             * Update title of the page w/ the stock symbol
+             */
+            function updateTitle(symbol) {
+                document.title = symbol + " | Beach Ninja Trader";
             }
 
             /**
@@ -101,7 +124,7 @@ requirejs(['../common'], function () {
                     chart.setState(state);
                     algoIdInput.val(state.query.algoId);
                     symbolInput.val(state.query.symbol);
-                    document.title = state.query.symbol + " | Beach Ninja Trader";
+                    updateTitle(state.query.symbol);
                 }
             });
         });

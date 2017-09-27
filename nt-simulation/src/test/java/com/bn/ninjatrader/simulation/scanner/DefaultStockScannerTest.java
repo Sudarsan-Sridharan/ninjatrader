@@ -12,7 +12,6 @@ import com.bn.ninjatrader.simulation.model.stat.TradeStatistic;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.transaction.BuyTransaction;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
-import com.bn.ninjatrader.worker.WorkerDispatcher;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.junit.Before;
@@ -47,7 +46,6 @@ public class DefaultStockScannerTest {
   private TradeStatistic tradeStatistic;
   private AlgorithmScriptFactory algorithmScriptFactory;
   private Clock clock = TestUtil.fixedClock(now);
-  private WorkerDispatcher workerDispatcher;
   private SimulationReportConverter simulationReportConverter;
 
   private StockScanner stockScanner;
@@ -60,7 +58,6 @@ public class DefaultStockScannerTest {
     tradeAlgorithmDao = mock(AlgorithmDao.class);
     tradeStatistic = mock(TradeStatistic.class);
     algorithmScriptFactory = mock(AlgorithmScriptFactory.class);
-    workerDispatcher = mock(WorkerDispatcher.class);
     simulationReportConverter = mock(SimulationReportConverter.class);
 
     when(priceDao.findAllSymbols()).thenReturn(Sets.newHashSet("MEG"));
@@ -74,11 +71,13 @@ public class DefaultStockScannerTest {
             .addTransaction(BuyTransaction.buy().symbol("MEG").date(now).build())
             .addTransaction(BuyTransaction.buy().symbol("MEG").date(yesterday).build())
             .endingCash(300000)
+            .profit(200000)
+            .profitPcnt(2)
             .build());
     when(simulationReportConverter.convert(any())).thenCallRealMethod();
 
     stockScanner = new DefaultStockScanner(simulationFactory, priceDao,
-        tradeAlgorithmDao, algorithmScriptFactory, clock, workerDispatcher, simulationReportConverter);
+        tradeAlgorithmDao, algorithmScriptFactory, clock, simulationReportConverter);
   }
 
   @Test
@@ -113,16 +112,6 @@ public class DefaultStockScannerTest {
     verify(simulationFactory, times(2)).create(captor.capture());
 
     assertThat(captor.getAllValues().stream().map(r -> r.getSymbol())).containsExactlyInAnyOrder("TEL", "BDO");
-  }
-
-  @Test
-  public void testScanWithAlgorithm_shouldRunSimulationUsingGivenAlgorithm() {
-    final Algorithm algorithm = mock(Algorithm.class);
-    final Map<String, ScanResult> scanResults = stockScanner.scan(ScanRequest.withAlgorithm(algorithm));
-
-    assertThat(scanResults).hasSize(1);
-
-    verify(tradeAlgorithmDao, times(0)).findOneByAlgorithmId(any());
   }
 
   @Test

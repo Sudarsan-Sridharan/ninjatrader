@@ -96,7 +96,7 @@ public class SimulationFactory {
    * Prepare date range and starting cash defaults if not given.
    */
   private void setRequestDefaultsIfNull(final SimulationRequest req) {
-    req.from(Optional.ofNullable(req.getFrom()).orElse(LocalDate.now(clock).minusYears(1)));
+    req.from(Optional.ofNullable(req.getFrom()).orElseGet(() -> LocalDate.now(clock).minusYears(1)));
     req.to(Optional.ofNullable(req.getTo()).orElse(LocalDate.now(clock)));
     req.startingCash(req.getStartingCash() == 0d ? 100_000 :req.getStartingCash());
   }

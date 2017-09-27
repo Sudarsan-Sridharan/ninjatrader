@@ -1,18 +1,17 @@
 package com.bn.ninjatrader.model.datastore.dao;
 
-import com.bn.ninjatrader.common.type.TimeFrame;
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.common.util.FixedList;
 import com.bn.ninjatrader.model.dao.PriceDao;
+import com.bn.ninjatrader.model.datastore.annotation.PriceCache;
 import com.bn.ninjatrader.model.datastore.dao.operation.DatastoreFindPricesOperation;
 import com.bn.ninjatrader.model.datastore.dao.operation.DatastoreSavePricesOperation;
 import com.bn.ninjatrader.model.datastore.document.PriceDocument;
-import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.googlecode.objectify.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,30 +32,28 @@ public class PriceDaoDatastore implements PriceDao {
   private static final Logger LOG = LoggerFactory.getLogger(PriceDaoDatastore.class);
   public static final LocalDate MINIMUM_FROM_DATE = LocalDate.of(1999, 1, 1);
 
+  private final Map<String, List<Price>> priceCache;
   private final Clock clock;
 
   @Inject
-  public PriceDaoDatastore(final Clock clock) {
+  public PriceDaoDatastore(@PriceCache final Map<String, List<Price>> priceCache, final Clock clock) {
+    this.priceCache = priceCache;
     this.clock = clock;
-  }
-
-  public Map<Key<PriceDocument>, PriceDocument> save(final PriceDocument document) {
-    return ofy().save().entities(document).now();
   }
 
   @Override
   public SavePricesOperation savePrices(final Collection<Price> prices) {
-    return new DatastoreSavePricesOperation(prices);
+    return new DatastoreSavePricesOperation(priceCache, prices);
   }
 
   @Override
-  public SavePricesOperation savePrices(Price price, Price... more) {
+  public SavePricesOperation savePrices(final Price price, final Price... more) {
     return savePrices(Lists.asList(price, more));
   }
 
   @Override
   public DatastoreFindPricesOperation findPrices() {
-    return new DatastoreFindPricesOperation();
+    return new DatastoreFindPricesOperation(priceCache);
   }
 
   @Override
@@ -91,7 +88,6 @@ public class PriceDaoDatastore implements PriceDao {
     } while (bars.size() < request.getNumOfValues() && fromDate.isAfter(MINIMUM_FROM_DATE));
 
     return bars.asList();
-
   }
 
   @Override
@@ -99,9 +95,4 @@ public class PriceDaoDatastore implements PriceDao {
     // TODO
     return null;
   }
-
-  private Key<PriceDocument> createKey(final String symbol, final int year, final TimeFrame timeFrame) {
-    return Key.create(PriceDocument.class, PriceDocument.id(symbol, year, timeFrame));
-  }
-
 }

@@ -16,18 +16,18 @@
             <groupId>com.beachninja</groupId>
             <artifactId>nt-common</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast</artifactId>
+            <groupId>com.beachninja</groupId>
+            <artifactId>nt-model</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast-client</artifactId>
+            <groupId>com.pusher</groupId>
+            <artifactId>pusher-http-java</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-sse</artifactId>
+            <groupId>com.netflix.archaius</groupId>
+            <artifactId>archaius2-api</artifactId>
         </dependency>
 
         <!-- Test dependencies -->

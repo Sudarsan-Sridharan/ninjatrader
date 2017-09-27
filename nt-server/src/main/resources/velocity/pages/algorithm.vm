@@ -17,7 +17,11 @@
         </form>
         <form class="runForm">
             <label for="symbol">Symbol:</label>
-            <input name="symbol" class="symbol" type="text" maxlength="8" size="5" value="MEG">
+            <input name="symbol" class="symbol" type="text" maxlength="5" size="5" value="MEG">
+            <label for="from">From:</label>
+            <input name="from" class="from" type="text" maxlength="8" size="8" value="" placeholder="yyyyMMdd"
+            <label for="to">To:</label>
+            <input name="to" class="to" type="text" maxlength="8" size="8" value="" placeholder="yyyyMMdd">
             <button class="runBtn">Run</button>
         </form>
     </div>

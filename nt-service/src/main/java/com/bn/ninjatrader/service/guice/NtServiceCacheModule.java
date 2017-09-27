@@ -4,7 +4,7 @@ import com.bn.ninjatrader.cache.client.api.CacheClient;
 import com.bn.ninjatrader.cache.client.api.CachedMap;
 import com.bn.ninjatrader.cache.client.guice.NtCacheModule;
 import com.bn.ninjatrader.common.model.DailyQuote;
-import com.bn.ninjatrader.service.annotation.cached.CachedDailyQuotes;
+import com.bn.ninjatrader.service.annotation.cached.DailyQuotesCache;
 import com.bn.ninjatrader.service.annotation.cached.CachedScanResults;
 import com.bn.ninjatrader.service.cache.LazyListCache;
 import com.bn.ninjatrader.service.guice.provider.CachedScanResultsProvider;
@@ -33,7 +33,7 @@ public class NtServiceCacheModule extends NtCacheModule {
   }
 
   @Provides
-  @CachedDailyQuotes
+  @DailyQuotesCache
   public List<DailyQuote> provideCachedDailyQuotes(final CacheClient cacheClient) {
     return provideListCachedDailyQuotes(cacheClient);
   }

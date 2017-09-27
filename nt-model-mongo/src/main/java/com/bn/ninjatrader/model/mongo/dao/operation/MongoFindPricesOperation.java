@@ -1,13 +1,15 @@
 package com.bn.ninjatrader.model.mongo.dao.operation;
 
+import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.dao.PriceDao;
-import com.bn.ninjatrader.common.model.Price;
 import com.bn.ninjatrader.model.mongo.document.MongoPriceDocument;
 import com.bn.ninjatrader.model.mongo.util.Queries;
 import com.google.common.collect.Lists;
 import org.jongo.MongoCollection;
 import org.jongo.MongoCursor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
  * Builder for finding prices operation
  */
 public final class MongoFindPricesOperation implements PriceDao.FindPricesOperation {
+  private static final Logger LOG = LoggerFactory.getLogger(MongoFindPricesOperation.class);
+
   private final MongoCollection mongoCollection;
   private String symbol;
   private LocalDate from;
@@ -64,7 +68,6 @@ public final class MongoFindPricesOperation implements PriceDao.FindPricesOperat
       final List<Price> prices = Lists.newArrayList(cursor.iterator()).stream()
           .flatMap(doc -> doc.getData().stream())
           .filter(d -> !d.getDate().isBefore(from) && !d.getDate().isAfter(to))
-          .sorted()
           .collect(Collectors.toList());
 
       return prices;

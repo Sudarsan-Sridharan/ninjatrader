@@ -26,6 +26,8 @@ requirejs(["../common"], function () {
             var algoIdInput = $("[name=algoId]");
             var descInput = $("[name=description]");
             var symbolInput = $("[name=symbol]");
+            var fromInput = $("[name=from]");
+            var toInput = $("[name=to]");
             var runBtn = $(".runBtn");
 
             /**
@@ -65,7 +67,7 @@ requirejs(["../common"], function () {
             $(".runBtn").click(function() {
                 var runStatus = status.show("Running...");
 
-                SimulationClient.run(algoIdInput.val(), symbolInput.val())
+                SimulationClient.run(algoIdInput.val(), symbolInput.val(), fromInput.val(), toInput.val())
                     .done(function(result) {
                         if (result.error) {
                             runStatus.show(result.error);

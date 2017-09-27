@@ -1,7 +1,7 @@
 package com.bn.ninjatrader.model.mongo.dao;
 
-import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.common.model.Price;
+import com.bn.ninjatrader.common.type.TimeFrame;
 import com.bn.ninjatrader.model.mongo.guice.NtModelTestModule;
 import com.bn.ninjatrader.model.request.FindBeforeDateRequest;
 import com.bn.ninjatrader.model.util.TestUtil;
@@ -31,6 +31,7 @@ public class MongoPriceDaoTest {
   private static final LocalDate tomorrow = now.plusDays(1);
   private static final LocalDate nextMonth = now.plusMonths(1);
   private static final LocalDate nextYear = now.plusYears(1);
+  private static final LocalDate lastYear = now.minusYears(1);
 
   private static Injector injector;
 

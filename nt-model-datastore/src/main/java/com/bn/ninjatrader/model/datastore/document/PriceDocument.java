@@ -64,11 +64,15 @@ public class PriceDocument {
         .collect(Collectors.toList());
   }
 
-  public void setData(final List<Price> prices) {
+  public PriceDocument setData(final List<Price> prices) {
+    if (prices == null || prices.isEmpty()) {
+      return this;
+    }
     this.data = prices.stream()
         .map(price -> DatastorePrice.copyFrom(price))
         .sorted(Comparator.comparing(price -> price.getDate()))
         .collect(Collectors.toList());
+    return this;
   }
 
   public String getSymbol() {
@@ -81,6 +85,10 @@ public class PriceDocument {
 
   public TimeFrame getTimeFrame() {
     return timeFrame;
+  }
+
+  public String getKey() {
+    return PriceDocument.id(symbol, year, timeFrame);
   }
 
   @Override

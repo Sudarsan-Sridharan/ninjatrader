@@ -21,6 +21,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @BindingAnnotation
 @Retention(RUNTIME)
 @Target({FIELD, PARAMETER, METHOD})
-public @interface CachedDailyQuotes {
+public @interface DailyQuotesCache {
    Role[] value() default {};
 }

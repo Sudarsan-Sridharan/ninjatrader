@@ -7,12 +7,16 @@ requirejs.config({
         cookie: 'js-cookie',
         jquerySerializeJson: 'jquery.serializejson.min',
         ace: 'ace/ace',
-        d3: 'd3.min'
+        d3: 'd3.min',
+        pusher: 'pusher.4.1.min'
     },
 
     shim: {
         ace: {
             exports: 'ace'
+        },
+        pusher: {
+            exports: 'pusher'
         }
     }
 });

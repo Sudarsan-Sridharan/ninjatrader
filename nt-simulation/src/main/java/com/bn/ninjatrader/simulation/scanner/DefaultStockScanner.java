@@ -11,7 +11,6 @@ import com.bn.ninjatrader.simulation.core.SimulationRequest;
 import com.bn.ninjatrader.simulation.exception.AlgorithmNotFoundException;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
-import com.bn.ninjatrader.worker.WorkerDispatcher;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;
@@ -22,7 +21,6 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -37,7 +35,6 @@ public class DefaultStockScanner implements StockScanner {
   private final AlgorithmDao tradeAlgorithmDao;
   private final AlgorithmScriptFactory algorithmScriptFactory;
   private final Clock clock;
-  private final WorkerDispatcher workerDispatcher;
   private final SimulationReportConverter simulationReportConverter;
 
   @Inject
@@ -46,14 +43,12 @@ public class DefaultStockScanner implements StockScanner {
                              final AlgorithmDao tradeAlgorithmDao,
                              final AlgorithmScriptFactory algorithmScriptFactory,
                              final Clock clock,
-                             final WorkerDispatcher workerDispatcher,
                              final SimulationReportConverter simulationReportConverter) {
     this.simulationFactory = simulationFactory;
     this.priceDao = priceDao;
     this.tradeAlgorithmDao = tradeAlgorithmDao;
     this.algorithmScriptFactory = algorithmScriptFactory;
     this.clock = clock;
-    this.workerDispatcher = workerDispatcher;
     this.simulationReportConverter = simulationReportConverter;
   }
 
@@ -65,7 +60,7 @@ public class DefaultStockScanner implements StockScanner {
         .filter(report -> {
           if (!report.getTransactions().isEmpty()) {
             final Transaction txn = report.getTransactions().get(report.getTransactions().size() - 1);
-            if (txn.getDate().plusDays(req.getDays()).isAfter(LocalDate.now(clock))) {
+            if (txn.getDate().plusDays(30).isAfter(LocalDate.now(clock))) {
               return true;
             }
           }
@@ -76,12 +71,6 @@ public class DefaultStockScanner implements StockScanner {
     final Map<String, ScanResult> scanResults = simulationReportConverter.convert(reports);
 
     return scanResults;
-  }
-
-  @Override
-  public void scanAsync(final ScanRequest req, final Consumer<Map<String, ScanResult>> callback) {
-    final List<Simulation> simulations = prepareSimulations(req);
-    workerDispatcher.submit(new ScanTask(simulationReportConverter, simulations), callback);
   }
 
   /**
@@ -95,15 +84,6 @@ public class DefaultStockScanner implements StockScanner {
       symbols = req.getSymbols();
     }
     return symbols;
-  }
-
-  /**
-   * Either retrieve algorithm from database or use the given one from request.
-   */
-  private AlgorithmScript prepareAlgorithmScript(final ScanRequest req) {
-    final Algorithm algorithm = req.getAlgorithm().orElseGet(() -> findAlgorithmById(req.getAlgorithmId()));
-    final AlgorithmScript algoScript = algorithmScriptFactory.create(algorithm);
-    return algoScript;
   }
 
   /**
@@ -125,6 +105,15 @@ public class DefaultStockScanner implements StockScanner {
             .from(from).to(to).algorithmScript(algoScript)))
         .collect(Collectors.toList());
 
+  }
+
+  /**
+   * Either retrieve algorithm from database or use the given one from request.
+   */
+  private AlgorithmScript prepareAlgorithmScript(final ScanRequest req) {
+    final Algorithm algorithm = findAlgorithmById(req.getAlgorithmId());
+    final AlgorithmScript algoScript = algorithmScriptFactory.create(algorithm);
+    return algoScript;
   }
 
   /**

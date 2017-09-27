@@ -9,5 +9,9 @@ define(['jquery'], function ($) {
         return $.get(ajaxUrl + "?algoId=" + algoId + "&symbol=" + symbol + "&isDebug=true");
     };
 
+    SimulationClient.run = function(algoId, symbol, from, to) {
+        return $.get(ajaxUrl + "?algoId=" + algoId + "&symbol=" + symbol + "&from=" + from + "&to=" + to + "&isDebug=true");
+    };
+
     return SimulationClient;
 });

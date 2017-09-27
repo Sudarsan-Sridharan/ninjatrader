@@ -21,6 +21,8 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
             return vLine + hLine;
         };
 
+        var self = this;
+
         // Path for markers (LINE, ARROW_TOP, ARROW_BOTTOM
         this._getMarkPath = function(mark) {
             if (mark.marker == "LINE") { // Vertical Line
@@ -35,7 +37,7 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
                 path += "l" + (-config.columnWidth / 2) + "," + (-config.columnWidth); // move diagonally to middle
                 path += "Z"; // close
                 return path;
-            } else { // Arrow Top
+            } else if (mark.marker == "ARROW_TOP") { // Arrow Top
                 var x = config.xByDate(mark.date);
                 if(isNaN(x)) return "";
                 var path = "M" + x + ",2"; // start at left side of column
@@ -43,6 +45,11 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
                 path += "l" + (-config.columnWidth / 2) + "," + config.columnWidth; // move diagonally to middle
                 path += "Z"; // close
                 return path;
+            } else if (mark.marker == "HORIZONTAL_LINE") { // Horizontal Line
+                var x1 = config.xByDate(mark.date);
+                var x2 = config.xByDate(mark.date2) + config.columnWidth;
+                var y = self.yScale(mark.price)
+                return "M" + x1 + "," + y + "H" + x2;
             }
         };
 
@@ -69,7 +76,7 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
     };
 
     SimulationChart.prototype.getFullAjaxUrl = function(query) {
-        return this.config.contextPath + "/tasks/simulation/run?algoId=" + query.algoId + "&symbol=" + query.symbol;
+        return this.config.contextPath + "/tasks/simulation/run?algoId=" + query.algoId + "&symbol=" + query.symbol + "&from=" + query.from + "&to=" + query.to ;
     };
 
     SimulationChart.prototype._printBuySell = function(transactions) {
@@ -170,11 +177,6 @@ define(["d3", "require", "./abstractchart", "../component/simulationmeta"], func
 
     SimulationChart.prototype.getDataDomain = function() {
         return [0,0];
-    };
-
-    SimulationChart.prototype.setReportId = function(reportId) {
-        this.reportId = reportId;
-        return this;
     };
 
     return SimulationChart;

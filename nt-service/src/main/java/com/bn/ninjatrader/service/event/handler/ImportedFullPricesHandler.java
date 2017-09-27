@@ -7,10 +7,9 @@ import com.bn.ninjatrader.messaging.listener.MessageListener;
 import com.bn.ninjatrader.model.dao.AlgorithmDao;
 import com.bn.ninjatrader.queue.Task;
 import com.bn.ninjatrader.queue.TaskDispatcher;
-import com.bn.ninjatrader.service.annotation.cached.CachedDailyQuotes;
+import com.bn.ninjatrader.service.annotation.cached.DailyQuotesCache;
 import com.bn.ninjatrader.service.store.ScanResultStore;
 import com.bn.ninjatrader.simulation.scanner.ScanRequest;
-import com.bn.ninjatrader.simulation.scanner.StockScanner;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,22 +27,19 @@ import java.util.stream.Collectors;
 public class ImportedFullPricesHandler implements MessageListener<List<DailyQuote>> {
   private static final Logger LOG = LoggerFactory.getLogger(ImportedFullPricesHandler.class);
 
-  private final StockScanner stockScanner;
   private final AlgorithmDao algorithmDao;
   private final ScanResultStore scanResultStore;
-  private final List<DailyQuote> cachedDailyQuotes;
+  private final List<DailyQuote> dailyQuotesCache;
   private final TaskDispatcher taskDispatcher;
 
   @Inject
-  public ImportedFullPricesHandler(final StockScanner stockScanner,
-                                   final AlgorithmDao algorithmDao,
+  public ImportedFullPricesHandler(final AlgorithmDao algorithmDao,
                                    final ScanResultStore scanResultStore,
                                    final TaskDispatcher taskDispatcher,
-                                   @CachedDailyQuotes final List<DailyQuote> cachedDailyQuotes) {
-    this.stockScanner = stockScanner;
+                                   @DailyQuotesCache final List<DailyQuote> dailyQuotesCache) {
     this.algorithmDao = algorithmDao;
     this.scanResultStore = scanResultStore;
-    this.cachedDailyQuotes = cachedDailyQuotes;
+    this.dailyQuotesCache = dailyQuotesCache;
     this.taskDispatcher = taskDispatcher;
   }
 
@@ -62,15 +58,15 @@ public class ImportedFullPricesHandler implements MessageListener<List<DailyQuot
 
     LOG.info("Found {} new quotes.", diff.size());
 
-    cachedDailyQuotes.clear();
-    cachedDailyQuotes.addAll(quotes);
+    dailyQuotesCache.clear();
+    dailyQuotesCache.addAll(quotes);
 
     processNewQuotes(diff);
   }
 
   private List<DailyQuote> extractNewQuotes(final List<DailyQuote> quotes) {
     final List<DailyQuote> diff = Lists.newArrayList(quotes);
-    diff.removeAll(cachedDailyQuotes);
+    diff.removeAll(dailyQuotesCache);
     return diff;
   }
 
@@ -90,12 +86,9 @@ public class ImportedFullPricesHandler implements MessageListener<List<DailyQuot
       if (!scanResultStore.contains(algorithm.getId())) {
         return;
       }
-      final ScanRequest scanRequest = ScanRequest.withAlgorithm(algorithm).symbols(symbols);
+      final ScanRequest scanRequest = ScanRequest.withAlgoId(algorithm.getId()).symbols(symbols).days(1);
 
       taskDispatcher.submitTask(Task.withPath("/tasks/scan").payload(scanRequest));
-
-//      final Map<String, ScanResult> scanResult = stockScanner.scan(scanRequest);
-//      scanResultStore.merge(algorithm.getId(), scanResult);
     });
   }
 }

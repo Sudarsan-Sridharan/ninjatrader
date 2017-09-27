@@ -13,7 +13,6 @@ define(['jquery', 'require',
 
     function ScannerPanel( id) {
         BasicPanel.call(this, "Scanner", "scannerPanel");
-        this.sse = new Sse();
         this.actionBar = $("<div></div>").addClass("panelAction");
         this.algoSelector = $("<select></select>").addClass("algo");
         this.daySelector = $("<select></select>").addClass("days");
@@ -49,6 +48,13 @@ define(['jquery', 'require',
         this.algoSelector.change(function() {
             that.scan();
         });
+
+        // Subscribe to receive push notifications
+        Sse.subscribe(function(data) {
+            if (that.algoSelector.val() == data.algorithmId) {
+                that._onNewUpdateReceived(data.scanResults, data.algorithmId);
+            }
+        });
     };
 
     /**
@@ -69,7 +75,6 @@ define(['jquery', 'require',
                 algorithmIds.push(algorithm.algorithmId);
             }
             that.enable();
-            that._onAlgorithmsLoaded(algorithmIds);
         });
     };
 
@@ -113,7 +118,9 @@ define(['jquery', 'require',
         this.disable();
         this.scanButton.html("Scanning...");
 
+
         ScannerClient.scan(algoId, this.daySelector.val(), function(scanResult) {
+            that.scanResultsMap = [];
             that._mergeScanResults(scanResult);
             that._displayResults(scanResult, algoId);
             that.enable();
@@ -160,21 +167,6 @@ define(['jquery', 'require',
         })
     };
 
-    /**
-     * Add listener to each algorithm once it's loaded.
-     */
-    ScannerPanel.prototype._onAlgorithmsLoaded = function(algorithmIds) {
-        var that = this;
-        for (var i in algorithmIds) {
-            var algorithmId = algorithmIds[i];
-            this.sse.addListener(algorithmId, function (e) {
-                if (that.algoSelector.val() == e.type) {
-                    that._onNewUpdateReceived(JSON.parse(e.data), e.type);
-                }
-            });
-        }
-    };
-
     ScannerPanel.prototype._onNewUpdateReceived = function(newScanResults, algorithmId) {
         this._mergeScanResults(newScanResults);
 
@@ -194,8 +186,6 @@ define(['jquery', 'require',
         scanResults.sort(function(a, b) {
             return a.symbol.localeCompare(b.symbol);
         });
-
-        console.log(highlightSymbols, scanResults);
 
         this._displayResults(scanResults, algorithmId, highlightSymbols);
     };

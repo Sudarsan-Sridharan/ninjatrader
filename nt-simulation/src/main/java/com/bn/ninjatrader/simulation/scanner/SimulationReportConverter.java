@@ -1,6 +1,5 @@
 package com.bn.ninjatrader.simulation.scanner;
 
-import com.bn.ninjatrader.common.util.NumUtil;
 import com.bn.ninjatrader.simulation.report.SimulationReport;
 import com.bn.ninjatrader.simulation.transaction.Transaction;
 import com.bn.ninjatrader.simulation.transaction.TransactionType;
@@ -27,9 +26,6 @@ public class SimulationReportConverter implements Serializable {
     return reports.stream()
         .filter(report -> !report.getTransactions().isEmpty())
         .map(report -> {
-          final double profit = report.getEndingCash() - report.getStartingCash(); //TODO ending cash not accurate. use total profits. you ddnt sell the last txn.
-          final double profitPcnt = NumUtil.divide(profit, report.getStartingCash()); // TODO no need to calculate! include in sim report
-
           final Transaction lastTransaction = report.getTransactions().stream()
               .filter(txn -> txn.getTransactionType() != TransactionType.CLEANUP) // Ignore cleanup as this is system and not algorithm triggered.
               .max(comparing(txn -> txn.getDate()))
@@ -37,8 +33,8 @@ public class SimulationReportConverter implements Serializable {
 
           return ScanResult.builder()
               .symbol(report.getSymbol())
-              .profit(profit)
-              .profitPcnt(profitPcnt)
+              .profit(report.getProfit())
+              .profitPcnt(report.getProfitPcnt())
               .lastTransaction(lastTransaction)
               .build();
 

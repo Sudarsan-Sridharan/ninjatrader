@@ -24,7 +24,6 @@
         <module>nt-simulation</module>
         <module>nt-scheduler</module>
         <module>nt-server</module>
-        <module>nt-server-appengine</module>
         <module>nt-service</module>
         <module>nt-service-appengine</module>
         <module>nt-service-client</module>

@@ -1,82 +1,31 @@
-define(['jquery', 'require',
+define(['jquery', 'require', 'pusher',
     'app/status/status',
-    'app/auth/token-auth'], function ($, require) {
+    'app/auth/token-auth'], function ($, require, Pusher) {
 
-    var Status = require("app/status/status");
-    var TokenAuth = require("app/auth/token-auth");
+    Pusher.logToConsole = true;
 
-    var MAX_RECONNECT_DELAY = 60000 * 10; // 10 minutes
-
-    var isConnected = false; // Allow only 1 connection
-    var eventSource;
-    var sseUrl = context.serviceHost + "/scan";
-    var status;
-    var statusItem;
+    var pusher = new Pusher('58435a6af88c4d4ce9d4', {
+        cluster: 'ap1',
+        encrypted: true
+    });
+    var channel;
+    var callbacks = [];
 
     function Sse() {
-        status = new Status("#status");
-        statusItem = status.newStatusItem();
-        this.connectDelaySeconds = 1;
+
     }
 
+    Sse.subscribe = function(callback) {
+        callbacks.push(callback);
 
-
-    // Connect to SSE Server
-    Sse.prototype.connect = function() {
-        // prevent multiple connections
-        if (isConnected) {
-            return this;
-        }
-        isConnected = true;
-
-        var that = this;
-        try {
-            eventSource = new EventSource(TokenAuth.addAuthQueryParam(sseUrl));
-        } catch (e) {
-            // hide error. Just reconnect.
-        }
-
-        // On connect error,
-        eventSource.onerror = function() {
-            // Close connection
-            isConnected = false;
-            this.close();
-
-            that._reconnect();
-        };
-
-        eventSource.onopen = function() {
-            statusItem.remove();
-        };
-
-        return this;
-    };
-
-    Sse.prototype.addListener = function(event, listener) {
-        eventSource.addEventListener(event, listener);
-        return this;
-    };
-
-    Sse.prototype.onMessage = function(dostuff) {
-        eventSource.onmessage = dostuff;
-        return this;
-    };
-
-    /**
-     * Attempt to connect with increasing delay.
-     */
-    Sse.prototype._reconnect = function() {
-        var that = this;
-        setTimeout(function() { that.connect() }, this.connectDelaySeconds * 1000);
-
-        statusItem.show("Error connecting to server. Retrying in " + parseInt(this.connectDelaySeconds) + " seconds.");
-
-        // Increase delay
-        this.connectDelaySeconds = (this.connectDelaySeconds * 1.2) + 2;
-
-        // Set max delay to 10 minutes
-        if (this.connectDelaySeconds > MAX_RECONNECT_DELAY) {
-            this.connectDelaySeconds = MAX_RECONNECT_DELAY;
+        if (!channel) {
+            channel = pusher.subscribe("ADMIN");
+            channel.bind("scan-update", function(data) {
+                var result = JSON.parse(data.message);
+                for (var i in callbacks) {
+                    callbacks[i](result);
+                }
+            });
         }
     };
 

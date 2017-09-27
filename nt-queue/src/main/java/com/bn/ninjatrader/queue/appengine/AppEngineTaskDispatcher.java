@@ -17,7 +17,7 @@ import java.nio.charset.Charset;
  * @author bradwee2000@gmail.com
  */
 @Singleton
-public class AppEngineTaskDispatcher implements TaskDispatcher { //TODO finish
+public class AppEngineTaskDispatcher implements TaskDispatcher {
   private static final String QUEUE_NAME = "tasks";
   private static final Charset UTF8 = Charset.forName("UTF-8");
 

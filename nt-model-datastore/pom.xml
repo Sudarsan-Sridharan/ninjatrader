@@ -14,8 +14,13 @@
     <dependencies>
         <dependency>
             <groupId>com.beachninja</groupId>
+            <artifactId>nt-cache-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.beachninja</groupId>
             <artifactId>nt-model</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>

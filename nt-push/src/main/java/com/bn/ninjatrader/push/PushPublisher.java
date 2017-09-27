@@ -1,16 +1,15 @@
 package com.bn.ninjatrader.push;
 
-import com.bn.ninjatrader.push.store.EventOutputStore;
-import org.glassfish.jersey.media.sse.EventOutput;
-import org.glassfish.jersey.media.sse.OutboundEvent;
+import com.bn.ninjatrader.model.util.ObjectMapperProvider;
+import com.bn.ninjatrader.push.config.PushConfig;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pusher.rest.Pusher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.util.Optional;
+import java.util.Collections;
 
 /**
  * Push messages (Server-Sent Events) to clients.
@@ -20,30 +19,26 @@ import java.util.Optional;
 @Singleton
 public class PushPublisher {
   private static final Logger LOG = LoggerFactory.getLogger(PushPublisher.class);
-  private final EventOutputStore eventOutputStore;
+  private static final String MESSAGE = "message";
+  private final Pusher pusher;
+  private final ObjectMapper om;
 
   @Inject
-  public PushPublisher(final EventOutputStore eventOutputStore) {
-    this.eventOutputStore = eventOutputStore;
+  public PushPublisher(final PushConfig config, final ObjectMapperProvider objectMapperProvider) {
+    this.om = objectMapperProvider.get();
+
+    pusher = new Pusher(config.getAppId(), config.getKey(), config.getSecret());
+    pusher.setCluster(config.getCluster());
+    pusher.setEncrypted(true);
   }
 
-  public boolean push(final String userId, final String eventName, final Object data) {
-    final Optional<EventOutput> eventOutput = eventOutputStore.get(userId);
-
-    if (!eventOutput.isPresent()) {
-      return false;
-    }
-
+  public boolean push(final String channel, final String eventName, final Object data) {
     try {
-      LOG.info("Pushing userId: {}, eventName: {} -- {}", userId, eventName, data);
-      eventOutput.get().write(new OutboundEvent.Builder()
-          .name(eventName)
-          .mediaType(MediaType.APPLICATION_JSON_TYPE)
-          .data(data)
-          .build());
-    } catch (IOException e) {
+      final String json = om.writeValueAsString(data);
+      pusher.trigger(channel, eventName, Collections.singletonMap(MESSAGE, json));
+      return true;
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    return true;
   }
 }
